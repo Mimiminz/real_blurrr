@@ -4,8 +4,6 @@ import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 
-const a = 1
-
 export default function Home() {
   const router = useRouter();
 
