@@ -9,18 +9,17 @@ import lombok.RequiredArgsConstructor;
 public enum LeagueType {
 
     BRAND(
-            "BRAND",
             Set.of(
             "현대",  "제네시스", "기아", "르노", "쉐보레", "벤츠", "BMW", "아우디"
-     )),
+            )
+    ),
 
     MODEL(
-            "MODEL",
             Set.of(
             "소나타", "GV70", "K5", "QM6", "트랙스", "G바겐", "520i", "A7"
-    ));
+            )
+    );
 
-    private final String type;
     private final Set<String> names;
 
 }
