@@ -14,6 +14,10 @@ public enum ErrorCode {
      * [400 Bad Request]
      * - 응답 상태 코드는 서버가 클라이언트 오류를 감지해 요청 불가
      */
+    INVALID_BOARD_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 게시판 유형입니다."),
+    INVALID_LEAGUE_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 리그 유형입니다."),
+
+    FAIL_TO_CREATE_BOARD(HttpStatus.BAD_REQUEST, "게시글 생성을 실패했습니다."),
     FAIL_TO_VALIDATE(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
 
     /**

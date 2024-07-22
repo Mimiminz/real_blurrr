@@ -5,6 +5,8 @@ import static com.luckvicky.blur.global.constant.StringFormat.VALIDATED_ERROR_RE
 import static com.luckvicky.blur.global.constant.StringFormat.VALID_ERROR_RESULT;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_VALIDATE;
 
+import com.luckvicky.blur.global.enums.code.ErrorCode;
+import com.luckvicky.blur.global.execption.BaseException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -23,6 +25,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ProblemDetail handleException(Exception e) {
         return ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BaseException.class)
+    public ProblemDetail handleBaseException(BaseException e) {
+
+        ErrorCode errorCode = e.getErrorCode();
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                errorCode.getCode(),
+                errorCode.getMessage()
+        );
+
+        return problemDetail;
+
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
