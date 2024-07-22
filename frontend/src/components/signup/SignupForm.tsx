@@ -21,7 +21,7 @@ const initialValues: SignupFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .email('유효한 이메일을 입력하세요.')
+    .email('유효한 이메일 형식을 입력하세요.')
     .required('이메일은 필수 입력 항목입니다.'),
   emailVerification: Yup.string()
     .required('인증번호는 필수 입력 항목입니다.'),
@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
     .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/, '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.')
     .required('비밀번호는 필수 입력 항목입니다.'),
   passwordCheck: Yup.string()
-    .oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
+    .oneOf([Yup.ref('password'), ''], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수 입력 항목입니다.'),
 });
 
