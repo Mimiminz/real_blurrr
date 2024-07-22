@@ -1,10 +1,19 @@
 package com.luckvicky.blur.domain.league.model.dto;
 
-import java.util.UUID;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
-public record LeagueDto(
-        UUID uuid,
-        String name,
-        String type
-) {
+@Getter
+@Schema(name = "리그 DTO")
+public class LeagueDto {
+
+    @Schema(description = "리그 고유 식별값")
+    String id;
+
+    @Schema(description = "이름")
+    String name;
+
+    @Schema(description = "유형")
+    String type;
+
 }

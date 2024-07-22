@@ -1,4 +1,3 @@
-// components/CarPictureListItem.tsx
 import React from "react";
 import styled from "styled-components";
 
@@ -26,11 +25,12 @@ const Container = styled.div`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
 `;
 
 const ImageContainer = styled.div`
   width: 100%;
-  padding-top: 75%; /* Aspect Ratio 4:3 */
+  padding-top: 75%;
   background-color: #d8d8d8;
   position: relative;
 `;
