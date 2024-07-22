@@ -22,7 +22,7 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi authApi() {
-        String[] authPaths = {"/spots/**"};
+        String[] authPaths = {"/spots/**", "/leagues/**"};
         return GroupedOpenApi.builder()
                 .group("auth")
                 .pathsToMatch(authPaths)
