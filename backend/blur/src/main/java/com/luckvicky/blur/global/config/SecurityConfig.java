@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,7 +14,15 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] permitAll = {"/v1/auth/**", "/swagger-ui/**", "/h2-console/**"};
+
+    private final String[] permitAll = {
+            "/v1/auth/**",
+            "/leagues/**",
+            "/boards/**",
+            "/swagger-ui/**",
+            "/h2-console/**"
+    };
+
     private final String[] SWAGGER_URI = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -25,10 +34,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain fiterChain(HttpSecurity http) throws Exception {
         http.csrf(csrfConfigurer -> csrfConfigurer.disable());
+
         http.formLogin(formLoginConfigurer -> formLoginConfigurer.disable());
+
         http.httpBasic(httpBasicConfigurer -> httpBasicConfigurer.disable());
+
+        http.headers(header ->
+                header.frameOptions(
+                        HeadersConfigurer.FrameOptionsConfig::sameOrigin
+                )
+        );
+
         http.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
+
         http.authorizeHttpRequests(requestConfigurer -> requestConfigurer
                 .requestMatchers(SWAGGER_URI).permitAll()
                 .requestMatchers(permitAll).permitAll()

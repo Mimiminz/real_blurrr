@@ -7,9 +7,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "members", uniqueConstraints = {
         @UniqueConstraint(name = "uniqueNickname", columnNames = {"nickname"}),
@@ -30,7 +33,7 @@ public class Member extends BaseEntity {
     private String email;
 
     @Column(name = "is_auth")
-    private Boolean isAuth;
+    private boolean isAuth;
 
     @Column(name = "car_mode")
     private String carModel;
@@ -47,20 +50,5 @@ public class Member extends BaseEntity {
     private String carTitle;
 
     public Member() {
-    }
-
-    @Builder
-    public Member(String profileUrl, String nickname, String password, String email, Boolean isAuth, String carModel,
-                  String carManufacture, Role role, boolean carShow, String carTitle) {
-        this.profileUrl = profileUrl;
-        this.nickname = nickname;
-        this.password = password;
-        this.email = email;
-        this.isAuth = isAuth;
-        this.carModel = carModel;
-        this.carManufacture = carManufacture;
-        this.role = role;
-        this.carShow = carShow;
-        this.carTitle = carTitle;
     }
 }
