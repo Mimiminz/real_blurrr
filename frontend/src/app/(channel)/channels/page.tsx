@@ -15,7 +15,19 @@ import 'swiper/css/pagination';
 type Props = {}
 
 const Container = styled.div`
-  margin: 0px 300px;
+  margin: 0 20px; /* 기본 마진 설정 */
+  
+  @media (min-width: 768px) {
+    margin: 0 100px; /* 태블릿 크기 이상일 때 */
+  }
+
+  @media (min-width: 1024px) {
+    margin: 0 150px; /* 데스크탑 크기 이상일 때 */
+  }
+
+  @media (min-width: 1440px) {
+    margin: 0 300px; /* 큰 데스크탑 크기 이상일 때 */
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -36,7 +48,8 @@ const SearchInputContainer = styled.div`
 
 const SearchInput = styled.input`
   padding: 10px;
-  width: 50%;
+  width: 100%;
+  max-width: 600px;
   border-radius: 5px;
   border: 1px solid #ddd;
 `;
@@ -47,10 +60,6 @@ const GridContainer = styled.div`
   gap: 20px;
 `;
 
-const CardWrapper = styled.div`
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-radius: 8px;
-`;
 
 const Channels: React.FC<Props> = (props) => {
 
@@ -107,14 +116,14 @@ const Channels: React.FC<Props> = (props) => {
       </SearchInputContainer>
       <GridContainer>
         {dummy.AllChannels.map((item) => (
-          <CardWrapper key={item.title} onClick={() => console.log("item pressed")}>
+          <div key={item.title} onClick={() => console.log("item pressed")}>
             <ChannelCard
               title={item.title}
               likes={item.followers} // 좋아요 수로 가정
               tags={item.tags}
               img={item.img}
             />
-          </CardWrapper>
+          </div>
         ))}
       </GridContainer>
     </Container>
