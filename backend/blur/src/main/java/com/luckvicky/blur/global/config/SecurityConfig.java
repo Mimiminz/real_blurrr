@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] permitAll = {"/login", "/signin", "/signup", "/swagger-ui/**"};
+    private final String[] permitAll = {"/login", "/signin", "/signup", "/swagger-ui/**", "/h2-console"};
     private final String[] SWAGGER_URI = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
