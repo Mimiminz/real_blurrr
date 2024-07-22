@@ -1,15 +1,18 @@
 package com.luckvicky.blur.domain.channel.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "channel_tag")
 public class ChannelTag {
     @Id
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="tags_id")
@@ -22,33 +25,11 @@ public class ChannelTag {
     public ChannelTag() {
     }
 
-    public ChannelTag(UUID id, Tags tag, Channels channel) {
+    @Builder
+    public ChannelTag(Long id, Tags tag, Channels channel) {
         this.id = id;
         this.tag = tag;
         this.channel = channel;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Tags getTag() {
-        return tag;
-    }
-
-    public void setTag(Tags tag) {
-        this.tag = tag;
-    }
-
-    public Channels getChannel() {
-        return channel;
-    }
-
-    public void setChannel(Channels channel) {
-        this.channel = channel;
-    }
 }
