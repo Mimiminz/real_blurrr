@@ -12,7 +12,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi noAuthApi() {
         // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화한다.
-        String[] noAuthPaths = {"/login", "/test"};
+        String[] noAuthPaths = {"/v1/auth/**"};
 
         return GroupedOpenApi.builder()
                 .group("no auth")  // 그룹 이름을 설정한다.

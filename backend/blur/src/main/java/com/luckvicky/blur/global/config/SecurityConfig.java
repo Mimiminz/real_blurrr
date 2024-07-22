@@ -16,9 +16,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 public class SecurityConfig {
 
     private final String[] permitAll = {
-            "/login",
-            "/signin",
-            "/signup",
+            "/v1/auth/**",
             "/leagues/**",
             "/boards/**",
             "/swagger-ui/**",
@@ -36,7 +34,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain fiterChain(HttpSecurity http) throws Exception {
-
         http.csrf(csrfConfigurer -> csrfConfigurer.disable());
 
         http.formLogin(formLoginConfigurer -> formLoginConfigurer.disable());
@@ -64,14 +61,11 @@ public class SecurityConfig {
                                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                         )
                 );
-
         return http.build();
-
     }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
