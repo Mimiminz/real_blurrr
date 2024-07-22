@@ -1,13 +1,14 @@
 package com.luckvicky.blur.domain.channel.model.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.validator.constraints.UUID;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "channel_tag")
 public class ChannelTag {
     @Id
-    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @ManyToOne
@@ -18,6 +19,22 @@ public class ChannelTag {
     @JoinColumn(name = "channel_id")
     private Channels channel;
 
+    public ChannelTag() {
+    }
+
+    public ChannelTag(UUID id, Tags tag, Channels channel) {
+        this.id = id;
+        this.tag = tag;
+        this.channel = channel;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public Tags getTag() {
         return tag;
@@ -32,15 +49,6 @@ public class ChannelTag {
     }
 
     public void setChannel(Channels channel) {
-        this.channel = channel;
-    }
-
-    public ChannelTag(){
-
-    }
-
-    public ChannelTag(Tags tag, Channels channel) {
-        this.tag = tag;
         this.channel = channel;
     }
 }
