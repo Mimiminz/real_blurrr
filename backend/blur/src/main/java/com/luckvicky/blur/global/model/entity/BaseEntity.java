@@ -4,14 +4,17 @@ import static com.luckvicky.blur.global.constant.StringFormat.TIMESTAMP_FORMAT;
 
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.util.ClockUtil;
+import com.luckvicky.blur.global.util.UuidUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,8 +25,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
+    @Id
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private ActivateStatus status;
 
     @CreatedDate
@@ -43,6 +50,7 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void onPrePersist() {
+        this.id = UuidUtil.createSequentialUUID();
         this.status = ActivateStatus.ACTIVE;
         this.createdAt = ClockUtil.getLocalDateTime();
         this.updatedAt = this.createdAt;
