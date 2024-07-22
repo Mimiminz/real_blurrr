@@ -22,7 +22,8 @@ public class SecurityConfig {
             "/leagues/**",
             "/boards/**",
             "/swagger-ui/**",
-            "/h2-console/**"
+            "/h2-console/**",
+            "/channels/**"
     };
 
     private final String[] SWAGGER_URI = {
