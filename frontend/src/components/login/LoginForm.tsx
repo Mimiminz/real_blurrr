@@ -2,22 +2,29 @@ import React from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
+import { useRouter } from "next/navigation";
 
 type Props = {}
 
 const SignupForm = () => {
+
+  const router = useRouter();
     return (
       <Container>
         <Title>로그인</Title>
         <Formik
           initialValues={{ email: '', password: '', rememberMe: false }}
           validationSchema={Yup.object({
-            email: Yup.string().email('유효한 이메일을 입력하세요.').required('이메일은 필수 입력 항목입니다.'),
-            password: Yup.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다.').required('비밀번호는 필수 입력 항목입니다.'),
+            email: Yup.string()
+            .email('유효한 이메일 형식을 입력하세요.')
+            .required('이메일은 필수 입력 항목입니다.'),
+            password: Yup.string()
+            .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/, '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.')
+            .required('비밀번호는 필수 입력 항목입니다.'),
             rememberMe: Yup.boolean(),
           })}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
+            setTimeout(() => { 
               alert(JSON.stringify(values, null, 2));
               setSubmitting(false);
             }, 400);
@@ -34,8 +41,8 @@ const SignupForm = () => {
             </CheckboxLabel>
             <Button type="submit">로그인</Button>
             <Div>
-                <Link href="#">비밀번호를 잊으셨나요?</Link>
-                <Link href="#">회원가입</Link>
+                <Link href="#" onClick={() => router.push("/")}>비밀번호를 잊으셨나요?</Link>
+                <Link href="#" onClick={() => router.push("/signup")}>회원가입</Link>
             </Div>
           </StyledForm>
         </Formik>
