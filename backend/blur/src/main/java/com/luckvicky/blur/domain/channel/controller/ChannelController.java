@@ -1,11 +1,12 @@
 package com.luckvicky.blur.domain.channel.controller;
 
-import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
-import com.luckvicky.blur.domain.channel.model.response.ChannelListResponse;
+import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.resp.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -40,6 +42,33 @@ public class ChannelController {
     @GetMapping
     public ResponseEntity getAllChannels() {
         List<ChannelDto> channels = channelService.getAllChannels();
+
+        if (Objects.isNull(channels) || channels.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder().build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(ChannelListResponse.of(channels))
+                        .build()
+        );
+    }
+
+    @Operation(summary = "태그 기반 채널 검색 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "검색 완료 응답",
+                    content = @Content(schema = @Schema(implementation = ChannelListResponse.class))
+            )
+    })
+    @GetMapping("/search")
+    public ResponseEntity searchChannelsByTags(
+            @Parameter(description = "검색할 태그 목록", required = true)
+            @RequestParam List<String> tags) {
+        List<ChannelDto> channels = channelService.searchChannelsByTags(tags);
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(

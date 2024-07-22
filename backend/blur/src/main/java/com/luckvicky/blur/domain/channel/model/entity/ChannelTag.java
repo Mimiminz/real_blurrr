@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @Getter
 @Entity
 @Table(name = "channel_tag")
@@ -16,17 +14,17 @@ public class ChannelTag {
 
     @ManyToOne
     @JoinColumn(name="tags_id")
-    private Tags tag;
+    private Tag tag;
 
     @ManyToOne
     @JoinColumn(name = "channel_id")
-    private Channels channel;
+    private Channel channel;
 
     public ChannelTag() {
     }
 
     @Builder
-    public ChannelTag(Long id, Tags tag, Channels channel) {
+    public ChannelTag(Long id, Tag tag, Channel channel) {
         this.id = id;
         this.tag = tag;
         this.channel = channel;
