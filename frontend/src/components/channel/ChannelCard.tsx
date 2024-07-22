@@ -1,0 +1,79 @@
+import React from 'react';
+import styled from 'styled-components';
+
+interface ChannelCardProps {
+  title: string;
+  likes: number;
+  tags: string[];
+  img: string;
+}
+
+const CardContainer = styled.div`
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  width: 200px;
+  background: #fff;
+`;
+
+const ImageContainer = styled.div<{ img: string }>`
+  width: 100%;
+  height: 120px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-image: url(${props => props.img});
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+`;
+
+const Tag = styled.span`
+  background-color: #374151;
+  color: #fff;
+  border-radius: 12px;
+  padding: 4px 8px;
+  margin: 0 4px;
+`;
+
+const Title = styled.h3`
+  margin: 12px 0;
+  font-size: 16px;
+`;
+
+const LikesContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6b7280;
+`;
+
+const LikeIcon = styled.span`
+  margin-right: 8px;
+  color: #f59e0b;
+`;
+
+const ChannelCard: React.FC<ChannelCardProps> = ({ title, likes, tags, img }) => {
+  return (
+    <CardContainer>
+      <ImageContainer img={img} />
+      <TagsContainer>
+        {tags.map((tag, index) => (
+          <Tag key={index}>@ {tag}</Tag>
+        ))}
+      </TagsContainer>
+      <Title>{title}</Title>
+      <LikesContainer>
+        <LikeIcon>👍</LikeIcon>
+        <span>{likes}</span>
+      </LikesContainer>
+    </CardContainer>
+  );
+};
+
+export default ChannelCard;

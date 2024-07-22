@@ -1,0 +1,102 @@
+{
+  "AllChannels": [
+    {
+      "title": "Orange",
+      "followers": 550,
+      "tags": ["Fruit", "Citrus"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Tangerine",
+      "followers": 300,
+      "tags": ["Fruit", "Citrus"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Raspberry",
+      "followers": 1000,
+      "tags": ["Fruit", "Berry"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Lemon",
+      "followers": 530,
+      "tags": ["Fruit", "Citrus"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Avocado",
+      "followers": 1570,
+      "tags": ["Fruit", "Berry"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Lemon 2",
+      "followers": 800,
+      "tags": ["Fruit", "Citrus"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Banana",
+      "followers": 750,
+      "tags": ["Fruit", "Berry"],
+      "img": "/images/eg_img.png"
+    },
+    {
+      "title": "Watermelon",
+      "followers": 1220,
+      "tags": ["Fruit", "Berry"],
+      "img": "/images/eg_img.png"
+    }
+  ],
+  "createList": [
+    {
+      "id": "Orange",
+      "name": "eg1",
+      "followers": 100,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange2",
+      "name": "eg2",
+      "followers": 150,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange3",
+      "name": "eg3",
+      "followers": 200,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange4",
+      "name": "eg4",
+      "followers": 250,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange5",
+      "name": "eg5",
+      "followers": 300,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange6",
+      "name": "eg6",
+      "followers": 350,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange7",
+      "name": "eg7",
+      "followers": 400,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange8",
+      "name": "eg8",
+      "followers": 450,
+      "img": "/images/eg_img.png"
+    }
+  ]
+}
