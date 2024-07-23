@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.member.controller;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity createMember(@RequestBody SignupDto signupDto) {
+    public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
         memberService.createMember(signupDto);
-        return null;
+        return ResponseEntity.ok(true);
     }
 }

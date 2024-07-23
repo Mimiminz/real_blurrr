@@ -21,6 +21,10 @@ public enum ErrorCode {
     FAIL_TO_CREATE_BOARD(HttpStatus.BAD_REQUEST, "게시글 생성을 실패했습니다."),
     FAIL_TO_VALIDATE(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
+    //사용자 관련 요청 예외
+    MISSMATCH_PASSWROD(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다.");
+
     /**
      * [401 UnAuthorized]
      * - 요청된 리소스에 대한 유효한 인증 자격 증명이 없음
