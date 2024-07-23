@@ -4,12 +4,12 @@ import { FiEye } from "react-icons/fi";
 import { FiHeart } from "react-icons/fi";
 
 interface DashCamCardProps {
-   thumbnail: string;
-   tags: string[];
-   title: string;
-   viewer: number;
-   likes: number;
-   createdDate: string;
+  thumbnail: string;
+  tags: string[];
+  title: string;
+  viewer: number;
+  likes: number;
+  createdDate: string;
 }
 
 const Card = styled.div`
@@ -64,28 +64,32 @@ const Meta = styled.div`
   svg {
     margin-right: 4px;
   }
+
+  .created{
+    margin-left: auto;
+  }
 `;
 
 const DashCamCard: React.FC<DashCamCardProps> = ({ thumbnail, tags, title, viewer, likes, createdDate }) => {
 
-   return (
-      <Card>
-         <Thumbnail src={thumbnail} alt={title} />
-         <Content>
-            <Tags>
-               {tags.map((tag, index) => (
-                  <span key={index}>@ {tag}</span>
-               ))}
-            </Tags>
-            <Title>{title}</Title>
-            <Meta>
-               <span><FiEye /> {viewer}</span>
-               <span><FiHeart /> {likes}</span>
-               <span>{createdDate}</span>
-            </Meta>
-         </Content>
-      </Card>
-   );
+  return (
+    <Card>
+      <Thumbnail src={thumbnail} alt={title} />
+      <Content>
+        <Tags>
+          {tags.map((tag, index) => (
+            <span key={index}>@ {tag}</span>
+          ))}
+        </Tags>
+        <Title>{title}</Title>
+        <Meta>
+          <span><FiEye /> {viewer}</span>
+          <span><FiHeart /> {likes}</span>
+          <span className="created">{createdDate}</span>
+        </Meta>
+      </Content>
+    </Card>
+  );
 };
 
 export default DashCamCard;
