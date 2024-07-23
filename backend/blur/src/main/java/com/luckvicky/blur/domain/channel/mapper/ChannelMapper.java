@@ -14,7 +14,7 @@ public class ChannelMapper {
 
     public static ChannelDto convertToDto(Channel channel, List<Tag> tags) {
         return ChannelDto.builder()
-                .id(channel.getId().toString())
+                .id(channel.getId())
                 .name(channel.getName())
                 .imgUrl(channel.getImgUrl())
                 .info(channel.getInfo())

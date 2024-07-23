@@ -6,13 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @AllArgsConstructor
 @Schema(name = "태그 DTO")
 public class TagDto {
     @Schema(description = "태그 고유 식별값")
-    String id;
+    UUID id;
 
     @Schema(description = "태그 이름")
     String name;
@@ -20,7 +22,7 @@ public class TagDto {
 
     public static TagDto from(Tag tag) {
         return TagDto.builder()
-                .id(tag.getId().toString())
+                .id(tag.getId())
                 .name(tag.getName())
                 .build();
     }
