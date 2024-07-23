@@ -28,7 +28,7 @@ const CardGrid = styled.div`
   gap: 20px;
 `;
 
-const Page: React.FC = () => {
+const DashCam: React.FC = () => {
    return (
       <Container>
          <PostTitle
@@ -54,4 +54,4 @@ const Page: React.FC = () => {
    );
 };
 
-export default Page;
+export default DashCam;
