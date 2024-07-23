@@ -4,10 +4,12 @@ import styled from 'styled-components';
 const Footer = () => {
   return (
     <FooterContainer>
+    
         <FooterContent>
           <FooterText>본 사이트의 콘텐츠는 저작권법의 보호를 받는 바 무단 전재, 복사, 배포 등을 금합니다.</FooterText>
           <FooterText>© 2024 blurrr. All rights reserved.</FooterText>
         </FooterContent>
+    
     </FooterContainer>
   );
 };
@@ -16,7 +18,6 @@ export default Footer;
 
 const FooterContainer = styled.footer`
   display: flex;
-  width: 100%;
   height: 200px;
   justify-content: center;
   align-items: center;

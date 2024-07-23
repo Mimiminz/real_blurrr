@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react';
 import styled from 'styled-components';
 import EnterPassword from '@/components/mypage/EnterPassword';
@@ -9,10 +7,11 @@ import MyPostList from '@/components/mypage/MyPostList';
 import Withdrawal from '@/components/mypage/Withdrawal';
 
 const tabs = [
-  { id: 'enterPassword', label: '내 정보' },
-  { id: 'myHeartList', label: '내 좋아요 목록' },
-  { id: 'myPostList', label: '내 게시글 목록' },
-  { id: 'withdrawal', label: '회원 탈퇴' },
+  { id: 'enterPassword', label: 'Enter Password' },
+  { id: 'profile', label: 'Profile' },
+  { id: 'myHeartList', label: 'My Heart List' },
+  { id: 'myPostList', label: 'My Post List' },
+  { id: 'withdrawal', label: 'Withdrawal' },
 ];
 
 type TabId = 'enterPassword' | 'profile' | 'myHeartList' | 'myPostList' | 'withdrawal';
@@ -40,11 +39,6 @@ const MypageTabBox = (): JSX.Element => {
   return (
     <Container>
       <Tabs>
-        <UserContainer>
-          <UserImage src = 'images/profile.jpg'></UserImage>
-          <UserCarName>테슬라 오너</UserCarName>
-          <UserName>상현전 님</UserName>
-        </UserContainer>
         {tabs.map((tab) => (
           <Tab
             key={tab.id}
@@ -70,61 +64,30 @@ const Container = styled.div`
 `;
 
 const Tabs = styled.div`
-  width: 300px;
-  background-color: #ffffff;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-  border-radius: 0 8px 8px 0;
+  width: 200px;
+  background-color: #f0f0f0;
+  border-right: 2px solid #ccc;
   display: flex;
   flex-direction: column;
 `;
-
-const UserContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 20px;
-  border-radius: 15px;
-`
-
-const UserImage = styled.img`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  padding:5px;
-`
-
-const UserCarName = styled.div`
-  font-size: 15px;
-  font-weight: bold;
-  padding:5px;
-`
-
-const UserName = styled.div`
-  font-size: 15px;
-  font-weight: bold;
-`
 
 const Tab = styled.div<{ active: boolean }>`
   padding: 16px;
   cursor: pointer;
-  background-color: ${(props) => (props.active ? '#FFB55E' : 'transparent')};
+  background-color: ${(props) => (props.active ? '#e0e0e0' : 'transparent')};
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  border-left: ${(props) => (props.active ? '4px solid #000000' : 'none')};
-  border-radius: 0 8px 8px 0;
+  border-left: ${(props) => (props.active ? '4px solid #007bff' : 'none')};
+  
   &:hover {
-    background-color: #efefef;
+    background-color: #e0e0e0;
   }
 `;
 
 const ContentArea = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex: 1;
   padding: 16px;
 `;
 
 const Content = styled.div`
 
-`;
+`

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import DashCamCard from '../../../../components/channel/dashcam/DashCamCard';
+import BoastCard from '../../../../components/channel/boast/BoastCard';
 import PostTitle from '../../../../components/channel/PostTitle';
 import dummy from "../../../../db/data.json";
 
@@ -28,24 +28,21 @@ const CardGrid = styled.div`
   gap: 20px;
 `;
 
-const DashCam: React.FC = () => {
+const Boast: React.FC = () => {
    return (
       <Container>
          <PostTitle
             channel="채널"
-            subChannel="아무 채널"
-            title="다양한 블랙박스 영상을 보고 직접 투표하자"
+            subChannel="내 차 자랑"
+            title="내 차를 자랑해보자"
          />
          <CardGrid>
-            {dummy.dashCamList.map((item) => (
-               <div key={item.title} onClick={() => console.log("item pressed")}>
-                  <DashCamCard
+            {dummy.carBoast.map((item) => (
+               <div key={item.id} onClick={() => console.log("item pressed")}>
+                  <BoastCard
                      thumbnail={item.thumbnail}
-                     tags={item.tags}
-                     title={item.title}
                      viewer={item.viewer}
                      likes={item.likes}
-                     createdDate={item.createdDate}
                   />
                </div>
             ))}
@@ -54,4 +51,4 @@ const DashCam: React.FC = () => {
    );
 };
 
-export default DashCam;
+export default Boast;

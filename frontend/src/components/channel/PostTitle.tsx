@@ -83,6 +83,7 @@ const BreadcrumbContainer = styled.nav`
   align-items: center;
   font-size: 14px;
   color: #888;
+  margin-bottom: 20px;
 
   a {
     color: inherit;
