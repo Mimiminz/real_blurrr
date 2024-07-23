@@ -32,6 +32,11 @@ const SwiperContainer = styled.div`
     background-position: center;
   }
   padding-top: 10px;
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const CarPictureList: React.FC = () => {

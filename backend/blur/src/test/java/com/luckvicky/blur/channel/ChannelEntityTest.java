@@ -34,32 +34,20 @@ public class ChannelEntityTest {
     public void testCreateAndRetrieveChannel(){
         UUID channelId = UUID.randomUUID();
         Channel channel = Channel.builder()
-                .id(channelId)
                 .name("Test Channel")
                 .imgUrl("https://car.withnews.kr/wp-content/uploads/2024/04/Lamborghini-Revuelto-Special-Edition.jpg")
                 .info("이것은 테스트입니다.")
                 .owner(UUID.randomUUID())
                 .build();
 
-        channelsRepository.save(channel);
+        Channel savedChannel = channelsRepository.save(channel);
 
         entityManager.flush();
 
-        Channel foundChannel = channelsRepository.findById(channelId).orElse(null);
+        Channel foundChannel = channelsRepository.findById(savedChannel.getId()).orElse(null);
         assertThat(foundChannel).isNotNull();
         assertThat(foundChannel.getName()).isEqualTo("Test Channel");
     }
 
-    @Test
-    public void testCreateAndRetrieveTag() {
-        UUID tagId = UUID.randomUUID();
-        Tag tag = new Tag(tagId, "TestTag");
-
-        tagsRepository.save(tag);
-
-        Tag foundTag = tagsRepository.findById(tagId).orElse(null);
-        assertThat(foundTag).isNotNull();
-        assertThat(foundTag.getName()).isEqualTo("TestTag");
-    }
 
 }

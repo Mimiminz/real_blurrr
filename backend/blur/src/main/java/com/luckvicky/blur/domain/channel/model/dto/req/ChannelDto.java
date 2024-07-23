@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
 @Schema(name = "채널 DTO")
 public class ChannelDto {
         @Schema(description = "채널 고유 식별값")
-        String id;
+        UUID id;
 
         @Schema(description = "채널 이름")
         String name;
@@ -28,5 +29,7 @@ public class ChannelDto {
 
         @Schema(description = "채널 태그")
         List<TagDto> tags;
+
+
 
 }

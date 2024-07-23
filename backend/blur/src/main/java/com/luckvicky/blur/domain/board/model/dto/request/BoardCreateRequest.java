@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
 @Schema(name = "게시글 생성 요청")
-public record BoardCreateDto(
+public record BoardCreateRequest(
 
         @Schema(
                 description = "제목",

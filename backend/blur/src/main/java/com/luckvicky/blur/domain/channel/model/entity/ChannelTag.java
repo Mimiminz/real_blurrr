@@ -13,7 +13,7 @@ public class ChannelTag {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="tags_id")
+    @JoinColumn(name="tag_id")
     private Tag tag;
 
     @ManyToOne

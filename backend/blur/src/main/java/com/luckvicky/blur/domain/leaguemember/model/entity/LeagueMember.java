@@ -1,5 +1,6 @@
-package com.luckvicky.blur.domain.league.model.entity;
+package com.luckvicky.blur.domain.leaguemember.model.entity;
 
+import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

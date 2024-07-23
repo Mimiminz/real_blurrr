@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi authApi() {
-        String[] authPaths = {"/spots/**", "/v1/leagues/**", "/boards/**","/channels/**", "/v1/members/**"};
+        String[] authPaths = {"/spots/**", "/v1/leagues/**", "/v1/boards/**","/channels/**", "/v1/members/**"};
         return GroupedOpenApi.builder()
                 .group("auth")
                 .pathsToMatch(authPaths)

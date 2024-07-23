@@ -1,14 +1,16 @@
 package com.luckvicky.blur.domain.board.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateDto;
-import com.luckvicky.blur.domain.board.model.dto.response.BoardListDto;
+import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
+import com.luckvicky.blur.domain.board.model.dto.response.BoardListResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +45,7 @@ public class BoardController {
             )
     })
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardCreateDto request) {
+    public ResponseEntity createBoard(@RequestBody BoardCreateRequest request) {
        return ResponseUtil.created(
                Result.builder()
                        .data(boardService.createBoard(request))
@@ -52,11 +54,12 @@ public class BoardController {
 
     }
 
-    @Operation(summary = "게사글 유형별 조회 API")
+    @Operation(summary = "게시글 유형별 조회 API")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "게시글 조회 성공"
+                    description = "게시글 조회 성공",
+                    content = @Content(schema = @Schema(implementation = BoardListResponse.class))
             ),
             @ApiResponse(
                     responseCode = "204",
@@ -76,9 +79,9 @@ public class BoardController {
             }
     )
     @GetMapping
-    public ResponseEntity searchBoardByBoardType(@RequestParam(name = "boardType") String boardType) {
+    public ResponseEntity findBoardByType(@RequestParam(name = "type") String type) {
 
-        List<BoardDto> boards = boardService.searchBoardByBoardType(boardType);
+        List<BoardDto> boards = boardService.findBoardByType(type);
 
         if (Objects.isNull(boards) || boards.isEmpty()) {
             return ResponseUtil.noContent(
@@ -88,7 +91,7 @@ public class BoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(BoardListDto.of(boards))
+                        .data(BoardListResponse.of(boards))
                         .build()
         );
 

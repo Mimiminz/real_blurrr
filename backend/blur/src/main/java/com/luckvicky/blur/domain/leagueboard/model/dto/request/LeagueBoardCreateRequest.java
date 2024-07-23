@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
 @Schema(name = "리그 게시글 생성 요청")
-public record LeagueBoardCreateDto(
+public record LeagueBoardCreateRequest(
 
         @Schema(
                 description = "제목",
