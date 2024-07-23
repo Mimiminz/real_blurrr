@@ -1,5 +1,6 @@
 package com.luckvicky.blur.global.jwt.filter;
 
+import com.luckvicky.blur.global.constant.StringFormat;
 import com.luckvicky.blur.global.jwt.service.CustomUserDetailService;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
 import jakarta.servlet.FilterChain;
@@ -18,7 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService customUserDetailsService;
 
@@ -54,9 +54,9 @@ public class JwtFilter extends OncePerRequestFilter {
      * @return 추출된 토큰 정보 반환 (토큰 정보가 없을 경우 null 반환)
      */
     private String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(StringFormat.TOKEN_HEADER_NAME);
         // Token 정보 존재 여부 및 Bearer 토큰인지 확인
-        if (token != null && token.startsWith("Bearer ")) {
+        if (token != null && token.startsWith(StringFormat.TOKEN_PREFIX)) {
             return token.substring(7);
         }
 
