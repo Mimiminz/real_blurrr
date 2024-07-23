@@ -98,5 +98,169 @@
       "followers": 450,
       "img": "/images/eg_img.png"
     }
+  ],
+  "dashCamList": [
+    {
+      "title": "현대 차량 사고",
+      "viewer": 550,
+      "tags": ["현대", "사고"],
+      "thumbnail": "https://loremflickr.com/300/300/carcrash",
+      "likes": 42,
+      "createdDate": "2024.07.10 15:00"
+    },
+    {
+      "title": "제네시스 차량 사고",
+      "viewer": 300,
+      "tags": ["제네시스", "사고"],
+      "thumbnail": "https://loremflickr.com/300/301/carcrash",
+      "likes": 38,
+      "createdDate": "2024.07.11 10:20"
+    },
+    {
+      "title": "기아 K5 차량 사고",
+      "viewer": 1000,
+      "tags": ["기아", "K5", "사고"],
+      "thumbnail": "https://loremflickr.com/300/302/carcrash",
+      "likes": 50,
+      "createdDate": "2024.07.12 12:30"
+    },
+    {
+      "title": "현대 소나타 사고",
+      "viewer": 530,
+      "tags": ["현대", "소나타", "사고"],
+      "thumbnail": "https://loremflickr.com/300/303/carcrash",
+      "likes": 45,
+      "createdDate": "2024.07.13 14:45"
+    },
+    {
+      "title": "기아 스포티지 사고",
+      "viewer": 1570,
+      "tags": ["기아", "스포티지", "사고"],
+      "thumbnail": "https://loremflickr.com/300/304/carcrash",
+      "likes": 67,
+      "createdDate": "2024.07.14 16:00"
+    },
+    {
+      "title": "제네시스 G80 사고",
+      "viewer": 800,
+      "tags": ["제네시스", "G80", "사고"],
+      "thumbnail": "https://loremflickr.com/300/305/carcrash",
+      "likes": 40,
+      "createdDate": "2024.07.15 09:10"
+    },
+    {
+      "title": "기아 모하비 사고",
+      "viewer": 750,
+      "tags": ["기아", "모하비", "사고"],
+      "thumbnail": "https://loremflickr.com/300/306/carcrash",
+      "likes": 55,
+      "createdDate": "2024.07.16 11:50"
+    },
+    {
+      "title": "현대 그랜저 사고",
+      "viewer": 1220,
+      "tags": ["현대", "그랜저", "사고"],
+      "thumbnail": "https://loremflickr.com/300/307/carcrash",
+      "likes": 70,
+      "createdDate": "2024.07.17 13:25"
+    }
+  ],
+  "carBoast": [
+    {
+      "id": 1,
+      "viewer": 550,
+      "thumbnail": "https://loremflickr.com/300/300/niceCar",
+      "likes": 42
+    },
+    {
+      "id": 2,
+      "viewer": 300,
+      "thumbnail": "https://loremflickr.com/300/301/niceCar",
+      "likes": 38
+    },
+    {
+      "id": 3,
+      "viewer": 750,
+      "thumbnail": "https://loremflickr.com/300/302/niceCar",
+      "likes": 50
+    },
+    {
+      "id": 4,
+      "viewer": 620,
+      "thumbnail": "https://loremflickr.com/300/303/niceCar",
+      "likes": 29
+    },
+    {
+      "id": 5,
+      "viewer": 480,
+      "thumbnail": "https://loremflickr.com/300/304/niceCar",
+      "likes": 45
+    },
+    {
+      "id": 6,
+      "viewer": 910,
+      "thumbnail": "https://loremflickr.com/300/305/niceCar",
+      "likes": 60
+    },
+    {
+      "id": 7,
+      "viewer": 670,
+      "thumbnail": "https://loremflickr.com/300/306/niceCar",
+      "likes": 33
+    },
+    {
+      "id": 8,
+      "viewer": 530,
+      "thumbnail": "https://loremflickr.com/300/307/niceCar",
+      "likes": 40
+    },
+    {
+      "id": 9,
+      "viewer": 820,
+      "thumbnail": "https://loremflickr.com/300/308/niceCar",
+      "likes": 55
+    },
+    {
+      "id": 10,
+      "viewer": 720,
+      "thumbnail": "https://loremflickr.com/300/309/niceCar",
+      "likes": 48
+    },
+    {
+      "id": 11,
+      "viewer": 610,
+      "thumbnail": "https://loremflickr.com/301/300/niceCar",
+      "likes": 37
+    },
+    {
+      "id": 12,
+      "viewer": 930,
+      "thumbnail": "https://loremflickr.com/302/300/niceCar",
+      "likes": 72
+    },
+    {
+      "id": 13,
+      "viewer": 820,
+      "thumbnail": "https://loremflickr.com/303/300/niceCar",
+      "likes": 59
+    },
+    {
+      "id": 14,
+      "viewer": 700,
+      "thumbnail": "https://loremflickr.com/304/300/niceCar",
+      "likes": 51
+    },
+    {
+      "id": 15,
+      "viewer": 810,
+      "thumbnail": "https://loremflickr.com/305/300/niceCar",
+      "likes": 64
+    },
+    {
+      "id": 16,
+      "viewer": 490,
+      "thumbnail": "https://loremflickr.com/306/300/niceCar",
+      "likes": 39
+    }
   ]
 }

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Head from 'next/head';
-import FindPasswordForm from '@/components/findpassword/FindpasswordForm';
+import FindPasswordForm from '@/components/findpassword/FindPasswordForm';
 import ChangePasswordForm from '@/components/findpassword/ChangePasswordForm';
 
 type Props = {}

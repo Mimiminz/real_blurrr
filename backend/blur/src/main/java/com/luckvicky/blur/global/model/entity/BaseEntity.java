@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(36)")
     private UUID id;
 
     @Enumerated(EnumType.STRING)

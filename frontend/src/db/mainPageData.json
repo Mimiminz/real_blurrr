@@ -1,0 +1,165 @@
+{
+  "HotArticles": [
+    {
+      "channel": "블랙박스 채널",
+      "title": "신박한 담배꽁초 처리 방법",
+      "likes": 462,
+      "comments": 45
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "오토바이 운전자는 많이 다쳤습니다",
+      "likes": 412,
+      "comments": 93
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "사고과실좀 봐주세요",
+      "likes": 326,
+      "comments": 53
+    },
+    {
+      "channel": "차 자랑 채널",
+      "title": "6년 동안 무슨 일이 있었던 거죠",
+      "likes": 150,
+      "comments": 35
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "빨리 출발했으면 사고 날뻔",
+      "likes": 100,
+      "comments": 16
+    }
+  ],
+  "Blackbox": [
+    {
+      "title": "교차로에서 사고가 났어요",
+      "totalVotes": 1000,
+      "optionA": 300,
+      "optionB": 700
+    },
+    {
+      "title": "고속도로에서 속도 위반을 했습니다",
+      "totalVotes": 1500,
+      "optionA": 900,
+      "optionB": 600
+    },
+    {
+      "title": "주차장에서 접촉 사고가 났어요",
+      "totalVotes": 1200,
+      "optionA": 400,
+      "optionB": 800
+    },
+    {
+      "title": "신호등 없는 횡단보도에서 사고",
+      "totalVotes": 800,
+      "optionA": 300,
+      "optionB": 500
+    },
+    {
+      "title": "비 오는 날 빗길 사고",
+      "totalVotes": 1100,
+      "optionA": 600,
+      "optionB": 500
+    }
+  ],
+  "carPicture": [
+    {
+      "name": "이서연",
+      "description": "테슬라 모델 X",
+      "image": "https://picsum.photos/500/500",
+      "views": 1120
+    },
+    {
+      "name": "유재석",
+      "description": "현대 투싼 하이브리드",
+      "image": "https://picsum.photos/250/250",
+      "views": 1030
+    },
+    {
+      "name": "전상현",
+      "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
+      "image": "https://picsum.photos/250/250",
+      "views": 1019
+    },
+    {
+      "name": "이효리",
+      "description": "렉서스 RX450h",
+      "image": "https://picsum.photos/250/250",
+      "views": 970
+    },
+    {
+      "name": "박민수",
+      "description": "BMW X5 xDrive45e",
+      "image": "https://picsum.photos/250/250",
+      "views": 950
+    },
+    {
+      "name": "김지훈",
+      "description": "아우디 Q7 55 TFSI e",
+      "image": "https://picsum.photos/250/250",
+      "views": 830
+    },
+    {
+      "name": "정우성",
+      "description": "기아 쏘렌토 하이브리드",
+      "image": "https://picsum.photos/250/250",
+      "views": 890
+    },
+    {
+      "name": "강호동",
+      "description": "볼보 XC90 T8",
+      "image": "https://picsum.photos/250/250",
+      "views": 880
+    },
+    {
+      "name": "한예슬",
+      "description": "포드 익스플로러 플러그인 하이브리드",
+      "image": "https://picsum.photos/250/250",
+      "views": 745
+    },
+    {
+      "name": "최유진",
+      "description": "레인지로버 스포츠 PHEV",
+      "image": "https://picsum.photos/250/250",
+      "views": 675
+    }
+  ],
+  "LeageList": [
+    { "name": "현대 리그", "count": 120 },
+    { "name": "제네시스 리그", "count": 98 },
+    { "name": "포르쉐 리그", "count": 150 },
+    { "name": "혼다 리그", "count": 130 },
+    { "name": "미니 리그", "count": 110 },
+    { "name": "토요타 리그", "count": 145 },
+    { "name": "폭스바겐 리그", "count": 160 },
+    { "name": "BMW 리그", "count": 200 },
+    { "name": "벤츠 리그", "count": 180 },
+    { "name": "기아 리그", "count": 125 },
+    { "name": "아우디 리그", "count": 170 },
+    { "name": "테슬라 리그", "count": 155 },
+    { "name": "쉐보레 리그", "count": 140 },
+    { "name": "람보르기니 리그", "count": 95 },
+    { "name": "벤틀리 리그", "count": 85 },
+    { "name": "마세라티 리그", "count": 100 },
+    { "name": "롤스로이스 리그", "count": 105 }
+  ],
+  "topCar": {
+    "name": "전상현",
+    "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
+    "image": "https://picsum.photos/250/250",
+    "views": 1019
+  },
+  "rankings": [
+    { "name": "현대", "count": 120 },
+    { "name": "기아", "count": 110 },
+    { "name": "BMW", "count": 100 },
+    { "name": "AVANTE", "count": 75 },
+    { "name": "GV70", "count": 70 },
+    { "name": "토요타", "count": 40 },
+    { "name": "K5", "count": 42 },
+    { "name": "모닝", "count": 10 },
+    { "name": "Sportage", "count": 8 },
+    { "name": "SANTAFE", "count": 2 }
+  ]
+}
