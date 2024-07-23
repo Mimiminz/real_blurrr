@@ -6,13 +6,12 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_MEMBER;
 
 import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
-import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
 import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.entity.League;
-import com.luckvicky.blur.domain.league.model.entity.LeagueMember;
+import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
-import com.luckvicky.blur.domain.league.repository.LeagueMemberRepository;
+import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -34,7 +33,7 @@ public class LeagueServiceImpl implements LeagueService {
     private final MemberRepository memberRepository;
 
     @Override
-    public List<LeagueDto> searchLeaguesByLeagueType(String leagueType) {
+    public List<LeagueDto> findLeagueByType(String leagueType) {
 
         LeagueType leagueTypeToEnum = convertToEnum(leagueType);
 
@@ -56,12 +55,12 @@ public class LeagueServiceImpl implements LeagueService {
         LeagueType type = LeagueType.valueOf(request.type());
         League createdLeague = leagueRepository.save(request.toEntity(type));
 
-        return isCreatedLeague(createdLeague);
+        return isCreated(createdLeague);
 
     }
 
     @Override
-    public List<LeagueDto> getLeagueByMember(UUID memberId) {
+    public List<LeagueDto> getLeague(UUID memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
@@ -79,37 +78,9 @@ public class LeagueServiceImpl implements LeagueService {
 
     }
 
-    @Override
-    public Boolean createLeagueMember(UUID leagueId, UUID memberId) {
-        League league = leagueRepository.findById(leagueId)
-                .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
-
-        LeagueMember createdLeagueMember = leagueMemberRepository.save(
-                LeagueMember.builder()
-                        .league(league)
-                        .member(member)
-                        .build()
-        );
-
-        return isCreatedLeagueMember(createdLeagueMember);
-
-    }
-
-    private boolean isCreatedLeague(League league) {
+    private boolean isCreated(League league) {
 
         leagueRepository.findById(league.getId())
-                .orElseThrow(() -> new FailToCreateLeagueException(NOT_EXIST_LEAGUE));
-
-        return true;
-
-    }
-
-    private boolean isCreatedLeagueMember(LeagueMember leagueMember) {
-
-        leagueMemberRepository.findById(leagueMember.getId())
                 .orElseThrow(() -> new FailToCreateLeagueException(NOT_EXIST_LEAGUE));
 
         return true;

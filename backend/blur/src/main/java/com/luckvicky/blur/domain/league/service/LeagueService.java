@@ -7,12 +7,10 @@ import java.util.UUID;
 
 public interface LeagueService {
 
-    List<LeagueDto> searchLeaguesByLeagueType(String leagueType);
+    List<LeagueDto> findLeagueByType(String leagueType);
 
     Boolean createLeague(LeagueCreateRequest request);
 
-    List<LeagueDto> getLeagueByMember(UUID memberId);
-
-    Boolean createLeagueMember(UUID leagueId, UUID memberId);
+    List<LeagueDto> getLeague(UUID memberId);
 
 }
