@@ -25,7 +25,7 @@ const CarCertificationForm = () => {
         videoRef.current.play();
       }
     } catch (error) {
-      console.error('Error accessing the camera: ', error);
+      console.error('새로고침을 해주세요.', error);
     }
   };
 
@@ -100,7 +100,7 @@ const Container = styled.div`
   justify-content: center;
   width: 350px;
   height: 500px;
-  margin: 0;
+  margin: 20px;
   padding: 40px;
   background-color: #f0f0f0;
   gap: 20px;
