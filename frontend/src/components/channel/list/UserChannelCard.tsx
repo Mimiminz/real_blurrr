@@ -4,6 +4,7 @@ import styled from 'styled-components';
 interface UserChannelCardProps {
   name: string;
   followers: number;
+  img: string; // img prop 추가
 }
 
 const CardContainer = styled.div`
@@ -14,11 +15,14 @@ const CardContainer = styled.div`
   width: 200px;
 `;
 
-const ImagePlaceholder = styled.div`
+const ImageContainer = styled.div<{ img: string }>`
   width: 100%;
   height: 120px;
   background-color: #e5e7eb;
   border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-image: url(${props => props.img});
 `;
 
 const Title = styled.h3`
@@ -29,10 +33,10 @@ const Followers = styled.p`
   color: #6b7280;
 `;
 
-const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followers }) => {
+const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followers, img }) => {
   return (
     <CardContainer>
-      <ImagePlaceholder />
+      <ImageContainer img={img} />
       <Title>{name}</Title>
       <Followers>{followers} Followers</Followers>
     </CardContainer>
