@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final String[] permitAll = {
             "/v1/auth/**",
             "/v1/leagues/**",
-            "/boards/**",
+            "/v1/boards/**",
             "/swagger-ui/**",
             "/h2-console/**",
             "/channels/**"

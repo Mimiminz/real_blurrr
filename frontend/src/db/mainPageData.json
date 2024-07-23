@@ -67,61 +67,61 @@
     {
       "name": "이서연",
       "description": "테슬라 모델 X",
-      "image": "https://picsum.photos/500/500",
+      "image": "https://loremflickr.com/300/300/niceCar",
       "views": 1120
     },
     {
       "name": "유재석",
       "description": "현대 투싼 하이브리드",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/301/niceCar",
       "views": 1030
     },
     {
       "name": "전상현",
       "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/302/niceCar",
       "views": 1019
     },
     {
       "name": "이효리",
       "description": "렉서스 RX450h",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/303/niceCar",
       "views": 970
     },
     {
       "name": "박민수",
       "description": "BMW X5 xDrive45e",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/304/niceCar",
       "views": 950
     },
     {
       "name": "김지훈",
       "description": "아우디 Q7 55 TFSI e",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/305/niceCar",
       "views": 830
     },
     {
       "name": "정우성",
       "description": "기아 쏘렌토 하이브리드",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/306/niceCar",
       "views": 890
     },
     {
       "name": "강호동",
       "description": "볼보 XC90 T8",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/307/niceCar",
       "views": 880
     },
     {
       "name": "한예슬",
       "description": "포드 익스플로러 플러그인 하이브리드",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/308/niceCar",
       "views": 745
     },
     {
       "name": "최유진",
       "description": "레인지로버 스포츠 PHEV",
-      "image": "https://picsum.photos/250/250",
+      "image": "https://loremflickr.com/300/309/niceCar",
       "views": 675
     }
   ],
@@ -147,7 +147,7 @@
   "topCar": {
     "name": "전상현",
     "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
-    "image": "https://picsum.photos/250/250",
+    "image": "https://loremflickr.com/300/310/niceCar",
     "views": 1019
   },
   "rankings": [
@@ -161,5 +161,61 @@
     { "name": "모닝", "count": 10 },
     { "name": "Sportage", "count": 8 },
     { "name": "SANTAFE", "count": 2 }
+  ],
+  "userInfo": {
+    "name": "전상현",
+    "profileImage": "https://loremflickr.com/320/240/dog",
+    "carModel": "GV70",
+    "carManufacture": "제네시스"
+  },
+  "ChannelFollowList": [
+    {
+      "id": "Orange",
+      "name": "eg1",
+      "followers": 100,
+      "img": "https://loremflickr.com/320/241/dog"
+    },
+    {
+      "id": "Orange2",
+      "name": "eg2",
+      "followers": 150,
+      "img": "https://loremflickr.com/320/242/dog"
+    },
+    {
+      "id": "Orange3",
+      "name": "eg3",
+      "followers": 200,
+      "img": "https://loremflickr.com/320/243/dog"
+    },
+    {
+      "id": "Orange4",
+      "name": "eg4",
+      "followers": 250,
+      "img": "https://loremflickr.com/320/244/dog"
+    },
+    {
+      "id": "Orange5",
+      "name": "eg5",
+      "followers": 300,
+      "img": "https://loremflickr.com/320/245/dog"
+    },
+    {
+      "id": "Orange6",
+      "name": "eg6",
+      "followers": 350,
+      "img": "https://loremflickr.com/320/246/dog"
+    },
+    {
+      "id": "Orange7",
+      "name": "eg7",
+      "followers": 400,
+      "img": "https://loremflickr.com/320/247/dog"
+    },
+    {
+      "id": "Orange8",
+      "name": "eg8",
+      "followers": 450,
+      "img": "https://loremflickr.com/320/248/dog"
+    }
   ]
 }
