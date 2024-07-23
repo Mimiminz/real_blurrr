@@ -1,30 +1,3 @@
-// import styled from "styled-components";
-// import CarPictureListItem from "./CarPictureListItem";
-// import dummy from "@/db/mainPageData.json";
-
-// const CarPictureList = () => {
-//   return (
-//     <ArticleList>
-//       {dummy.carPicture.map((article, index) => (
-//         <CarPictureListItem
-//           key={index}
-//           name={article.name}
-//           description={article.description}
-//           image={article.image}
-//           views={article.views}
-//         />
-//       ))}
-//     </ArticleList>
-//   );
-// };
-
-// const ArticleList = styled.div`
-//   display: flex;
-//   flex-direction: row;
-// `;
-
-// export default CarPictureList;
-
 import React, { useRef } from "react";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";

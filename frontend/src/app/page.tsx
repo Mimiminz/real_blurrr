@@ -6,6 +6,9 @@ import BlackboxList from "@/components/main/BlackboxList";
 import CarPictureList from "@/components/main/CarPictureList";
 
 import LeagueList from "@/components/main/LeageList";
+import TopCarCard from "@/components/main/aside/TopCarCard";
+
+import { LuTrophy } from "react-icons/lu";
 
 export default function Home() {
   return (
@@ -30,7 +33,13 @@ export default function Home() {
           </ArticleSection>
         </Main>
         <Aside>
-          <SectionTitle>Today Car</SectionTitle>
+          <AsideSection>
+            <AsideSectionTitle>
+              <LuTrophy />
+              오늘의 차
+            </AsideSectionTitle>
+            <TopCarCard />
+          </AsideSection>
         </Aside>
       </GridContainer>
     </PageContainer>
@@ -40,7 +49,7 @@ export default function Home() {
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0 300px;
+  margin: 0 20%;
 
   @media (max-width: 992px) {
     margin: 0 20px;
@@ -69,6 +78,7 @@ const Main = styled.main`
 
 const Aside = styled.aside`
   grid-column: span 4;
+  margin-top: 40px;
 
   @media (max-width: 992px) {
     display: none;
@@ -82,4 +92,20 @@ const SectionTitle = styled.h2`
 
 const ArticleSection = styled.div`
   margin: 20px;
+`;
+
+const AsideSection = styled.div`
+  padding: 10px;
+  padding-bottom: 20px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  align-items: center;
+`;
+
+const AsideSectionTitle = styled.h2`
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
