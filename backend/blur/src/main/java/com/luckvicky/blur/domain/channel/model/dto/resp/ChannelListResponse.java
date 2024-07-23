@@ -1,6 +1,6 @@
-package com.luckvicky.blur.domain.channel.model.response;
+package com.luckvicky.blur.domain.channel.model.dto.resp;
 
-import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 

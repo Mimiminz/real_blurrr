@@ -6,14 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="channels")
-public class Channels {
+public class Channel {
     @Id
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
@@ -32,7 +31,7 @@ public class Channels {
 
 
     @Builder
-    public Channels(UUID id, String name, String imgUrl, String info, UUID owner) {
+    public Channel(UUID id, String name, String imgUrl, String info, UUID owner) {
         this.id = id;
         this.name = name;
         this.imgUrl = imgUrl;

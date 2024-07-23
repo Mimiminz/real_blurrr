@@ -6,14 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="tags")
-public class Tags {
+public class Tag {
 
     @Id
     @Column(columnDefinition = "BINARY(16)")
@@ -24,7 +23,7 @@ public class Tags {
 
 
     @Builder
-    public Tags(UUID id, String name) {
+    public Tag(UUID id, String name) {
         this.id = id;
         this.name = name;
     }

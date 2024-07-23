@@ -1,8 +1,7 @@
 package com.luckvicky.blur.channel;
 
-import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
-import com.luckvicky.blur.domain.channel.model.entity.Channels;
-import com.luckvicky.blur.domain.channel.model.entity.Tags;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelsRepository;
 import com.luckvicky.blur.domain.channel.repository.TagsRepository;
@@ -34,7 +33,7 @@ public class ChannelEntityTest {
     @Test
     public void testCreateAndRetrieveChannel(){
         UUID channelId = UUID.randomUUID();
-        Channels channel = Channels.builder()
+        Channel channel = Channel.builder()
                 .id(channelId)
                 .name("Test Channel")
                 .imgUrl("https://car.withnews.kr/wp-content/uploads/2024/04/Lamborghini-Revuelto-Special-Edition.jpg")
@@ -46,7 +45,7 @@ public class ChannelEntityTest {
 
         entityManager.flush();
 
-        Channels foundChannel = channelsRepository.findById(channelId).orElse(null);
+        Channel foundChannel = channelsRepository.findById(channelId).orElse(null);
         assertThat(foundChannel).isNotNull();
         assertThat(foundChannel.getName()).isEqualTo("Test Channel");
     }
@@ -54,11 +53,11 @@ public class ChannelEntityTest {
     @Test
     public void testCreateAndRetrieveTag() {
         UUID tagId = UUID.randomUUID();
-        Tags tag = new Tags(tagId, "TestTag");
+        Tag tag = new Tag(tagId, "TestTag");
 
         tagsRepository.save(tag);
 
-        Tags foundTag = tagsRepository.findById(tagId).orElse(null);
+        Tag foundTag = tagsRepository.findById(tagId).orElse(null);
         assertThat(foundTag).isNotNull();
         assertThat(foundTag.getName()).isEqualTo("TestTag");
     }
