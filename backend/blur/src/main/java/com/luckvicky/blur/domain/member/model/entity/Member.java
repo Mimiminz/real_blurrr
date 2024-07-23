@@ -54,10 +54,6 @@ public class Member extends BaseEntity {
 
     private String carTitle;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Board> boards;
-
-
     public Member() {
     }
 }
