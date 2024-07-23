@@ -11,7 +11,7 @@ import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateDto;
-import com.luckvicky.blur.domain.member.execption.NotExistMemberException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.UUID;

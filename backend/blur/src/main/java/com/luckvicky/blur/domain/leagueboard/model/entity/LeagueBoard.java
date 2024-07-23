@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 public class LeagueBoard extends Board {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "league_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "league_id", columnDefinition = "BINARY(36)")
     League league;
 
     public LeagueBoard(String title, String content, BoardType type, Member member, League league) {
