@@ -29,4 +29,6 @@ public class ChannelDto {
         @Schema(description = "채널 태그")
         List<TagDto> tags;
 
+
+
 }
