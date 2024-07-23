@@ -8,7 +8,7 @@ import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
-import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateDto;
+import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
@@ -51,7 +51,7 @@ public class LeagueServiceImpl implements LeagueService {
     }
 
     @Override
-    public Boolean createLeague(LeagueCreateDto request) {
+    public Boolean createLeague(LeagueCreateRequest request) {
 
         LeagueType type = LeagueType.valueOf(request.type());
         League createdLeague = leagueRepository.save(request.toEntity(type));

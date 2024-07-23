@@ -41,7 +41,7 @@ public class Board extends BaseEntity {
     private BoardType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)")
     private Member member;
 
     protected Board (String title, String content, BoardType type, Member member) {

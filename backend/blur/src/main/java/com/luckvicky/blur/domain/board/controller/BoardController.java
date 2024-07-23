@@ -1,8 +1,8 @@
 package com.luckvicky.blur.domain.board.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateDto;
-import com.luckvicky.blur.domain.board.model.dto.response.BoardListDto;
+import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
+import com.luckvicky.blur.domain.board.model.dto.response.BoardListResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
@@ -43,7 +43,7 @@ public class BoardController {
             )
     })
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardCreateDto request) {
+    public ResponseEntity createBoard(@RequestBody BoardCreateRequest request) {
        return ResponseUtil.created(
                Result.builder()
                        .data(boardService.createBoard(request))
@@ -88,7 +88,7 @@ public class BoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(BoardListDto.of(boards))
+                        .data(BoardListResponse.of(boards))
                         .build()
         );
 

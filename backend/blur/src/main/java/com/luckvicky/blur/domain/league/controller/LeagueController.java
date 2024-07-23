@@ -1,7 +1,7 @@
 package com.luckvicky.blur.domain.league.controller;
 
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
-import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateDto;
+import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.service.LeagueService;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -84,7 +84,7 @@ public class LeagueController {
     })
     @PostMapping
     public ResponseEntity createLeague(
-            @RequestBody LeagueCreateDto request
+            @RequestBody LeagueCreateRequest request
     ) {
 
         return ResponseUtil.created(
@@ -142,7 +142,8 @@ public class LeagueController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "성공"
+                    description = "성공",
+                    content = @Content(schema = @Schema(implementation = LeagueDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",
