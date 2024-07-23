@@ -1,19 +1,31 @@
 import styled from "styled-components";
 
-const HotArticleListItem = () => {
+interface HotArticleListItemProps {
+  channel: string;
+  title: string;
+  likes: number;
+  comments: number;
+}
+
+function HotArticleListItem({
+  channel,
+  title,
+  likes,
+  comments,
+}: HotArticleListItemProps) {
   return (
     <ArticleDetail>
       <ArticleInfo>
-        <Channel>블랙박스 채널</Channel>
-        <Title>제목제목제목제목</Title>
+        <Channel>{channel}</Channel>
+        <Title>{title}</Title>
       </ArticleInfo>
       <LikeAndComment>
-        <Icon>120</Icon>
-        <Icon>20</Icon>
+        <Icon>{likes}</Icon>
+        <Icon>{comments}</Icon>
       </LikeAndComment>
     </ArticleDetail>
   );
-};
+}
 
 const ArticleDetail = styled.div`
   display: flex;
