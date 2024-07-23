@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { FaRegHeart } from "react-icons/fa6";
+import { LiaCommentDots } from "react-icons/lia";
 
 interface HotArticleListItemProps {
   channel: string;
@@ -20,8 +22,18 @@ function HotArticleListItem({
         <Title>{title}</Title>
       </ArticleInfo>
       <LikeAndComment>
-        <Icon>{likes}</Icon>
-        <Icon>{comments}</Icon>
+        <LikeSection>
+          <Icon>
+            <FaRegHeart />
+          </Icon>
+          {likes}
+        </LikeSection>
+        <LikeSection>
+          <Icon>
+            <LiaCommentDots />
+          </Icon>
+          {comments}
+        </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
   );
@@ -56,16 +68,26 @@ const Title = styled.p`
 
 const LikeAndComment = styled.div`
   display: flex;
-  align-items: end;
+  align-items: center;
   margin-top: auto;
 `;
 
-const Icon = styled.span`
+const LikeSection = styled.span`
   display: flex;
   align-items: center;
   margin-left: 20px;
   margin-bottom: 8px;
+  margin-top: auto;
   color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 14px; /* 아이콘과 텍스트 크기 조정 */
 `;
 
+const Icon = styled.span`
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* 아이콘 크기 조정 */
+  vertical-align: middle;
+`;
 export default HotArticleListItem;

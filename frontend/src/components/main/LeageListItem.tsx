@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { MdPeopleAlt } from "react-icons/md";
+
 interface LeagueListItemProps {
   name: string;
   count: number;
@@ -10,7 +12,9 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({ name, count }) => {
     <CardContainer>
       <Title>{name}</Title>
       <CountContainer>
-        <Icon>👤</Icon>
+        <Icon>
+          <MdPeopleAlt />
+        </Icon>
         <Count>{count}</Count>
       </CountContainer>
     </CardContainer>
@@ -43,11 +47,15 @@ const CountContainer = styled.div`
 `;
 
 const Icon = styled.span`
-  font-size: 14px;
   margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* 아이콘 크기 조정 */
+  vertical-align: middle;
 `;
 
 const Count = styled.span`
   font-size: 14px;
-  color: #000;
+  color: ${({ theme }) => theme.colors.subDiscription};
 `;
