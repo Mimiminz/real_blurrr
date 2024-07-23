@@ -3,14 +3,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import dummy from "../../../db/data.json";
-import UserChannelCard from '../../../components/channel/UserChannelCard';
-import ChannelCard from '../../../components/channel/ChannelCard';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Scrollbar, Autoplay } from 'swiper/modules';
-import SwiperCore from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import UserChannelCard from '../../../components/channel/list/UserChannelCard';
+import ChannelCard from '../../../components/channel/list/ChannelCard';
+import ChannelCarousel from '../../../components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
 
 type Props = {}
 
@@ -36,10 +31,6 @@ const SectionTitle = styled.h3`
   font-weight: 600;
 `;
 
-const SwiperContainer = styled.div`
-  margin-bottom: 40px;
-`;
-
 const SearchInputContainer = styled.div`
   margin-bottom: 20px;
   display: flex;
@@ -60,52 +51,26 @@ const GridContainer = styled.div`
   gap: 20px;
 `;
 
-
 const Channels: React.FC<Props> = (props) => {
-
-  SwiperCore.use([Navigation, Scrollbar, Autoplay]);
-
   return (
     <Container>
       <SectionTitle>내가 생성한 채널</SectionTitle>
-      <SwiperContainer>
-        <Swiper
-          loop={true}
-          spaceBetween={10}
-          slidesPerView={5}
-          navigation={true}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-        >
-          {dummy.createList.map((slide) => (
-            <SwiperSlide key={slide.id}>
-              <UserChannelCard key={slide.id} name={slide.name} followers={slide.followers} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </SwiperContainer>
+      <ChannelCarousel slides={dummy.createList.map(slide => ({
+        id: slide.id,
+        title: slide.name,
+        likes: slide.followers,
+        tags: slide.tags || [],
+        img: slide.img || ''
+      }))} />
 
       <SectionTitle>내가 팔로우한 채널</SectionTitle>
-      <SwiperContainer>
-        <Swiper
-          loop={true}
-          spaceBetween={10}
-          slidesPerView={5}
-          navigation={true}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-        >
-          {dummy.createList.map((slide) => (
-            <SwiperSlide key={slide.id}>
-              <UserChannelCard key={slide.id} name={slide.name} followers={slide.followers} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </SwiperContainer>
+      <ChannelCarousel slides={dummy.createList.map(slide => ({
+        id: slide.id,
+        title: slide.name,
+        likes: slide.followers,
+        tags: slide.tags || [],
+        img: slide.img || ''
+      }))} />
 
       <SectionTitle>전체 채널</SectionTitle>
       <SearchInputContainer>
