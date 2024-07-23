@@ -23,7 +23,7 @@ public enum ErrorCode {
 
     //사용자 관련 요청 예외
     MISSMATCH_PASSWROD(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다.");
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다."),
 
     /**
      * [401 UnAuthorized]
