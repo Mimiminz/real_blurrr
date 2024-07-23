@@ -23,9 +23,9 @@ public record SignupDto(
         @NotBlank
         String passwordCheck
 ) {
-        public void valid() {
-                if (!password.equals(passwordCheck)) {
-                        throw new PasswordMismatchException(ErrorCode.MISSMATCH_PASSWROD);
-                }
+    public void valid() {
+        if (!password.equals(passwordCheck)) {
+            throw new PasswordMismatchException();
         }
+    }
 }
