@@ -8,6 +8,7 @@ import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -44,7 +45,7 @@ public class LeagueBoardController {
                     description = "게시글 생성 실패"
             )
     })
-    @Parameter(name = "leagueId", description = "리그 고유 식별값")
+    @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/leagues/{leagueId}")
     public ResponseEntity createLeagueBoard(
             @PathVariable(name = "leagueId") UUID leagueId,
@@ -77,7 +78,7 @@ public class LeagueBoardController {
                     description = "게시글 목록 조회 실패"
             )
     })
-    @Parameter(name = "leagueId", description = "리그 고유 식별값")
+    @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/legues/{leagueId}")
     public ResponseEntity getLeagueBoard(
             @PathVariable(name = "leagueId") UUID leagueId
