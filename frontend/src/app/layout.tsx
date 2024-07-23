@@ -9,7 +9,7 @@ import GlobalStyle from "../styles/GlobalStyle";
 import { theme } from "../styles/theme";
 
 export default function RootLayout({
-  children,
+  children, 
 }: {
   children: React.ReactNode;
 }) {
