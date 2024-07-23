@@ -1,6 +1,8 @@
 package com.luckvicky.blur.global.config;
 
-import com.luckvicky.blur.global.jwt.filter.LoginFilter;
+import com.luckvicky.blur.global.jwt.filter.JwtFilter;
+import com.luckvicky.blur.global.jwt.handler.JwtAccessDeniedHandler;
+import com.luckvicky.blur.global.jwt.handler.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final AuthenticationConfiguration configuration;
+    private final JwtFilter jwtFilter;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final String[] BASIC = {
+            "/v1/members/**"
+    };
 
     private final String[] permitAll = {
             "/v1/auth/**",
@@ -38,9 +44,13 @@ public class SecurityConfig {
             "/swagger-resources/**"
     };
 
-    public SecurityConfig(AuthenticationConfiguration configuration) {
-        this.configuration = configuration;
+    public SecurityConfig(JwtFilter jwtFilter, JwtAccessDeniedHandler accessDeniedHandler,
+                          JwtAuthenticationEntryPoint authenticationEntryPoint) {
+        this.jwtFilter = jwtFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
+
 
     @Bean
     public SecurityFilterChain fiterChain(HttpSecurity http) throws Exception {
@@ -62,29 +72,23 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requestConfigurer -> requestConfigurer
                 .requestMatchers(SWAGGER_URI).permitAll()
                 .requestMatchers(permitAll).permitAll()
+                .requestMatchers(BASIC).hasAnyRole("BASIC_USER", "AUTH_USER")
                 .anyRequest().authenticated());
 
-        //username
-        http.addFilterAt(new LoginFilter(authenticationManager(configuration)),
-                UsernamePasswordAuthenticationFilter.class);
+        //JwtFilter
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         // 인증되지 않은 요청에 대한 처리 (401 Unauthorized 응답)
-        http
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(
-                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-                        )
-                );
+        http.exceptionHandling(exceptionHandling ->
+                exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint)
+        );
         return http.build();
     }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
     }
 }
