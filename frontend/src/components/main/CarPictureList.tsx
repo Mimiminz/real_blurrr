@@ -58,6 +58,7 @@ const SwiperContainer = styled.div`
     background-size: 70% auto;
     background-position: center;
   }
+  padding-top: 10px;
 `;
 
 const CarPictureList: React.FC = () => {
