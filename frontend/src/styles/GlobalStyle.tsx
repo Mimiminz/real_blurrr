@@ -9,6 +9,10 @@ const GlobalStyle = createGlobalStyle`
     font-style: normal;
   }
 
+  body {
+    margin: 0;
+  }
+
   * {
     font-family: 'MyCustomFont', sans-serif;
   }
