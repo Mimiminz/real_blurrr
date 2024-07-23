@@ -7,84 +7,101 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_VALIDATE;
 
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import com.luckvicky.blur.global.execption.BaseException;
+import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler({Exception.class})
-    public ProblemDetail handleException(Exception e) {
-        return ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-    }
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
-    public ProblemDetail handleBaseException(BaseException e) {
+    protected ResponseEntity<Object> handleBase(
+            BaseException e, WebRequest request
+    ) {
 
         ErrorCode errorCode = e.getErrorCode();
+        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
 
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                errorCode.getCode(),
-                errorCode.getMessage()
-        );
-
-        return problemDetail;
+        return ResponseEntity
+                .status(errorCode.getCode())
+                .body(ErrorResponse
+                        .builder(e, errorCode.getCode(), errorCode.getMessage())
+                        .title(e.getClass().getSimpleName())
+                        .instance(URI.create(servletWebRequest.getRequest().getRequestURI()))
+                        .build());
 
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    protected ProblemDetail handleValidException(MethodArgumentNotValidException exception) {
+    @Override
+    @Nullable
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e, HttpHeaders headers, HttpStatusCode status, WebRequest request
+    ) {
 
-        BindingResult bindingResult = exception.getBindingResult();
+        ErrorCode errorCode = FAIL_TO_VALIDATE;
+        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
+
+        BindingResult bindingResult = e.getBindingResult();
         List<String> errors = new ArrayList<>();
-
         bindingResult.getFieldErrors().stream()
-                .forEach(fieldError -> {
-                    errors.add(
-                            String.format(
-                                    VALID_ERROR_RESULT,
-                                    fieldError.getDefaultMessage(),
-                                    fieldError.getField(),
-                                    fieldError.getRejectedValue()
-                            )
-                    );
-                });
+                .forEach(fieldError ->
+                        errors.add(
+                                String.format(
+                                        VALID_ERROR_RESULT,
+                                        fieldError.getDefaultMessage(),
+                                        fieldError.getField(),
+                                        fieldError.getRejectedValue()
+                                )
+                        )
+                );
 
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                FAIL_TO_VALIDATE.getCode(),
-                FAIL_TO_VALIDATE.getMessage()
-        );
-
-        problemDetail.setProperty(PROBLEM_DETAIL_KEY_ERROR, errors);
-
-        return problemDetail;
+        return ResponseEntity
+                .status(errorCode.getCode())
+                .body(ErrorResponse
+                        .builder(e, errorCode.getCode(), errorCode.getMessage())
+                        .title(e.getClass().getSimpleName())
+                        .instance(URI.create(servletWebRequest.getRequest().getRequestURI()))
+                        .property(PROBLEM_DETAIL_KEY_ERROR, errors)
+                        .build());
 
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
-    protected ProblemDetail handleValidatedException(ConstraintViolationException e) {
+    protected ResponseEntity<Object> handleConstraintViolation(
+            ConstraintViolationException e, WebRequest request
+    ) {
 
-        ArrayList<String> errors = new ArrayList<>();
+        ErrorCode errorCode = FAIL_TO_VALIDATE;
+        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
+
+        List<String> errors = new ArrayList<>();
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         constraintViolations.stream()
-                .forEach(constraintViolation -> {
-                    errors.add(
-                            String.format(
-                                    VALIDATED_ERROR_RESULT,
-                                    constraintViolation.getMessage(),
-                                    constraintViolation.getInvalidValue()
-                            )
-                    );
-                });
+                .forEach(constraintViolation ->
+                        errors.add(
+                                String.format(
+                                        VALIDATED_ERROR_RESULT,
+                                        constraintViolation.getMessage(),
+                                        constraintViolation.getInvalidValue()
+                                )
+                        )
+                );
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 FAIL_TO_VALIDATE.getCode(),
@@ -93,8 +110,14 @@ public class GlobalExceptionHandler {
 
         problemDetail.setProperty(PROBLEM_DETAIL_KEY_ERROR, errors);
 
-        return problemDetail;
-
+        return ResponseEntity
+                .status(errorCode.getCode())
+                .body(ErrorResponse
+                        .builder(e, errorCode.getCode(), errorCode.getMessage())
+                        .title(e.getClass().getSimpleName())
+                        .instance(URI.create(servletWebRequest.getRequest().getRequestURI()))
+                        .property(PROBLEM_DETAIL_KEY_ERROR, errors)
+                        .build());
     }
 
 }
