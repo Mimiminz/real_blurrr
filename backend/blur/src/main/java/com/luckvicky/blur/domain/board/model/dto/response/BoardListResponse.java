@@ -7,13 +7,13 @@ import lombok.Builder;
 
 @Builder
 @Schema(description = "게시물 유형별 조회 응답")
-public record BoardListDto(
+public record BoardListResponse(
         @Schema(description = "게시물 목록")
         List<BoardDto> boards
 ) {
 
-    public static BoardListDto of(List<BoardDto> boards) {
-        return BoardListDto.builder()
+    public static BoardListResponse of(List<BoardDto> boards) {
+        return BoardListResponse.builder()
                 .boards(boards)
                 .build();
     }

@@ -8,10 +8,12 @@ import CarPictureList from "@/components/main/CarPictureList";
 
 import LeagueList from "@/components/main/LeageList";
 import TopCarCard from "@/components/main/aside/TopCarCard";
-
+``;
 import { LuTrophy } from "react-icons/lu";
 import { IoArrowForward } from "react-icons/io5";
 import LeagueRanking from "@/components/main/aside/LeageRanking";
+import UserCarInfo from "@/components/main/user/UserCarInfo";
+import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
 
 export default function Home() {
   const router = useRouter();
@@ -19,16 +21,20 @@ export default function Home() {
     router.push("/league");
   };
   const handleMoreClickDashcam = () => {
-    router.push("/dashcam");
+    router.push("/channels/dashcam");
   };
 
   const handleMoreClickBoast = () => {
-    router.push("/boast");
+    router.push("/channels/boast");
   };
   return (
     <PageContainer>
       <GridContainer>
         <Main>
+          <UserInfoContainer>
+            <UserCarInfo />
+            <FollowChannelInfo />
+          </UserInfoContainer>
           <ArticleSection>
             <SectionTitle>Hot</SectionTitle>
             <HotArticleList />
@@ -89,6 +95,13 @@ export default function Home() {
     </PageContainer>
   );
 }
+
+const UserInfoContainer = styled.div`
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+`;
 
 const MoreButton = styled.button`
   background: none;
