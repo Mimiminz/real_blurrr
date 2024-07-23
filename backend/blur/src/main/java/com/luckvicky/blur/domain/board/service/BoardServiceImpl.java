@@ -7,7 +7,7 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_MEMBER;
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InvalidBoardTypeException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateDto;
+import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -29,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Boolean createBoard(BoardCreateDto request) {
+    public Boolean createBoard(BoardCreateRequest request) {
 
         BoardType type = convertToEnum(request.boardType());
 
