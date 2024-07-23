@@ -6,27 +6,28 @@ import dummy from "../../../db/data.json";
 import ChannelCard from '../../../components/channel/list/ChannelCard';
 import ChannelCarousel from '../../../components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
 import SearchBar from '../../../components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
+import { useRouter } from 'next/navigation';
 
 type Props = {}
 
 const Container = styled.div`
-  margin: 0 20px; /* 기본 마진 설정 */
+  margin: 10px 20px; /* 기본 마진 설정 */
   
   @media (min-width: 768px) {
-    margin: 0 100px; /* 태블릿 크기 이상일 때 */
+    margin: 30px 100px; /* 태블릿 크기 이상일 때 */
   }
 
   @media (min-width: 1024px) {
-    margin: 0 150px; /* 데스크탑 크기 이상일 때 */
+    margin: 50px 150px; /* 데스크탑 크기 이상일 때 */
   }
 
   @media (min-width: 1440px) {
-    margin: 0 300px; /* 큰 데스크탑 크기 이상일 때 */
+    margin: 70px 300px; /* 큰 데스크탑 크기 이상일 때 */
   }
 `;
 
 const SectionTitle = styled.h3`
-margin-top: 40px;
+  margin-top: 40px;
   margin-bottom: 30px;
 `;
 
@@ -64,13 +65,31 @@ const SearchBarContainer = styled.div`
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 20px;
+
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 `;
 
 const Channels: React.FC<Props> = (props) => {
+  const router = useRouter();
+
   const handleCreateChannel = () => {
-    console.log("Create channel button clicked");
+    router.push('/channels/dashcam')
     // 채널 생성 로직 추가
   };
 
