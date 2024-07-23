@@ -1,41 +1,39 @@
 "use client";
 
-import Image from "next/image";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
 import HotArticleList from "@/components/main/HotArticleList";
 import BlackboxList from "@/components/main/BlackboxList";
 import CarPictureList from "@/components/main/CarPictureList";
 
+import LeagueList from "@/components/main/LeageList";
+
 export default function Home() {
   return (
-    <div>
-      <PageContainer>
-        <GridContainer>
-          <Main>
-            <ArticleSection>
-              <SectionTitle>Hot</SectionTitle>
-              <HotArticleList />
-            </ArticleSection>
-            <ArticleSection>
-              <SectionTitle>브랜드 리그</SectionTitle>
-            </ArticleSection>
-            <ArticleSection>
-              <SectionTitle>블랙박스</SectionTitle>
-              <BlackboxList />
-            </ArticleSection>
-            <ArticleSection>
-              <SectionTitle>차 자랑</SectionTitle>
-              <CarPictureList />
-              <CarPictureList />
-            </ArticleSection>
-          </Main>
-          <Aside>
-            <h2>Today Car</h2>
-          </Aside>
-        </GridContainer>
-      </PageContainer>
-    </div>
+    <PageContainer>
+      <GridContainer>
+        <Main>
+          <ArticleSection>
+            <SectionTitle>Hot</SectionTitle>
+            <HotArticleList />
+          </ArticleSection>
+          <ArticleSection>
+            <SectionTitle>브랜드 리그</SectionTitle>
+            <LeagueList />
+          </ArticleSection>
+          <ArticleSection>
+            <SectionTitle>블랙박스</SectionTitle>
+            <BlackboxList />
+          </ArticleSection>
+          <ArticleSection>
+            <SectionTitle>차 자랑</SectionTitle>
+            <CarPictureList />
+          </ArticleSection>
+        </Main>
+        <Aside>
+          <SectionTitle>Today Car</SectionTitle>
+        </Aside>
+      </GridContainer>
+    </PageContainer>
   );
 }
 
@@ -78,6 +76,7 @@ const Aside = styled.aside`
 `;
 
 const SectionTitle = styled.h2`
+  margin-top: 40px;
   margin-bottom: 0;
 `;
 

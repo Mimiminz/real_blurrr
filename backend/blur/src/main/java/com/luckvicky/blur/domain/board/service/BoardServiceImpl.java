@@ -11,7 +11,7 @@ import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateDto;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
-import com.luckvicky.blur.domain.member.execption.NotExistMemberException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.List;

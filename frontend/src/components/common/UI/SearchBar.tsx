@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { HiOutlineSearch } from "react-icons/hi";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const SearchInput = styled.input`
   border: none;
   outline: none;
   flex: 1;
-  padding: 10px;
+  padding: 5px 10px;
   font-size: 1rem;
   border-radius: 50px;
 `;
@@ -32,7 +33,7 @@ const SearchInput = styled.input`
 const SearchBar: React.FC = () => {
   return (
     <SearchContainer>
-      <SearchIcon>🔍</SearchIcon>
+      <SearchIcon><HiOutlineSearch /></SearchIcon>
       <SearchInput type="text" placeholder="Search" />
     </SearchContainer>
   );

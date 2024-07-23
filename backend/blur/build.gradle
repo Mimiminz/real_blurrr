@@ -69,10 +69,10 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-impl:${jwtVersion}"
     implementation "io.jsonwebtoken:jjwt-jackson:${jwtVersion}"
 
-	// modelmapper
-	implementation 'org.modelmapper:modelmapper:3.1.1'
+    // modelmapper
+    implementation 'org.modelmapper:modelmapper:3.1.1'
 
-	testImplementation 'org.assertj:assertj-core:3.21.0'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
 }
 
 tasks.named('test') {
