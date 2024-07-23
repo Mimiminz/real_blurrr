@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.req.TagDto;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
@@ -21,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChannelServiceImpl implements ChannelService{
 
-    private final ModelMapper mapper;
     private final ChannelsRepository channelsRepository;
     private final ChannelTagRepository channelTagRepository;
+    private final ChannelMapper channelMapper;
 
     @Override
     public List<ChannelDto> getAllChannels(){
@@ -40,39 +41,24 @@ public class ChannelServiceImpl implements ChannelService{
                         Collectors.mapping(ChannelTag::getTag, Collectors.toList())
                 ));
 
-        List<ChannelDto> channelDtos = channels.stream()
-                .map(channel -> convertToDto(channel, channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
+        return channels.stream()
+                .map(channel -> channelMapper.convertToDto(channel,
+                        channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
                 .collect(Collectors.toList());
-
-        return channelDtos;
     }
 
     @Override
     public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
         List<ChannelTag> channelTags = channelTagRepository.findByTagNameIn(tagNames);
 
-        Map<Channel, List<Tag>> channelTagsMap = channelTags.stream()
+        return channelTags.stream()
                 .collect(Collectors.groupingBy(
                         ChannelTag::getChannel,
                         Collectors.mapping(ChannelTag::getTag, Collectors.toList())
-                ));
-
-        return channelTagsMap.entrySet().stream()
-                .map(entry -> convertToDto(entry.getKey(), entry.getValue()))
+                ))
+                .entrySet().stream()
+                .map(entry -> channelMapper.convertToDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-    }
-
-    private ChannelDto convertToDto(Channel channel, List<Tag> tags) {
-        return ChannelDto.builder()
-                .id(channel.getId().toString())
-                .name(channel.getName())
-                .imgUrl(channel.getImgUrl())
-                .info(channel.getInfo())
-                .owner(channel.getOwner().toString())
-                .tags(tags.stream()
-                        .map(TagDto::from)
-                        .collect(Collectors.toList()))
-                .build();
     }
 
 

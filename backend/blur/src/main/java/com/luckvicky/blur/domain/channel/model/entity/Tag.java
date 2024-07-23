@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channel.model.entity;
 
+import com.luckvicky.blur.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,20 +13,14 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="tags")
-public class Tag {
-
-    @Id
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+public class Tag extends BaseEntity {
 
     @Column(unique = true,nullable = false, length = 20)
     private String name;
 
 
     @Builder
-    public Tag(UUID id, String name) {
-        this.id = id;
+    public Tag(String name) {
         this.name = name;
     }
-
 }
