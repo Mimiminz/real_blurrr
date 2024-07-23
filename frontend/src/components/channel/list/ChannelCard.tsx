@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 interface ChannelCardProps {
   title: string;
-  likes: number;
+  followers: number;
   tags: string[];
   img: string;
 }
@@ -58,7 +58,7 @@ const LikeIcon = styled.span`
   color: #f59e0b;
 `;
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ title, likes, tags, img }) => {
+const ChannelCard: React.FC<ChannelCardProps> = ({ title, followers, tags, img }) => {
   return (
     <CardContainer>
       <ImageContainer img={img} />
@@ -70,7 +70,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ title, likes, tags, img }) =>
       <Title>{title}</Title>
       <LikesContainer>
         <LikeIcon>👍</LikeIcon>
-        <span>{likes}</span>
+        <span>{followers}</span>
       </LikesContainer>
     </CardContainer>
   );
