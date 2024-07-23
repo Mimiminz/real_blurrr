@@ -98,5 +98,71 @@
       "followers": 450,
       "img": "/images/eg_img.png"
     }
+  ],
+  "dashCamList": [
+    {
+      "title": "현대 차량 사고",
+      "viewer": 550,
+      "tags": ["현대", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 42,
+      "createdDate": "2024.07.10 15:00"
+    },
+    {
+      "title": "제네시스 차량 사고",
+      "viewer": 300,
+      "tags": ["제네시스", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 38,
+      "createdDate": "2024.07.11 10:20"
+    },
+    {
+      "title": "기아 K5 차량 사고",
+      "viewer": 1000,
+      "tags": ["기아", "K5", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 50,
+      "createdDate": "2024.07.12 12:30"
+    },
+    {
+      "title": "현대 소나타 사고",
+      "viewer": 530,
+      "tags": ["현대", "소나타", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 45,
+      "createdDate": "2024.07.13 14:45"
+    },
+    {
+      "title": "기아 스포티지 사고",
+      "viewer": 1570,
+      "tags": ["기아", "스포티지", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 67,
+      "createdDate": "2024.07.14 16:00"
+    },
+    {
+      "title": "제네시스 G80 사고",
+      "viewer": 800,
+      "tags": ["제네시스", "G80", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 40,
+      "createdDate": "2024.07.15 09:10"
+    },
+    {
+      "title": "기아 모하비 사고",
+      "viewer": 750,
+      "tags": ["기아", "모하비", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 55,
+      "createdDate": "2024.07.16 11:50"
+    },
+    {
+      "title": "현대 그랜저 사고",
+      "viewer": 1220,
+      "tags": ["현대", "그랜저", "사고"],
+      "thumbnail": "/images/eg_img.png",
+      "likes": 70,
+      "createdDate": "2024.07.17 13:25"
+    }
   ]
 }
