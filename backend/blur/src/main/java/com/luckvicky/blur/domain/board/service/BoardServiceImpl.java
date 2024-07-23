@@ -2,14 +2,18 @@ package com.luckvicky.blur.domain.board.service;
 
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_BOARD;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.INVALID_BOARD_TYPE;
+import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_MEMBER;
 
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InvalidBoardTypeException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.request.CreateBoardRequest;
+import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateDto;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.member.execption.NotExistMemberException;
+import com.luckvicky.blur.domain.member.model.entity.Member;
+import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +26,22 @@ public class BoardServiceImpl implements BoardService {
 
     private final ModelMapper mapper;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public Boolean createBoard(CreateBoardRequest request) {
+    public Boolean createBoard(BoardCreateDto request) {
+
         BoardType type = convertToEnum(request.boardType());
 
-        // todo: memberId와 일치하는 멤버 가져오기
+        Member member = memberRepository.findById(request.memberId())
+                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
 
-        Board createdBoard = boardRepository.save(request.toEntity(type));
+        Board createdBoard = boardRepository.save(
+                request.toEntity(member, type)
+        );
+
         return isCreated(createdBoard);
+
     }
 
     @Override
