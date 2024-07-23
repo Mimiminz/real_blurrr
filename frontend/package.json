@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.4.6",
+    "@nextui-org/card": "^2.0.33",
     "formik": "^2.4.6",
     "next": "14.2.5",
     "next-images": "^1.8.5",
