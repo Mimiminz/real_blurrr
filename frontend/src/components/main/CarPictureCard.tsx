@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { FaEye } from "react-icons/fa";
 
 interface CarPicture {
   name: string;
@@ -19,7 +20,12 @@ function CarPictureCard({ name, description, image, views }: CarPicture) {
           <Name>{name}</Name>
           <Description>{description}</Description>
         </TextContainer>
-        <Views>👁️ {views}</Views>
+        <Views>
+          <Icon>
+            <FaEye />
+          </Icon>
+          {views}
+        </Views>
       </InfoContainer>
     </Container>
   );
@@ -86,6 +92,10 @@ const Views = styled.div`
 `;
 
 const Icon = styled.span`
-  margin-right: 5px;
-  font-size: 14px;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* 아이콘 크기 조정 */
+  vertical-align: middle;
 `;

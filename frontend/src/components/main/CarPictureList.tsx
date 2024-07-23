@@ -49,7 +49,7 @@ const CarPictureList: React.FC = () => {
           swiperRef.current = swiper;
         }}
         loop={true}
-        spaceBetween={100}
+        spaceBetween={200}
         slidesPerView={3}
         navigation={true}
         autoplay={{
