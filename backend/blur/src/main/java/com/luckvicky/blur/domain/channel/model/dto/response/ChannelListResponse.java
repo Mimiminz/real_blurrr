@@ -1,6 +1,6 @@
-package com.luckvicky.blur.domain.channel.model.dto.resp;
+package com.luckvicky.blur.domain.channel.model.dto.response;
 
-import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -11,9 +11,7 @@ public record ChannelListResponse(
     Iterable<ChannelDto> channels
 ) {
     public static ChannelListResponse of(Iterable<ChannelDto> channels) {
-        return ChannelListResponse.builder()
-                .channels(channels)
-                .build();
+        return new ChannelListResponse(channels);
     }
 
 }
