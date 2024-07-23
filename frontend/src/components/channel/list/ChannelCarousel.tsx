@@ -6,7 +6,7 @@ import SwiperCore from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import ChannelCard from './ChannelCard'; // 경로에 맞게 변경하세요
+import UserChannelCard from './UserChannelCard';
 
 SwiperCore.use([Navigation, Scrollbar, Autoplay]);
 
@@ -34,9 +34,8 @@ const SwiperContainer = styled.div`
 interface ChannelCarouselProps {
    slides: Array<{
       id: string;
-      title: string;
-      likes: number;
-      tags: string[];
+      name: string;
+      followers: number;
       img: string;
    }>;
 }
@@ -61,11 +60,10 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
          >
             {slides.map((slide) => (
                <SwiperSlide key={slide.id}>
-                  <ChannelCard
-                     title={slide.title}
-                     likes={slide.likes}
-                     tags={slide.tags}
-                     img={slide.img}
+                  <UserChannelCard
+                     name={slide.name}
+                     followers={slide.followers}
+                     img={slide.img} // img prop 추가
                   />
                </SwiperSlide>
             ))}
