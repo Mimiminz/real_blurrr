@@ -1,10 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 
-const BlackboxListItem = () => {
-  const totalParticipants = 1000;
-  const percentageA = 80;
-  const percentageB = 20;
+interface blackboxArticle {
+  title: string;
+  totalVotes: number;
+  optionA: number;
+  optionB: number;
+}
+
+function BlackboxListItem({
+  title,
+  totalVotes,
+  optionA,
+  optionB,
+}: blackboxArticle) {
+  const percentageA = parseFloat(((optionA / totalVotes) * 100).toFixed(1));
+  const percentageB = parseFloat(((optionB / totalVotes) * 100).toFixed(1));
 
   const largerPercentage =
     percentageA > percentageB ? percentageA : percentageB;
@@ -12,8 +23,8 @@ const BlackboxListItem = () => {
   return (
     <Container>
       <ArticleInfo>
-        <Title>제목제목제목제목</Title>
-        <Participants>{totalParticipants}명 참여</Participants>
+        <Title>{title}</Title>
+        <Participants>{totalVotes}명 참여</Participants>
       </ArticleInfo>
       <BarContainer>
         <Bar width={percentageA} larger={percentageA === largerPercentage}>
@@ -25,7 +36,7 @@ const BlackboxListItem = () => {
       </BarContainer>
     </Container>
   );
-};
+}
 
 export default BlackboxListItem;
 
@@ -77,13 +88,4 @@ const Bar = styled.div.withConfig({
   text-align: center;
   font-size: 12px;
   line-height: 24px;
-  border-radius: ${({ width }) => (width > 0 ? "12px 0 0 12px" : "0")};
-  margin-right: 5px;
-`;
-
-const BarRemaining = styled(Bar).withConfig({
-  shouldForwardProp: (prop) => !["larger"].includes(prop),
-})<{ width: number; larger: boolean }>`
-  border-radius: ${({ width }) => (width > 0 ? "0 12px 12px 0" : "0")};
-  margin-left: 5px;
 `;
