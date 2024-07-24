@@ -1,0 +1,18 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAU6GDV5R6TW3ACKGZ
+      secret-key: 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
+    s3:
+      bucket-name: blurrr-img-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+jwt:
+  secret: dGVhbWJsdXJyLWp3dC10b2tlbi1zc2FmeTExdGgtYTMwNy1yYW5kb21SdHJpbmc6ajFENVNiMWozampzTmtuNTU0
+  expire:
+    time:
+      access: 1800000
+      refresh: 120000
