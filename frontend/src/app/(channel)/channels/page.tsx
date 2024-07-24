@@ -2,10 +2,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import dummy from "../../../db/data.json";
-import ChannelCard from '../../../components/channel/list/ChannelCard';
-import ChannelCarousel from '../../../components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
-import SearchBar from '../../../components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
+import dummy from "@/db/data.json";
+import ChannelCard from '@/components/channel/list/ChannelCard';
+import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
+import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
 import { useRouter } from 'next/navigation';
 
 type Props = {}

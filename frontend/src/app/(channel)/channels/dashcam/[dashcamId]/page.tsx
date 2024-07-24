@@ -3,12 +3,12 @@
 import React from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
-import DashCamContent from '../../../../../components/channel/dashcam/detail/DashCamContent';
-import CreateComment from '../../../../../components/common/UI/comment/CreateComment';
-import Comment from '../../../../../components/common/UI/comment/Comment';
-import Reply from '../../../../../components/common/UI/comment/Reply';
-import Vote from '../../../../../components/channel/dashcam/detail/Vote';
-import Breadcrumb from '../../../../../components/common/UI/BreadCrumb';
+import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
+import CreateComment from '@/components/common/UI/comment/CreateComment';
+import Comment from '@/components/common/UI/comment/Comment';
+import Reply from '@/components/common/UI/comment/Reply';
+import Vote from '@/components/channel/dashcam/detail/Vote';
+import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
 const Container = styled.div`
   display: flex;
