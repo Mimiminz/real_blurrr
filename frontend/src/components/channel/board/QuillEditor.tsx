@@ -12,13 +12,14 @@ const QuillEditor: React.FC = () => {
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       [{ 'align': [] }],
       [{ 'color': [] }, { 'background': [] }],
-      ['link', 'image'],
+      ['link', 'image', 'video'],
+      ['vote']
     ],
   }), []);
 
   const formats = [
     'font', 'size', 'bold', 'italic', 'underline', 'strike',
-    'list', 'bullet', 'align', 'color', 'background', 'link', 'image'
+    'list', 'ordered', 'bullet', 'align', 'color', 'background', 'link', 'image', 'video'
   ];
 
   return (
