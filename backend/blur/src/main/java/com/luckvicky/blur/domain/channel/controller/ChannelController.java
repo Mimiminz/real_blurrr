@@ -1,7 +1,7 @@
 package com.luckvicky.blur.domain.channel.controller;
 
-import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
-import com.luckvicky.blur.domain.channel.model.dto.resp.ChannelListResponse;
+import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;

@@ -1,9 +1,11 @@
 package com.luckvicky.blur.domain.member.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 @Schema(name = "사용자 정보")
 public class MemberDto {
 
