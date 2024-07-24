@@ -124,7 +124,7 @@ const MoreButtonIcon = styled.span`
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0 20%;
+  margin: 0 220px;
 
   @media (max-width: 992px) {
     margin: 0 20px;

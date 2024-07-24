@@ -6,6 +6,7 @@ import { FaCar } from "react-icons/fa";
 import { MdFactory } from "react-icons/md";
 import dummy from "@/db/mainPageData.json";
 import SearchBar from "@/components/common/UI/SearchBar";
+import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 
 const tabs = [
   { id: "carModel", label: dummy.userInfo["carModel"], icon: <FaCar /> },
@@ -49,7 +50,13 @@ const LeaguePage: React.FC = () => {
   };
 
   const renderContent = (): JSX.Element => {
-    return <Title>{activeTabLabel}</Title>;
+    return (
+      <Title>
+        {activeTabLabel.startsWith("@")
+          ? `채널에서 ${activeTabLabel.slice(2)}가 멘션된 글`
+          : `${activeTabLabel} 리그`}
+      </Title>
+    );
   };
 
   return (
@@ -73,9 +80,11 @@ const LeaguePage: React.FC = () => {
       <TabContent>
         <HeaderContainer>
           <HeaderLeft>{renderContent()}</HeaderLeft>
-          <MoreTabsButton onClick={handleToggleMoreTabs}>
-            더보기 {showMoreTabs ? "▲" : "▼"}
-          </MoreTabsButton>
+          {activeTab === "carManufacture" && (
+            <MoreTabsButton onClick={handleToggleMoreTabs}>
+              더보기 {showMoreTabs ? "▲" : "▼"}
+            </MoreTabsButton>
+          )}
         </HeaderContainer>
         <MoreTabsContainer $isOpen={showMoreTabs}>
           {moreTabs.map((tab) => (
@@ -88,6 +97,15 @@ const LeaguePage: React.FC = () => {
             </MoreTabButton>
           ))}
         </MoreTabsContainer>
+        <FilterSection>
+          <StyledSelect className="sort-select">
+            <option>게시물 정렬</option>
+            <option>게시물 정렬</option>
+            <option>게시물 정렬</option>
+          </StyledSelect>
+          <StyledButton className="setPosition">글 작성 +</StyledButton>
+        </FilterSection>
+        <LeagueBoardList />
       </TabContent>
     </Container>
   );
@@ -96,7 +114,7 @@ const LeaguePage: React.FC = () => {
 export default LeaguePage;
 
 const Container = styled.div`
-  margin: 0 300px;
+  margin: 0 220px;
 `;
 
 const TopComponent = styled.div`
@@ -114,8 +132,10 @@ const TabList = styled.div`
 
 const TabButton = styled.button<{ $isActive: boolean }>`
   display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 10px;
+  width: 120px;
   cursor: pointer;
   background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
   border: none;
@@ -123,7 +143,7 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   font-size: 16px;
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#F97316" : "#333")};
-  margin: 0 10px;
+  /* margin: 0 10px; */
 
   &:hover {
     color: #f97316;
@@ -134,20 +154,15 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   }
 `;
 
-const Divider = styled.div`
-  width: 1px;
-  height: 20px;
-  background-color: #ccc;
-`;
-
 const TabContent = styled.div`
-  padding: 20px;
+  padding: 20px 0;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin: 5px 0;
+  margin-bottom: 20px;
 `;
 
 const HeaderContainer = styled.div`
@@ -162,20 +177,16 @@ const HeaderLeft = styled.div`
 `;
 
 const MoreTabsButton = styled.button`
-  border: 1px solid #e0e0e0;
-  padding: 10px 20px;
+  border: none;
+  padding: 10px 0;
   cursor: pointer;
   border-radius: 20px;
-  font-size: 16px;
   color: #333;
+  background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &:hover {
-    background: #f97316;
-    color: white;
-  }
+  margin: 0;
 `;
 
 const MoreTabsContainer = styled.div.attrs<{ $isOpen: boolean }>((props) => ({
@@ -190,6 +201,10 @@ const MoreTabsContainer = styled.div.attrs<{ $isOpen: boolean }>((props) => ({
   flex-wrap: wrap;
   border: 1px solid #ccc;
   border-radius: 8px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  justify-content: center;
+  align-items: center;
 
   /* Custom Scrollbar Styles */
   &::-webkit-scrollbar {
@@ -209,6 +224,7 @@ const MoreTabsContainer = styled.div.attrs<{ $isOpen: boolean }>((props) => ({
 
 const MoreTabButton = styled.button<{ $isActive: boolean }>`
   background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
+
   border: none;
   padding: 10px;
   cursor: pointer;
@@ -224,5 +240,66 @@ const MoreTabButton = styled.button<{ $isActive: boolean }>`
   &:hover {
     background: #f97316;
     color: white;
+  }
+`;
+
+const FilterSection = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  .sort-select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+  }
+
+  button {
+    padding: 10px;
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+  }
+  /* 
+  .setPosition {
+    display: flex;
+    margin-left: auto;
+    margin-top: 20px;
+  } */
+`;
+
+const StyledSelect = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-right: 10px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+`;
+
+const StyledButton = styled.button`
+  padding: 10px;
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #ddd;
+  }
+
+  &:active {
+    background-color: #ccc;
   }
 `;
