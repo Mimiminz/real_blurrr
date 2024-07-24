@@ -1,6 +1,6 @@
 package com.luckvicky.blur.domain.channel.service;
 
-import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 
 import java.util.List;
 

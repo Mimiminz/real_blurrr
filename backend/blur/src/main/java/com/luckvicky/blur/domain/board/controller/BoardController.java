@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "게시글 API")
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/v1/boards")
 @RequiredArgsConstructor
 public class BoardController {
 
@@ -46,28 +46,28 @@ public class BoardController {
     })
     @PostMapping
     public ResponseEntity createBoard(@RequestBody BoardCreateRequest request) {
-       return ResponseUtil.created(
-               Result.builder()
-                       .data(boardService.createBoard(request))
-                       .build()
-       );
+        return ResponseUtil.created(
+                Result.builder()
+                        .data(boardService.createBoard(request))
+                        .build()
+        );
 
     }
 
-    @Operation(summary = "게시글 유형별 조회 API")
+    @Operation(summary = "유형별 게시글 목록 조회 API")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "게시글 조회 성공",
+                    description = "게시글 목록 조회 성공",
                     content = @Content(schema = @Schema(implementation = BoardListResponse.class))
             ),
             @ApiResponse(
                     responseCode = "204",
-                    description = "게시글 조회 성공(조회된 데이터 없음)"
+                    description = "게시글 목록 조회 성공(단, 데이터 없음)"
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "게시글 조회 실패"
+                    description = "유효하지 않은 유형에 대한 게시글 조회로 실패"
             )
     })
     @Parameter(
@@ -79,9 +79,9 @@ public class BoardController {
             }
     )
     @GetMapping
-    public ResponseEntity findBoardByType(@RequestParam(name = "type") String type) {
+    public ResponseEntity findBoardsByType(@RequestParam(name = "type") String type) {
 
-        List<BoardDto> boards = boardService.findBoardByType(type);
+        List<BoardDto> boards = boardService.findBoardsByType(type);
 
         if (Objects.isNull(boards) || boards.isEmpty()) {
             return ResponseUtil.noContent(

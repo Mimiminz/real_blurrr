@@ -44,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardByType(String boardType) {
+    public List<BoardDto> findBoardsByType(String boardType) {
 
         BoardType type = convertToEnum(boardType);
         List<Board> boards = boardRepository.findAllByType(type);

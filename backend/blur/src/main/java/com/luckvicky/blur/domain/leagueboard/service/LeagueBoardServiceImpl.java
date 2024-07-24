@@ -1,11 +1,14 @@
 package com.luckvicky.blur.domain.leagueboard.service;
 
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_BOARD;
+import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_BOARD;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_MEMBER;
 
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
+import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
@@ -35,7 +38,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private final LeagueBoardRepository leagueBoardRepository;
 
     @Override
-    public boolean createLeagueBoard(UUID leagueId, LeagueBoardCreateRequest request) {
+    public Boolean createLeagueBoard(UUID leagueId, LeagueBoardCreateRequest request) {
 
         Member member = memberRepository.getOrThrow(request.memberId());
 
@@ -51,7 +54,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     }
 
     @Override
-    public List<BoardDto> getLeagueBoard(UUID leagueId) {
+    public List<BoardDto> getLeagueBoards(UUID leagueId) {
 
         League league = leagueRepository.findById(leagueId)
                         .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
@@ -69,6 +72,19 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .orElseThrow(() -> new FailToCreateBoardException(FAIL_TO_CREATE_BOARD));
 
         return true;
+    }
+
+    @Override
+    public LeagueBoardDetailResponse getLeagueBoardDetail(UUID boardId) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new NotExistBoardException(NOT_EXIST_BOARD));
+
+        return LeagueBoardDetailResponse.of(
+                board.getViewCount(),
+                board.getContent()
+        );
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.luckvicky.blur.domain.channel.model.dto.req;
+package com.luckvicky.blur.domain.channel.model.dto;
 
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;

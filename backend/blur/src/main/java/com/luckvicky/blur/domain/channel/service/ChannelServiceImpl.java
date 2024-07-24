@@ -1,15 +1,13 @@
 package com.luckvicky.blur.domain.channel.service;
 
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
-import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
-import com.luckvicky.blur.domain.channel.model.dto.req.TagDto;
+import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelsRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.leagueboard.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
@@ -80,11 +81,11 @@ public class LeagueBoardController {
     })
     @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/legues/{leagueId}")
-    public ResponseEntity getLeagueBoard(
+    public ResponseEntity getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId
     ) {
 
-        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoard(leagueId);
+        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(leagueId);
 
         if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
             return ResponseUtil.noContent(
@@ -95,6 +96,30 @@ public class LeagueBoardController {
         return ResponseUtil.ok(
                 Result.builder()
                         .data(LeagueBoardListResponse.of(boardDtos))
+                        .build()
+        );
+
+    }
+
+    @Operation(summary = "리그 게시글 상세 조회 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 조회 성공",
+                    content = @Content(schema = @Schema(implementation = LeagueBoardDetailResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 게시글"
+            )
+    })
+    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
+    @GetMapping("/{boardId}/leagues")
+    public ResponseEntity getLeagueBoardDetail(@PathVariable(name = "boardId") UUID boardId) {
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(leagueBoardService.getLeagueBoardDetail(boardId))
                         .build()
         );
 

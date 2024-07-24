@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import LeagueListItem from "./LeageListItem";
+import LeagueListItem from "./LeagueListItem";
 import dummy from "@/db/mainPageData.json";
 
 const LeagueList: React.FC = () => {
   return (
     <ListContainer>
-      {dummy.LeageList.map((league, index) => (
+      {dummy.LeagueList.map((league, index) => (
         <LeagueListItem key={index} name={league.name} count={league.count} />
       ))}
     </ListContainer>

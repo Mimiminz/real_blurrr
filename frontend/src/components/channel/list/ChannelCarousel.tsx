@@ -53,6 +53,8 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
             spaceBetween={10}
             slidesPerView={5}
             navigation={true}
+            slideToClickedSlide={true}
+            slidesOffsetBefore={6}
             autoplay={{
                delay: 2500,
                disableOnInteraction: false,
@@ -68,7 +70,7 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
                </SwiperSlide>
             ))}
          </Swiper>
-      </SwiperContainer>
+      </SwiperContainer >
    );
 };
 
