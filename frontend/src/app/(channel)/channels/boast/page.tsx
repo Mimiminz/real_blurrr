@@ -2,9 +2,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import BoastCard from '../../../../components/channel/boast/BoastCard';
-import PostTitle from '../../../../components/channel/PostTitle';
-import dummy from "../../../../db/data.json";
+import BoastCard from '@/components/channel/boast/BoastCard';
+import PostTitle from '@/components/channel/PostTitle';
+import dummy from "@/db/data.json";
 
 const Container = styled.div`
   margin: 10px 20px; /* 기본 마진 설정 */

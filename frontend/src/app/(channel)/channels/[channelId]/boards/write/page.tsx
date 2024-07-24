@@ -2,8 +2,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import QuillEditor from '../../../../../../components/channel/board/QuillEditor';
-import Breadcrumb from '../../../../../../components/common/UI/BreadCrumb';
+import QuillEditor from '@/components/channel/board/QuillEditor';
+import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
 const Container = styled.div`
   display: flex;
