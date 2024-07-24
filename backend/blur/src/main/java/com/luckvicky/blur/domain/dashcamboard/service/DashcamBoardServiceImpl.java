@@ -65,4 +65,13 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
         return dashcamBoardMapper.toDashcamBoardDto(dashcam);
     }
+
+    @Override
+    @Transactional
+    public void deleteDashcamBoard(UUID id) {
+        if(!dashcamMentionRepository.existsById(id)){
+            throw new DashcamNotFoundException();
+        }
+        dashcamMentionRepository.deleteById(id);
+    }
 }
