@@ -1,17 +1,17 @@
 package com.luckvicky.blur.domain.member.service;
 
 import com.luckvicky.blur.domain.member.exception.DuplicateEmailException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
-import com.luckvicky.blur.domain.member.exception.UserNotFoundException;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
+import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import com.luckvicky.blur.global.enums.code.ErrorCode;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public JwtDto login(SignInDto signInDto) {
         Member member = memberRepository.findByEmail(signInDto.email())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(NotExistMemberException::new);
 
         if (!passwordEncoder.matches(signInDto.password(), member.getPassword())) {
             throw new PasswordMismatchException();
@@ -61,5 +61,12 @@ public class MemberServiceImpl implements MemberService {
         String refreshToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
 
         return new JwtDto(accessToken, refreshToken);
+    }
+
+    @Override
+    public MemberProfile findMember(ContextMember contextMember) {
+        Member member = memberRepository.getOrThrow(contextMember.getId());
+
+        return MemberProfile.of(member);
     }
 }

@@ -1,12 +1,11 @@
 package com.luckvicky.blur.global.security;
 
-import com.luckvicky.blur.domain.member.exception.UserNotFoundException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -26,12 +25,12 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            throw new UserNotFoundException();
+            throw new NotExistMemberException();
         }
 
         Object principal = authentication.getPrincipal();
         if (!(principal instanceof CustomUserDetails userDetails)) {
-            throw new UserNotFoundException();
+            throw new NotExistMemberException();
         }
 
         return userDetails.getMember();

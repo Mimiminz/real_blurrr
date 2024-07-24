@@ -1,16 +1,12 @@
 package com.luckvicky.blur.domain.member.model.entity;
 
-import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

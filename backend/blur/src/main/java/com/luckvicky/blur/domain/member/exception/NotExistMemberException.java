@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class NotExistMemberException extends BaseException {
 
-    public NotExistMemberException(ErrorCode errorCode) {
-        super(errorCode);
+    public NotExistMemberException() {
+        super(ErrorCode.NOT_EXIST_MEMBER);
     }
 
 }

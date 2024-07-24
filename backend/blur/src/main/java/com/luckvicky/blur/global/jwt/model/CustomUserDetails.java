@@ -1,20 +1,18 @@
 package com.luckvicky.blur.global.jwt.model;
 
-import com.luckvicky.blur.domain.member.model.entity.Member;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
+    private final ContextMember member;
 
-    private final Member member;
-
-    public CustomUserDetails(Member member) {
-        this.member = member;
+    public CustomUserDetails(ContextMember contextMember) {
+        this.member = contextMember;
     }
 
-    public Member getMember() {
+    public ContextMember getMember() {
         return member;
     }
 
