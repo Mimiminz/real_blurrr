@@ -27,9 +27,11 @@ public class DashcamBoardListDto{
     @Schema(description = "블랙박스 영상 url")
     private List<String> videoUrl;
 
+    @Schema(description = "멘션된 리그 목록")
+    private List<DashcamMentionDto> mentionedLeagues;
+
     // :todo 좋아요 수
 
-    // :todo 채널 멘션 목록
 
 
 

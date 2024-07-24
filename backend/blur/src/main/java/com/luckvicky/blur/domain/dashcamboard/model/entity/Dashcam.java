@@ -24,6 +24,7 @@ public class Dashcam extends Board {
     @ElementCollection
     @CollectionTable(name = "videos", joinColumns = @JoinColumn(name = "id"))
     private List<Video> videos = new ArrayList<>();
+
 }
 
 

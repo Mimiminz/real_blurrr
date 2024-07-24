@@ -2,12 +2,8 @@ package com.luckvicky.blur.domain.dashcamboard.model.dto;
 
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.member.model.MemberDto;
-import com.luckvicky.blur.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -43,7 +39,8 @@ public class DashcamBoardDto {
     @Schema(description = "게시물 조회수")
     private Long viewCount;
 
-    // :todo 채널 멘션 목록
+    @Schema(description = "멘션된 리그 목록")
+    private List<DashcamMentionDto> mentionedLeagues;
 
     // : todo 좋아요 수
 
