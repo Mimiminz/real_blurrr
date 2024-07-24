@@ -1,7 +1,7 @@
 package com.luckvicky.blur.domain.channel.mapper;
 
-import com.luckvicky.blur.domain.channel.model.dto.req.ChannelDto;
-import com.luckvicky.blur.domain.channel.model.dto.req.TagDto;
+import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import org.springframework.stereotype.Component;
