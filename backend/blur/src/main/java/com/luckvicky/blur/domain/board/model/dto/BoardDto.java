@@ -26,4 +26,10 @@ public class BoardDto {
 
     // :todo 좋아요 수
 
+<<<<<<< HEAD
+=======
+    @Schema(description = "댓글 개수")
+    private Long commentNumber;
+
+>>>>>>> e103c411 (feat: 게시글 댓글 수 증가 기능 (#21))
 }
