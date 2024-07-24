@@ -1,15 +1,11 @@
 package com.luckvicky.blur.domain.comment.service;
 
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_COMMENT;
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_BOARD;
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_COMMENT;
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_MEMBER;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.comment.exception.FailToCreateCommentException;
-import com.luckvicky.blur.domain.comment.exception.NotExistCommentException;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.request.CommentCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.request.ReplyCreateRequest;
@@ -47,7 +43,6 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(NotExistBoardException::new);
 
         board.increaseCommentCount();
-
         Comment createdComment = commentRepository.save(
                 request.toEntity(member, board)
         );
@@ -60,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
     public Boolean createReply(UUID commentId, ReplyCreateRequest request) {
 
         Comment parentComment = commentRepository.getOrThrow(commentId);
+
         Member member = memberRepository.getOrThrow(request.memberId());
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);
