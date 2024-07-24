@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 16px;
+  padding: 16px 30px;
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
