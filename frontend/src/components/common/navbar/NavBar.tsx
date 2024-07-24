@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
+import Notifications from './Notifications';
 
 const NavBar = () => {
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const handleNotificationsClick = () => {
+    setShowNotifications(true);
+  };
+
+  const handleCloseNotifications = () => {
+    setShowNotifications(false);
+  };
 
   return (
     <Nav>
