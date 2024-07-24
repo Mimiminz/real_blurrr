@@ -233,22 +233,34 @@ const StyledField = styled(Field)`
   font-size: 1em;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  &.error {
+    border-color: red;
+  }
+
+  &.valid {
+    border-color: green;
+  }
 `;
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 0.875em;
+  height: 24px;
+  margin-bottom: 0.5em;
 `;
 
 const SuccessMessage = styled.div`
-  color: #4caf50;
-  font-size: 1em;
-  font-weight: bold;
+  color: green;
+  font-size: 0.875em;
+  height: 24px;
+  margin-bottom: 0.5em;
 `;
 
 const Button = styled.button`
+  width: 200px;
   padding: 0.7em;
+  margin-top: 0.5em;
   font-size: 1em;
   color: #fff;
   background-color: #f9803a;
