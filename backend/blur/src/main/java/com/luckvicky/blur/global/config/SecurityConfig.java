@@ -31,6 +31,7 @@ public class SecurityConfig {
             "/v1/auth/**",
             "/v1/leagues/**",
             "/v1/boards/**",
+            "/v1/comments/**",
             "/swagger-ui/**",
             "/h2-console/**",
             "/channels/**"
