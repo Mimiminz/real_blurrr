@@ -30,8 +30,7 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
         League league = leagueRepository.findById(leagueId)
                 .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(memberId);
 
         LeagueMember createdLeagueMember = leagueMemberRepository.save(
                 LeagueMember.builder()

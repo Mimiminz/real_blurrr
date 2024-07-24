@@ -37,8 +37,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     @Override
     public boolean createLeagueBoard(UUID leagueId, LeagueBoardCreateRequest request) {
 
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(request.memberId());
 
         League league = leagueRepository.findById(leagueId)
                 .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));

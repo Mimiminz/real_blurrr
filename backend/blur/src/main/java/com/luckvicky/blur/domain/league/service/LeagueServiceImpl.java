@@ -62,8 +62,7 @@ public class LeagueServiceImpl implements LeagueService {
     @Override
     public List<LeagueDto> getLeague(UUID memberId) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(memberId);
 
         List<LeagueMember> leagueMembers = leagueMemberRepository.findAllByMember(member);
 
