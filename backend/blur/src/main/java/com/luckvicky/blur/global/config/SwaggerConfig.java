@@ -1,9 +1,7 @@
 package com.luckvicky.blur.global.config;
 
-<<<<<<< backend/blur/src/main/java/com/luckvicky/blur/global/config/SwaggerConfig.java
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.security.AuthUser;
-import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -35,11 +33,7 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi authApi() {
-
-        String[] authPaths = {
-                "/spots/**", "/v1/leagues/**", "/v1/boards/**", "/channels/**", "/v1/members/**", "/v1/comments/**"
-        };
-
+        String[] authPaths = {"/spots/**", "/v1/leagues/**", "/v1/boards/**","/channels/**", "/v1/members/**"};
         return GroupedOpenApi.builder()
                 .group("auth")
                 .pathsToMatch(authPaths)
@@ -56,7 +50,7 @@ public class SwaggerConfig {
                         .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme(TOKEN_PREFIX.trim())
+                                        .scheme("Bearer")
                                         .bearerFormat("JWT")));
     }
 
@@ -67,4 +61,12 @@ public class SwaggerConfig {
                 .version("v1");
     }
 
+    private void removeMemberParameter(io.swagger.v3.oas.models.Operation operation, HandlerMethod handlerMethod) {
+        Arrays.stream(handlerMethod.getMethodParameters())
+                .filter(methodParameter -> methodParameter.hasParameterAnnotation(AuthUser.class))
+                .forEach(methodParameter -> {
+                    String parameterName = methodParameter.getParameterName();
+                    operation.getParameters().removeIf(parameter -> parameter.getName().equals(parameterName));
+                });
+    }
 }

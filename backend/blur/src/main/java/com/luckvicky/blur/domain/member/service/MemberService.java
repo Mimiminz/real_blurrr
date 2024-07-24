@@ -10,5 +10,4 @@ public interface MemberService {
     void createMember(SignupDto signupDto);
     JwtDto login(SignInDto signInDto);
     MemberProfile findMember(ContextMember contextMember);
-
 }

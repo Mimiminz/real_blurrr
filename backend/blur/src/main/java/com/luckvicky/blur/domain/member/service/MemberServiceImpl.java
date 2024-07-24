@@ -53,6 +53,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(signInDto.email())
                 .orElseThrow(NotExistMemberException::new);
 
+
+
         if (!passwordEncoder.matches(signInDto.password(), member.getPassword())) {
             throw new PasswordMismatchException();
         }
