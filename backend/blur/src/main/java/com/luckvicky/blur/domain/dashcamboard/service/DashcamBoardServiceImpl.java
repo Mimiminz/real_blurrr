@@ -6,7 +6,7 @@ import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.luckvicky.blur.domain.league.model.entity.League;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
