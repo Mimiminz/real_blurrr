@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import javax.swing.text.html.HTML;
+
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ErrorCode {
@@ -41,7 +43,8 @@ public enum ErrorCode {
      * - 존재하지 않는 자원
      */
     NOT_EXIST_LEAGUE(HttpStatus.NOT_FOUND, "존재하지 않는 리그입니다."),
-    NOT_EXIST_MEMBER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다.");
+    NOT_EXIST_MEMBER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+    NOT_EXIST_DASHCAM(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다.");
 
     /**
      * [500 INTERNAL_SERVER_ERROR]

@@ -81,22 +81,9 @@ public class DashcamBoardController {
             )
     })
     @GetMapping("/{boardId}")
-    public ResponseEntity getDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id){
-        try {
-            DashcamBoardDto boardDto = dashcamBoardService.getDashcamBoardById(id);
-            return ResponseUtil.ok(
-                    Result.builder()
-                            .data(DashcamBoardResponse.of(boardDto))
-                            .build()
-            );
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    Result.builder()
-                            .build(),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
+    public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
+            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id) {
+        DashcamBoardDto boardDto = dashcamBoardService.getDashcamBoardById(id);
+        return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
 }
