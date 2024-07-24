@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import SearchBar from '@/components/common/UI/SearchBar';
 import Breadcrumb from '@/components/common/UI/BreadCrumb';
+import { useRouter } from "next/navigation";
 
 interface PostTitleProps {
   channel: string;
@@ -14,7 +15,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 const TitleSection = styled.div`
@@ -35,7 +36,7 @@ const TitleSection = styled.div`
     margin: 5px 0;
   }
 
-  button {
+  .setButton {
     padding: 10px 20px;
     background-color: #f1f1f1;
     border: none;
@@ -49,13 +50,13 @@ const TitleSection = styled.div`
   .setPosition {
     display: flex;
     margin-left: auto;
-    margin-top: 20px;
   }
 `;
 
 const FilterSection = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 30px;
 
   .sort-select {
     padding: 10px;
@@ -75,23 +76,37 @@ const SideSection = styled.div`
 `;
 
 const PostTitle: React.FC<PostTitleProps> = ({ channel, subChannel, title, channelUrl }) => {
+  const router = useRouter();
+
+  const handleCreatePost = () => {
+    if (channel === "채널") {
+      if (subChannel === "블랙 박스") {
+        router.push("/channels/1/boards/write");
+      } else {
+        router.push("/channels/1/boards/write");
+      }
+    } else if (channel === "리그") {
+      router.push("/channels/1/boards/write");
+    }
+  };
+
   return (
     <Container>
       <TitleSection>
         <Breadcrumb channel={channel} subChannel={subChannel} channelUrl={channelUrl} />
         <h1>{title}</h1>
         <SideSection>
-          <button>팔로우 +</button>
-          <FilterSection>
-            <select className="sort-select">
-              <option>게시물 정렬</option>
-            </select>
-            <SearchBar />
-          </FilterSection>
+          <button className="setButton">팔로우 +</button>
+          <SearchBar />
         </SideSection>
-        <button className="setPosition">글 작성 +</button>
+        <FilterSection>
+          <select className="sort-select">
+            <option>게시물 정렬</option>
+          </select>
+          <button className="setPosition setButton" onClick={handleCreatePost}>글 작성 +</button>
+        </FilterSection>
       </TitleSection>
-    </Container>
+    </Container >
   );
 };
 
