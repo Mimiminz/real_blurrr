@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ChannelsRepository extends JpaRepository<Channel, UUID> {
+public interface ChannelRepository extends JpaRepository<Channel, UUID> {
 
 }
