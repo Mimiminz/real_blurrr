@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import SearchBar from '../common/UI/SearchBar';
-import Breadcrumb from '../common/UI/BreadCrumb';
+import SearchBar from '@/components/common/UI/SearchBar';
+import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
 interface PostTitleProps {
   channel: string;
