@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Schema(name = "사용자 정보")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

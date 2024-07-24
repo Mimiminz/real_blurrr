@@ -38,8 +38,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Boolean createComment(CommentCreateRequest request) {
 
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(request.memberId());
 
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> new NotExistBoardException(NOT_EXIST_BOARD));
@@ -58,8 +57,7 @@ public class CommentServiceImpl implements CommentService {
         Comment parentComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotExistCommentException(NOT_EXIST_COMMENT));
 
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(request.memberId());
 
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> new NotExistBoardException(NOT_EXIST_BOARD));

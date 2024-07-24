@@ -77,5 +77,6 @@ public class DashcamBoardMapper {
     }
 
     private MemberDto toMemberDto(Member member) {
-        return new MemberDto(member.getNickname(), member.getCarModel());
+        return null;
+//        return new MemberDto(member.getNickname(), member.getCarModel());
     }}

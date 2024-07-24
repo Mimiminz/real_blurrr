@@ -4,7 +4,9 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
+import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {
-
     private final MemberService memberService;
     private final S3ImageService s3ImageService;
 
@@ -40,6 +41,12 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
         return ResponseEntity.ok(memberService.login(signInDto));
+    }
+
+    @Operation(description = "토큰 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<JwtDto> tokenReissue(@RequestBody ReissueDto reissue) {
+        return ResponseEntity.ok(memberService.reissueToken(reissue));
     }
 
     @GetMapping("/aws/test")

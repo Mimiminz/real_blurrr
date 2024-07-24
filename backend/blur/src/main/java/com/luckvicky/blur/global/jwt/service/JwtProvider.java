@@ -50,7 +50,6 @@ public class JwtProvider {
                 .signWith(secretKey)
                 .compact();
     }
-
     /**
      * 이메일 정보 반환
      */

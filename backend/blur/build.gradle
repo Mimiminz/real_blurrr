@@ -76,6 +76,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-starter-aws
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'org.assertj:assertj-core:3.21.0'
 

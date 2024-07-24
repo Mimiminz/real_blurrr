@@ -3,7 +3,7 @@ spring:
     name: blur
 
   profiles:
-    default: local
+    active: local
     include: private
 
   datasource:
