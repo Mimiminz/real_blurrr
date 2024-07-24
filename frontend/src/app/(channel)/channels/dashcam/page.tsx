@@ -33,7 +33,8 @@ const DashCam: React.FC = () => {
       <Container>
          <PostTitle
             channel="채널"
-            subChannel="아무 채널"
+            subChannel="블랙박스 채널"
+            channelUrl="/channels"
             title="다양한 블랙박스 영상을 보고 직접 투표하자"
          />
          <CardGrid>

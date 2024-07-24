@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
 import SearchBar from '../common/UI/SearchBar';
+import Breadcrumb from '../common/UI/BreadCrumb';
 
 interface PostTitleProps {
   channel: string;
   subChannel: string;
+  channelUrl: string;
   title: string;
 }
 
@@ -13,7 +14,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 `;
 
 const TitleSection = styled.div`
@@ -42,13 +43,13 @@ const TitleSection = styled.div`
     cursor: pointer;
     font-size: 14px;
     color: #333;
-    margin-top: 10px;
     white-space: nowrap;
   }
 
-  .setPosition{
+  .setPosition {
     display: flex;
     margin-left: auto;
+    margin-top: 20px;
   }
 `;
 
@@ -70,53 +71,14 @@ const SideSection = styled.div`
   width: 100%;
   align-items: center;
   gap: 10px;
-
-  .setButton{
-    height: 100%;
-    margin-left: 10px;
-    margin-top: 0px;
-  }
+  margin-top: 10px;
 `;
 
-const BreadcrumbContainer = styled.nav`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 20px;
-
-  a {
-    color: inherit;
-    text-decoration: none;
-    margin-right: 5px;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  span {
-    color: ${({ theme }) => theme.colors.main};
-    margin-right: 5px;
-
-    &:before {
-      content: '>';
-      margin-right: 5px;
-      color: #888;
-    }
-  }
-`;
-
-const PostTitle: React.FC<PostTitleProps> = ({ channel, subChannel, title }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ channel, subChannel, title, channelUrl }) => {
   return (
     <Container>
       <TitleSection>
-        <BreadcrumbContainer>
-          <Link href="/channels" legacyBehavior>
-            <a>{channel}</a>
-          </Link>
-          <span>{subChannel}</span>
-        </BreadcrumbContainer>
+        <Breadcrumb channel={channel} subChannel={subChannel} channelUrl={channelUrl} />
         <h1>{title}</h1>
         <SideSection>
           <button>팔로우 +</button>
@@ -125,7 +87,6 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, subChannel, title }) => 
               <option>게시물 정렬</option>
             </select>
             <SearchBar />
-            <button className="setButton">검색</button>
           </FilterSection>
         </SideSection>
         <button className="setPosition">글 작성 +</button>
