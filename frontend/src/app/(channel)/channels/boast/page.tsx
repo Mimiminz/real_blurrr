@@ -29,6 +29,7 @@ const CardGrid = styled.div`
 `;
 
 const Boast: React.FC = () => {
+
    return (
       <Container>
          <PostTitle
