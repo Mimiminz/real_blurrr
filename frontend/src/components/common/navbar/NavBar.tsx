@@ -9,7 +9,7 @@ const NavBar = () => {
 
   return (
     <Nav>
-      <Image src = 'images/logo/logo.png' onClick={() => router.push('/')}></Image>
+      <Image src = '/images/logo/logo.png' onClick={() => router.push('/')}></Image>
       <Menu>
         <MenuItem onClick={() => router.push('/')}>Home</MenuItem>
         <MenuItem onClick={() => router.push('/league')}>리그</MenuItem>
@@ -30,7 +30,6 @@ const Nav = styled.nav`
   padding: 20px 80px 20px 80px;
   background-color: #fdfdfd;
   color: black;
-  border-bottom: 0.5px solid #717171;
 `;
 
 const Menu = styled.div`
