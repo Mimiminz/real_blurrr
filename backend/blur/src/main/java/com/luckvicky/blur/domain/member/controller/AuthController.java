@@ -1,7 +1,9 @@
 package com.luckvicky.blur.domain.member.controller;
 
+import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
+import com.luckvicky.blur.global.jwt.model.JwtDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +27,10 @@ public class AuthController {
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
         memberService.createMember(signupDto);
         return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
+        return ResponseEntity.ok(memberService.login(signInDto));
     }
 }

@@ -73,6 +73,8 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.1'
 
     testImplementation 'org.assertj:assertj-core:3.21.0'
+
+    developmentOnly "org.springframework.boot:spring-boot-docker-compose"
 }
 
 tasks.named('test') {
