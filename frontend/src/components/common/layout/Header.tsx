@@ -1,12 +1,24 @@
-import React from 'react'
-import NavBar from '../navbar/NavBar'
+import React from 'react';
+import styled from 'styled-components';
+import NavBar from '../navbar/NavBar';
 
-type Props = {}
-
-const Header = (props: Props) => {
+const Header = () => {
   return (
-    <NavBar/>
-  )
-}
+    <HeaderContainer>
+      <NavBar />
+    </HeaderContainer>
+  );
+};
 
-export default Header
+export default Header;
+
+const HeaderContainer = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; 
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  z-index: 1000;
+`;

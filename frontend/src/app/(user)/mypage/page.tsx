@@ -67,6 +67,7 @@ export default MypageTabBox;
 const Container = styled.div`
   display: flex;
   width: 100%;
+  height:700px;
 `;
 
 const Tabs = styled.div`

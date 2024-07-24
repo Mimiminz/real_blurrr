@@ -17,7 +17,7 @@ const EnterPassword = ({ onPasswordEntered }: EnterPasswordProps): JSX.Element =
 
   return (
     <Container>
-      <h2>비밀번호를 입력해주세요.</h2>
+      <Title>비밀번호를 입력해주세요.</Title>
       <Formik
         initialValues={{ password: '' }}
         validationSchema={Yup.object({
@@ -57,14 +57,19 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 600px;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  margin-bottom: 2em;
 `;
 
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 200px;
+  gap:10px;
 
   .error {
     color: red;
@@ -91,3 +96,4 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
+
