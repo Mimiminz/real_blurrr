@@ -7,20 +7,17 @@ import LeagueBoardListItem from "./LeagueBoardListItem";
 const LeagueBoardList = () => {
   return (
     <BoardList>
-        {dummy.Leagues.map((lst,index) => (
-            <LeagueBoardListItem
-                key={index}
-                mentions={lst.mentions}
-                title={lst.title}
-                texts={lst.texts}
-                writer={lst.writer}
-                writertag={lst.writertag}
-                times={lst.times}
-                likes={lst.likes}
-                comments={lst.comments}
-            />
-        ))}
-        
+      {dummy.Leagues.map((lst, index) => (
+        <LeagueBoardListItem
+          key={index}
+          title={lst.title}
+          writer={lst.writer}
+          writertag={lst.writertag}
+          times={lst.times}
+          likes={lst.likes}
+          comments={lst.comments}
+        />
+      ))}
     </BoardList>
   );
 };
