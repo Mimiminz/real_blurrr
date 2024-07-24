@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Divider } from "@nextui-org/divider";
 
 const Container = styled.div`
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
-  padding: 18px;
+  padding-bottom: 30px;
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -16,10 +16,11 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  padding : 5px 28px;
 `;
 
 const Body = styled.div`
-   padding : 10px;
+   padding : 0px 28px;
 `
 
 const User = styled.div`
@@ -55,15 +56,18 @@ const Tag = styled.span`
   font-size: 12px;
 `;
 
-const ImageContainer = styled.div`
+const VideoContainer = styled.div`
   width: 100%;
-  height: 300px;
-  background-color: #e0e0e0;
   margin-bottom: 16px;
+
+  video{
+   width: 100%;
+   height: 100%;
+  }
 `;
 
 const Content = styled.div`
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.5;
   color: #333;
 `;
@@ -71,7 +75,9 @@ const Content = styled.div`
 const DashCamContent: React.FC = () => {
    return (
       <Container>
-         <h3>과실 비율이 어떻게 되나요?</h3>
+         <Body>
+            <h2>과실 비율이 어떻게 되나요?</h2>
+         </Body>
          <Divider />
          <Header>
             <User>
@@ -86,7 +92,11 @@ const DashCamContent: React.FC = () => {
                <Tag>#제네시스</Tag>
                <Tag>#기아</Tag>
             </Tags>
-            <ImageContainer />
+            <VideoContainer>
+               <video controls autoPlay loop>
+                  <source src="/images/example_video.mp4" type="video/mp4" />
+               </video>
+            </VideoContainer>
             <Content>
                지난주말에 장인어른이 당한 사고 내용입니다
                접합 차량과 같은방향으로 진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만
