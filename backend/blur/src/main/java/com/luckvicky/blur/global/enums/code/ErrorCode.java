@@ -20,8 +20,6 @@ public enum ErrorCode {
     INVALID_BOARD_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 게시판 유형입니다."),
     INVALID_LEAGUE_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 리그 유형입니다."),
 
-    FAIL_TO_CREATE_LEAGUE(HttpStatus.BAD_REQUEST, "리그 생성을 실패했습니다."),
-    FAIL_TO_CREATE_BOARD(HttpStatus.BAD_REQUEST, "게시글 생성을 실패했습니다."),
     FAIL_TO_VALIDATE(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
     //사용자 관련 요청 예외
@@ -42,6 +40,8 @@ public enum ErrorCode {
      * [404 Not Found]
      * - 존재하지 않는 자원
      */
+    NOT_EXIST_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
+    NOT_EXIST_BOARD(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."),
     NOT_EXIST_LEAGUE(HttpStatus.NOT_FOUND, "존재하지 않는 리그입니다."),
     NOT_EXIST_MEMBER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     NOT_EXIST_DASHCAM(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다.");
@@ -50,6 +50,9 @@ public enum ErrorCode {
      * [500 INTERNAL_SERVER_ERROR]
      * - 서버 오류
      */
+    FAIL_TO_CREATE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 생성을 실패했습니다."),
+    FAIL_TO_CREATE_LEAGUE(HttpStatus.INTERNAL_SERVER_ERROR, "리그 생성을 실패했습니다."),
+    FAIL_TO_CREATE_BOARD(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 생성을 실패했습니다.");
 
     private final HttpStatus code;
     private final String message;
