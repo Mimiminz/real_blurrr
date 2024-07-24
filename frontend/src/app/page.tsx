@@ -6,7 +6,7 @@ import HotArticleList from "@/components/main/HotArticleList";
 import BlackboxList from "@/components/main/BlackboxList";
 import CarPictureList from "@/components/main/CarPictureList";
 
-import LeagueList from "@/components/main/LeageList";
+import LeagueList from "@/components/main/LeagueList";
 import TopCarCard from "@/components/main/aside/TopCarCard";
 ``;
 import { LuTrophy } from "react-icons/lu";

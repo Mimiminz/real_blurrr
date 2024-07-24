@@ -1,0 +1,17 @@
+services:
+  mariadb:
+    image: 'mariadb:latest'
+    environment:
+      - 'MARIADB_DATABASE=blur'
+      - 'MARIADB_PASSWORD=secret'
+      - 'MARIADB_ROOT_PASSWORD=blurr123'
+      - 'MARIADB_USER=blur'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+#    command: >
+#      sh -c "mysql --user=root --password=blurr123 -e \"
+#      GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'blurr123' WITH GRANT OPTION;
+#      FLUSH PRIVILEGES;
+#      \""
