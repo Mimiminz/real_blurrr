@@ -1,5 +1,7 @@
 package com.luckvicky.blur.global.config;
 
+import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -24,7 +26,11 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi authApi() {
-        String[] authPaths = {"/spots/**", "/v1/leagues/**", "/v1/boards/**","/channels/**", "/v1/members/**"};
+
+        String[] authPaths = {
+                "/spots/**", "/v1/leagues/**", "/v1/boards/**", "/channels/**", "/v1/members/**", "/v1/comments/**"
+        };
+
         return GroupedOpenApi.builder()
                 .group("auth")
                 .pathsToMatch(authPaths)
@@ -41,7 +47,7 @@ public class SwaggerConfig {
                         .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("Bearer")
+                                        .scheme(TOKEN_PREFIX.trim())
                                         .bearerFormat("JWT")));
     }
 
