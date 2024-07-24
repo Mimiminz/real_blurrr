@@ -1,9 +1,13 @@
-import React from "react";
+'use client'
 
-type Props = {};
+import LeagueBoardList from '@/components/league/board/LeagueBoardList'
+import React from 'react'
 
-const page = (props: Props) => {
-  return <div>page</div>;
-};
+const page = () => {
+  return (
+    <LeagueBoardList>
+    </LeagueBoardList>
+  )
+}
 
-export default page;
+export default page
