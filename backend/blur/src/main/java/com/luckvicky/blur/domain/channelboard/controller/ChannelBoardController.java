@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Tag(name = "채널 게시글 API")
 @RestController
-@RequestMapping("/v1/channelboards")
+@RequestMapping("/v1/channels/{channelId}/boards")
 @RequiredArgsConstructor
 public class ChannelBoardController {
 
@@ -53,7 +53,7 @@ public class ChannelBoardController {
             )
     })
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/channels/{channelId}")
+    @GetMapping
     public ResponseEntity getChannelBoard(@PathVariable(name = "channelId")UUID channelId){
         List<BoardDto> boardDtos = channelBoardService.getChannelBoard(channelId);
 
