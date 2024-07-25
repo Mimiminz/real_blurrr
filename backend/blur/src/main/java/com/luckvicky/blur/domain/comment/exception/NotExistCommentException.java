@@ -6,7 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class NotExistCommentException extends BaseException {
-    public NotExistCommentException(ErrorCode errorCode) {
-        super(errorCode);
+
+    public NotExistCommentException() {
+        super(ErrorCode.NOT_EXIST_COMMENT);
     }
+
 }
