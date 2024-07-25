@@ -40,6 +40,9 @@ public class Board extends BaseEntity {
     private Long commentCount;
 
     @Column(nullable = false)
+    private Long likeCount;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BoardType type;
 
@@ -52,12 +55,21 @@ public class Board extends BaseEntity {
         this.content = content;
         this.commentCount = 0L;
         this.viewCount = 0L;
+        this.likeCount = 0L;
         this.type = type;
         this.member = member;
     }
 
     public void increaseCommentCount()  {
         this.commentCount++;
+    }
+
+    public void increaseLikeCount()  {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount()  {
+        this.likeCount--;
     }
 
 }

@@ -22,8 +22,9 @@ public class BoardDto {
     private String createdAt;
 
     @Schema(description = "댓글 개수")
-    private Long commentNumber;
+    private Long commentCount;
 
-    // :todo 좋아요 수
+    @Schema(description = "좋아요 개수")
+    private Long  likeCount;
 
 }
