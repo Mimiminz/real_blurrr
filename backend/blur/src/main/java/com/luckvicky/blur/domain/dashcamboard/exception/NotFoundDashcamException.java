@@ -3,8 +3,8 @@ package com.luckvicky.blur.domain.dashcamboard.exception;
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import com.luckvicky.blur.global.execption.BaseException;
 
-public class DashcamNotFoundException extends BaseException {
-    public DashcamNotFoundException() {
+public class NotFoundDashcamException extends BaseException {
+    public NotFoundDashcamException() {
         super(ErrorCode.NOT_EXIST_DASHCAM);
     }
 }

@@ -1,6 +1,6 @@
 package com.luckvicky.blur.domain.dashcamboard.service;
 
-import com.luckvicky.blur.domain.dashcamboard.exception.DashcamNotFoundException;
+import com.luckvicky.blur.domain.dashcamboard.exception.NotFoundDashcamException;
 import com.luckvicky.blur.domain.dashcamboard.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
@@ -38,7 +38,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     @Override
     public DashcamBoardDto getDashcamBoardById(UUID id) {
         Dashcam dashcam = dashcamRepository.findById(id)
-                .orElseThrow(DashcamNotFoundException::new);
+                .orElseThrow(NotFoundDashcamException::new);
         return dashcamBoardMapper.toDashcamBoardDto(dashcam);
     }
 
