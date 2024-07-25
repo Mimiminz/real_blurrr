@@ -1,8 +1,9 @@
 package com.luckvicky.blur.global.jwt.service;
 
-import com.luckvicky.blur.domain.member.exception.UserNotFoundException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,8 +23,10 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(NotExistMemberException::new);
 
-        return new CustomUserDetails(member);
+        ContextMember contextMember = new ContextMember(member.getId(), member.getEmail(), member.getRole());
+
+        return new CustomUserDetails(contextMember);
     }
 }

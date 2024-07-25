@@ -1,7 +1,7 @@
-// src/app/layout.tsx
 "use client";
 
 import { ThemeProvider } from "styled-components";
+import styled from "styled-components";
 import StyledComponentsRegistry from "../lib/registry";
 import Header from "@/components/common/layout/Header";
 import Footer from "@/components/common/layout/Footer";
@@ -19,12 +19,25 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
-            <Header />
-            {children}
-            <Footer />
+            <Layout>
+              <Header />
+              <Main>{children}</Main>
+              <Footer />
+            </Layout>
           </ThemeProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
   );
 }
+
+const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const Main = styled.main`
+  flex: 1;
+  margin-top: 80px;
+`;

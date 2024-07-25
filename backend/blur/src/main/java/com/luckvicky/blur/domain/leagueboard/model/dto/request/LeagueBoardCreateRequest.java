@@ -40,6 +40,7 @@ public record LeagueBoardCreateRequest(
                 .content(this.content)
                 .type(BoardType.LEAGUE)
                 .viewCount(0L)
+                .commentCount(0L)
                 .build();
     }
 

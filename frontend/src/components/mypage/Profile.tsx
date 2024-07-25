@@ -151,8 +151,9 @@ const UserContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
-  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  gap: 70px;
   border-radius: 15px;
 `;
 
@@ -179,7 +180,7 @@ const UserImage = styled.img`
 
 const ImageUploadLabel = styled.label`
   position: absolute;
-  top: 8px;
+  top: 80px;
   right: 8px;
   padding: 0.3em 0.6em;
   font-size: 0.7em;
@@ -195,12 +196,12 @@ const ImageUploadInput = styled.input`
 `;
 
 const UserCarName = styled.div`
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
 const UserName = styled.div`
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -221,6 +222,7 @@ const InputContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 1em;
+  width: 300px;
 `;
 
 const StyledField = styled(Field)`
@@ -231,22 +233,34 @@ const StyledField = styled(Field)`
   font-size: 1em;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  &.error {
+    border-color: red;
+  }
+
+  &.valid {
+    border-color: green;
+  }
 `;
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  margin-bottom: 1em;
+  font-size: 0.875em;
+  height: 24px;
+  margin-bottom: 0.5em;
 `;
 
 const SuccessMessage = styled.div`
-  color: #4caf50;
-  margin-bottom: 1em;
-  font-size: 1em;
-  font-weight: bold;
+  color: green;
+  font-size: 0.875em;
+  height: 24px;
+  margin-bottom: 0.5em;
 `;
 
 const Button = styled.button`
+  width: 200px;
   padding: 0.7em;
+  margin-top: 0.5em;
   font-size: 1em;
   color: #fff;
   background-color: #f9803a;

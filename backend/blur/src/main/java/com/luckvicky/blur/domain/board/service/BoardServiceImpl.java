@@ -33,8 +33,7 @@ public class BoardServiceImpl implements BoardService {
 
         BoardType type = convertToEnum(request.boardType());
 
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+        Member member = memberRepository.getOrThrow(request.memberId());
 
         Board createdBoard = boardRepository.save(
                 request.toEntity(member, type)
@@ -45,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> findBoardByType(String boardType) {
+    public List<BoardDto> findBoardsByType(String boardType) {
 
         BoardType type = convertToEnum(boardType);
         List<Board> boards = boardRepository.findAllByType(type);

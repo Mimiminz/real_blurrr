@@ -6,8 +6,7 @@ type Props = {}
 const Withdrawal = (props: Props) => {
   return (
     <Container>
-        <Title> 탈퇴 안내 </Title>
-        <SubTitle> 정말 탈퇴하실 건가요? </SubTitle>
+        <Title> 탈퇴 안내 😥 </Title>
         <SubTitle> 아래 유의사항을 꼼꼼히 읽어주세요. </SubTitle>
         <InfoBox>
             <SubSubTitle>1. 계정 탈퇴 시, blurrr 서비스에서 탈퇴됩니다. </SubSubTitle>
@@ -32,6 +31,7 @@ justify-content: center;
 align-items: center;
 width: 100%;
 height: 600px;
+gap:5px;
 `;
 
 
@@ -58,9 +58,10 @@ const InfoBox = styled.div`
 `
 
 const Button = styled.button`
+  width: 200px;
   padding: 0.7em;
   margin-top: 0.5em;
-  font-size: 0.7em;
+  font-size: 1em;
   color: #fff;
   background-color: #f9803a;
   border: none;

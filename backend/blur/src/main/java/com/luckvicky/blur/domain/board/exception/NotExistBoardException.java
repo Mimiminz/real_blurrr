@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public class NotExistBoardException extends BaseException {
 
-    public NotExistBoardException(ErrorCode errorCode) {
-        super(errorCode);
+    public NotExistBoardException() {
+        super(ErrorCode.NOT_EXIST_BOARD);
     }
+
 }
