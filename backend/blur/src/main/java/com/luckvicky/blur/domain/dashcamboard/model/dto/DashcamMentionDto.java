@@ -15,15 +15,14 @@ import java.util.UUID;
 @Schema(name = "멘션 목록 DTO")
 public class DashcamMentionDto {
 
-    @Schema(description = "멘션된 리그 ID")
-    private UUID id;
+//    @Schema(description = "멘션된 리그 ID")
+//    private UUID id;
 
     @Schema(description = "멘션된 리그 이름")
     private String name;
 
-    public static DashcamMentionDto from(DashcamMention dashcamMention){
+    public static DashcamMentionDto of(DashcamMention dashcamMention){
         return DashcamMentionDto.builder()
-                .id(dashcamMention.getId())
                 .name(dashcamMention.getLeague().getName())
                 .build();
     }

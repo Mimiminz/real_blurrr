@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.dashcamboard.controller;
 
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
+import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCreateRequest;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcamboard.service.DashcamBoardService;
@@ -15,13 +16,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -86,4 +85,50 @@ public class DashcamBoardController {
         DashcamBoardDto boardDto = dashcamBoardService.getDashcamBoardById(id);
         return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
+
+    @Operation(summary = "블랙박스 게시글 작성 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "게시글 작성 성공",
+                    content = @Content(schema = @Schema(implementation = DashcamBoardResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "사용자 또는 리그를 찾을 수 없음"
+            )
+    })
+    @PostMapping
+    public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
+            @Valid
+            @RequestBody DashcamBoardCreateRequest request) {
+        DashcamBoardDto createdBoard = dashcamBoardService.createDashcamBoard(request);
+        return ResponseUtil.created(
+                Result.<DashcamBoardResponse>builder()
+                        .data(DashcamBoardResponse.of(createdBoard))
+                        .build()
+        );
+    }
+    @Operation(summary = "블랙박스 게시글 삭제 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 삭제 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글 없음"
+            )
+    })
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> deleteDashcamBoard(
+            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id){
+        dashcamBoardService.deleteDashcamBoard(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -12,5 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface LeagueRepository extends JpaRepository<League, UUID> {
 
     Optional<List<League>> findAllByType(LeagueType type);
+    List<League> findAllByNameIn(List<String> names);
 
 }

@@ -29,7 +29,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
 
         List<DashcamMentionDto> mentionedLeagues = dashcamMentionRepository.findByDashcam(dashcam).stream()
-                .map(DashcamMentionDto::from)
+                .map(DashcamMentionDto::of)
                 .collect(Collectors.toList());
 
         return DashcamBoardListDto.builder()
@@ -58,7 +58,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
 
         List<DashcamMentionDto> mentionedLeagues = dashcamMentionRepository.findByDashcam(dashcam).stream()
-                .map(DashcamMentionDto::from)
+                .map(DashcamMentionDto::of)
                 .collect(Collectors.toList());
 
         MemberDto memberDto = toMemberDto(dashcam.getMember());

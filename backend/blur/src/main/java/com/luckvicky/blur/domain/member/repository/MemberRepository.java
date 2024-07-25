@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
+
     default Member getOrThrow(UUID id) {
         return findById(id).orElseThrow(NotExistMemberException::new);
     }
@@ -14,4 +15,5 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     boolean existsByEmail(String email);
 
     Optional<Member> findByEmail(String email);
+
 }

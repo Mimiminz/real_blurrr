@@ -1,19 +1,18 @@
 package com.luckvicky.blur.global.config;
 
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;
 import com.luckvicky.blur.global.security.AuthUser;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import java.util.Arrays;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.method.HandlerMethod;
 
 @Configuration
 public class SwaggerConfig {
@@ -61,12 +60,4 @@ public class SwaggerConfig {
                 .version("v1");
     }
 
-    private void removeMemberParameter(io.swagger.v3.oas.models.Operation operation, HandlerMethod handlerMethod) {
-        Arrays.stream(handlerMethod.getMethodParameters())
-                .filter(methodParameter -> methodParameter.hasParameterAnnotation(AuthUser.class))
-                .forEach(methodParameter -> {
-                    String parameterName = methodParameter.getParameterName();
-                    operation.getParameters().removeIf(parameter -> parameter.getName().equals(parameterName));
-                });
-    }
 }

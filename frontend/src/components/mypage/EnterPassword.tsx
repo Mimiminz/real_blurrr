@@ -33,12 +33,14 @@ const EnterPassword = ({ onPasswordEntered }: EnterPasswordProps): JSX.Element =
       >
         {({ isSubmitting }) => (
           <StyledForm>
-            <Field 
+            <StyledField 
               type="password" 
               name="password" 
               placeholder="비밀번호" 
             />
-            <ErrorMessage name="password" component="div" className="error" />
+            <ErrorContainer>
+              <ErrorMessage name="password" component="div" className="error" />
+            </ErrorContainer>
             <Button type="submit" disabled={isSubmitting}>
               확인
             </Button>
@@ -61,15 +63,15 @@ const Container = styled.div`
 
 const Title = styled.h1`
   text-align: center;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 `;
 
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 200px;
-  gap:10px;
+  width: 300px;
+  gap: 10px;
 
   .error {
     color: red;
@@ -77,7 +79,32 @@ const StyledForm = styled(Form)`
   }
 `;
 
+const StyledField = styled(Field)`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  &:hover {
+    border-color: #555;
+  }
+`;
+
+const ErrorContainer = styled.div`
+  height: 24px; 
+  align-items: center;
+  justify-content: center;
+`;
+
 const Button = styled.button`
+  width: 200px;
   padding: 0.7em;
   margin-top: 0.5em;
   font-size: 1em;
@@ -96,4 +123,3 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
-
