@@ -9,11 +9,17 @@ import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.global.execption.BaseException;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
+import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
+import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenService;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -21,12 +27,14 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final RedisRefreshTokenService redisRefreshTokenService;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
-                             JwtProvider jwtProvider) {
+                             JwtProvider jwtProvider, RedisRefreshTokenService redisRefreshTokenService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
+        this.redisRefreshTokenService = redisRefreshTokenService;
     }
 
     @Override
@@ -58,7 +66,9 @@ public class MemberServiceImpl implements MemberService {
         }
 
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
-        String refreshToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
+        String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
+
+        redisRefreshTokenService.saveOrUpdateRefreshToken(member.getId().toString(), refreshToken);
 
         return new JwtDto(accessToken, refreshToken);
     }
@@ -68,5 +78,22 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.getOrThrow(contextMember.getId());
 
         return MemberProfile.of(member);
+    }
+
+    @Override
+    public JwtDto reissueToken(ReissueDto reissue) {
+        //유효성 검증
+        if (!jwtProvider.validation(reissue.refreshToken())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        //유저 조회
+        Member member = memberRepository.findByEmail(jwtProvider.getEmail(reissue.refreshToken()))
+                .orElseThrow(NotExistMemberException::new);
+
+        String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
+        String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
+
+        redisRefreshTokenService.saveOrUpdateRefreshToken(member.getId().toString(), refreshToken);
+        return new JwtDto(accessToken, refreshToken);
     }
 }

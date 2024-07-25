@@ -16,6 +16,7 @@ import com.luckvicky.blur.domain.comment.model.dto.request.ReplyCreateRequest;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -39,7 +40,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Boolean createComment(CommentCreateRequest request) {
 
-        Member member = memberRepository.getOrThrow(request.memberId());
+        Member member = memberRepository.findById(request.memberId())
+                .orElseThrow(NotExistMemberException::new);
 
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);

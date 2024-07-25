@@ -11,6 +11,7 @@ public class StringFormat {
     public static final String PROBLEM_DETAIL_KEY_ERROR = "error";
 
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
 
 }
 
