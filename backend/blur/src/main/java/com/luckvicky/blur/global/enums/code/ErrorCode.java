@@ -46,6 +46,7 @@ public enum ErrorCode {
     NOT_EXIST_MEMBER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     NOT_EXIST_DASHCAM(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."),
     NOT_EXIST_CHANNEL(HttpStatus.NOT_FOUND, "존재하지 않는 채널입니다."),
+    NOT_EXIST_LIKE(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요입니다."),
 
     /**
      * [500 INTERNAL_SERVER_ERROR]
@@ -53,7 +54,9 @@ public enum ErrorCode {
      */
     FAIL_TO_CREATE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 생성을 실패했습니다."),
     FAIL_TO_CREATE_LEAGUE(HttpStatus.INTERNAL_SERVER_ERROR, "리그 생성을 실패했습니다."),
-    FAIL_TO_CREATE_BOARD(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 생성을 실패했습니다.");
+    FAIL_TO_CREATE_BOARD(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 생성을 실패했습니다."),
+    FAIL_TO_CREATE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 생성을 실패했습니다."),
+    FAIL_TO_DELETE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 삭제를 실패했습니다.");
 
     private final HttpStatus code;
     private final String message;

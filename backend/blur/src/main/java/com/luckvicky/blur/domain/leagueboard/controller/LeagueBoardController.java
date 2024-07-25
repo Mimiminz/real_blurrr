@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "게시글 API")
+@Tag(name = "리그 API")
 @RestController
-@RequestMapping("/v1/boards")
+@RequestMapping("/v1/leagues")
 @RequiredArgsConstructor
 public class LeagueBoardController {
 
@@ -47,7 +47,7 @@ public class LeagueBoardController {
             )
     })
     @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
-    @PostMapping("/leagues/{leagueId}")
+    @PostMapping("/{leagueId}/boards")
     public ResponseEntity createLeagueBoard(
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestBody LeagueBoardCreateRequest request
@@ -80,7 +80,7 @@ public class LeagueBoardController {
             )
     })
     @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/legues/{leagueId}")
+    @GetMapping("/{leagueId}/boards")
     public ResponseEntity getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId
     ) {
@@ -114,7 +114,7 @@ public class LeagueBoardController {
             )
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/{boardId}/leagues")
+    @GetMapping("/boards/{boardId}")
     public ResponseEntity getLeagueBoardDetail(@PathVariable(name = "boardId") UUID boardId) {
 
         return ResponseUtil.ok(
