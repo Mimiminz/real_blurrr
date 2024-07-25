@@ -5,6 +5,8 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
+import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.util.ResponseUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,22 +34,34 @@ public class AuthController {
         this.s3ImageService = s3ImageService;
     }
 
+    @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
         memberService.createMember(signupDto);
         return ResponseEntity.ok(true);
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/signin")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
         return ResponseEntity.ok(memberService.login(signInDto));
     }
 
-    @Operation(description = "토큰 재발급")
+    @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
-    public ResponseEntity<JwtDto> tokenReissue(@RequestBody ReissueDto reissue) {
+    public ResponseEntity<JwtDto> tokenReissue(@Valid @RequestBody ReissueDto reissue) {
         return ResponseEntity.ok(memberService.reissueToken(reissue));
     }
+
+    @Operation(summary = "닉네임 중복 체크")
+    @GetMapping("/check/nickname/{nickname}")
+    public ResponseEntity<Boolean> checkNickName(
+            @Schema(description = "닉네임")
+            @PathVariable(name = "nickname")
+            String nickname) {
+        return ResponseEntity.ok(!memberService.checkNickname(nickname));
+    }
+
 
     @GetMapping("/aws/test")
     public ResponseEntity<Map<String, String>> test(
