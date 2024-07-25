@@ -1,10 +1,9 @@
 package com.luckvicky.blur.channel;
 
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
-import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
-import com.luckvicky.blur.domain.channel.repository.ChannelsRepository;
-import com.luckvicky.blur.domain.channel.repository.TagsRepository;
+import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
+import com.luckvicky.blur.domain.channel.repository.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,10 +20,10 @@ public class ChannelEntityTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    private ChannelsRepository channelsRepository;
+    private ChannelRepository channelRepository;
 
     @Autowired
-    private TagsRepository tagsRepository;
+    private TagRepository tagRepository;
 
     @Autowired
     private ChannelTagRepository channelTagRepository;
@@ -40,11 +39,11 @@ public class ChannelEntityTest {
                 .owner(UUID.randomUUID())
                 .build();
 
-        Channel savedChannel = channelsRepository.save(channel);
+        Channel savedChannel = channelRepository.save(channel);
 
         entityManager.flush();
 
-        Channel foundChannel = channelsRepository.findById(savedChannel.getId()).orElse(null);
+        Channel foundChannel = channelRepository.findById(savedChannel.getId()).orElse(null);
         assertThat(foundChannel).isNotNull();
         assertThat(foundChannel.getName()).isEqualTo("Test Channel");
     }
