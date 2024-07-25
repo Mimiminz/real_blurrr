@@ -67,7 +67,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     @Transactional
     public void deleteDashcamBoard(UUID id) {
         Dashcam dashcam = dashcamRepository.findById(id)
-                .orElseThrow(DashcamNotFoundException::new);
+                .orElseThrow(NotFoundDashcamException::new);
 
         dashcamMentionRepository.deleteAllByDashcam(dashcam);
 
