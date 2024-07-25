@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FaCar } from "react-icons/fa";
 import { MdFactory } from "react-icons/md";
 import dummy from "@/db/mainPageData.json";
@@ -34,12 +34,26 @@ const moreTabs = dummy.LeagueList.map((league, index) => ({
 type TabId = string;
 
 const LeaguePage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabId>("carModel");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
+  const initialTab = tab || "carModel";
+
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
   const [activeTabLabel, setActiveTabLabel] = useState<string>(
-    dummy.userInfo["carModel"]
+    tabs.find((t) => t.id === initialTab)?.label || dummy.userInfo["carModel"]
   );
   const [showMoreTabs, setShowMoreTabs] = useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    if (tab) {
+      setActiveTab(tab);
+      const foundTab = tabs.find((t) => t.id === tab);
+      if (foundTab) {
+        setActiveTabLabel(foundTab.label);
+      }
+    }
+  }, [tab]);
 
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
@@ -127,7 +141,7 @@ const LeaguePage: React.FC = () => {
             </StyledButton>
           )}
         </FilterSection>
-        <LeagueBoardList />
+        <LeagueBoardList leagueId={activeTab} />
       </TabContent>
     </Container>
   );
@@ -135,9 +149,7 @@ const LeaguePage: React.FC = () => {
 
 export default LeaguePage;
 
-const Container = styled.div`
-  margin: 0 220px;
-`;
+const Container = styled.div``;
 
 const TopComponent = styled.div`
   display: flex;
