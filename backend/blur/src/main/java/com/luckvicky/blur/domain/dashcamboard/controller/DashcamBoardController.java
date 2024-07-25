@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @Tag(name = "블랙박스 게시글 API")
 @RestController
-@RequestMapping("channels/dashcams")
+@RequestMapping("/v1/channels/dashcams")
 @RequiredArgsConstructor
 public class DashcamBoardController {
 

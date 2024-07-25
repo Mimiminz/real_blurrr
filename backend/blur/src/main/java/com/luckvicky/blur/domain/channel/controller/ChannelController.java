@@ -24,7 +24,7 @@ import java.util.Objects;
 
 @Tag(name = "채널 API")
 @RestController
-@RequestMapping("v1/channels")
+@RequestMapping("/v1/channels")
 @RequiredArgsConstructor
 public class ChannelController {
 
