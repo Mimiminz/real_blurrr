@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useRouter } from "next/navigation";
 import { FaCar } from "react-icons/fa";
 import { MdFactory } from "react-icons/md";
 import dummy from "@/db/mainPageData.json";
@@ -38,6 +39,7 @@ const LeaguePage: React.FC = () => {
     dummy.userInfo["carModel"]
   );
   const [showMoreTabs, setShowMoreTabs] = useState(false);
+  const router = useRouter();
 
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
@@ -48,6 +50,22 @@ const LeaguePage: React.FC = () => {
     setActiveTabLabel(label);
     setShowMoreTabs(false);
   };
+
+  const handleWriteClick = () => {
+    const selectedLeague = dummy.LeagueList.find(
+      (league) => league.name === activeTabLabel
+    );
+    if (selectedLeague) {
+      const leagueId = selectedLeague.id;
+      router.push(
+        `/league/${leagueId}/write?leagueName=${encodeURIComponent(
+          activeTabLabel
+        )}`
+      );
+    }
+  };
+
+  const isCarTab = ["carModel", "carManufacture"].includes(activeTab);
 
   const renderContent = (): JSX.Element => {
     return (
@@ -98,12 +116,16 @@ const LeaguePage: React.FC = () => {
           ))}
         </MoreTabsContainer>
         <FilterSection>
-          <StyledSelect className="sort-select">
+          <StyledSelect>
             <option>게시물 정렬</option>
             <option>게시물 정렬</option>
             <option>게시물 정렬</option>
           </StyledSelect>
-          <StyledButton className="setPosition">글 작성 +</StyledButton>
+          {isCarTab && (
+            <StyledButton className="setPosition" onClick={handleWriteClick}>
+              글 작성 +
+            </StyledButton>
+          )}
         </FilterSection>
         <LeagueBoardList />
       </TabContent>
@@ -120,7 +142,7 @@ const Container = styled.div`
 const TopComponent = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   margin-top: 30px;
 `;
 
@@ -134,8 +156,8 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 10px;
-  width: 120px;
+  padding: 10px 5px;
+  min-width: 100px;
   cursor: pointer;
   background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
   border: none;
@@ -143,7 +165,6 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   font-size: 16px;
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#F97316" : "#333")};
-  /* margin: 0 10px; */
 
   &:hover {
     color: #f97316;
@@ -206,7 +227,6 @@ const MoreTabsContainer = styled.div.attrs<{ $isOpen: boolean }>((props) => ({
   justify-content: center;
   align-items: center;
 
-  /* Custom Scrollbar Styles */
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -248,34 +268,11 @@ const FilterSection = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-
-  .sort-select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
-  }
-
-  button {
-    padding: 10px;
-    background-color: #f1f1f1;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    white-space: nowrap;
-  }
-  /* 
-  .setPosition {
-    display: flex;
-    margin-left: auto;
-    margin-top: 20px;
-  } */
+  margin-top: 30px;
 `;
 
 const StyledSelect = styled.select`
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   border: 1px solid #ddd;
   margin-right: 10px;
