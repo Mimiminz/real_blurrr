@@ -9,7 +9,7 @@ import GlobalStyle from "../styles/GlobalStyle";
 import { theme } from "../styles/theme";
 
 export default function RootLayout({
-  children, 
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -39,5 +39,10 @@ const Layout = styled.div`
 
 const Main = styled.main`
   flex: 1;
-  margin-top: 80px;
+  justify-content: center;
+  margin: 80px 220px;
+
+  @media (max-width: 992px) {
+    margin: 80px 20px;
+  }
 `;
