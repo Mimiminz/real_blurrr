@@ -38,12 +38,6 @@ const Container = styled.div`
   padding: 50px 16px;
 `;
 
-const BreadcrumbContainer = styled.div`
-  width: 100%; /* Full width */
-  max-width: 1000px;
-  margin-bottom: 16px; /* Space between Breadcrumb and content */
-`;
-
 const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;

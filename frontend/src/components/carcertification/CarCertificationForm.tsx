@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import styled from "styled-components";
+import { useRouter } from "next/navigation";
 
 const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -11,7 +11,7 @@ const CarCertificationForm = () => {
   useEffect(() => {
     return () => {
       if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
+        videoStream.getTracks().forEach((track) => track.stop());
       }
     };
   }, [videoStream]);
@@ -25,22 +25,22 @@ const CarCertificationForm = () => {
         videoRef.current.play();
       }
     } catch (error) {
-      console.error('새로고침을 해주세요.', error);
+      console.error("새로고침을 해주세요.", error);
     }
   };
 
   const handleVideoClick = () => {
     if (videoRef.current) {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
-      canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0);
+      canvas.getContext("2d")?.drawImage(videoRef.current, 0, 0);
 
-      setImageSrc(canvas.toDataURL('image/png'));
+      setImageSrc(canvas.toDataURL("image/png"));
 
       videoRef.current.srcObject = null;
       if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
+        videoStream.getTracks().forEach((track) => track.stop());
       }
       setVideoStream(null);
     }
@@ -62,15 +62,19 @@ const CarCertificationForm = () => {
       <Head>
         <Heading>자동차 등록증 업로드</Heading>
         <SubHeading>내 차 인증을 하고 다양한 서비스를 이용해보세요!</SubHeading>
-        <SubSubHeading>* 자동차 등록증과 신분증은 사용자 일치 여부 확인 후 폐기될 예정입니다.</SubSubHeading>
+        <SubSubHeading>
+          * 자동차 등록증은 사용자 일치 여부 확인 후 폐기될 예정입니다.
+        </SubSubHeading>
       </Head>
       <Body>
-        <Button onClick={handleCaptureClick}>신분증 촬영하기</Button>
-        <ImageBox onClick={() => document.getElementById('uploadImage')?.click()}>
+        <Button onClick={handleCaptureClick}>자동차 등록증 촬영하기</Button>
+        <ImageBox
+          onClick={() => document.getElementById("uploadImage")?.click()}
+        >
           {videoStream ? (
             <Video ref={videoRef} autoPlay onClick={handleVideoClick} />
           ) : imageSrc ? (
-            <Image src={imageSrc} alt="신분증 이미지 업로드" />
+            <Image src={imageSrc} alt="자동차 등록증 이미지 업로드" />
           ) : (
             <Placeholder>+</Placeholder>
           )}
@@ -80,12 +84,12 @@ const CarCertificationForm = () => {
         type="file"
         id="uploadImage"
         accept="image/*"
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         onChange={handleImageUpload}
       />
       <ButtonContainer>
-        <Button onClick={() => router.push('/')}>다음에 할게요.</Button>
-        <Button onClick={() => router.push('/')}>완료</Button>
+        <Button onClick={() => router.push("/")}>다음에 할게요.</Button>
+        <Button onClick={() => router.push("/")}>완료</Button>
       </ButtonContainer>
     </Container>
   );

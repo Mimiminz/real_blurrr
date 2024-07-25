@@ -12,6 +12,10 @@ const UserCarInfo: React.FC = () => {
     router.push("/league");
   };
 
+  const handleUserLeagueClick = (tabId: string) => {
+    router.push(`/league?tab=${tabId}`);
+  };
+
   return (
     <Container>
       <ProfileSection>
@@ -22,11 +26,11 @@ const UserCarInfo: React.FC = () => {
         </CarInfo>
       </ProfileSection>
       <ButtonSection>
-        <LeagueButton onClick={handleLeagueClick}>
+        <LeagueButton onClick={() => handleUserLeagueClick("carModel")}>
           {userInfo.carModel} <br />
           리그 <Arrow>↗</Arrow>
         </LeagueButton>
-        <LeagueButton onClick={handleLeagueClick}>
+        <LeagueButton onClick={() => handleUserLeagueClick("carManufacture")}>
           {userInfo.carManufacture} <br />
           리그 <Arrow>↗</Arrow>
         </LeagueButton>

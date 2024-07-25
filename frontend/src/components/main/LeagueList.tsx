@@ -6,7 +6,7 @@ import dummy from "@/db/mainPageData.json";
 const LeagueList: React.FC = () => {
   return (
     <ListContainer>
-      {dummy.LeagueList.map((league, index) => (
+      {dummy.LeagueList.slice(0, 16).map((league, index) => (
         <LeagueListItem key={index} name={league.name} count={league.count} />
       ))}
     </ListContainer>
