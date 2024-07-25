@@ -11,7 +11,6 @@ import com.luckvicky.blur.domain.dashcamboard.repository.DashcamMentionRepositor
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamRepository;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
-import com.luckvicky.blur.domain.member.exception.UserNotFoundException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +46,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     @Override
     @Transactional
     public DashcamBoardDto createDashcamBoard(DashcamBoardCreateRequest request) {
-        Member member = memberRepository.findById(request.memberId())
-                .orElseThrow(UserNotFoundException::new);
+        Member member = memberRepository.getOrThrow(request.memberId());
 
         Dashcam dashcam = request.toEntity(member);
         dashcam = dashcamRepository.save(dashcam);
@@ -70,7 +68,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     @Transactional
     public void deleteDashcamBoard(UUID id) {
         Dashcam dashcam = dashcamRepository.findById(id)
-                .orElseThrow(DashcamNotFoundException::new);
+                .orElseThrow(NotFoundDashcamException::new);
 
         dashcamMentionRepository.deleteAllByDashcam(dashcam);
 

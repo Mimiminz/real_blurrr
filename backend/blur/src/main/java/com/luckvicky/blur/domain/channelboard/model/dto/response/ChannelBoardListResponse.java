@@ -13,7 +13,7 @@ public record ChannelBoardListResponse (
     List<BoardDto> boards
 ){
     public static ChannelBoardListResponse of(List<BoardDto> boards){
-        ChannelBoardListResponse.builder()
+        return ChannelBoardListResponse.builder()
                 .boards(boards)
                 .build();
     }
