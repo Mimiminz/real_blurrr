@@ -55,8 +55,8 @@ public class LikeController {
     })
     @PostMapping("/{memberId}/boards/{boardId}")
     public ResponseEntity createLike(
-            @PathVariable UUID memberId,
-            @PathVariable UUID boardId
+            @PathVariable(name = "memberId") UUID memberId,
+            @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.created(
@@ -95,8 +95,8 @@ public class LikeController {
     })
     @DeleteMapping("/{memberId}/boards/{boardId}")
     public ResponseEntity deleteLike(
-            @PathVariable UUID memberId,
-            @PathVariable UUID boardId
+            @PathVariable(name = "memberId") UUID memberId,
+            @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.ok(
