@@ -1,13 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import SearchBar from '@/components/common/UI/SearchBar';
-import Breadcrumb from '@/components/common/UI/BreadCrumb';
 import { useRouter } from "next/navigation";
 
 interface PostTitleProps {
   channel: string;
-  subChannel: string;
-  channelUrl: string;
   title: string;
 }
 
@@ -75,25 +72,16 @@ const SideSection = styled.div`
   margin-top: 10px;
 `;
 
-const PostTitle: React.FC<PostTitleProps> = ({ channel, subChannel, title, channelUrl }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ channel, title }) => {
   const router = useRouter();
 
   const handleCreatePost = () => {
-    if (channel === "채널") {
-      if (subChannel === "블랙 박스") {
-        router.push("/channels/1/boards/write");
-      } else {
-        router.push("/channels/1/boards/write");
-      }
-    } else if (channel === "리그") {
-      router.push("/channels/1/boards/write");
-    }
+    router.push(`/channels/${channel}/write`);
   };
 
   return (
     <Container>
       <TitleSection>
-        <Breadcrumb channel={channel} subChannel={subChannel} channelUrl={channelUrl} />
         <h1>{title}</h1>
         <SideSection>
           <button className="setButton">팔로우 +</button>

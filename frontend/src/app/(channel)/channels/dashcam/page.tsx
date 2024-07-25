@@ -2,25 +2,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useRouter } from "next/navigation";
 import DashCamCard from '@/components/channel/dashcam/DashCamCard';
 import PostTitle from '@/components/channel/PostTitle';
 import dummy from "@/db/data.json";
 
-const Container = styled.div`
-  margin: 10px 20px; /* 기본 마진 설정 */
-  
-  @media (min-width: 768px) {
-    margin: 30px 100px; /* 태블릿 크기 이상일 때 */
-  }
-
-  @media (min-width: 1024px) {
-    margin: 50px 150px; /* 데스크탑 크기 이상일 때 */
-  }
-
-  @media (min-width: 1440px) {
-    margin: 70px 300px; /* 큰 데스크탑 크기 이상일 때 */
-  }
-`;
+const Container = styled.div``;
 
 const CardGrid = styled.div`
   display: grid;
@@ -29,17 +16,18 @@ const CardGrid = styled.div`
 `;
 
 const DashCam: React.FC = () => {
+   const router = useRouter(); // useRouter 훅 사용
+
+   const handleCardClick = (id: number) => {
+      router.push(`/channels/dashcam/${id}`);
+   };
+
    return (
       <Container>
-         <PostTitle
-            channel="채널"
-            subChannel="블랙박스 채널"
-            channelUrl="/channels"
-            title="다양한 블랙박스 영상을 보고 직접 투표하자"
-         />
+         <PostTitle channel="dashcam" title="다양한 블랙박스 영상을 보고 직접 투표하자" />
          <CardGrid>
             {dummy.dashCamList.map((item) => (
-               <div key={item.title} onClick={() => console.log("item pressed")}>
+               <div key={item.id} onClick={() => handleCardClick(item.id)}>
                   <DashCamCard
                      thumbnail={item.thumbnail}
                      tags={item.tags}
