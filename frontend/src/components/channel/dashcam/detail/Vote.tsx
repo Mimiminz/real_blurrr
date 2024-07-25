@@ -7,6 +7,7 @@ const Container = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;  // 부모 요소의 너비에 맞추기 위해 추가
 `;
 
 const Question = styled.h3`
@@ -51,29 +52,29 @@ const Percentage = styled.span`
 `;
 
 const Vote: React.FC = () => {
-   const [votes, setVotes] = useState({ a: 33, b: 67 });
+  const [votes, setVotes] = useState({ a: 33, b: 67 });
 
-   return (
-      <Container>
-         <Question>누가 잘못했나요?</Question>
-         <Option>
-            <RadioButton type="radio" name="vote" />
-            <Label>A 차량</Label>
-            <ProgressBarContainer>
-               <ProgressBar percentage={votes.a} />
-            </ProgressBarContainer>
-            <Percentage>{votes.a}%</Percentage>
-         </Option>
-         <Option>
-            <RadioButton type="radio" name="vote" />
-            <Label>B 차량</Label>
-            <ProgressBarContainer>
-               <ProgressBar percentage={votes.b} />
-            </ProgressBarContainer>
-            <Percentage>{votes.b}%</Percentage>
-         </Option>
-      </Container>
-   );
+  return (
+    <Container>
+      <Question>누가 잘못했나요?</Question>
+      <Option>
+        <RadioButton type="radio" name="vote" />
+        <Label>A 차량</Label>
+        <ProgressBarContainer>
+          <ProgressBar percentage={votes.a} />
+        </ProgressBarContainer>
+        <Percentage>{votes.a}%</Percentage>
+      </Option>
+      <Option>
+        <RadioButton type="radio" name="vote" />
+        <Label>B 차량</Label>
+        <ProgressBarContainer>
+          <ProgressBar percentage={votes.b} />
+        </ProgressBarContainer>
+        <Percentage>{votes.b}%</Percentage>
+      </Option>
+    </Container>
+  );
 };
 
 export default Vote;
