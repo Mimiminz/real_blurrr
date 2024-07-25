@@ -6,7 +6,7 @@ import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
-import com.luckvicky.blur.domain.channel.repository.ChannelsRepository;
+import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChannelServiceImpl implements ChannelService{
 
-    private final ChannelsRepository channelsRepository;
+    private final ChannelRepository channelRepository;
     private final ChannelTagRepository channelTagRepository;
     private final ChannelMapper channelMapper;
 
     @Override
     public List<ChannelDto> getAllChannels(){
-        List<Channel> channels = channelsRepository.findAll();
+        List<Channel> channels = channelRepository.findAll();
         List<UUID> channelIds = channels.stream()
                 .map(Channel::getId)
                 .collect(Collectors.toList());
