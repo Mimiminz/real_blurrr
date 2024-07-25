@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Schema(name = "대시캠 게시글 생성 요청")
+@Schema(name = "블랙박스 게시글 생성 요청 ")
 public record DashcamBoardCreateRequest(
         @Schema(
                 description = "제목",
