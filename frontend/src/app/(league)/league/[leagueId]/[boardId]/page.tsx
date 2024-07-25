@@ -10,7 +10,7 @@ import { Divider } from "@nextui-org/divider";
 import { LiaCommentDots } from "react-icons/lia";
 
 const boardDetail = () => (
-  <Container>
+  <>
     <BreadcrumbContainer>
       <Breadcrumb channel="리그" subChannel="GV70 리그" channelUrl="/league" />
     </BreadcrumbContainer>
@@ -43,20 +43,23 @@ const boardDetail = () => (
       <CreateComment />
       <Comment
         avatarUrl="https://i.pravatar.cc/30"
-        username="돌판"
+        userName="돌판"
+        userDetail="BMW M8"
         text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.dfawefawtfawerfawv eravwrwaerwaetferwavfwervawbawrnsrysebrtaeawegrawgawgrgedgawsrg."
         time="23h"
       />
-      <Reply />
+      <Reply
+        avatarUrl="https://i.pravatar.cc/30"
+        userName="해결사요"
+        userDetail="BMW M8"
+        text="무과실이 맞는데 아무래도 과실 몰릴것 같네요."
+        time="6h"
+      />
     </CommentContainer>
-  </Container>
+  </>
 );
 
 export default boardDetail;
-
-const Container = styled.div`
-  margin: 0 220px;
-`;
 
 const BreadcrumbContainer = styled.div`
   width: 100%;

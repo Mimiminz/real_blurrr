@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface CommentProps {
-   avatarUrl: string;
-   username: string;
-   text: string;
-   time: string;
+  avatarUrl: string;
+  userName: string;
+  userDetail: string;  // 새로운 속성 추가
+  text: string;
+  time: string;
 }
 
 const Container = styled.div`
@@ -27,9 +28,21 @@ const Content = styled.div`
   flex-direction: column;
 `;
 
+const UsernameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px; // UserDetail과의 간격 조정
+`;
+
 const Username = styled.span`
   font-weight: bold;
   color: #f57c00;
+`;
+
+const UserDetail = styled.span`
+  font-size: 12px;
+  color: #888;
+  margin-left: 8px;
 `;
 
 const Text = styled.span`
@@ -50,20 +63,23 @@ const Time = styled.span`
   margin-left: 8px;
 `;
 
-const Comment: React.FC<CommentProps> = ({ avatarUrl, username, text, time }) => {
-   return (
-      <Container>
-         <Avatar src={avatarUrl} alt={`${username}'s avatar`} />
-         <Content>
-            <Username>{username}</Username>
-            <Text>{text}</Text>
-            <div>
-               <Reply>답글</Reply>
-               <Time>{time}</Time>
-            </div>
-         </Content>
-      </Container>
-   );
+const Comment: React.FC<CommentProps> = ({ avatarUrl, userName, userDetail, text, time }) => {
+  return (
+    <Container>
+      <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
+      <Content>
+        <UsernameWrapper>
+          <Username>{userName}</Username>
+          <UserDetail>· {userDetail}</UserDetail>
+        </UsernameWrapper>
+        <Text>{text}</Text>
+        <div>
+          <Reply>답글</Reply>
+          <Time>{time}</Time>
+        </div>
+      </Content>
+    </Container>
+  );
 };
 
 export default Comment;
