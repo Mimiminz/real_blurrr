@@ -12,4 +12,5 @@ public interface MemberService {
     JwtDto login(SignInDto signInDto);
     MemberProfile findMember(ContextMember contextMember);
     JwtDto reissueToken(ReissueDto reissue);
+    Boolean checkNickname(String nickname);
 }

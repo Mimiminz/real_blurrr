@@ -96,4 +96,9 @@ public class MemberServiceImpl implements MemberService {
         redisRefreshTokenService.saveOrUpdateRefreshToken(member.getId().toString(), refreshToken);
         return new JwtDto(accessToken, refreshToken);
     }
+
+    @Override
+    public Boolean checkNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
 }
