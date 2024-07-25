@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ChannelTagRepository extends JpaRepository<ChannelTag, UUID> {
     List<ChannelTag> findByChannelIdIn(List<UUID> channelIds);
     List<ChannelTag> findByTagNameIn(List<String> tagNames);
+    List<ChannelTag> findByChannelId(UUID channelId);
 }
