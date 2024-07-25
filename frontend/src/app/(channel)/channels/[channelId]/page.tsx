@@ -1,29 +1,13 @@
-// /pages/channels/[channelId]/page.tsx
-"use client";
+'use client';
 
 import React from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
+import ChannelBoardList from '@/components/channel/board/ChannelBoardList';
+import PostTitle from '@/components/channel/PostTitle';
 
-const Container = styled.div`
-  padding: 20px;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const ChannelPage = () => {
-   const router = useRouter();
-   const { channelId } = router.query;
-
+const ChannelBoardPage: React.FC = () => {
    return (
-      <Container>
-         <Title>Channel Page</Title>
-         <p>Welcome to the channel with ID: {channelId}</p>
-      </Container>
+      <><PostTitle channel="something" title="채널에 대한 설명 쓰는 공간입니다~" /><ChannelBoardList /></>
    );
-};
+}
 
-export default ChannelPage;
+export default ChannelBoardPage;

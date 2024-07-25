@@ -8,14 +8,13 @@ import CreateComment from '@/components/common/UI/comment/CreateComment';
 import Comment from '@/components/common/UI/comment/Comment';
 import Reply from '@/components/common/UI/comment/Reply';
 import Vote from '@/components/channel/dashcam/detail/Vote';
-import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 70px 16px;
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
 `;
 
 const ContentContainer = styled.div`
@@ -72,9 +71,6 @@ const Page = () => {
    return (
       <Container>
          <ContentContainer>
-            <BreadcrumbContainer>
-               <Breadcrumb channel="채널" subChannel="블랙박스" channelUrl="/channels" />
-            </BreadcrumbContainer>
             <InnerContentContainer>
                <LeftColumn>
                   <DashCamContent />
