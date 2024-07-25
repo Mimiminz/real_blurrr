@@ -96,40 +96,7 @@ export default function Home() {
   );
 }
 
-const UserInfoContainer = styled.div`
-  margin: 20px;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-`;
-
-const MoreButton = styled.button`
-  background: none;
-  border: none;
-  color: gray;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 40px;
-  /* text-decoration: underline; */
-`;
-
-const MoreButtonIcon = styled.span`
-  margin-left: 4px;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px; /* 아이콘 크기 조정 */
-  vertical-align: middle;
-`;
-
-const PageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 0 220px;
-
-  @media (max-width: 992px) {
-    margin: 0 20px;
-  }
-`;
+const PageContainer = styled.div``;
 
 const GridContainer = styled.div`
   display: grid;
@@ -194,4 +161,29 @@ const AsideSectionTitle = styled.h2`
 
 const Icon = styled.span`
   margin-right: 4px;
+`;
+
+const UserInfoContainer = styled.div`
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+`;
+
+const MoreButton = styled.button`
+  background: none;
+  border: none;
+  color: gray;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 40px;
+  /* text-decoration: underline; */
+`;
+
+const MoreButtonIcon = styled.span`
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* 아이콘 크기 조정 */
+  vertical-align: middle;
 `;
