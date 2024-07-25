@@ -10,22 +10,6 @@ import { useRouter } from 'next/navigation';
 
 type Props = {}
 
-const Container = styled.div`
-  margin: 10px 20px; /* 기본 마진 설정 */
-  
-  @media (min-width: 768px) {
-    margin: 30px 100px; /* 태블릿 크기 이상일 때 */
-  }
-
-  @media (min-width: 1024px) {
-    margin: 50px 150px; /* 데스크탑 크기 이상일 때 */
-  }
-
-  @media (min-width: 1440px) {
-    margin: 70px 300px; /* 큰 데스크탑 크기 이상일 때 */
-  }
-`;
-
 const SectionTitle = styled.h3`
   margin-top: 40px;
   margin-bottom: 30px;
@@ -94,7 +78,7 @@ const Channels: React.FC<Props> = (props) => {
   };
 
   return (
-    <Container>
+    <>
       <ButtonContainer>
         <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
       </ButtonContainer>
@@ -134,7 +118,7 @@ const Channels: React.FC<Props> = (props) => {
           </div>
         ))}
       </GridContainer>
-    </Container>
+    </>
   );
 }
 
