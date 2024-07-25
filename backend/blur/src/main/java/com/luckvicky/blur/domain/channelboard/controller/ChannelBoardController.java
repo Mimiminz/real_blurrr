@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Tag(name = "채널 게시글 API")
 @RestController
-@RequestMapping("v1/channelboards")
+@RequestMapping("/v1/channelboards")
 @RequiredArgsConstructor
 public class ChannelBoardController {
 
