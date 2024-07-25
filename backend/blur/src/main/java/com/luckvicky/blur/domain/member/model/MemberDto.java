@@ -9,18 +9,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Schema(name = "사용자 정보")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class MemberDto {
+
     @Schema(description = "식별값")
     private UUID id;
 
     @Schema(description = "이메일")
-    private UUID email;
+    private String email;
 
     @Schema(description = "이미지 url")
     private String profileUrl;
@@ -36,4 +35,5 @@ public class MemberDto {
 
     @Schema(description = "제조사")
     private String carManufacture;
+
 }

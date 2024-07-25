@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.board.model.dto;
 
 import com.luckvicky.blur.domain.member.model.MemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.UUID;
 import lombok.Getter;
 
 @Getter
@@ -9,7 +10,7 @@ import lombok.Getter;
 public class BoardDto {
 
     @Schema(description = "고유 식별값")
-    private String id;
+    private UUID id;
 
     @Schema(description = "사용자 정보")
     private MemberDto member;
@@ -20,8 +21,9 @@ public class BoardDto {
     @Schema(description = "생성 시간")
     private String createdAt;
 
-    // :todo 좋아요 수
+    @Schema(description = "댓글 개수")
+    private Long commentNumber;
 
-    // :todo 댓글 수
+    // :todo 좋아요 수
 
 }

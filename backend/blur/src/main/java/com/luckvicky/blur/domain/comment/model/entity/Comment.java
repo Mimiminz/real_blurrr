@@ -30,7 +30,6 @@ public class Comment extends BaseEntity {
             name = "comment_id",
             columnDefinition = "BINARY(36)",
             referencedColumnName = "id",
-            insertable = false,
             updatable = false
     )
     private Comment comment;

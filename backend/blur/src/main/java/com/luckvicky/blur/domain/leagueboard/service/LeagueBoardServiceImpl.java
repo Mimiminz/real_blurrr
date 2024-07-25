@@ -57,7 +57,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     public List<BoardDto> getLeagueBoards(UUID leagueId) {
 
         League league = leagueRepository.findById(leagueId)
-                        .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
+                .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
 
         List<LeagueBoard> leagueBoards = leagueBoardRepository.findByLeague(league);
 
@@ -77,8 +77,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     @Override
     public LeagueBoardDetailResponse getLeagueBoardDetail(UUID boardId) {
 
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotExistBoardException(NOT_EXIST_BOARD));
+        Board board = boardRepository.getOrThrow(boardId);
 
         return LeagueBoardDetailResponse.of(
                 board.getViewCount(),
