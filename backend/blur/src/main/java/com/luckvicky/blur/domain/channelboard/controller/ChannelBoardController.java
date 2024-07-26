@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.channelboard.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
@@ -55,9 +56,9 @@ public class ChannelBoardController {
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
     @GetMapping
     public ResponseEntity getChannelBoard(@PathVariable(name = "channelId")UUID channelId){
-        List<BoardDto> boardDtos = channelBoardService.getChannelBoard(channelId);
+        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(channelId);
 
-        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
+        if (Objects.isNull(channelBoardListDtos) || channelBoardListDtos.isEmpty()) {
             return ResponseUtil.noContent(
                     Result.builder().build()
             );
@@ -65,7 +66,7 @@ public class ChannelBoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(ChannelBoardListResponse.of(boardDtos))
+                        .data(ChannelBoardListResponse.of(channelBoardListDtos))
                         .build()
         );
     }

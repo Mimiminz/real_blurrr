@@ -5,7 +5,8 @@ import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, Long> {
+public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID> {
     List<ChannelBoard> findByChannel (Channel channel);
 }

@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.channel.model.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
@@ -12,11 +13,11 @@ public class ChannelTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tag_id")
     private Tag tag;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id")
     private Channel channel;
 
@@ -24,8 +25,7 @@ public class ChannelTag {
     }
 
     @Builder
-    public ChannelTag(Long id, Tag tag, Channel channel) {
-        this.id = id;
+    public ChannelTag(Tag tag, Channel channel) {
         this.tag = tag;
         this.channel = channel;
     }

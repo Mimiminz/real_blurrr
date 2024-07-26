@@ -3,9 +3,12 @@ package com.luckvicky.blur.domain.board.model.dto;
 import com.luckvicky.blur.domain.member.model.MemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
+
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @Schema(name = "게시물 정보")
 public class BoardDto {
 
