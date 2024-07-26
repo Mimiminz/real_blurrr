@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 16px 30px;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;  // 부모 요소의 너비에 맞추기 위해 추가
+  width: 100%;
 `;
 
 const Question = styled.h3`
@@ -37,6 +32,7 @@ const ProgressBarContainer = styled.div`
   background-color: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
+  margin-right: 8px; /* ProgressBar와 Percentage 사이에 여유 공간 추가 */
 `;
 
 const ProgressBar = styled.div<{ percentage: number }>`
@@ -48,7 +44,6 @@ const ProgressBar = styled.div<{ percentage: number }>`
 const Percentage = styled.span`
   font-size: 14px;
   color: #666;
-  margin-left: 8px;
 `;
 
 const Vote: React.FC = () => {
