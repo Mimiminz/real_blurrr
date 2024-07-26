@@ -9,12 +9,14 @@ import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Video;
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamMentionRepository;
 import com.luckvicky.blur.domain.member.model.MemberDto;
+import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,10 +34,15 @@ public class DashcamBoardMapper {
                 .map(DashcamMentionDto::of)
                 .collect(Collectors.toList());
 
+        SimpleMemberDto memberDto = toSimpleMemberDto(dashcam.getMember());
+
         return DashcamBoardListDto.builder()
                 .id(dashcam.getId())
                 .title(dashcam.getTitle())
+                .member(memberDto)
                 .viewCount(dashcam.getViewCount())
+                .commentCount(dashcam.getCommentCount())
+                .likeCount(dashcam.getLikeCount())
                 .createdAt(dashcam.getCreatedAt())
                 .videoUrl(videoUrls)
                 .mentionedLeagues(mentionedLeagues)
@@ -79,4 +86,13 @@ public class DashcamBoardMapper {
     private MemberDto toMemberDto(Member member) {
         return MemberDto.of(member);
     }
+
+
+    private SimpleMemberDto toSimpleMemberDto(Member member){
+        return SimpleMemberDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .carTitle(member.getCarTitle())
+                .build();
     }
+}

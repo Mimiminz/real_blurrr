@@ -1,5 +1,7 @@
 package com.luckvicky.blur.domain.dashcamboard.model.dto;
 
+import com.luckvicky.blur.domain.member.model.MemberDto;
+import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +16,9 @@ import java.util.UUID;
 public class DashcamBoardListDto{
     @Schema(description = "게시물 고유 식별값")
     private UUID id;
+
+    @Schema(description = "사용자 정보")
+    private SimpleMemberDto member;
 
     @Schema(description = "게시물 제목")
     private String title;
@@ -30,7 +35,11 @@ public class DashcamBoardListDto{
     @Schema(description = "멘션된 리그 목록")
     private List<DashcamMentionDto> mentionedLeagues;
 
-    // :todo 좋아요 수
+    @Schema(description = "댓글 개수")
+    private Long commentCount;
+
+    @Schema(description = "좋아요 개수")
+    private Long  likeCount;
 
 
 
