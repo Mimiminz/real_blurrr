@@ -14,4 +14,6 @@ public interface CommentService {
 
     List<CommentDto> findCommentsByBoard(UUID boardId);
 
+    Boolean deleteComment(UUID commentId, UUID boardId);
+
 }

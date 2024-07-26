@@ -64,6 +64,10 @@ public class Board extends BaseEntity {
         this.commentCount++;
     }
 
+    public void decreaseCommentCount()  {
+        this.commentCount--;
+    }
+
     public void increaseLikeCount()  {
         this.likeCount++;
     }
