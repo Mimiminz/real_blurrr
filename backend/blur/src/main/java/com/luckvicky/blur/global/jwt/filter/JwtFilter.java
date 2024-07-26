@@ -3,6 +3,9 @@ package com.luckvicky.blur.global.jwt.filter;
 import com.luckvicky.blur.global.constant.StringFormat;
 import com.luckvicky.blur.global.jwt.service.CustomUserDetailService;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,28 +33,38 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = resolveToken(request);
-        // JWT 유효성 검증
-        if (StringUtils.hasText(token) && jwtProvider.validation(token)) {
-            String email = jwtProvider.getEmail(token);
-            // 유저 정보 생성
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        try {
+            String token = resolveToken(request);
+            // JWT 유효성 검증
+            if (StringUtils.hasText(token) && jwtProvider.validation(token)) {
+                String email = jwtProvider.getEmail(token);
+                // 유저 정보 생성
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-            if (userDetails != null) {
-                // UserDetails, Password, Role 정보를 기반으로 접근 권한을 가지고 있는 Token 생성
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                // Security Context 해당 접근 권한 정보 설정
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (userDetails != null) {
+                    // UserDetails, Password, Role 정보를 기반으로 접근 권한을 가지고 있는 Token 생성
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    // Security Context 해당 접근 권한 정보 설정
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+            // 다음 필터로 넘기기
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            // JWT가 만료된 경우
+            log.error("Expired JWT token", e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT token");
+        } catch (SignatureException | MalformedJwtException e) {
+            // JWT가 잘못된 서명이거나 형식이 잘못된 경우
+            log.error("Invalid JWT token", e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+        } catch (Exception e) {
+            log.error("Unexpected error", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred");
         }
-
-        // 다음 필터로 넘기기
-        filterChain.doFilter(request, response);
     }
     /**
      * Request Header에서 토큰 조회 및 Bearer 문자열 제거 후 반환하는 메소드
-     * @param request HttpServletRequest
-     * @return 추출된 토큰 정보 반환 (토큰 정보가 없을 경우 null 반환)
      */
     private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(StringFormat.TOKEN_HEADER_NAME);
