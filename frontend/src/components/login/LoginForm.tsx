@@ -52,10 +52,10 @@ const SignupForm = () => {
 
 const Container = styled.div`
   max-width: 400px;
-  margin: 0 auto;
-  padding: 1em;
+  margin: 5% auto;
+  padding: 2em;
   background: #f9f9f9;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
