@@ -26,6 +26,12 @@ public class DashcamBoardListDto{
     @Schema(description = "게시물 조회수")
     private Long viewCount;
 
+    @Schema(description = "댓글 개수")
+    private Long commentCount;
+
+    @Schema(description = "좋아요 개수")
+    private Long  likeCount;
+
     @Schema(description = "게시물 생성 시간")
     private LocalDateTime createdAt;
 
@@ -35,11 +41,6 @@ public class DashcamBoardListDto{
     @Schema(description = "멘션된 리그 목록")
     private List<DashcamMentionDto> mentionedLeagues;
 
-    @Schema(description = "댓글 개수")
-    private Long commentCount;
-
-    @Schema(description = "좋아요 개수")
-    private Long  likeCount;
 
 
 
