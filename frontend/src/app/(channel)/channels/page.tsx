@@ -49,23 +49,23 @@ const SearchBarContainer = styled.div`
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 
   @media (min-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
   }
 
   @media (min-width: 1024px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   @media (min-width: 1440px) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 `;
 
@@ -108,7 +108,7 @@ const Channels: React.FC<Props> = (props) => {
 
       <GridContainer>
         {dummy.AllChannels.map((item) => (
-          <div key={item.title} onClick={() => console.log("item pressed")}>
+          <div key={item.id} onClick={() => console.log("item pressed")}>
             <ChannelCard
               title={item.title}
               followers={item.followers} // 좋아요 수로 가정
