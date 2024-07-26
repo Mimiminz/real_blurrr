@@ -15,14 +15,21 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
+import com.luckvicky.blur.global.util.ResourceUtil;
+import com.luckvicky.blur.global.util.UuidUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
+import com.luckvicky.blur.infra.mail.service.MailService;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,14 +48,20 @@ public class MemberServiceImpl implements MemberService {
     private final RedisRefreshTokenService redisRefreshTokenService;
     private final S3ImageService s3ImageService;
 
+    private final MailService mailService;
+
+    private final ResourceUtil resourceUtil;
+
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenService redisRefreshTokenService,
-                             S3ImageService s3ImageService) {
+                             S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.redisRefreshTokenService = redisRefreshTokenService;
         this.s3ImageService = s3ImageService;
+        this.mailService = mailService;
+        this.resourceUtil = resourceUtil;
     }
 
     @Transactional
@@ -140,5 +153,18 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return reuslt;
+    }
+
+    @Override
+    public boolean authEmail(String email) {
+        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
+
+        String authCode = UuidUtil.createSequentialUUID().toString().substring(0,8);
+
+        htmlContent = htmlContent.replace("{{authCode}}", authCode);
+
+        mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
+
+        return false;
     }
 }
