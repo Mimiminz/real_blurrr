@@ -72,6 +72,8 @@ public record DashcamBoardCreateRequest(
                 .content(this.content)
                 .type(BoardType.DASHCAM)
                 .viewCount(0L)
+                .commentCount(0L)
+                .likeCount(0L)
                 .options(this.options)
                 .videos(this.videos)
                 .build();
