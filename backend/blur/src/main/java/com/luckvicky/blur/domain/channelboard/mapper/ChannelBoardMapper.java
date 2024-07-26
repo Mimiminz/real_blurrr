@@ -5,6 +5,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoardMention;
+import com.luckvicky.blur.domain.member.model.MemberDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ChannelBoardMapper {
     private BoardDto toBoardDto(ChannelBoard channelBoard) {
         return BoardDto.builder()
                 .id(channelBoard.getId())
-//                .member(channelBoard.getMember().toDto())
+                .member(MemberDto.of(channelBoard.getMember()))
                 .title(channelBoard.getTitle())
                 .createdAt(channelBoard.getCreatedAt().toString())
                 .commentCount(channelBoard.getCommentCount())
