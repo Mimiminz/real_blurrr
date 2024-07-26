@@ -29,15 +29,26 @@ const User = styled.div`
 `;
 
 const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 40px;  // 수정된 크기
+  height: 40px; // 수정된 크기
   border-radius: 50%;
   background-color: #c4c4c4;
   margin-right: 8px;
 `;
 
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const Username = styled.div`
   font-weight: bold;
+`;
+
+const CarInfo = styled.div`
+  color: #666;
+  font-size: 14px;
+  margin-top: 4px;
 `;
 
 const Date = styled.div`
@@ -82,7 +93,10 @@ const DashCamContent: React.FC = () => {
          <Header>
             <User>
                <Avatar />
-               <Username>blurrr</Username>
+               <UserInfo>
+                  <Username>blurrr</Username>
+                  <CarInfo>벤츠 GLS 600 4MATIC MANUFAKTUR 2024</CarInfo>
+               </UserInfo>
             </User>
             <Date>2024.07.17</Date>
          </Header>
