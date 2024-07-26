@@ -78,8 +78,8 @@ const StatItem = styled.div`
   color: #333;
 
   & > svg {
-    margin-right: 4px;
-    font-size: 18px;
+    margin-right: 5px;
+    font-size: 17px;
   }
 `;
 

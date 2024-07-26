@@ -92,11 +92,11 @@ const Content = styled.div`
 `;
 
 const HeartButton = styled.button`
-  margin: 5px 0px 5px auto;
+  margin: 5px 1px 5px auto;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 22px;
   color: #666;
   display: flex;
   justify-content: flex-end;

@@ -4,7 +4,6 @@ import Comment from '@/components/common/UI/comment/Comment';
 import CreateComment from '@/components/common/UI/comment/CreateComment';
 import Reply from '@/components/common/UI/comment/Reply';
 import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
-import { Divider } from '@nextui-org/divider';
 import React, { useState } from 'react';
 import { LiaCommentDots } from 'react-icons/lia';
 import styled from "styled-components";
@@ -16,6 +15,7 @@ const Content = styled.div`
   color: #333;
   padding: 20px;
   padding-bottom: 20px;
+  border-top: 1px solid #bebebe;
 `;
 
 const CommentNumber = styled.div`
@@ -32,6 +32,7 @@ const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px 0px;
+  border-top: 1px solid #bebebe;
 `;
 
 const HeartButton = styled.button`
@@ -39,7 +40,7 @@ const HeartButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 22px;
   color: #666;
   display: flex;
   justify-content: flex-end;
@@ -68,7 +69,6 @@ const BoardDetailPage: React.FC = () => {
             authorCarInfo="벤츠 GLS 600 4MATIC MANUFAKTUR 2024"
             tags={["현대", "제네시스"]}
          />
-         <Divider />
          <Content>
             지난주말에 장인어른이 당한 사고 내용입니다 접합 차량과 같은방향으로
             진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만 그대로
@@ -83,7 +83,6 @@ const BoardDetailPage: React.FC = () => {
          <HeartButton onClick={toggleLike}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
          </HeartButton>
-         <Divider />
          <CommentContainer>
             <CommentNumber>
                <LiaCommentDots />8
