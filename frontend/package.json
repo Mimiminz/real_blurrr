@@ -11,6 +11,7 @@
   "dependencies": {
     "@nextui-org/card": "^2.0.33",
     "@nextui-org/divider": "^2.0.31",
+    "axios": "^1.7.2",
     "formik": "^2.4.6",
     "next": "14.2.5",
     "next-images": "^1.8.5",
