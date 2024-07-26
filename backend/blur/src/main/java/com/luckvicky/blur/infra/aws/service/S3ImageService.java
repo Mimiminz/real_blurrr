@@ -5,8 +5,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class S3ImageService {
     @Value("${cloud.aws.s3.bucket-name}")
     private String bucket;
 
-    public Map<String, String> getPresignedUrl(String prefix, String fileName) {
+    public Map<String, String> getPresignedUrl(String prefix, String fileName) throws MalformedURLException {
         if (!prefix.isEmpty()) {
             fileName = createPath(prefix, fileName);
         }
@@ -32,7 +34,11 @@ public class S3ImageService {
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedUrlRequest(bucket, fileName);
         URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
 
-        return Map.of("url", url.toString());
+        Map<String, String> result = new HashMap<>();
+
+        result.put("fullUrl", url.toString());
+        result.put("noQueryParamUrl", "https://" + url.getHost() + url.getPath());
+        return result;
     }
 
     private GeneratePresignedUrlRequest getGeneratePresignedUrlRequest(String bucket, String fileName) {
@@ -58,7 +64,7 @@ public class S3ImageService {
     }
 
     private String createFileId() {
-        return UUID.randomUUID().toString().substring(0,15);
+        return UUID.randomUUID().toString().substring(0, 15);
     }
 
     private String createPath(String prefix, String fileName) {

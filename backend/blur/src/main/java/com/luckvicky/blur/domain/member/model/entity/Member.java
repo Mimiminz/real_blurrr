@@ -10,7 +10,9 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @AllArgsConstructor
 @Builder
 @Getter
@@ -51,5 +53,17 @@ public class Member extends BaseEntity {
     private String carTitle;
 
     public Member() {
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateImg(String imgurl) {
+        this.profileUrl = imgurl;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
