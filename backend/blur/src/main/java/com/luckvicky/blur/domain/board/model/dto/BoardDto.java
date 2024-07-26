@@ -3,9 +3,12 @@ package com.luckvicky.blur.domain.board.model.dto;
 import com.luckvicky.blur.domain.member.model.MemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
+
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @Schema(name = "게시물 정보")
 public class BoardDto {
 
@@ -22,8 +25,9 @@ public class BoardDto {
     private String createdAt;
 
     @Schema(description = "댓글 개수")
-    private Long commentNumber;
+    private Long commentCount;
 
-    // :todo 좋아요 수
+    @Schema(description = "좋아요 개수")
+    private Long  likeCount;
 
 }

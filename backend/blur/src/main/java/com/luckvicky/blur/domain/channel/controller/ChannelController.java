@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.channel.controller;
 
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -12,12 +13,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +28,26 @@ import java.util.Objects;
 public class ChannelController {
 
     private final ChannelService channelService;
+
+    @Operation(summary = "채널 생성 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "채널 생성 완료 응답",
+                    content = @Content(schema = @Schema(implementation = ChannelDto.class))
+            )
+    })
+    @PostMapping
+    public ResponseEntity<Result<ChannelDto>> createChannel(
+            @Valid @RequestBody ChannelCreateRequest request) {
+        ChannelDto createdChannel = channelService.createChannel(request);
+        return ResponseUtil.created(
+                Result.<ChannelDto>builder()
+                        .data(createdChannel)
+                        .build()
+        );
+    }
+
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @ApiResponses({
@@ -55,6 +74,9 @@ public class ChannelController {
                         .build()
         );
     }
+
+
+
 
     @Operation(summary = "태그 기반 채널 검색 API")
     @ApiResponses({

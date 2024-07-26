@@ -202,7 +202,7 @@ const SignupForm = () => {
 
 const Container = styled.div`
   max-width: 400px;
-  margin: 0 auto;
+  margin: 5% auto;
   padding: 2em;
   background: #f9f9f9;
   border-radius: 5px;
@@ -227,12 +227,13 @@ const InputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1em;
+
 `;
 
 const StyledField = styled(Field)`
+  display: flex;
   flex: 1;
-  padding: 1em;
+  padding: 0.5em;
   font-size: 1em;
   margin-bottom: 1em;
   border: 2px solid;
@@ -253,6 +254,7 @@ const StyledField = styled(Field)`
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
+  font-size: 0.8em;
   margin-bottom: 1em;
 `;
 
@@ -268,18 +270,18 @@ const PasswordFeedback = styled.div<PasswordFeedbackProps>`
 const SuccessMessage = styled.div`
   color: #4caf50;
   margin-bottom: 1em;
-  font-size: 1em;
-  font-weight: bold;
+  font-size: 0.8em;
 `;
 
 const Button = styled.button`
   padding: 0.7em;
   margin-left: 0.5em;
-  font-size: 0.7em;
+  font-size: 1em;
   color: #fff;
   background-color: #f9803a;
   border: none;
   border-radius: 5px;
+  margin-bottom: 1em;
   cursor: pointer;
 
   &:hover {
