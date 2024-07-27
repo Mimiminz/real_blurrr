@@ -8,6 +8,7 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.security.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.net.MalformedURLException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,8 @@ public class MemberController {
     @Operation(description = "정보 수정")
     @PutMapping("")
     public ResponseEntity<MemberProfile> modifyMember(@AuthUser ContextMember member,
-                                                      @RequestBody MemberProfileUpdate update)
+                                                      @Valid @RequestBody MemberProfileUpdate update)
             throws MalformedURLException {
-
         return ResponseEntity.ok(memberService.modifyMember(member.getId(), update));
     }
 }
