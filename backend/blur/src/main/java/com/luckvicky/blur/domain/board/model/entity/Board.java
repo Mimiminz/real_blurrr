@@ -1,7 +1,9 @@
 package com.luckvicky.blur.domain.board.model.entity;
 
+import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -12,7 +14,9 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,8 +51,11 @@ public class Board extends BaseEntity {
     private BoardType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     protected Board (String title, String content, BoardType type, Member member) {
         this.title = title;
