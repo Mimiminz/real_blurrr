@@ -12,8 +12,6 @@ public interface CommentService {
 
     Boolean createReply(UUID uuid, ReplyCreateRequest request);
 
-    List<CommentDto> findCommentsByBoard(UUID boardId);
-
     Boolean deleteComment(UUID commentId, UUID boardId);
 
 }

@@ -17,13 +17,13 @@ import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -65,29 +65,6 @@ public class CommentServiceImpl implements CommentService {
         );
 
         return isCreated(createdComment);
-
-    }
-
-    @Override
-    public List<CommentDto> findCommentsByBoard(UUID boardId) {
-
-        Board board = boardRepository.getOrThrow(boardId);
-
-        List<Comment> comments = commentRepository
-                .findAllByBoardAndTypeAndStatus(board, CommentType.COMMENT, ActivateStatus.ACTIVE);
-
-        List<CommentDto> commentDtos = comments.stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-        commentDtos.forEach(comment ->
-            comment.getReply()
-                    .removeIf(reply ->
-                            reply.getStatus().equals(ActivateStatus.INACTIVE)
-                    )
-        );
-
-        return commentDtos;
 
     }
 
