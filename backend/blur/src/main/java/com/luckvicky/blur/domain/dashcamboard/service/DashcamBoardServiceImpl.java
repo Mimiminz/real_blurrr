@@ -29,8 +29,15 @@ import java.util.stream.Collectors;
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.luckvicky.blur.global.constant.Number.DASHCAM_BOARD_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +54,16 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     private final CommentRepository commentRepository;
 
     @Override
-    public List<DashcamBoardListDto> getDashcamBoards() {
-        List<Dashcam> dashcams = dashcamRepository.findAll();
-        return dashcamBoardMapper.toDashcamBoardListDtos(dashcams);
+    @Transactional(readOnly = true)
+    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, String criteria) {
+
+        Pageable pageable = PageRequest.of(
+                pageNumber, DASHCAM_BOARD_PAGE_SIZE,
+                Sort.by(Sort.Direction.DESC, criteria));
+
+        Page<Dashcam> dashcamPage = dashcamRepository.findAll(pageable);
+
+        return dashcamBoardMapper.toDashcamBoardListDtos(dashcamPage.getContent());
     }
 
     @Override

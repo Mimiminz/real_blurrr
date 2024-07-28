@@ -10,7 +10,7 @@ import java.util.UUID;
 
 
 public interface DashcamBoardService {
-    List<DashcamBoardListDto> getDashcamBoards();
+    List<DashcamBoardListDto> getDashcamBoards(int pageNumber, String criteria);
     DashcamBoardDetailDto getDashcamBoardById(UUID id);
     DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request);
     List<CommentDto> getComments(UUID boardId);

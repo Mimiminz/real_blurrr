@@ -10,7 +10,10 @@ import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,9 +51,28 @@ public class DashcamBoardController {
                     description = "게시글 목록 조회 실패"
             )
     })
+    @Parameters({
+            @Parameter(name = "pageNumber", description = "페이지 번호"),
+            @Parameter(
+                    name = "criteria",
+                    description = "정렬 기준",
+                    examples = {
+                            @ExampleObject(name = "최신", value = "createdAt"),
+                            @ExampleObject(name = "좋아요", value = "likeCount"),
+                            @ExampleObject(name = "조회수", value = "viewCount"),
+                            @ExampleObject(name = "댓글", value = "commentCount"),
+                    }
+            ),
+    })
     @GetMapping
-    public ResponseEntity getDashcamBoards(){
-        List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards();
+    public ResponseEntity getDashcamBoards(
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria
+    ){
+        List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards(
+                pageNumber,
+                criteria
+        );
 
         if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
             return ResponseUtil.noContent(
