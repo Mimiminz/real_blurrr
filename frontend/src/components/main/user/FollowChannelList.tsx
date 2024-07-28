@@ -3,12 +3,15 @@ import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation, Pagination } from "swiper/modules";
 import FollowChannelCard from "./FollowChannelCard";
-
 import dummy from "@/db/mainPageData.json";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 const SwiperContainer = styled.div`
-  /* position: relative; */
+  position: relative;
+
   .swiper-button-next::after,
   .swiper-button-prev::after {
     display: none;
@@ -16,21 +19,40 @@ const SwiperContainer = styled.div`
 
   .swiper-button-prev {
     background: url("/images/carousel_arrow_prev.png") no-repeat;
-    opacity: 0.7;
     background-size: 70% auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 100%;
     background-position: center;
   }
-
+  
   .swiper-button-next {
     background: url("/images/carousel_arrow_next.png") no-repeat;
-    opacity: 0.7;
     background-size: 70% auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 100%;
     background-position: center;
   }
 
   .swiper-slide {
     display: flex;
     justify-content: center;
+  }
+
+  .swiper-pagination {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .swiper-pagination-bullet {
+    background: #000;
+    opacity: 0.5;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: ${({ theme }) => theme.colors.main};
+    opacity: 1;
   }
 `;
 
@@ -39,7 +61,20 @@ const FollowChannelList: React.FC = () => {
 
   return (
     <SwiperContainer>
-      <Swiper spaceBetween={0} slidesPerView={1} navigation loop>
+      <Swiper
+        modules={[Navigation, Pagination]}
+        spaceBetween={0}
+        slidesPerView={1}
+        navigation
+        pagination={{ clickable: true }}
+        loop
+        breakpoints={{
+          1440: {
+            slidesPerView: 2,
+            spaceBetween: 4,
+          },
+        }}
+      >
         {channels.map((channel, index) => (
           <SwiperSlide key={index}>
             <FollowChannelCard

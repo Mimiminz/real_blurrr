@@ -100,29 +100,30 @@ const PageContainer = styled.div``;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 30px;
-  width: 100%;
+  grid-template-columns: 1fr;
 
-  @media (max-width: 992px) {
-    grid-template-columns: 1fr;
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(12, 1fr);
+    gap: 40px;
+    width: 100%;
   }
 `;
 
 const Main = styled.main`
-  grid-column: span 8;
+  grid-column: span 12;
   padding: 10px;
 
-  @media (max-width: 992px) {
-    grid-column: span 12;
+  @media (min-width: 1024px) {
+    grid-column: span 9;
   }
 `;
 
 const Aside = styled.aside`
-  grid-column: span 4;
+  display: none;
 
-  @media (max-width: 992px) {
-    display: none;
+  @media (min-width: 1024px) {
+    display: block;
+    grid-column: span 3;
   }
 `;
 
@@ -155,6 +156,7 @@ const AsideSection = styled.div`
 `;
 
 const AsideSectionTitle = styled.h2`
+  font-size: 18px;
   margin-top: 10px;
   margin-bottom: 10px;
 `;
@@ -164,10 +166,9 @@ const Icon = styled.span`
 `;
 
 const UserInfoContainer = styled.div`
-  margin: 20px;
+  margin-top: 40px;
   display: flex;
   justify-content: center;
-  padding: 20px;
 `;
 
 const MoreButton = styled.button`
@@ -177,7 +178,6 @@ const MoreButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   margin-top: 40px;
-  /* text-decoration: underline; */
 `;
 
 const MoreButtonIcon = styled.span`

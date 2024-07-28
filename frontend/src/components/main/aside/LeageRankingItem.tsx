@@ -42,6 +42,7 @@ const Rank = styled.div`
 
 const Name = styled.div`
   flex: 1;
+  font-size: 14px;
   font-weight: bold;
 `;
 
@@ -55,8 +56,9 @@ const Icon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px; /* 아이콘 크기 조정 */
+  font-size: 12px; /* 아이콘 크기 조정 */
   vertical-align: middle;
 `;
 
-const Count = styled.span``;
+const Count = styled.span`
+font-size: 12px;`;
