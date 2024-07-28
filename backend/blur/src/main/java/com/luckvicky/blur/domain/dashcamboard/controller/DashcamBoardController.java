@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @Tag(name = "블랙박스 게시글 API")
 @RestController
-@RequestMapping("/v1/channels/dashcams")
+@RequestMapping("/v1/channels/dashcams/boards")
 @RequiredArgsConstructor
 public class DashcamBoardController {
 
@@ -81,7 +81,7 @@ public class DashcamBoardController {
                     description = "게시글 없음"
             )
     })
-    @GetMapping("/boards/{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
             @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id) {
         DashcamBoardDto boardDto = dashcamBoardService.getDashcamBoardById(id);
@@ -89,11 +89,11 @@ public class DashcamBoardController {
     }
 
 
-    @Operation(summary = "블랙박스 게시글 작성 API")
+    @Operation(summary = "블랙박스 게시글 생성 API")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "게시글 작성 성공",
+                    description = "게시글 생성 성공",
                     content = @Content(schema = @Schema(implementation = DashcamBoardResponse.class))
             ),
             @ApiResponse(
@@ -105,7 +105,7 @@ public class DashcamBoardController {
                     description = "사용자 또는 리그를 찾을 수 없음"
             )
     })
-    @PostMapping("/boards")
+    @PostMapping
     public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
             @Valid
             @RequestBody DashcamBoardCreateRequest request) {
@@ -129,7 +129,7 @@ public class DashcamBoardController {
                     description = "게시글 없음"
             )
     })
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<Void> deleteDashcamBoard(
             @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id){
         dashcamBoardService.deleteDashcamBoard(id);
