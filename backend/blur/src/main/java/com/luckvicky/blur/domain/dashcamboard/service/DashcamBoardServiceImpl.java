@@ -8,7 +8,7 @@ import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.dashcamboard.exception.NotFoundDashcamException;
 import com.luckvicky.blur.domain.dashcamboard.mapper.DashcamBoardMapper;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
+import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCreateRequest;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
@@ -20,6 +20,8 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,15 +53,21 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     }
 
     @Override
-    public DashcamBoardDto getDashcamBoardById(UUID id) {
+    public DashcamBoardDetailDto getDashcamBoardById(UUID id) {
         Dashcam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
-        return dashcamBoardMapper.toDashcamBoardDto(dashcam);
+
+        List<CommentDto> comments = commentRepository.findAllByBoardAndType(dashcam, CommentType.COMMENT)
+                .stream()
+                .map(comment -> mapper.map(comment, CommentDto.class))
+                .collect(Collectors.toList());
+
+        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam,comments);
     }
 
     @Override
     @Transactional
-    public DashcamBoardDto createDashcamBoard(DashcamBoardCreateRequest request) {
+    public DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request) {
         Member member = memberRepository.getOrThrow(request.memberId());
 
         Dashcam dashcam = request.toEntity(member);
@@ -79,7 +87,9 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
             dashcamMentionRepository.save(mention);
         }
 
-        return dashcamBoardMapper.toDashcamBoardDto(dashcam);
+        List<CommentDto> comments = new ArrayList<>();
+
+        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam, comments);
     }
 
 

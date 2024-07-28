@@ -1,6 +1,6 @@
 package com.luckvicky.blur.domain.dashcamboard.controller;
 
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
+import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCreateRequest;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardListResponse;
@@ -15,10 +15,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,7 +82,7 @@ public class DashcamBoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
             @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id) {
-        DashcamBoardDto boardDto = dashcamBoardService.getDashcamBoardById(id);
+        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(id);
         return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
 
@@ -109,7 +107,7 @@ public class DashcamBoardController {
     public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
             @Valid
             @RequestBody DashcamBoardCreateRequest request) {
-        DashcamBoardDto createdBoard = dashcamBoardService.createDashcamBoard(request);
+        DashcamBoardDetailDto createdBoard = dashcamBoardService.createDashcamBoard(request);
         return ResponseUtil.created(
                 Result.<DashcamBoardResponse>builder()
                         .data(DashcamBoardResponse.of(createdBoard))

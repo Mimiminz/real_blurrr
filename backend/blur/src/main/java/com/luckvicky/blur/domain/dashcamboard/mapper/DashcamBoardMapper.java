@@ -1,22 +1,19 @@
 package com.luckvicky.blur.domain.dashcamboard.mapper;
 
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
+import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamMentionDto;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.DashcamMention;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Video;
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamMentionRepository;
-import com.luckvicky.blur.domain.member.model.MemberDto;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
-import com.luckvicky.blur.domain.member.model.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 @Component
@@ -53,7 +50,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDto toDashcamBoardDto(Dashcam dashcam) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(Dashcam dashcam, List<CommentDto> comments) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getVideoUrl)
                 .collect(Collectors.toList());
@@ -67,7 +64,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
 
 
-        return DashcamBoardDto.builder()
+        return DashcamBoardDetailDto.builder()
                 .id(dashcam.getId())
                 .title(dashcam.getTitle())
                 .member(SimpleMemberDto.of(dashcam.getMember()))
@@ -79,6 +76,7 @@ public class DashcamBoardMapper {
                 .content(dashcam.getContent())
                 .options(sortedOptions)
                 .mentionedLeagues(mentionedLeagues)
+                .comments(comments)
                 .build();
     }
 
