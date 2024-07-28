@@ -40,9 +40,25 @@ const Layout = styled.div`
 const Main = styled.main`
   flex: 1;
   justify-content: center;
-  margin: 80px 220px;
+  margin: 80px 20px;
 
-  @media (max-width: 992px) {
+  /* 핸드폰 설정 */
+  @media (min-width: 480px) {
     margin: 80px 20px;
+  }
+
+  /* 태블릿 크기 이상 설정 */
+  @media (min-width: 768px) {
+    margin: 80px 60px;
+  }
+
+  /* 데스크탑 크기 이상 설정 */
+  @media (min-width: 1024px) {
+    margin: 80px 80px;
+  }
+
+  /* 큰 데스크탑 크기 이상 설정 */
+  @media (min-width: 1440px) {
+    margin: 80px 190px;
   }
 `;

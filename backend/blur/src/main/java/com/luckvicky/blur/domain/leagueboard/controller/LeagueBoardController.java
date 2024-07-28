@@ -9,8 +9,10 @@ import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "리그 API")
@@ -79,13 +82,32 @@ public class LeagueBoardController {
                     description = "게시글 목록 조회 실패"
             )
     })
-    @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
+    @Parameters({
+            @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
+            @Parameter(name = "pageNumber", description = "페이지 번호"),
+            @Parameter(
+                    name = "criteria",
+                    description = "정렬 기준",
+                    examples = {
+                            @ExampleObject(name = "최신", value = "createdAt"),
+                            @ExampleObject(name = "좋아요", value = "likeCount"),
+                            @ExampleObject(name = "조회수", value = "viewCount"),
+                            @ExampleObject(name = "댓글", value = "commentCount"),
+                    }
+            ),
+    })
     @GetMapping("/{leagueId}/boards")
     public ResponseEntity getLeagueBoards(
-            @PathVariable(name = "leagueId") UUID leagueId
+            @PathVariable(name = "leagueId") UUID leagueId,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria
     ) {
 
-        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(leagueId);
+        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(
+                leagueId,
+                pageNumber,
+                criteria
+        );
 
         if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
             return ResponseUtil.noContent(
@@ -119,7 +141,7 @@ public class LeagueBoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(leagueBoardService.getLeagueBoardDetail(boardId))
+                        .data(LeagueBoardDetailResponse.of(leagueBoardService.getLeagueBoardDetail(boardId)))
                         .build()
         );
 

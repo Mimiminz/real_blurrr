@@ -56,7 +56,8 @@ public enum ErrorCode {
     FAIL_TO_CREATE_LEAGUE(HttpStatus.INTERNAL_SERVER_ERROR, "리그 생성을 실패했습니다."),
     FAIL_TO_CREATE_BOARD(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 생성을 실패했습니다."),
     FAIL_TO_CREATE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 생성을 실패했습니다."),
-    FAIL_TO_DELETE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 삭제를 실패했습니다.");
+    FAIL_TO_DELETE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 삭제를 실패했습니다."),
+    FAIL_TO_DELETE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 삭제를 실패했습니다." );
 
     private final HttpStatus code;
     private final String message;

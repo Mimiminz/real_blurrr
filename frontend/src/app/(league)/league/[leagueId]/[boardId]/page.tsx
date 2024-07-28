@@ -29,8 +29,8 @@ const boardDetail = () => (
       진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만 그대로
       박았습니다. 블박영상에는 충격이 전해지지만는데, 원본영상에서는 흔들리는
       영상이 있습니다(원본은 아직 못올렸네요) 장마철 사고이기도해서 그냥
-      넘어가려고 했는데 내리자마자 "안박았다 왜그러냐" 란 식이었습니다 사과하면
-      그냥 넘어가려고 했으나 이렇게 무시를 하니가 "그럼 미안한데 블박보죠"
+      넘어가려고 했는데 내리자마자 안박았다 왜그러냐 란 식이었습니다 사과하면
+      그냥 넘어가려고 했으나 이렇게 무시를 하니가 그럼 미안한데 블박보죠
       했다는데요. 바쁨바쁜 우선 연락처만 받고 자리에 이동하였고 장인어른이
       이런상황이면 어쩌할줄 재서 거세게 차주분과 제가 연락을 해보았는데
       엄한무인이라고요
@@ -38,6 +38,10 @@ const boardDetail = () => (
     <Divider />
     <CommentContainer>
       <CommentNumber>
+        <WriterContainer>
+          <WriterButton>수정</WriterButton>
+          <WriterButton>삭제</WriterButton>
+        </WriterContainer>
         <LiaCommentDots />8
       </CommentNumber>
       <CreateComment />
@@ -75,8 +79,11 @@ const Content = styled.div`
 `;
 
 const CommentNumber = styled.div`
+  font-size: 18px;
+
   svg {
     margin-right: 5px;
+    margin-top: 12px;
   }
 `;
 
@@ -84,5 +91,19 @@ const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  padding-left: 20px;
+`;
+
+const WriterContainer = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+const WriterButton = styled.button`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: white;
+  margin-right: 10px;
+  cursor: pointer;
 `;

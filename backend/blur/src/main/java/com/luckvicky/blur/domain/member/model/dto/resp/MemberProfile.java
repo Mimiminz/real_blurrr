@@ -6,16 +6,13 @@ import java.util.UUID;
 
 
 public record MemberProfile(
-        @Schema(description = "식별값")
-        UUID id,
         @Schema(description = "이메일")
         String email,
         @Schema(description = "이미지 url")
         String profileUrl,
         @Schema(description = "닉네임")
         String nickname) {
-
-        public static MemberProfile of(Member member) {
-                return new MemberProfile(member.getId(), member.getEmail(), member.getProfileUrl(), member.getNickname());
-        }
+    public static MemberProfile of(Member member) {
+        return new MemberProfile(member.getEmail(), member.getProfileUrl(), member.getNickname());
+    }
 }

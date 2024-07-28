@@ -54,12 +54,30 @@ const CarPictureList: React.FC = () => {
           swiperRef.current = swiper;
         }}
         loop={true}
-        spaceBetween={200}
-        slidesPerView={3}
+        spaceBetween={10}
+        slidesPerView={1}
         navigation={true}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
+        }}
+        breakpoints={{
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 2,
+            spaceBetween: 100,
+          },
+          1200: {
+            slidesPerView: 3,
+            spaceBetween: 200,
+          },
+          1440: {
+            slidesPerView: 3,
+            spaceBetween: 200,
+          },
         }}
       >
         {groupedItems.map((group, index) => (
