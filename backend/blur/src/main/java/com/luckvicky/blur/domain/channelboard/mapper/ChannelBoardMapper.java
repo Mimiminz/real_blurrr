@@ -5,7 +5,6 @@ import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoardMention;
-import com.luckvicky.blur.domain.member.model.MemberDto;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import org.springframework.stereotype.Component;
 
@@ -47,5 +46,6 @@ public class ChannelBoardMapper {
                 })
                 .collect(Collectors.toList());
     }
+
 
 }
