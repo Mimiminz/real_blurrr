@@ -1,7 +1,9 @@
 package com.luckvicky.blur.domain.channelboard.service;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 
 import java.util.List;
@@ -14,4 +16,6 @@ public interface ChannelBoardService {
     BoardDetailDto getBoardDetail(UUID boardId);
 
     List<CommentDto> getComments(UUID boardId);
+
+    ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request);
 }
