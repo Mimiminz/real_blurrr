@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.dashcamboard.model.dto;
 
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.member.model.MemberDto;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
@@ -48,5 +49,8 @@ public class DashcamBoardDto {
 
     @Schema(description = "멘션된 리그 목록")
     private List<DashcamMentionDto> mentionedLeagues;
+
+    @Schema(description = "댓글 목록")
+    List<CommentDto> comments;
 
 }

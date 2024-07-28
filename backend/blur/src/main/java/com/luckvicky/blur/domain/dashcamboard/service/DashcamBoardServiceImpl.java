@@ -1,5 +1,11 @@
 package com.luckvicky.blur.domain.dashcamboard.service;
 
+import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
+import com.luckvicky.blur.domain.comment.model.entity.Comment;
+import com.luckvicky.blur.domain.comment.model.entity.CommentType;
+import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.dashcamboard.exception.NotFoundDashcamException;
 import com.luckvicky.blur.domain.dashcamboard.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
@@ -16,9 +22,11 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +34,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DashcamBoardServiceImpl implements DashcamBoardService{
 
+
+    private final ModelMapper mapper;
     private final DashcamRepository dashcamRepository;
+    private final BoardRepository boardRepository;
     private final DashcamBoardMapper dashcamBoardMapper;
     private final MemberRepository memberRepository;
     private final LeagueRepository leagueRepository;
     private final DashcamMentionRepository dashcamMentionRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<DashcamBoardListDto> getDashcamBoards() {
@@ -68,6 +80,20 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         }
 
         return dashcamBoardMapper.toDashcamBoardDto(dashcam);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getComments(UUID boardId) {
+
+        Board board = boardRepository.getOrThrow(boardId);
+        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
+
+        return  comments.stream()
+                .map(comment -> mapper.map(comment, CommentDto.class))
+                .collect(Collectors.toList());
+
     }
 
     @Override

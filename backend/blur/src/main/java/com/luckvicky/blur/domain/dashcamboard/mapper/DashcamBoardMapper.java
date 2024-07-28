@@ -34,12 +34,10 @@ public class DashcamBoardMapper {
                 .map(DashcamMentionDto::of)
                 .collect(Collectors.toList());
 
-        SimpleMemberDto memberDto = toSimpleMemberDto(dashcam.getMember());
-
         return DashcamBoardListDto.builder()
                 .id(dashcam.getId())
                 .title(dashcam.getTitle())
-                .member(memberDto)
+                .member(SimpleMemberDto.of(dashcam.getMember()))
                 .viewCount(dashcam.getViewCount())
                 .commentCount(dashcam.getCommentCount())
                 .likeCount(dashcam.getLikeCount())
@@ -68,12 +66,11 @@ public class DashcamBoardMapper {
                 .map(DashcamMentionDto::of)
                 .collect(Collectors.toList());
 
-        SimpleMemberDto memberDto = toSimpleMemberDto(dashcam.getMember());
 
         return DashcamBoardDto.builder()
                 .id(dashcam.getId())
                 .title(dashcam.getTitle())
-                .member(memberDto)
+                .member(SimpleMemberDto.of(dashcam.getMember()))
                 .viewCount(dashcam.getViewCount())
                 .commentCount(dashcam.getCommentCount())
                 .likeCount(dashcam.getLikeCount())
@@ -85,12 +82,4 @@ public class DashcamBoardMapper {
                 .build();
     }
 
-    private MemberDto toMemberDto(Member member) {
-        return MemberDto.of(member);
-    }
-
-
-    private SimpleMemberDto toSimpleMemberDto(Member member){
-        return SimpleMemberDto.of(member);
-    }
 }
