@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
@@ -19,4 +20,5 @@ public interface MemberService {
     MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
 
     boolean authEmail(String email);
+    boolean validEmailAuth(EmailAuth emailAuth);
 }

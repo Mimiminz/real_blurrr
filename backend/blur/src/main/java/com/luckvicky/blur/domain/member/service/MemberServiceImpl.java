@@ -1,8 +1,12 @@
 package com.luckvicky.blur.domain.member.service;
 
 import com.luckvicky.blur.domain.member.exception.DuplicateEmailException;
+import com.luckvicky.blur.domain.member.exception.ExpiredEmailAuthException;
+import com.luckvicky.blur.domain.member.exception.InvalidEmailCodeException;
+import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
+import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
@@ -72,6 +76,10 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
+        if (redisEmailService.getAuthEmail(signupDto.email()) == null) {
+            throw new InvalidEmailVerificationException();
+        }
+
         signupDto.valid();
 
         if (memberRepository.existsByEmail(signupDto.email())) {
@@ -171,6 +179,7 @@ public class MemberServiceImpl implements MemberService {
         return reuslt;
     }
 
+    @Transactional
     @Override
     public boolean authEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
@@ -178,12 +187,29 @@ public class MemberServiceImpl implements MemberService {
         }
         String authCode = UuidUtil.createSequentialUUID().toString().substring(0,8);
 
-        redisEmailService.saveOrUpdate(email, authCode);
         String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
 
         htmlContent = htmlContent.replace("{{authCode}}", authCode);
         mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
 
+        redisEmailService.saveOrUpdate(email, authCode);
+
         return true;
+    }
+
+    @Override
+    public boolean validEmailAuth(EmailAuth emailAuth) {
+        String saveCode = redisEmailService.getValue(emailAuth.email());
+
+        if (!StringUtils.hasText(saveCode)) {
+            throw new ExpiredEmailAuthException();
+        }
+
+        if (!emailAuth.authCode().equals(saveCode)) {
+            throw new InvalidEmailCodeException();
+        }
+
+        redisEmailService.saveAuthEmail(emailAuth.email());
+        return false;
     }
 }

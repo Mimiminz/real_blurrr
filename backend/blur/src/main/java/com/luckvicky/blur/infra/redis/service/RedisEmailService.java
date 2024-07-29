@@ -11,8 +11,11 @@ public class RedisEmailService implements RedisAdapter {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Value("${email.valid.time}")
+    @Value("${email.time.valid}")
     private long validTime;
+
+    @Value("${email.time.available}")
+    private long availableTime;
 
     public RedisEmailService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -31,6 +34,18 @@ public class RedisEmailService implements RedisAdapter {
     @Override
     public void delete(String key) {
         redisTemplate.opsForHash().delete(generateKey(key));
+    }
+
+    public void saveAuthEmail(String email) {
+        redisTemplate.opsForValue().set(generateAvailableKey(email) ,true, availableTime, TimeUnit.MILLISECONDS);
+    }
+
+    public Boolean getAuthEmail(String email) {
+        return (Boolean) redisTemplate.opsForValue().get(generateAvailableKey(email));
+    }
+
+    private String generateAvailableKey(String email) {
+        return StringFormat.EMAIL_AVAILABLE_PREFIX + email;
     }
 
     private String generateKey(String key) {
