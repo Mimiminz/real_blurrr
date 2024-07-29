@@ -17,6 +17,8 @@ public class StringFormat {
     public static final String CRITERIA_LIKE = "likeCount";
     public static final String CRITERIA_VIEW = "viewCount";
     public static final String CRITERIA_COMMENT = "commentCount";
+    public static final String CRITERIA_NAME = "name";
+    public static final String CRITERIA_PEOPLE = "peopleCount";
 
     public static final String CONDITION_TITLE = "title";
     public static final String CONDITION_CONTENT = "comment";
