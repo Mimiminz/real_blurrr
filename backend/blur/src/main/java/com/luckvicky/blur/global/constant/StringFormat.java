@@ -12,6 +12,7 @@ public class StringFormat {
 
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
+    public static final String EMAIL_AUTH_PREFIX = "emailauth:";
 
     public static final String CRITERIA_TIME = "createdAt";
     public static final String CRITERIA_LIKE = "likeCount";

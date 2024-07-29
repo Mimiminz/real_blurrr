@@ -1,11 +1,18 @@
 package com.luckvicky.blur.infra.mail.service;
 
+import com.luckvicky.blur.global.util.UuidUtil;
 import jakarta.mail.internet.MimeMessage;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,25 +26,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
+    private final ResourceLoader resourceLoader;
 
-    public MailService(JavaMailSender javaMailSender) {
+    public MailService(JavaMailSender javaMailSender, ResourceLoader resourceLoader) {
         this.javaMailSender = javaMailSender;
+        this.resourceLoader = resourceLoader;
     }
 
-
     @Async
-    public void sendEmail(String email){
+    public void sendEmail(String to, String subject, String content, boolean isHtml) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setTo(email); // 메일 수신자
-            mimeMessageHelper.setSubject("Today's Overview on NESS"); // 메일 제목
-            mimeMessageHelper.setText("test"); // 메일 본문 내용, HTML 여부
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            mimeMessageHelper.setTo(to); // 메일 수신자
+            mimeMessageHelper.setSubject(subject); // 메일 제목
+            mimeMessageHelper.setText(content, isHtml); // HTML 여부를 true로 설정
+
             javaMailSender.send(mimeMessage);
 
             log.info("Succeeded to send Email");
         } catch (Exception e) {
-            log.info("Failed to send Email");
+            log.error("Failed to send Email", e);
             throw new RuntimeException(e);
         }
     }

@@ -66,6 +66,7 @@ public class AuthController {
     }
 
 
+
 //    @GetMapping("/aws/test")
 //    public ResponseEntity<Map<String, String>> test(
 //            @RequestParam(name = "fileName")
@@ -74,11 +75,10 @@ public class AuthController {
 //        return ResponseEntity.ok(s3ImageService.getPresignedUrl("images", fileName));
 //    }
 
-    @GetMapping("/aws/img")
-    public ResponseEntity imgtest() {
-//        mailService.sendEmail("tkdgus1608@gmail.com");
-        amazonSMTPService.send("test","glfb1014@gmail.com");
-        return ResponseEntity.ok(true);
+    @Operation(summary = "이메일 인증번호 생성 API")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
+        return ResponseEntity.ok(memberService.authEmail(email));
     }
 
 }

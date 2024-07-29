@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RedisRefreshTokenService {
+public class RedisRefreshTokenService implements RedisAdapter {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${jwt.expire.time.refresh}")
@@ -17,19 +17,19 @@ public class RedisRefreshTokenService {
         this.redisTemplate = redisTemplate;
     }
 
-    public void saveOrUpdateRefreshToken(String userId, String refreshToken) {
-        String key = generateKey(userId);
-        redisTemplate.opsForValue().set(key, refreshToken, expireRefreshToken, TimeUnit.MILLISECONDS);
+    @Override
+    public void saveOrUpdate(String key, String value) {
+        redisTemplate.opsForValue().set(generateKey(key), value, expireRefreshToken, TimeUnit.MILLISECONDS);
     }
 
-    public String getRefreshToken(String userId) {
-        String key = generateKey(userId);
-        return (String) redisTemplate.opsForValue().get(key);
+    @Override
+    public String getValue(String key) {
+        return (String) redisTemplate.opsForValue().get(generateKey(key));
     }
 
-    public void deleteRefreshToken(String userId) {
-        String key = generateKey(userId);
-        redisTemplate.delete(key);
+    @Override
+    public void delete(String key) {
+        redisTemplate.delete(generateKey(key));
     }
 
     private String generateKey(String userId) {

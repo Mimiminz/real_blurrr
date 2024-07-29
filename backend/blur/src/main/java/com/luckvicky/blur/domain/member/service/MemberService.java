@@ -17,4 +17,6 @@ public interface MemberService {
     JwtDto reissueToken(ReissueDto reissue);
     Boolean checkNickname(String nickname);
     MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
+
+    boolean authEmail(String email);
 }
