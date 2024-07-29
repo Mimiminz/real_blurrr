@@ -24,6 +24,7 @@ public record LeagueCreateRequest(
         return League.builder()
                 .name(this.name)
                 .type(type)
+                .peopleCount(0L)
                 .build();
     }
 
