@@ -95,11 +95,11 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     }
 
     @Override
-    public ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request) {
+    public ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NotExistChannelException(ErrorCode.NOT_EXIST_CHANNEL));
 
-        Member member = memberRepository.getOrThrow(request.memberId());
+        Member member = memberRepository.getOrThrow(memberId);
 
         ChannelBoard channelBoard = request.toEntity(channel, member);
         channelBoard = channelBoardRepository.save(channelBoard);

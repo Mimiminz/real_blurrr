@@ -13,7 +13,9 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,9 +59,10 @@ public class ChannelBoardController {
     @PostMapping
     public ResponseEntity createChannelBoard(
             @PathVariable(name = "channelId") UUID channelId,
-            @Valid @RequestBody ChannelBoardCreateRequest request
-    ) {
-        ChannelBoardDto createdBoard = channelBoardService.createChannelBoard(channelId, request);
+            @Valid @RequestBody ChannelBoardCreateRequest request,
+            @AuthUser ContextMember contextMember
+            ) {
+        ChannelBoardDto createdBoard = channelBoardService.createChannelBoard(channelId, request,contextMember.getId());
         return ResponseUtil.created(
                 Result.<ChannelBoardDto>builder()
                         .data(createdBoard)

@@ -17,5 +17,5 @@ public interface ChannelBoardService {
 
     List<CommentDto> getComments(UUID boardId);
 
-    ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request);
+    ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId);
 }

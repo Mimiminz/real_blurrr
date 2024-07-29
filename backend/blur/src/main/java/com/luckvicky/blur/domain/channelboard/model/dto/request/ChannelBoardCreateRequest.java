@@ -25,12 +25,6 @@ public record ChannelBoardCreateRequest (
     String title,
 
     @Schema(
-            description = "사용자 고유 식별값",
-            example = "11ef4af7-a539-06dd-bd50-85348c9d5af4"
-    )
-    UUID memberId,
-
-    @Schema(
             description = "본문",
             example = "기대되네요~~~"
     )
