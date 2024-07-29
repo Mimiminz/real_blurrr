@@ -33,21 +33,21 @@ const CardContainer = styled.div`
   border-radius: 8px;
   margin: 10px;
   text-align: center;
-  width: 200px;
+  width: 150px;
 `;
 
 const ImageContainer = styled.div<{ img: string }>`
   width: 100%;
-  height: 120px;
+  height: 100px;
   background-color: #e5e7eb;
   border-radius: 8px;
-  background-size: cover;
   background-position: center;
   background-image: url(${(props) => props.img});
 `;
 
 const Title = styled.h3`
   margin: 12px 0;
+  margin-bottom: 6px;
   font-size: 16px;
 `;
 
@@ -56,6 +56,7 @@ const FollowerContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.colors.subDiscription};
+  padding-bottom: 10px;
 `;
 
 const Icon = styled.span`

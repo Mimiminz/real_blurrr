@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.leagueboard.service;
 
+import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
@@ -10,8 +11,8 @@ public interface LeagueBoardService {
 
     Boolean createLeagueBoard(UUID leagueId, LeagueBoardCreateRequest request);
 
-    List<BoardDto> getLeagueBoards(UUID leagueId);
+    List<BoardDto> getLeagueBoards(UUID leagueId, int pageNumber, String criteria);
 
-    LeagueBoardDetailResponse getLeagueBoardDetail(UUID boardId);
+    BoardDetailDto getLeagueBoardDetail(UUID boardId);
 
 }

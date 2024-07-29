@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.comment.model.dto;
 
 import com.luckvicky.blur.domain.member.model.MemberDto;
+import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +22,11 @@ public class CommentDto {
 
     @Schema(description = "생성일자")
     private String createdAt;
+
+    @Schema(description = "활성화 상태")
+    private ActivateStatus status;
     
     @Schema(description = "대댓글 목록")
-    List<ReplyDto> reply;
+    List<ReplyDto> replies;
 
 }

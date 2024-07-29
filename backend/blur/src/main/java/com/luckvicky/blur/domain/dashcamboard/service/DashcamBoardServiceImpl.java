@@ -9,12 +9,15 @@ import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.DashcamMention;
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamMentionRepository;
 import com.luckvicky.blur.domain.dashcamboard.repository.DashcamRepository;
+import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.UUID;
+
+import com.luckvicky.blur.global.enums.code.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +55,10 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
 
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
+
+        if(mentionedLeagues.size() != request.mentionedLeagueNames().size()){
+            throw new NotExistLeagueException(ErrorCode.NOT_EXIST_LEAGUE);
+        }
         for (League league : mentionedLeagues) {
             DashcamMention mention = DashcamMention.builder()
                     .dashcam(dashcam)

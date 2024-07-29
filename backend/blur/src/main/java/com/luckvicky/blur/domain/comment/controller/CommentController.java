@@ -101,42 +101,6 @@ public class CommentController {
     }
 
     @Operation(
-            summary = "댓글 목록 조회 API",
-            description = "게시글에 작성된 모든 댓글을 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 완료",
-                    content = @Content(schema = @Schema(implementation = CommentListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "조회 완료 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 게시글"
-            )
-    })
-    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/boards/{boardId}")
-    public ResponseEntity findCommentsByBoard(
-            @PathVariable(name = "boardId") UUID boardId
-    ) {
-
-        List<CommentDto> comments = commentService.findCommentsByBoard(boardId);
-
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(CommentListResponse.of(comments))
-                        .build()
-        );
-
-    }
-
-
-    @Operation(
             summary = "댓글 삭제 API",
             description = "댓글, 게시글 고유 식별값을 받아 일치하는 댓글을 삭제한다."
     )
