@@ -19,12 +19,6 @@ public record LeagueBoardCreateRequest(
         String title,
 
         @Schema(
-                description = "사용자 고유 식별값",
-                example = "11ef4830-22b0-8bab-bdb9-5b68a61f28a6"
-        )
-        UUID memberId,
-
-        @Schema(
                 description = "본문",
                 example = "본문입니다."
         )

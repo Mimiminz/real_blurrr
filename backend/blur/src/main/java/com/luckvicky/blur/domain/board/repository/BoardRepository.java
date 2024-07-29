@@ -5,6 +5,7 @@ import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import jakarta.persistence.LockModeType;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -36,5 +37,8 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByTypeAndStatus(BoardType type, Pageable pageable, ActivateStatus status);
 
+    Page<Board> findAllByTypeAndStatusAndCreatedAtBetween(
+            BoardType type, Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
+    );
 
 }

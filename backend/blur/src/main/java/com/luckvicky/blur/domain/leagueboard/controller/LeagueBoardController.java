@@ -5,7 +5,9 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetai
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,12 +54,13 @@ public class LeagueBoardController {
     @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/{leagueId}/boards")
     public ResponseEntity createLeagueBoard(
+            @AuthUser ContextMember member,
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestBody LeagueBoardCreateRequest request
     ) {
         return ResponseUtil.created(
                 Result.builder()
-                        .data(leagueBoardService.createLeagueBoard(leagueId ,request))
+                        .data(leagueBoardService.createLeagueBoard(member.getId(), leagueId ,request))
                         .build()
         );
 
