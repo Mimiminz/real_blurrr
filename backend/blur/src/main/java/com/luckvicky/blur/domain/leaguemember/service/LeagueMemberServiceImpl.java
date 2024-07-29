@@ -27,9 +27,7 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
     @Override
     public Boolean createLeagueMember(UUID leagueId, UUID memberId) {
 
-        League league = leagueRepository.findById(leagueId)
-                .orElseThrow(() -> new NotExistLeagueException(NOT_EXIST_LEAGUE));
-
+        League league = leagueRepository.getOrThrow(leagueId);
         Member member = memberRepository.getOrThrow(memberId);
 
         LeagueMember createdLeagueMember = leagueMemberRepository.save(

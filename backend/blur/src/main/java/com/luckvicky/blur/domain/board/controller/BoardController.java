@@ -96,10 +96,10 @@ public class BoardController {
                     name = "criteria",
                     description = "정렬 기준",
                     examples = {
-                            @ExampleObject(name = "최신", value = "createdAt"),
-                            @ExampleObject(name = "좋아요", value = "likeCount"),
-                            @ExampleObject(name = "조회수", value = "viewCount"),
-                            @ExampleObject(name = "댓글", value = "commentCount"),
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
                     }
             ),
     })
@@ -107,7 +107,7 @@ public class BoardController {
     public ResponseEntity findBoardsByType(
             @RequestParam(name = "type") String type,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
         List<BoardDto> boards = boardService.findBoardsByType(type, pageNumber, criteria);

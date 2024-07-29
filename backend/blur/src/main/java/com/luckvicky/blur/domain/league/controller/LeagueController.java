@@ -75,7 +75,7 @@ public class LeagueController {
             )
     })
     @Parameter(
-            name = "leagueType",
+            name = "type",
             description = "조회할 리그 유형",
             examples = {
                     @ExampleObject(name = "brand", value = "BRAND", description = "브랜드"),

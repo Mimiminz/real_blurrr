@@ -19,6 +19,9 @@ public enum ErrorCode {
 
     INVALID_BOARD_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 게시판 유형입니다."),
     INVALID_LEAGUE_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 리그 유형입니다."),
+    INVALID_SORTING_CRITERIA(HttpStatus.BAD_REQUEST,"유효하지 않은 정렬 기준입니다."),
+    INVALID_SEARCH_CONDITION(HttpStatus.BAD_REQUEST,"유효하지 않은 검색 조건입니다."),
+
 
     FAIL_TO_VALIDATE(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
