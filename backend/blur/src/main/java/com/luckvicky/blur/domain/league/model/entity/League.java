@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "leagues")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class League extends BaseEntity {
 
     @Column(unique = true, nullable = false)
@@ -30,10 +30,22 @@ public class League extends BaseEntity {
     @OneToMany(mappedBy = "league", cascade = CascadeType.ALL, orphanRemoval = true)
     List<LeagueBoard> leagueBoards;
 
+    @Column(nullable = false)
+    private Long peopleCount;
+
     @Builder
-    public League (String name, LeagueType type) {
+    public League (String name, LeagueType type, Long peopleCount) {
         this.name = name;
         this.type = type;
+        this.peopleCount = peopleCount;
+    }
+
+    public void increasePeopleCount() {
+        this.peopleCount++;
+    }
+
+    public void decreasePeopleCount() {
+        this.peopleCount--;
     }
 
 }

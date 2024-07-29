@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class InvalidLeagueTypeException extends BaseException {
 
-    public InvalidLeagueTypeException(ErrorCode errorCode) {
-        super(errorCode);
+    public InvalidLeagueTypeException() {
+        super(ErrorCode.INVALID_LEAGUE_TYPE);
     }
 
 }

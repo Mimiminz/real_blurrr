@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class InvalidBoardTypeException extends BaseException {
 
-    public InvalidBoardTypeException(ErrorCode errorCode) {
-        super(errorCode);
+    public InvalidBoardTypeException() {
+        super(ErrorCode.INVALID_BOARD_TYPE);
     }
 
 }

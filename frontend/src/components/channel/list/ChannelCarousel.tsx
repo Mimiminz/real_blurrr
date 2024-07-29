@@ -16,6 +16,10 @@ const SwiperContainer = styled.div`
     display: none;
   }
 
+  .swiper-button-active {
+   margin-left: 0px;
+  }
+
   .swiper-button-prev {
     background: url('/images/carousel_arrow_prev.png') no-repeat;
     opacity: 0.7;
@@ -50,14 +54,34 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
                swiperRef.current = swiper;
             })}
             loop={true}
-            spaceBetween={10}
-            slidesPerView={5}
+            spaceBetween={0}
             navigation={true}
             slideToClickedSlide={true}
-            slidesOffsetBefore={6}
+            slidesOffsetAfter={10}
             autoplay={{
                delay: 2500,
                disableOnInteraction: false,
+            }}
+            breakpoints={{
+               320: { // 작은 화면
+                  slidesPerView: 1,
+               },
+               480: {
+                  slidesPerView: 2,
+                  spaceBetween: 10,
+               },
+               768: { // 태블릿
+                  slidesPerView: 3,
+                  spaceBetween: 10,
+               },
+               1024: { // 작은 데스크탑
+                  slidesPerView: 4,
+                  spaceBetween: 20,
+               },
+               1440: { // 큰 데스크탑
+                  slidesPerView: 5,
+                  spaceBetween: 30,
+               },
             }}
          >
             {slides.map((slide) => (
@@ -65,7 +89,7 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
                   <UserChannelCard
                      name={slide.name}
                      followers={slide.followers}
-                     img={slide.img} // img prop 추가
+                     img={slide.img}
                   />
                </SwiperSlide>
             ))}

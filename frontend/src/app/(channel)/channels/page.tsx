@@ -47,25 +47,39 @@ const SearchBarContainer = styled.div`
   margin: 20px 0;
 `;
 
+const PageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center; /* 부모 컨테이너를 중앙 정렬 */
+`;
+
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  justify-content: center; /* 그리드 항목을 수평으로 중앙에 배치 */
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px; /* 전체 그리드의 최대 너비 설정 */
 
-  @media (min-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
+  /* 핸드폰 설정 */
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(1, minmax(200px, 1fr));
   }
 
+  /* 태블릿 크기 이상 설정 */
   @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 
+  /* 데스크탑 크기 이상 설정 */
   @media (min-width: 1024px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
   }
 
+  /* 큰 데스크탑 크기 이상 설정 */
   @media (min-width: 1440px) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(200px, 1fr));
   }
 `;
 
@@ -105,19 +119,20 @@ const Channels: React.FC<Props> = (props) => {
           <SearchBar />
         </SearchBarContainer>
       </TitleAndSearchContainer>
-
-      <GridContainer>
-        {dummy.AllChannels.map((item) => (
-          <div key={item.title} onClick={() => console.log("item pressed")}>
-            <ChannelCard
-              title={item.title}
-              followers={item.followers} // 좋아요 수로 가정
-              tags={item.tags}
-              img={item.img}
-            />
-          </div>
-        ))}
-      </GridContainer>
+      <PageContainer>
+        <GridContainer>
+          {dummy.AllChannels.map((item) => (
+            <div key={item.id} onClick={() => console.log("item pressed")}>
+              <ChannelCard
+                title={item.title}
+                followers={item.followers} // 좋아요 수로 가정
+                tags={item.tags}
+                img={item.img}
+              />
+            </div>
+          ))}
+        </GridContainer>
+      </PageContainer>
     </>
   );
 }

@@ -89,10 +89,10 @@ public class LeagueBoardController {
                     name = "criteria",
                     description = "정렬 기준",
                     examples = {
-                            @ExampleObject(name = "최신", value = "createdAt"),
-                            @ExampleObject(name = "좋아요", value = "likeCount"),
-                            @ExampleObject(name = "조회수", value = "viewCount"),
-                            @ExampleObject(name = "댓글", value = "commentCount"),
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
                     }
             ),
     })
@@ -100,7 +100,7 @@ public class LeagueBoardController {
     public ResponseEntity getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
         List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(
@@ -146,5 +146,77 @@ public class LeagueBoardController {
         );
 
     }
+
+    @Operation(
+            summary = "특정 리그 게시글 검색 API",
+            description = "특정 리그에 대한 게시물에 대하여 검색한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 검색 성공",
+                    content = @Content(schema = @Schema(implementation = LeagueBoardListResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 검색 (단, 데이터 없음)"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "유효하지 않은 검색 조건"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 리그"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
+            @Parameter(
+                    name = "condition",
+                    description = "검색 조건",
+                    examples = {
+                            @ExampleObject(name = "제목", value = "TITLE"),
+                            @ExampleObject(name = "본문", value = "CONTENT"),
+                            @ExampleObject(name = "작성자", value = "NICKNAME"),
+                    }
+            ),
+            @Parameter(name = "pageNumber", description = "페이지 번호"),
+            @Parameter(
+                    name = "criteria",
+                    description = "정렬 기준",
+                    examples = {
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
+                    }
+            ),
+    })
+    @GetMapping("/{leagueId}/boards/search")
+    public ResponseEntity search(
+            @PathVariable("leagueId") UUID leagueId,
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(required = false, defaultValue = "TITLE", value = "condition") String condition,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+    ) {
+
+        List<BoardDto> boardDtos = leagueBoardService.search(leagueId, keyword, condition, pageNumber, criteria);
+
+        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder().build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(LeagueBoardListResponse.of(boardDtos))
+                        .build()
+        );
+
+    }
+
 
 }
