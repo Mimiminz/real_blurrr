@@ -18,6 +18,7 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChannelServiceImpl implements ChannelService{
@@ -111,6 +112,7 @@ public class ChannelServiceImpl implements ChannelService{
     }
 
     @Override
+    @Transactional
     public Boolean createFollow(UUID memberId, UUID channelId) {
         Member member = memberRepository.getOrThrow(memberId);
         Channel channel = channelRepository.getOrThrow(channelId);
@@ -123,40 +125,24 @@ public class ChannelServiceImpl implements ChannelService{
                         .channel(channel)
                         .build()
         );
-        return inCreated(createdFollow);
+        return true;
     }
 
     @Override
+    @Transactional
     public Boolean deleteFollow(UUID memberId, UUID channelId) {
 
         Member member = memberRepository.getOrThrow(memberId);
         Channel channel = channelRepository.getOrThrow(channelId);
 
-        channel.decreaseFollowCount();
 
         ChannelMemberFollow findFollow = channelMemberFollowRepository.findByMemberAndChannel(member, channel)
                 .orElseThrow(NotExistFollowException::new);
 
+        channel.decreaseFollowCount();
         channelMemberFollowRepository.deleteById(findFollow.getId());
-        channelRepository.save(channel);
-
-        return isDeleted(findFollow);
-    }
-
-    private Boolean inCreated(ChannelMemberFollow createdFollow){
-        channelMemberFollowRepository.findById(createdFollow.getId())
-                .orElseThrow(FailToCreateFollowException::new);
 
         return true;
     }
-
-    private Boolean isDeleted(ChannelMemberFollow findFollow){
-        if(channelMemberFollowRepository.existsById(findFollow.getId())) {
-            throw new FailToDeleteFollowException();
-        }
-
-        return true;
-    }
-
 
 }
