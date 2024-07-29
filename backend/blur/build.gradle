@@ -86,7 +86,7 @@ dependencies {
 
     testImplementation 'org.assertj:assertj-core:3.21.0'
 
-    developmentOnly "org.springframework.boot:spring-boot-docker-compose"
+    implementation "org.springframework.boot:spring-boot-docker-compose"
 }
 
 tasks.named('test') {

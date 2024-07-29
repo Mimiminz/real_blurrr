@@ -96,7 +96,7 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
 
-        redisRefreshTokenService.saveOrUpdateRefreshToken(member.getId().toString(), refreshToken);
+        redisRefreshTokenService.saveOrUpdate(member.getId().toString(), refreshToken);
 
         return new JwtDto(accessToken, refreshToken);
     }
@@ -114,13 +114,24 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         //유저 조회
-        Member member = memberRepository.findByEmail(jwtProvider.getEmail(reissue.refreshToken()))
+
+        String email = jwtProvider.getEmail(reissue.refreshToken());
+
+        // 유저 조회
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(NotExistMemberException::new);
+
+        // Redis에서 Refresh Token 검증
+        String storedRefreshToken = redisRefreshTokenService.getValue(member.getId().toString());
+
+        if (storedRefreshToken == null || !storedRefreshToken.equals(reissue.refreshToken())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
 
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
 
-        redisRefreshTokenService.saveOrUpdateRefreshToken(member.getId().toString(), refreshToken);
+        redisRefreshTokenService.saveOrUpdate(member.getId().toString(), refreshToken);
         return new JwtDto(accessToken, refreshToken);
     }
 
@@ -157,14 +168,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean authEmail(String email) {
-        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
 
+        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
         String authCode = UuidUtil.createSequentialUUID().toString().substring(0,8);
 
         htmlContent = htmlContent.replace("{{authCode}}", authCode);
-
         mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
 
-        return false;
+        return true;
     }
 }
