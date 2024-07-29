@@ -81,6 +81,34 @@ public class ChannelController {
         );
     }
 
+
+    @Operation(summary = "팔로우 채널 목록 조회 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료 응답",
+                    content = @Content(schema = @Schema(implementation = ChannelListResponse.class))
+
+            )
+    })
+    @GetMapping("/followers")
+    public ResponseEntity getFollowChannels(@AuthUser ContextMember contextMember) {
+        List<ChannelDto> channels = channelService.getFollowedChannels(contextMember.getId());
+
+        if (Objects.isNull(channels) || channels.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder().build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(ChannelListResponse.of(channels))
+                        .build()
+        );
+    }
+
+
     @Operation(summary = "채널 팔로우 생성")
     @ApiResponses({
             @ApiResponse(

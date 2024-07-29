@@ -77,12 +77,24 @@ public class ChannelServiceImpl implements ChannelService{
 
 
     @Override
-    public List<ChannelDto> getAllChannels(){
-        List<Channel> channels = channelRepository.findAll();
-        List<UUID> channelIds = channels.stream()
-                .map(Channel::getId)
-                .collect(Collectors.toList());
+    public List<ChannelDto> getAllChannels() {
+        List<UUID> channelIds = channelRepository.findAllChannelIds();
+        return getChannelDtos(channelIds);
+    }
 
+    @Override
+    public List<ChannelDto> getFollowedChannels(UUID memberId) {
+        List<UUID> channelIds = channelMemberFollowRepository.findChannelIdsByMemberId(memberId);
+        return getChannelDtos(channelIds);
+    }
+
+
+    private List<ChannelDto> getChannelDtos(List<UUID> channelIds) {
+        if (channelIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Channel> channels = channelRepository.findAllById(channelIds);
         List<ChannelTag> channelTags = channelTagRepository.findByChannelIdIn(channelIds);
 
         Map<UUID, List<Tag>> channelTagsMap = channelTags.stream()
@@ -96,6 +108,7 @@ public class ChannelServiceImpl implements ChannelService{
                         channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
