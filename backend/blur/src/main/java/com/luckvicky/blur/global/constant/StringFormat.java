@@ -13,5 +13,16 @@ public class StringFormat {
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
 
+    public static final String CRITERIA_TIME = "createdAt";
+    public static final String CRITERIA_LIKE = "likeCount";
+    public static final String CRITERIA_VIEW = "viewCount";
+    public static final String CRITERIA_COMMENT = "commentCount";
+    public static final String CRITERIA_NAME = "name";
+    public static final String CRITERIA_PEOPLE = "peopleCount";
+
+    public static final String CONDITION_TITLE = "title";
+    public static final String CONDITION_CONTENT = "comment";
+    public static final String CONDITION_NICKNAME = "nickname";
+
 }
 

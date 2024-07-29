@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,11 +24,11 @@ public class LeagueMember {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "league_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "league_id", columnDefinition = "BINARY(36)", nullable = false)
     private League league;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)", nullable = false)
     private Member member;
 
     @Builder

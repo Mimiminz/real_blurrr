@@ -19,6 +19,7 @@ import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import java.util.List;
 import java.util.UUID;
@@ -45,12 +46,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Boolean createBoard(BoardCreateRequest request) {
 
-        BoardType type = convertToEnum(request.boardType());
-
+        BoardType boardType = BoardType.convertToEnum(request.boardType());
         Member member = memberRepository.getOrThrow(request.memberId());
 
         Board createdBoard = boardRepository.save(
-                request.toEntity(member, type)
+                request.toEntity(member, boardType)
         );
 
         return isCreated(createdBoard);
@@ -59,15 +59,18 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardDto> findBoardsByType(String boardType, int pageNumber, String criteria) {
+    public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
 
-        BoardType type = convertToEnum(boardType);
+        BoardType boardType = BoardType.convertToEnum(type);
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+
         Pageable pageable = PageRequest.of(
                 pageNumber, LEAGUE_BOARD_PAGE_SIZE,
-                Sort.by(Direction.DESC, criteria));
+                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+        );
 
         List<Board> boards = boardRepository
-                .findAllByTypeAndStatus(type, pageable, ActivateStatus.ACTIVE).getContent();
+                .findAllByTypeAndStatus(boardType, pageable, ActivateStatus.ACTIVE).getContent();
 
         return boards.stream()
                 .map(board -> mapper.map(board, BoardDto.class))
@@ -108,14 +111,6 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new FailToCreateBoardException(FAIL_TO_CREATE_BOARD));
 
         return true;
-    }
-
-    public BoardType convertToEnum(String name) {
-        try {
-            return BoardType.valueOf(name);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidBoardTypeException(INVALID_BOARD_TYPE);
-        }
     }
 
 }

@@ -1,5 +1,7 @@
 package com.luckvicky.blur.domain.dashcamboard.model.dto;
 
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
+import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.member.model.MemberDto;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @Schema(name = "블랙박스 게시글 DTO")
-public class DashcamBoardDto {
+public class DashcamBoardDetailDto {
     @Schema(description = "게시물 고유 식별값")
     private UUID id;
 
@@ -48,5 +50,8 @@ public class DashcamBoardDto {
 
     @Schema(description = "멘션된 리그 목록")
     private List<DashcamMentionDto> mentionedLeagues;
+
+    @Schema(description = "댓글 목록")
+    List<CommentDto> comments;
 
 }
