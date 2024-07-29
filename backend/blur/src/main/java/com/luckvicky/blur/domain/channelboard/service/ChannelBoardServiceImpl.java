@@ -52,9 +52,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
 
     @Override
     public List<ChannelBoardListDto> getChannelBoards(UUID channelId) {
-        Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new NotExistChannelException(ErrorCode.NOT_EXIST_CHANNEL));
-
+        Channel channel = channelRepository.getOrThrow(channelId);
 
         List<ChannelBoard> channelBoards = channelBoardRepository.findByChannel(channel);
         List<List<ChannelBoardMention>> mentionList = channelBoards.stream()
@@ -69,8 +67,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     @Transactional(readOnly = true)
     public BoardDetailDto getBoardDetail(UUID boardId) {
 
-        Board board = boardRepository.findByIdWithCommentAndReply(boardId)
-                .orElseThrow(NotExistBoardException::new);
+        Board board = boardRepository.getOrThrow(boardId);
 
         List<CommentDto> comments = board.getComments().stream()
                 .filter(comment -> comment.getType().equals(CommentType.COMMENT))
@@ -86,6 +83,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     public List<CommentDto> getComments(UUID boardId) {
 
         Board board = boardRepository.getOrThrow(boardId);
+
         List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
 
         return  comments.stream()
@@ -96,8 +94,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
 
     @Override
     public ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId) {
-        Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new NotExistChannelException(ErrorCode.NOT_EXIST_CHANNEL));
+        Channel channel = channelRepository.getOrThrow(channelId);
 
         Member member = memberRepository.getOrThrow(memberId);
 
