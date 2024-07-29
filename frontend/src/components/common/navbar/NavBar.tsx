@@ -25,6 +25,7 @@ const NavBar = () => {
         <MenuItem onClick={() => router.push('/channels')}>채널</MenuItem>
         <IoMdNotifications onClick={() => router.push('/notifications')} />
         <MenuItem onClick={() => router.push('/login')}>로그인</MenuItem>
+        <MenuItem onClick={() => router.push('/signup')}>회원가입</MenuItem>
         <CgProfile onClick={() => router.push('/mypage')}/>
       </Menu>
     </Nav> 
