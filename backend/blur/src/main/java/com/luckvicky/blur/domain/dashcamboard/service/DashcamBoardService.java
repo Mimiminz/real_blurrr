@@ -14,5 +14,4 @@ public interface DashcamBoardService {
     DashcamBoardDetailDto getDashcamBoardById(UUID id);
     DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId);
     List<CommentDto> getComments(UUID boardId);
-    void deleteDashcamBoard(UUID id);
 }

@@ -139,24 +139,4 @@ public class DashcamBoardController {
                         .build()
         );
     }
-
-
-    @Operation(summary = "블랙박스 게시글 삭제 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "게시글 삭제 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 없음"
-            )
-    })
-    @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id){
-        dashcamBoardService.deleteDashcamBoard(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }
