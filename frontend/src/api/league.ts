@@ -1,11 +1,10 @@
-import axios from "axios";
+import api from "./index";
 import { League, LeagueBoardItem } from "@/types/league";
-const API_BASE_URL = "http://i11a307.p.ssafy.io:8080";
 
 // 리그 목록을 가져오는 함수
 export const fetchBrandLeagues = async (): Promise<League[]> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/v1/leagues`, {
+    const response = await api.get(`/v1/leagues`, {
       params: { type: "BRAND" },
     });
     return response.data.data.leagues;
@@ -17,12 +16,13 @@ export const fetchBrandLeagues = async (): Promise<League[]> => {
 
 // 리그 보드 목록을 가져오는 함수
 export const fetchLeagueBoardList = async (
-  leagueId: string
+  leagueId: string,
+  criteria: string = "TIME"
 ): Promise<LeagueBoardItem[]> => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/v1/leagues/${leagueId}/boards`
-    );
+    const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
+      params: { criteria },
+    });
     console.log(response);
     return response.data.data.boards;
   } catch (error) {
