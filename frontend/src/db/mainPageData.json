@@ -452,5 +452,19 @@
       "followers": 450,
       "img": "https://loremflickr.com/320/248/dog"
     }
+  ],
+  "leagueMembers": [
+    {
+      "id": "11ef4d76-3ada-286d-80d0-65c2c6a96248",
+      "name": "GV70",
+      "type": "MODEL",
+      "peopleCount": 0
+    },
+    {
+      "id": "11ef4d76-4afd-799e-80d0-2d112b0817dc",
+      "name": "제네시스",
+      "type": "BRAND",
+      "peopleCount": 0
+    }
   ]
 }

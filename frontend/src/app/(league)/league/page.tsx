@@ -3,13 +3,26 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FaCar } from "react-icons/fa";
-import { MdFactory } from "react-icons/md";
-import dummy from "@/db/mainPageData.json";
 import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
+import { League } from "@/types/league";
 
-const tabs = [
+// API
+import dummy from "@/db/mainPageData.json";
+import { fetchBrandLeagues } from "@/api/league";
+
+// 아이콘
+import { FaCar } from "react-icons/fa";
+import { MdFactory } from "react-icons/md";
+
+const tabs = dummy.leagueMembers.map((league) => ({
+  id: league.id,
+  name: league.name,
+  type: league.type,
+  icon: league.type === "BRAND" ? <MdFactory /> : <FaCar />,
+}));
+
+const ta1bs = [
   { id: "carModel", label: dummy.userInfo["carModel"], icon: <FaCar /> },
   {
     id: "carManufacture",
@@ -26,31 +39,53 @@ const tabs = [
   },
 ];
 
-const moreTabs = dummy.LeagueList.map((league, index) => ({
-  id: `more-${index}`,
-  label: league.name,
-}));
-
 type TabId = string;
 
 const LeaguePage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
-  const initialTab = tab || "carModel";
+  const initialTab = tab || tabs[0]?.id;
 
+  // activeTab의 id 저장
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
-  const [activeTabLabel, setActiveTabLabel] = useState<string>(
-    tabs.find((t) => t.id === initialTab)?.label || dummy.userInfo["carModel"]
+  // activeTab의 name 저장
+  const [activeTabName, setActiveTabName] = useState<string>(
+    tabs.find((t) => t.id === initialTab)?.name || ""
   );
+
+  // 더보기 눌렀는지 여부 확인
   const [showMoreTabs, setShowMoreTabs] = useState(false);
+
+  // 더보기 안에 있는 요소들
+  const [moreTabs, setMoreTabs] = useState<
+    { id: string; label: string; type: string }[]
+  >([]);
+
+  useEffect(() => {
+    const loadBrandLeagues = async () => {
+      try {
+        const leagues: League[] = await fetchBrandLeagues();
+        const formattedLeagues = leagues.map((league: League) => ({
+          id: league.id,
+          label: league.name,
+          type: league.type,
+        }));
+        setMoreTabs(formattedLeagues);
+      } catch (error) {
+        console.error("Failed to fetch brand leagues", error);
+      }
+    };
+
+    loadBrandLeagues();
+  }, []);
 
   useEffect(() => {
     if (tab) {
       setActiveTab(tab);
       const foundTab = tabs.find((t) => t.id === tab);
       if (foundTab) {
-        setActiveTabLabel(foundTab.label);
+        setActiveTabName(foundTab.name);
       }
     }
   }, [tab]);
@@ -61,32 +96,34 @@ const LeaguePage: React.FC = () => {
 
   const handleTabClick = (id: TabId, label: string) => {
     setActiveTab(id);
-    setActiveTabLabel(label);
+    setActiveTabName(label);
     setShowMoreTabs(false);
   };
 
   const handleWriteClick = () => {
-    const selectedLeague = dummy.LeagueList.find(
-      (league) => league.name === activeTabLabel
+    const selectedLeague = moreTabs.find(
+      (league) => league.label === activeTabName
     );
     if (selectedLeague) {
       const leagueId = selectedLeague.id;
       router.push(
         `/league/${leagueId}/write?leagueName=${encodeURIComponent(
-          activeTabLabel
+          activeTabName
         )}`
       );
     }
   };
 
-  const isCarTab = ["carModel", "carManufacture"].includes(activeTab);
+  const activeTabType =
+    tabs.find((t) => t.id === activeTab)?.type ||
+    moreTabs.find((t) => t.id === activeTab)?.type;
 
   const renderContent = (): JSX.Element => {
     return (
       <Title>
-        {activeTabLabel.startsWith("@")
-          ? `채널에서 ${activeTabLabel.slice(2)}가 멘션된 글`
-          : `${activeTabLabel} 리그`}
+        {activeTabName.startsWith("@")
+          ? `채널에서 ${activeTabName.slice(2)}가 멘션된 글`
+          : `${activeTabName} 리그`}
       </Title>
     );
   };
@@ -99,10 +136,10 @@ const LeaguePage: React.FC = () => {
             <TabButton
               key={tab.id}
               $isActive={activeTab === tab.id}
-              onClick={() => handleTabClick(tab.id, tab.label)}
+              onClick={() => handleTabClick(tab.id, tab.name)}
             >
               {activeTab === tab.id && tab.icon}
-              {tab.label}
+              {tab.name}
             </TabButton>
           ))}
         </TabList>
@@ -112,7 +149,7 @@ const LeaguePage: React.FC = () => {
       <TabContent>
         <HeaderContainer>
           <HeaderLeft>{renderContent()}</HeaderLeft>
-          {activeTab === "carManufacture" && (
+          {activeTabType === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>
               더보기 {showMoreTabs ? "▲" : "▼"}
             </MoreTabsButton>
@@ -135,11 +172,11 @@ const LeaguePage: React.FC = () => {
             <option>게시물 정렬</option>
             <option>게시물 정렬</option>
           </StyledSelect>
-          {isCarTab && (
+          {/* {isCarTab && (
             <StyledButton className="setPosition" onClick={handleWriteClick}>
               글 작성 +
             </StyledButton>
-          )}
+          )} */}
         </FilterSection>
         <LeagueBoardList leagueId={activeTab} />
       </TabContent>
