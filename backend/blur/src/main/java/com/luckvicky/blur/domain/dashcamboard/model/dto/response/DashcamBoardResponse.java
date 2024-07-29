@@ -1,6 +1,6 @@
 package com.luckvicky.blur.domain.dashcamboard.model.dto.response;
 
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDto;
+import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +10,9 @@ import lombok.Getter;
 @Schema(name = "블랙박스 게시글 상세 응답")
 public class DashcamBoardResponse {
     @Schema(description = "블랙박스 게시글 상세 정보")
-    private DashcamBoardDto board;
+    private DashcamBoardDetailDto board;
 
-    public static DashcamBoardResponse of(DashcamBoardDto board) {
+    public static DashcamBoardResponse of(DashcamBoardDetailDto board) {
         return DashcamBoardResponse.builder()
                 .board(board)
                 .build();
