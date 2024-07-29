@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channel.model.entity;
 
+import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,14 +25,16 @@ public class Channel extends BaseEntity {
     @Column(name="info", nullable = false, length = 50)
     private String info;
 
-    @Column(name="owner")
-    private UUID owner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Member owner;
+
 
     @Builder
-    public Channel(String name, String imgUrl, String info, UUID owner) {
+    public Channel(String name, String imgUrl, String info, Member member) {
         this.name = name;
         this.imgUrl = imgUrl;
         this.info = info;
-        this.owner = owner;
+        this.owner = member;
     }
 }

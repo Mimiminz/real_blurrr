@@ -18,7 +18,7 @@ public class ChannelMapper {
                 .name(channel.getName())
                 .imgUrl(channel.getImgUrl())
                 .info(channel.getInfo())
-                .owner(channel.getOwner().toString())
+                .owner(channel.getOwner().getId().toString())
                 .tags(tags.stream()
                         .map(TagDto::from)
                         .collect(Collectors.toList()))

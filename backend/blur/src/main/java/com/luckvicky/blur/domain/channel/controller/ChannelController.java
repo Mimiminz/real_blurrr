@@ -4,7 +4,9 @@ import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,8 +41,8 @@ public class ChannelController {
     })
     @PostMapping
     public ResponseEntity<Result<ChannelDto>> createChannel(
-            @Valid @RequestBody ChannelCreateRequest request) {
-        ChannelDto createdChannel = channelService.createChannel(request);
+            @Valid @RequestBody ChannelCreateRequest request, @AuthUser ContextMember contextMember) {
+        ChannelDto createdChannel = channelService.createChannel(request, contextMember.getId());
         return ResponseUtil.created(
                 Result.<ChannelDto>builder()
                         .data(createdChannel)
