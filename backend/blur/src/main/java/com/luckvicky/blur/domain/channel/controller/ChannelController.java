@@ -10,6 +10,8 @@ import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Tag(name = "채널 API")
 @RestController
@@ -76,6 +79,26 @@ public class ChannelController {
                         .build()
         );
     }
+
+//    @Operation(summary = "채널 팔로우 API")
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "201",
+//                    description = "팔로우 완료"
+//            ),
+//            @ApiResponse(
+//                    responseCode = "404",
+//                    description = "존재하지 않는 사용자, 채널"
+//            ),
+//            @ApiResponse(
+//                    responseCode = "500",
+//                    description = "DB 저장 실패"
+//            )
+//    })
+//    @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
+//    @PostMapping("/{channelId}/followers")
+//    public ResponseEntity followChannel(@PathVariable(name = "channelId") UUID channelId, )
+
 
 
 

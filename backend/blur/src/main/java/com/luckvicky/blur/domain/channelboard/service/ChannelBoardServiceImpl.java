@@ -104,7 +104,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
 
         if(mentionedLeagues.size() != request.mentionedLeagueNames().size()){
-            throw new NotExistLeagueException(ErrorCode.NOT_EXIST_LEAGUE);
+            throw new NotExistLeagueException();
         }
 
         for (League league : mentionedLeagues) {
