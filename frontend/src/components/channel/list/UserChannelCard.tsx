@@ -12,7 +12,8 @@ const CardContainer = styled.div`
   border-radius: 8px;
   padding: 16px;
   text-align: center;
-  width: 70%;
+  max-width: 200px;  
+  margin: 0 auto;
 `;
 
 const ImageContainer = styled.div<{ img: string }>`

@@ -13,8 +13,9 @@ const CardContainer = styled.div`
   border-radius: 8px;
   padding: 16px;
   text-align: center;
-  width: 200px;
   background: #fff;
+  margin: 0 auto; /* 카드가 중앙에 위치하도록 설정 */
+  
 `;
 
 const ImageContainer = styled.div<{ img: string }>`

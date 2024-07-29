@@ -13,7 +13,7 @@ interface DashCamCardProps {
 }
 
 const Card = styled.div`
-  width: 300px;
+  width: 100%;
   border: 1px solid #eaeaea;
   border-radius: 4px;
   overflow: hidden;

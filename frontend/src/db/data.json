@@ -1,52 +1,109 @@
 {
   "AllChannels": [
     {
-      "title": "Orange",
+      "id": 1,
+      "title": "블랙박스",
       "followers": 550,
-      "tags": ["Fruit", "Citrus"],
-      "img": "/images/eg_img.png"
+      "tags": ["자동차", "동영상"],
+      "img": "https://loremflickr.com/300/300/car"
     },
     {
-      "title": "Tangerine",
+      "id": 2,
+      "title": "내 차 자랑",
       "followers": 300,
-      "tags": ["Fruit", "Citrus"],
-      "img": "/images/eg_img.png"
+      "tags": ["사진", "자랑"],
+      "img": "https://loremflickr.com/300/300/car"
     },
     {
-      "title": "Raspberry",
-      "followers": 1000,
-      "tags": ["Fruit", "Berry"],
-      "img": "/images/eg_img.png"
-    },
-    {
-      "title": "Lemon",
-      "followers": 530,
-      "tags": ["Fruit", "Citrus"],
-      "img": "/images/eg_img.png"
-    },
-    {
-      "title": "Avocado",
-      "followers": 1570,
-      "tags": ["Fruit", "Berry"],
-      "img": "/images/eg_img.png"
-    },
-    {
-      "title": "Lemon 2",
+      "id": 3,
+      "title": "자동차 리뷰",
       "followers": 800,
-      "tags": ["Fruit", "Citrus"],
-      "img": "/images/eg_img.png"
+      "tags": ["리뷰", "자동차"],
+      "img": "https://loremflickr.com/300/300/car"
     },
     {
-      "title": "Banana",
-      "followers": 750,
-      "tags": ["Fruit", "Berry"],
-      "img": "/images/eg_img.png"
+      "id": 4,
+      "title": "드라이빙 팁",
+      "followers": 450,
+      "tags": ["운전", "안전"],
+      "img": "https://loremflickr.com/300/300/driving"
     },
     {
-      "title": "Watermelon",
-      "followers": 1220,
-      "tags": ["Fruit", "Berry"],
-      "img": "/images/eg_img.png"
+      "id": 5,
+      "title": "자동차 정비",
+      "followers": 600,
+      "tags": ["정비", "튜토리얼"],
+      "img": "https://loremflickr.com/300/300/mechanic"
+    },
+    {
+      "id": 6,
+      "title": "자동차 시승기",
+      "followers": 700,
+      "tags": ["시승기", "자동차"],
+      "img": "https://loremflickr.com/300/300/testdrive"
+    },
+    {
+      "id": 7,
+      "title": "고속도로 풍경",
+      "followers": 200,
+      "tags": ["풍경", "여행"],
+      "img": "https://loremflickr.com/300/300/highway"
+    },
+    {
+      "id": 8,
+      "title": "차량 사고 영상",
+      "followers": 900,
+      "tags": ["사고", "자동차"],
+      "img": "https://loremflickr.com/300/300/crash"
+    },
+    {
+      "id": 9,
+      "title": "자동차 커스터마이징",
+      "followers": 500,
+      "tags": ["커스터마이징", "튜닝"],
+      "img": "https://loremflickr.com/300/300/custom"
+    },
+    {
+      "id": 10,
+      "title": "오프로드 모험",
+      "followers": 350,
+      "tags": ["오프로드", "모험"],
+      "img": "https://loremflickr.com/300/300/offroad"
+    },
+    {
+      "id": 11,
+      "title": "클래식 자동차",
+      "followers": 400,
+      "tags": ["클래식", "역사"],
+      "img": "https://loremflickr.com/300/300/classic"
+    },
+    {
+      "id": 12,
+      "title": "자동차 시장 뉴스",
+      "followers": 650,
+      "tags": ["뉴스", "시장"],
+      "img": "https://loremflickr.com/300/300/news"
+    },
+    {
+      "id": 13,
+      "title": "전기차",
+      "followers": 700,
+      "tags": ["전기차", "기술"],
+      "img": "https://loremflickr.com/300/300/electriccar"
+    },
+    {
+      "id": 14,
+      "title": "자동차 여행",
+      "followers": 300,
+      "tags": ["여행", "자동차"],
+      "img": "https://loremflickr.com/300/300/roadtrip"
+    },
+    {
+      "id": 15,
+      "title": "모터스포츠",
+      "followers": 800,
+      "tags": ["스포츠", "경주"],
+      "img": "https://loremflickr.com/300/300/motorsport"
     }
   ],
   "createList": [

@@ -13,6 +13,26 @@ const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+
+  /* 핸드폰 설정 */
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(1, minmax(200px, 1fr));
+  }
+
+  /* 태블릿 크기 이상 설정 */
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  }
+
+  /* 데스크탑 크기 이상 설정 */
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+  }
+
+  /* 큰 데스크탑 크기 이상 설정 */
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
+  }
 `;
 
 const DashCam: React.FC = () => {
