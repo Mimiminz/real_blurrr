@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final JwtFilter jwtFilter;
     private final JwtAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
@@ -29,12 +30,9 @@ public class SecurityConfig {
 
     private final String[] permitAll = {
             "/v1/auth/**",
-            "/v1/leagues/**",
-            "/v1/boards/**",
-            "/v1/comments/**",
             "/swagger-ui/**",
             "/h2-console/**",
-            "/channels/**"
+            "/health"
     };
 
     private final String[] SWAGGER_URI = {
