@@ -1,35 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FaRegHeart } from 'react-icons/fa6';
-import { LiaCommentDots } from 'react-icons/lia';
-import { MdAccessTime } from 'react-icons/md';
-
-interface LeagueBoardListItemProps {
-  title: string;
-  writer: string;
-  writertag: string;
-  times: number;
-  likes: number;
-  comments: number;
-}
+import React from "react";
+import styled from "styled-components";
+import { FaRegHeart } from "react-icons/fa6";
+import { LiaCommentDots } from "react-icons/lia";
+import { MdAccessTime } from "react-icons/md";
+import { LeagueBoardListItemProps } from "@/types/league";
 
 function LeagueBoardListItem({
   title,
   writer,
-  writertag,
-  times,
-  likes,
-  comments,
+  writerCar,
+  createdAt,
+  likeCount,
+  commentCount,
 }: LeagueBoardListItemProps) {
-
-
   return (
     <ArticleDetail>
       <ArticleInfo>
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>{writertag}</UserTags>
+          <UserTags>{writerCar}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -37,19 +27,19 @@ function LeagueBoardListItem({
           <Icon>
             <MdAccessTime />
           </Icon>
-          {times}
+          {createdAt}
         </LikeSection>
         <LikeSection>
           <Icon>
             <FaRegHeart />
           </Icon>
-          {likes}
+          {likeCount}
         </LikeSection>
         <LikeSection>
           <Icon>
             <LiaCommentDots />
           </Icon>
-          {comments}
+          {commentCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
@@ -93,7 +83,7 @@ const ChannelContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom:5px;
+  margin-bottom: 5px;
 `;
 
 const Channel = styled.p`

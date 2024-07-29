@@ -5,6 +5,7 @@ import dummy from "@/db/mainPageData.json";
 import { GoArrowUpRight } from "react-icons/go";
 
 const userInfo = dummy.userInfo;
+const userLeague = dummy.leagueMembers;
 
 const UserCarInfo: React.FC = () => {
   const router = useRouter();
@@ -27,12 +28,12 @@ const UserCarInfo: React.FC = () => {
         </CarInfo>
       </ProfileSection>
       <ButtonSection>
-        <LeagueButton>
-        {userInfo.carModel} <br />
+        <LeagueButton onClick={() => handleUserLeagueClick(userLeague[0].id)}>
+          {userLeague[0].name} <br />
           리그 <GoArrowUpRight />
         </LeagueButton>
-        <LeagueButton>
-          {userInfo.carManufacture} <br />
+        <LeagueButton onClick={() => handleUserLeagueClick(userLeague[1].id)}>
+          {userLeague[1].name} <br />
           리그 <GoArrowUpRight />
         </LeagueButton>
       </ButtonSection>
@@ -52,11 +53,11 @@ const Container = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background: #ffffff;
   margin-left: 10px;
-  
+
   @media (min-width: 480px) {
     width: 70%;
   }
-  
+
   @media (min-width: 768px) {
     margin-right: 30px;
     width: 48%;
@@ -138,4 +139,3 @@ const LeagueButton = styled.button`
     color: orange;
   }
 `;
-
