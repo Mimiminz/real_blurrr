@@ -19,6 +19,7 @@ import com.luckvicky.blur.global.util.ResourceUtil;
 import com.luckvicky.blur.global.util.UuidUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import com.luckvicky.blur.infra.mail.service.MailService;
+import com.luckvicky.blur.infra.redis.service.RedisEmailService;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.net.MalformedURLException;
@@ -52,9 +53,12 @@ public class MemberServiceImpl implements MemberService {
 
     private final ResourceUtil resourceUtil;
 
+    private final RedisEmailService redisEmailService;
+
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenService redisRefreshTokenService,
-                             S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil) {
+                             S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
+                             RedisEmailService redisEmailService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
@@ -62,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
         this.s3ImageService = s3ImageService;
         this.mailService = mailService;
         this.resourceUtil = resourceUtil;
+        this.redisEmailService = redisEmailService;
     }
 
     @Transactional
@@ -171,9 +176,10 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
-
-        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
         String authCode = UuidUtil.createSequentialUUID().toString().substring(0,8);
+
+        redisEmailService.saveOrUpdate(email, authCode);
+        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
 
         htmlContent = htmlContent.replace("{{authCode}}", authCode);
         mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);

@@ -75,10 +75,10 @@ public class AuthController {
 //        return ResponseEntity.ok(s3ImageService.getPresignedUrl("images", fileName));
 //    }
 
-    @GetMapping("/email")
-    public ResponseEntity imgtest() {
-        mailService.sendHtmlEmail("tkdgus1608@gmail.com", "이메일 인증 안내 | blurrr");
-        return ResponseEntity.ok(true);
+    @Operation(summary = "이메일 인증번호 생성 API")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
+        return ResponseEntity.ok(memberService.authEmail(email));
     }
 
 }
