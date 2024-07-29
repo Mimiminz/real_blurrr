@@ -8,18 +8,14 @@ import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.comment.exception.FailToCreateCommentException;
 import com.luckvicky.blur.domain.comment.exception.FailToDeleteCommentException;
 import com.luckvicky.blur.domain.comment.exception.NotExistCommentException;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.request.CommentCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.request.ReplyCreateRequest;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
-import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -36,9 +32,9 @@ public class CommentServiceImpl implements CommentService {
     private final BoardRepository boardRepository;
 
     @Override
-    public Boolean createComment(CommentCreateRequest request) {
+    public Boolean createComment(UUID memberId, CommentCreateRequest request) {
 
-        Member member = memberRepository.getOrThrow(request.memberId());
+        Member member = memberRepository.getOrThrow(memberId);
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);
 
@@ -52,10 +48,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Boolean createReply(UUID commentId, ReplyCreateRequest request) {
+    public Boolean createReply(UUID memberId, UUID commentId, ReplyCreateRequest request) {
 
+        Member member = memberRepository.getOrThrow(memberId);
         Comment parentComment = commentRepository.getOrThrow(commentId);
-        Member member = memberRepository.getOrThrow(request.memberId());
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);
 

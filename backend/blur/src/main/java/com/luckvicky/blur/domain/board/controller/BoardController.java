@@ -2,9 +2,11 @@ package com.luckvicky.blur.domain.board.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
+import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.dto.response.BoardDetailResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.BoardListResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
@@ -196,5 +198,39 @@ public class BoardController {
 
     }
 
+    @Operation(
+            summary = "HOT 게시판 조회 API",
+            description = "최근 1주일 동안 가장 좋아요를 많이 받은 10개의 게시글을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료",
+                    content = @Content(schema = @Schema(implementation = HotBoardResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "조회 완료 (단, 데이터 없음)"
+            )
+    })
+    @GetMapping("/hot")
+    public ResponseEntity getHotBoard() {
+
+        List<HotBoardDto> boardDtos = boardService.getHotBoard();
+
+        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(HotBoardResponse.of(boardDtos))
+                        .build()
+        );
+
+    }
 
 }

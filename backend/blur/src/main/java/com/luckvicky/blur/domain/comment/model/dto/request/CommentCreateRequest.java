@@ -12,9 +12,6 @@ import lombok.Builder;
 @Schema(name = "댓글 생성 요청")
 public record CommentCreateRequest(
 
-        @Schema(description = "사용자 고유 식별값")
-        UUID memberId,
-
         @Schema(description = "게시글 고유 식별값")
         UUID boardId,
 

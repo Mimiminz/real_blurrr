@@ -1,7 +1,9 @@
 package com.luckvicky.blur.domain.like.controller;
 
 import com.luckvicky.blur.domain.like.service.LikeService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,23 +47,16 @@ public class LikeController {
                     description = "DB 저장 실패"
             )
     })
-    @Parameters({
-            @Parameter(
-                    name = "memberId", description = "사용자 고유 식별값", in = ParameterIn.PATH
-            ),
-            @Parameter(
-                    name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH
-            )
-    })
-    @PostMapping("/{memberId}/boards/{boardId}")
+    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
+    @PostMapping("/boards/{boardId}")
     public ResponseEntity createLike(
-            @PathVariable(name = "memberId") UUID memberId,
+            @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.created(
                 Result.builder()
-                        .data(likeService.createLike(memberId, boardId))
+                        .data(likeService.createLike(member.getId(), boardId))
                         .build()
         );
 
@@ -85,23 +80,16 @@ public class LikeController {
                     description = "DB 삭제 실패"
             )
     })
-    @Parameters({
-            @Parameter(
-                    name = "memberId", description = "사용자 고유 식별값", in = ParameterIn.PATH
-            ),
-            @Parameter(
-                    name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH
-            )
-    })
-    @DeleteMapping("/{memberId}/boards/{boardId}")
+    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
+    @DeleteMapping("/boards/{boardId}")
     public ResponseEntity deleteLike(
-            @PathVariable(name = "memberId") UUID memberId,
+            @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(likeService.deleteLike(memberId, boardId))
+                        .data(likeService.deleteLike(member.getId(), boardId))
                         .build()
         );
 

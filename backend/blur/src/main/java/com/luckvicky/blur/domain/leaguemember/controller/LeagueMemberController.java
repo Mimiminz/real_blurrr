@@ -3,7 +3,9 @@ package com.luckvicky.blur.domain.leaguemember.controller;
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
 import com.luckvicky.blur.domain.leaguemember.service.LeagueMemberService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import javax.naming.Context;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,19 +50,16 @@ public class LeagueMemberController {
                     description = "실패"
             )
     })
-    @Parameters({
-            @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
-            @Parameter(name = "memberId", description = "사용자 고유 식별값", in = ParameterIn.PATH)
-    })
-    @PostMapping("/{leagueId}/members/{memberId}")
+    @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
+    @PostMapping("/{leagueId}/members")
     public ResponseEntity createLeagueMember(
             @PathVariable(name = "leagueId") UUID leagueId,
-            @PathVariable(name = "memberId") UUID memberId
+            @AuthUser ContextMember member
     ) {
 
         return ResponseUtil.created(
                 Result.builder()
-                        .data(leagueMemberService.createLeagueMember(leagueId, memberId))
+                        .data(leagueMemberService.createLeagueMember(leagueId, member.getId()))
                         .build()
         );
 
@@ -84,13 +84,12 @@ public class LeagueMemberController {
                     description = "존재하지 않는 사용자"
             )
     })
-    @Parameter(name = "memberId", description = "사용자 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/members")
     public ResponseEntity getLeague(
-            @PathVariable(name = "memberId") UUID memberId
+            @AuthUser ContextMember member
     ) {
 
-        List<LeagueMemberDto> leagues = leagueMemberService.findLeagueMemberByMember(memberId);
+        List<LeagueMemberDto> leagues = leagueMemberService.findLeagueMemberByMember(member.getId());
 
         if (Objects.isNull(leagues) || leagues.isEmpty()) {
             return ResponseUtil.noContent(
