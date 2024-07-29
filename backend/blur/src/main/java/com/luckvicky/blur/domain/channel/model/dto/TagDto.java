@@ -20,7 +20,7 @@ public class TagDto {
     String name;
 
 
-    public static TagDto from(Tag tag) {
+    public static TagDto of(Tag tag) {
         return TagDto.builder()
                 .id(tag.getId())
                 .name(tag.getName())

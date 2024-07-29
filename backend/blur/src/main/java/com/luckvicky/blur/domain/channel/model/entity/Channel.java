@@ -42,6 +42,7 @@ public class Channel extends BaseEntity {
         this.followCount = 0L;
     }
 
+
     public void increaseFollowCount() {this.followCount++; }
     public void decreaseFollowCount() {this.followCount--; }
 }

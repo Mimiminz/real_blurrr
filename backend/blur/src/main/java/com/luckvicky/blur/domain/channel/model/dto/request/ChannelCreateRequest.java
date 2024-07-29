@@ -13,13 +13,13 @@ import java.util.UUID;
 @Schema(name = "채널 생성 요청")
 public record ChannelCreateRequest (
 
-    @Schema(description = "채널 이름", example = "SUV 오너들의 모임")
+    @Schema(description = "채널 이름", example = "채널 이름입니다.")
     String name,
 
     @Schema(description = "이미지 URL")
     String imgUrl,
 
-    @Schema(description = "채널 설명", example = "SUV오너들의 모임 채널입니다.")
+    @Schema(description = "채널 설명", example = "채널 설명입니다.")
     String info,
 
     @Schema(description = "태그 목록", example = "[\"SUV\",\"정보공유\"]"
