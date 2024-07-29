@@ -20,7 +20,7 @@ public class ChannelBoardMention {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="dashcam_id")
+    @JoinColumn(name="channel_board_id")
     private ChannelBoard channelBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)

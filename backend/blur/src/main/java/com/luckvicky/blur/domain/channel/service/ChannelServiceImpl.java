@@ -9,6 +9,8 @@ import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
+import com.luckvicky.blur.domain.member.model.entity.Member;
+import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,16 @@ public class ChannelServiceImpl implements ChannelService{
     private final ChannelRepository channelRepository;
     private final ChannelTagRepository channelTagRepository;
     private final TagRepository tagRepository;
+    private final MemberRepository memberRepository;
     private final ChannelMapper channelMapper;
 
     @Override
     @Transactional
-    public ChannelDto createChannel(ChannelCreateRequest request) {
-        Channel channel = request.toEntity();
+    public ChannelDto createChannel(ChannelCreateRequest request, UUID memberId) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+
+        Channel channel = request.toEntity(member);
         channel = channelRepository.save(channel);
 
         List<Tag> tags = tagRepository.findAllByNameIn(request.tags());
