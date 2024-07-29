@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public class NotExistLeagueException extends BaseException {
 
-    public NotExistLeagueException(ErrorCode errorCode) {
-        super(errorCode);
+    public NotExistLeagueException() {
+        super(ErrorCode.NOT_EXIST_LEAGUE);
     }
+
 }

@@ -33,19 +33,15 @@ public class LeagueServiceImpl implements LeagueService {
     private final MemberRepository memberRepository;
 
     @Override
-    public List<LeagueDto> findLeagueByType(String leagueType) {
+    public List<LeagueDto> findLeagueByType(String type) {
 
-        LeagueType leagueTypeToEnum = convertToEnum(leagueType);
+        LeagueType leagueType = LeagueType.convertToEnum(type);
 
-        List<League> leagues = leagueRepository
-                .findAllByType(leagueTypeToEnum)
-                .orElseGet(null);
+        List<League> leagues = leagueRepository.findAllByType(leagueType).get();
 
-        List<LeagueDto> leagueDtos = leagues.stream()
+        return leagues.stream()
                 .map(league -> mapper.map(league, LeagueDto.class))
                 .collect(Collectors.toList());
-
-        return leagueDtos;
 
     }
 
@@ -84,14 +80,6 @@ public class LeagueServiceImpl implements LeagueService {
 
         return true;
 
-    }
-
-    private LeagueType convertToEnum(String leagueType) {
-        try {
-            return LeagueType.valueOf(leagueType);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidLeagueTypeException(INVALID_LEAGUE_TYPE);
-        }
     }
 
 }

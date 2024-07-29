@@ -6,6 +6,7 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetai
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import java.util.List;
 import java.util.UUID;
+import javax.naming.directory.InvalidSearchControlsException;
 
 public interface LeagueBoardService {
 
@@ -14,5 +15,7 @@ public interface LeagueBoardService {
     List<BoardDto> getLeagueBoards(UUID leagueId, int pageNumber, String criteria);
 
     BoardDetailDto getLeagueBoardDetail(UUID boardId);
+
+    List<BoardDto> search(UUID leagueId, String keyword, String condition, int pageNumber, String criteria);
 
 }

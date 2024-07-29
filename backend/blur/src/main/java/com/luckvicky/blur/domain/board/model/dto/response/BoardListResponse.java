@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-@Schema(description = "게시물 유형별 조회 응답")
+@Schema(name = "게시물 유형별 조회 응답")
 public record BoardListResponse(
         @Schema(description = "게시물 목록")
         List<BoardDto> boards

@@ -13,4 +13,13 @@ public interface LeagueBoardRepository extends JpaRepository<LeagueBoard, Long> 
     @EntityGraph(attributePaths = "member")
     Page<LeagueBoard> findAllByLeagueAndStatus(League league, Pageable pageable, ActivateStatus status);
 
+    @EntityGraph(attributePaths = "member")
+    Page<LeagueBoard> findAllByLeagueAndTitleContainingIgnoreCase(League league, String title, Pageable pageable);
+
+    @EntityGraph(attributePaths = "member")
+    Page<LeagueBoard> findAllByLeagueAndContentContainingIgnoreCase(League league, String title, Pageable pageable);
+
+    @EntityGraph(attributePaths = "member")
+    Page<LeagueBoard> findAllByLeagueAndMemberNicknameContainingIgnoreCase(League league, String nickname, Pageable pageable);
+
 }
