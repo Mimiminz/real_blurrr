@@ -1,11 +1,16 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import com.luckvicky.blur.domain.channel.exception.FailToCreateFollowException;
+import com.luckvicky.blur.domain.channel.exception.FailToDeleteFollowException;
+import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
+import com.luckvicky.blur.domain.channel.repository.ChannelMemberFollowRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
@@ -29,6 +34,7 @@ public class ChannelServiceImpl implements ChannelService{
     private final ChannelTagRepository channelTagRepository;
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
+    private final ChannelMemberFollowRepository channelMemberFollowRepository;
     private final ChannelMapper channelMapper;
 
     @Override
@@ -102,6 +108,54 @@ public class ChannelServiceImpl implements ChannelService{
                 .entrySet().stream()
                 .map(entry -> channelMapper.convertToDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean createFollow(UUID memberId, UUID channelId) {
+        Member member = memberRepository.getOrThrow(memberId);
+        Channel channel = channelRepository.getOrThrow(channelId);
+
+        channel.increaseFollowCount();
+
+        ChannelMemberFollow createdFollow = channelMemberFollowRepository.save(
+                ChannelMemberFollow.builder()
+                        .member(member)
+                        .channel(channel)
+                        .build()
+        );
+        return inCreated(createdFollow);
+    }
+
+    @Override
+    public Boolean deleteFollow(UUID memberId, UUID channelId) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+        Channel channel = channelRepository.getOrThrow(channelId);
+
+        channel.decreaseFollowCount();
+
+        ChannelMemberFollow findFollow = channelMemberFollowRepository.findByMemberAndChannel(member, channel)
+                .orElseThrow(NotExistFollowException::new);
+
+        channelMemberFollowRepository.deleteById(findFollow.getId());
+        channelRepository.save(channel);
+
+        return isDeleted(findFollow);
+    }
+
+    private Boolean inCreated(ChannelMemberFollow createdFollow){
+        channelMemberFollowRepository.findById(createdFollow.getId())
+                .orElseThrow(FailToCreateFollowException::new);
+
+        return true;
+    }
+
+    private Boolean isDeleted(ChannelMemberFollow findFollow){
+        if(channelMemberFollowRepository.existsById(findFollow.getId())) {
+            throw new FailToDeleteFollowException();
+        }
+
+        return true;
     }
 
 

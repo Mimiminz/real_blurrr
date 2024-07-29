@@ -29,6 +29,9 @@ public class Channel extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private Member owner;
 
+    @Column(nullable = false)
+    private Long followCount;
+
 
     @Builder
     public Channel(String name, String imgUrl, String info, Member member) {
@@ -36,5 +39,9 @@ public class Channel extends BaseEntity {
         this.imgUrl = imgUrl;
         this.info = info;
         this.owner = member;
+        this.followCount = 0L;
     }
+
+    public void increaseFollowCount() {this.followCount++; }
+    public void decreaseFollowCount() {this.followCount--; }
 }
