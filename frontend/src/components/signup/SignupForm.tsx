@@ -2,14 +2,10 @@ import React, { useState, ChangeEvent } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
-
-interface SignupFormValues {
-  email: string;
-  emailVerification: string;
-  nickname: string;
-  password: string;
-  passwordCheck: string;
-}
+import api from '../../api/index';
+import { SignupFormValues } from '@/types/authTypes';
+import { debounce } from '../../utils/debounce';
+import { checkNicknameAvailability } from '../../api/index';
 
 const initialValues: SignupFormValues = {
   email: '',
@@ -39,6 +35,24 @@ const validationSchema = Yup.object({
 const SignupForm = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [buttonColor, setButtonColor] = useState<boolean>(false);
+  const [nicknameError, setNicknameError] = useState<string>('');
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
+
+  const debouncedCheckNickname = debounce(async (nickname: string) => {
+    if (nickname) {
+      try {
+        const isAvailable = await checkNicknameAvailability(nickname);
+        setIsNicknameAvailable(isAvailable);
+        setNicknameError(isAvailable ? '가능' : '이미 사용 중인 닉네임입니다.');
+      } catch (error) {
+        setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
+      }
+    } else {
+      setIsNicknameAvailable(null);
+      setNicknameError('');
+    }
+  }, 500);
+
 
   const checkAll = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -46,6 +60,7 @@ const SignupForm = () => {
     } else {
       setCheckList([]);
     }
+    setButtonColor(event.target.checked);
   };
 
   const check = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,14 +68,31 @@ const SignupForm = () => {
       ? [...checkList, event.target.name]
       : checkList.filter((choice) => choice !== event.target.name);
     setCheckList(updatedList);
-    setButtonColor(updatedList.length === 3);
+    setButtonColor(updatedList.length === 3); 
   };
 
-  const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
+  const handleSubmit = async (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
+    try {
+      const response = await api.post('/v1/auth/signup', {
+        email: values.email,
+        nickname: values.nickname,
+        password: values.password,
+        passwordCheck: values.passwordCheck,
+      });
+
+      if (response.data === true) {
+        alert('회원가입이 완료되었습니다.');
+      } else {
+        alert('회원가입에 실패했습니다.');
+      }
+
+      alert('회원가입이 완료되었습니다.');
+    } catch (error) {
+      console.error('회원가입 중 오류가 발생했습니다.', error);
+      alert('회원가입 중 오류가 발생했습니다.');
+    } finally {
       setSubmitting(false);
-    }, 400);
+    }
   };
 
   return (
@@ -72,7 +104,7 @@ const SignupForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <StyledForm>
             <InputContainer>
               <StyledField
@@ -106,14 +138,18 @@ const SignupForm = () => {
               name="nickname"
               type="text"
               placeholder="닉네임 입력"
-              className={touched.nickname ? (errors.nickname ? 'error' : 'valid') : ''}
+              className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                setFieldValue('nickname', value);
+                debouncedCheckNickname(value);
+              }}
             />
+  
             <StyledErrorMessage name="nickname" component="div" />
-            {touched.nickname && !errors.nickname && (
-              <SuccessMessage>사용 가능한 닉네임입니다.</SuccessMessage>
-            )}
+            {nicknameError && <SuccessMessage>{nicknameError}</SuccessMessage>}
 
-<StyledField
+            <StyledField
               name="password"
               type="password"
               placeholder="비밀번호"
@@ -134,8 +170,7 @@ const SignupForm = () => {
             {touched.passwordCheck && !errors.passwordCheck && (
               <SuccessMessage>비밀번호가 일치합니다.</SuccessMessage>
             )}
-
-
+            
             {/* 약관 동의 부분 */}
             <TermsContainer>
               <div>
@@ -254,7 +289,6 @@ const StyledField = styled(Field)`
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  font-size: 0.8em;
   margin-bottom: 1em;
 `;
 
@@ -266,6 +300,8 @@ const PasswordFeedback = styled.div<PasswordFeedbackProps>`
   color: ${({ isValid }) => (isValid ? '#4caf50' : '#f44336')};
   margin-bottom: 1em;
 `;
+
+
 
 const SuccessMessage = styled.div`
   color: #4caf50;
