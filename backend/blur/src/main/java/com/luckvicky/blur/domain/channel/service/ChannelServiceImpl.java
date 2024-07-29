@@ -88,6 +88,12 @@ public class ChannelServiceImpl implements ChannelService{
         return getChannelDtos(channelIds);
     }
 
+    @Override
+    public List<ChannelDto> getCreatedChannels(UUID memberId) {
+        List<UUID> channelIds = channelRepository.findChannelIdsByOwnerId(memberId);
+        return getChannelDtos(channelIds);
+    }
+
 
     private List<ChannelDto> getChannelDtos(List<UUID> channelIds) {
         if (channelIds.isEmpty()) {

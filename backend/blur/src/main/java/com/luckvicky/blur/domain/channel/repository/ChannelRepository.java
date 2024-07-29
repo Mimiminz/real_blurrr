@@ -5,6 +5,7 @@ import com.luckvicky.blur.domain.channelboard.exception.NotExistChannelException
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +20,8 @@ public interface ChannelRepository extends JpaRepository<Channel, UUID> {
 
     @Query("SELECT c.id FROM Channel c")
     List<UUID> findAllChannelIds();
+
+    @Query("SELECT c.id FROM Channel c WHERE c.owner.id = :memberId")
+    List<UUID> findChannelIdsByOwnerId(@Param("memberId") UUID memberId);
 
 }
