@@ -1,45 +1,36 @@
 import React from "react";
 import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
+import { BoardDetailProps } from "@/types/league";
 
-interface LeagueDetailTitleProps {
-  title: string;
-  date: string;
-  views: number;
-  likes: number;
-  username: string;
-  authorCarInfo: string;
-  avatarUrl: string;
-}
-
-const LeagueDetailTitle: React.FC<LeagueDetailTitleProps> = ({
+const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   title,
-  date,
-  views,
-  likes,
+  createdAt,
+  viewCount,
+  likeCount,
   username,
-  authorCarInfo,
-  avatarUrl,
+  authorprofileUrl,
+  authorCarTitle,
 }) => {
   return (
     <Container>
       <Title>{title}</Title>
       <InfoRow>
         <Infoleft>
-          <Date>{date}</Date>
+          <Date>{createdAt}</Date>
           <Icons>
             <FaEye />
-            <Views>{views}</Views>
+            <Views>{viewCount}</Views>
             <FaHeart />
-            <Likes>{likes}</Likes>
+            <Likes>{likeCount}</Likes>
           </Icons>
         </Infoleft>
         <AuthorInfo>
           <Author>
-            <Avatar src={avatarUrl} alt={`${username}'s avatar`} />
+            <Avatar src={authorprofileUrl} alt={`${username}'s avatar`} />
             <Username>{username}</Username>
           </Author>
-          <CarInfo>{authorCarInfo}</CarInfo>
+          <CarInfo>{authorCarTitle}</CarInfo>
         </AuthorInfo>
       </InfoRow>
     </Container>

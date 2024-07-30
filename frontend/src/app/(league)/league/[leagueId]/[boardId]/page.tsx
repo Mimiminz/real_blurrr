@@ -8,62 +8,93 @@ import CreateComment from "@/components/common/UI/comment/CreateComment";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 import { Divider } from "@nextui-org/divider";
 import { LiaCommentDots } from "react-icons/lia";
+import { useEffect, useState } from "react";
 
-const boardDetail = () => (
-  <>
-    <BreadcrumbContainer>
-      <Breadcrumb channel="리그" subChannel="GV70 리그" channelUrl="/league" />
-    </BreadcrumbContainer>
-    <LeagueDetailTitle
-      title="오늘 현대 GV70 샀다 질문 받는다..."
-      date="2024.07.17"
-      views={1019}
-      likes={142}
-      username="전상현"
-      avatarUrl="https://i.pravatar.cc/30"
-      authorCarInfo="벤츠 GLS 600 4MATIC MANUFAKTUR 2024"
-    />
-    <Divider />
-    <Content>
-      지난주말에 장인어른이 당한 사고 내용입니다 접합 차량과 같은방향으로
-      진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만 그대로
-      박았습니다. 블박영상에는 충격이 전해지지만는데, 원본영상에서는 흔들리는
-      영상이 있습니다(원본은 아직 못올렸네요) 장마철 사고이기도해서 그냥
-      넘어가려고 했는데 내리자마자 안박았다 왜그러냐 란 식이었습니다 사과하면
-      그냥 넘어가려고 했으나 이렇게 무시를 하니가 그럼 미안한데 블박보죠
-      했다는데요. 바쁨바쁜 우선 연락처만 받고 자리에 이동하였고 장인어른이
-      이런상황이면 어쩌할줄 재서 거세게 차주분과 제가 연락을 해보았는데
-      엄한무인이라고요
-    </Content>
-    <Divider />
-    <CommentContainer>
-      <CommentNumber>
-        <WriterContainer>
-          <WriterButton>수정</WriterButton>
-          <WriterButton>삭제</WriterButton>
-        </WriterContainer>
-        <LiaCommentDots />8
-      </CommentNumber>
-      <CreateComment />
-      <Comment
-        avatarUrl="https://i.pravatar.cc/30"
-        userName="돌판"
-        userDetail="BMW M8"
-        text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.dfawefawtfawerfawv eravwrwaerwaetferwavfwervawbawrnsrysebrtaeawegrawgawgrgedgawsrg."
-        time="23h"
-      />
-      <Reply
-        avatarUrl="https://i.pravatar.cc/30"
-        userName="해결사요"
-        userDetail="BMW M8"
-        text="무과실이 맞는데 아무래도 과실 몰릴것 같네요."
-        time="6h"
-      />
-    </CommentContainer>
-  </>
-);
+import { BoardDetail } from "@/types/league";
+import { fetchLeagueDetail } from "@/api/league";
 
-export default boardDetail;
+export default function BoardDetailPage({
+  params,
+}: {
+  params: { leagueId: string; boardId: string };
+}) {
+  const leagueId = params.leagueId;
+  const boardId = params.boardId;
+
+  const [BoardDetail, setBoardDetail] = useState<BoardDetail>(
+    {} as BoardDetail
+  );
+
+  useEffect(() => {
+    const loadBoardDetail = async () => {
+      try {
+        const details = await fetchLeagueDetail(boardId);
+        setBoardDetail(details);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadBoardDetail();
+  }, [boardId]);
+
+  return (
+    <>
+      <BreadcrumbContainer>
+        <Breadcrumb
+          channel="리그"
+          subChannel="GV70 리그"
+          channelUrl="/league"
+        />
+      </BreadcrumbContainer>
+
+      <LeagueDetailTitle
+        title={BoardDetail.title}
+        createdAt={BoardDetail.createdAt}
+        viewCount={BoardDetail.viewCount}
+        likeCount={BoardDetail.likeCount}
+        username={BoardDetail.member.nickname}
+        authorprofileUrl={BoardDetail.member.profileUrl}
+        authorCarTitle={BoardDetail.member.carTitle}
+      />
+      <Divider />
+      <Content>{BoardDetail.content}</Content>
+      <Divider />
+      <CommentContainer>
+        <CommentNumber>
+          <WriterContainer>
+            <WriterButton>수정</WriterButton>
+            <WriterButton>삭제</WriterButton>
+          </WriterContainer>
+          <LiaCommentDots />8
+        </CommentNumber>
+        <CreateComment />
+        {BoardDetail.comments.map((comment) => (
+          <>
+            <Comment
+              key={comment.id}
+              avatarUrl={comment.member.profileUrl}
+              userName={comment.member.nickname}
+              userDetail={comment.member.carTitle}
+              text={comment.content}
+              time={comment.createdAt}
+            />
+            {comment.replies.length > 0 &&
+              comment.replies.map((reply) => (
+                <Reply
+                  key={reply.id}
+                  avatarUrl={reply.member.profileUrl}
+                  userName={reply.member.nickname}
+                  userDetail={reply.member.carTitle}
+                  text={reply.content}
+                  time={reply.createdAt}
+                />
+              ))}
+          </>
+        ))}
+      </CommentContainer>
+    </>
+  );
+}
 
 const BreadcrumbContainer = styled.div`
   width: 100%;
