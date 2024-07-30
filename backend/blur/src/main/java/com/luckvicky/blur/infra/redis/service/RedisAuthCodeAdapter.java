@@ -33,7 +33,11 @@ public class RedisAuthCodeAdapter implements RedisAdapter {
 
     @Override
     public Optional<String> getValue(String key) {
-        return (String) redisTemplate.opsForValue().get(key);
+        Object value = redisTemplate.opsForValue().get(generateKey(key));
+        if (value instanceof String) {
+            return Optional.of((String) value);
+        }
+        return Optional.empty();
     }
 
     @Override
