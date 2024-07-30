@@ -26,7 +26,7 @@ public class PasswordAuthFactory implements AuthCodeFactory{
     }
 
     public void pushAvailableEmail(String email) {
-        redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 720);
+        redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 5);
     }
 
     public String generateAvailableKey(String email) {
