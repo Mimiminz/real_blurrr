@@ -11,9 +11,6 @@ public class EmailAuthFactory implements AuthCodeFactory{
 
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
-    @Value("${email.time.valid}")
-    private long validTime;
-
     public EmailAuthFactory(RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
@@ -25,11 +22,19 @@ public class EmailAuthFactory implements AuthCodeFactory{
 
     @Override
     public void saveCode(String key, String code) {
-        redisAuthCodeAdapter.saveOrUpdate(key, code, validTime);
+        redisAuthCodeAdapter.saveOrUpdate(key, code, 5);
     }
 
     @Override
     public String generateKey(String email) {
         return StringFormat.EMAIL_AUTH_PREFIX + email;
+    }
+
+    public void pushAvailableEmail(String email) {
+        redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 720);
+    }
+
+    public String generateAvailableKey(String email) {
+        return StringFormat.EMAIL_AVAILABLE_PREFIX + email;
     }
 }
