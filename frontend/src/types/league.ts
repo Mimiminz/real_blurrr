@@ -60,3 +60,42 @@ export interface UserTabProps {
   tabs: Tab[];
   mentionTabs: Tab[];
 }
+
+export interface Comment {
+  id: string;
+  member: {
+    id: string;
+    profileUrl: string;
+    nickname: string;
+    carTitle: string;
+  };
+  content: string;
+  createdAt: string;
+  status: string;
+  replies: Comment[];
+}
+
+export interface BoardDetail {
+  title: string;
+  content: string;
+  createdAt: string;
+  viewCount: number;
+  likeCount: number;
+  member: {
+    id: string;
+    profileUrl: string;
+    nickname: string;
+    carTitle: string;
+  };
+  comments: Comment[];
+}
+
+export interface BoardDetailProps {
+  title: string;
+  createdAt: string;
+  viewCount: number;
+  likeCount: number;
+  username: string;
+  authorprofileUrl: string;
+  authorCarTitle: string;
+}

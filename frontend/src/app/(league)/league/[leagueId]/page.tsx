@@ -8,7 +8,7 @@ import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 
-import { LeagueList } from "@/types/league";
+import { LeagueList, Tab } from "@/types/league";
 
 // API
 import dummy from "@/db/mainPageData.json";
@@ -35,9 +35,7 @@ export default function LeaguePage({
   const leagueId = params.leagueId;
 
   // 더보기 안에 있는 요소들
-  const [moreTabs, setMoreTabs] = useState<
-    { id: string; name: string; type: string }[]
-  >([]);
+  const [moreTabs, setMoreTabs] = useState<Tab[]>([]);
 
   useEffect(() => {
     const loadBrandLeagues = async () => {
