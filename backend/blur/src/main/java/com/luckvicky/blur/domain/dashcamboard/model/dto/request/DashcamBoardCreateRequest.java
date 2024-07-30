@@ -17,16 +17,11 @@ import java.util.UUID;
 public record DashcamBoardCreateRequest(
         @Schema(
                 description = "제목",
-                example = "사고 영상 공유합니다. 제가 잘못한건가요,,,",
+                example = "사고 영상 공유합니다.",
                 maxLength = 20
         )
         String title,
 
-        @Schema(
-                description = "사용자 고유 식별값",
-                example = "11ef4830-22b0-8bab-bdb9-5b68a61f28a6"
-        )
-        UUID memberId,
 
         @Schema(
                 description = "본문",

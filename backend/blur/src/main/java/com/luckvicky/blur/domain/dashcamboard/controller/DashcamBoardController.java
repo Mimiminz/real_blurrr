@@ -6,7 +6,9 @@ import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCrea
 import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcamboard.service.DashcamBoardService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -128,32 +130,13 @@ public class DashcamBoardController {
     @PostMapping
     public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
             @Valid
-            @RequestBody DashcamBoardCreateRequest request) {
-        DashcamBoardDetailDto createdBoard = dashcamBoardService.createDashcamBoard(request);
+            @RequestBody DashcamBoardCreateRequest request,
+            @AuthUser ContextMember contextMember) {
+        DashcamBoardDetailDto createdBoard = dashcamBoardService.createDashcamBoard(request, contextMember.getId());
         return ResponseUtil.created(
                 Result.<DashcamBoardResponse>builder()
                         .data(DashcamBoardResponse.of(createdBoard))
                         .build()
         );
     }
-
-
-    @Operation(summary = "블랙박스 게시글 삭제 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "게시글 삭제 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 없음"
-            )
-    })
-    @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id){
-        dashcamBoardService.deleteDashcamBoard(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }

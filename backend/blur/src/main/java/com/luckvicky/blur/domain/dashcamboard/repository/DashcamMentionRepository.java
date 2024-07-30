@@ -11,5 +11,4 @@ import java.util.UUID;
 @Repository
 public interface DashcamMentionRepository extends JpaRepository<DashcamMention, UUID> {
     List<DashcamMention> findByDashcam(Dashcam dashcam);
-    void deleteAllByDashcam(Dashcam dashcam);
 }

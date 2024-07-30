@@ -81,8 +81,8 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     @Override
     @Transactional
-    public DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request) {
-        Member member = memberRepository.getOrThrow(request.memberId());
+    public DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId) {
+        Member member = memberRepository.getOrThrow(memberId);
 
         Dashcam dashcam = request.toEntity(member);
         dashcam = dashcamRepository.save(dashcam);
@@ -120,14 +120,4 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     }
 
-    @Override
-    @Transactional
-    public void deleteDashcamBoard(UUID id) {
-        Dashcam dashcam = dashcamRepository.findById(id)
-                .orElseThrow(NotFoundDashcamException::new);
-
-        dashcamMentionRepository.deleteAllByDashcam(dashcam);
-
-        dashcamRepository.deleteById(id);
-    }
 }
