@@ -1,54 +1,99 @@
-import React from 'react'
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import React from 'react';
+import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { useAuthStore } from '../../store/authStore'
+import { login as loginApi } from '@/api/authApi';
 
-type Props = {}
+interface LoginFormValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
 
-const SignupForm = () => {
-
+const LoginForm = () => {
   const router = useRouter();
-    return (
-      <Container>
-        <Title>로그인</Title>
-        <Formik
-          initialValues={{ email: '', password: '', rememberMe: false }}
-          validationSchema={Yup.object({
-            email: Yup.string()
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  const handleSubmit = async (
+    values: LoginFormValues,
+    { setSubmitting }: FormikHelpers<LoginFormValues>
+  ) => {
+    try {
+      setSubmitting(true);
+      const response = await loginApi({
+        email: values.email,
+        password: values.password,
+      });
+
+      const { accessToken, refreshToken } = response;
+      setAccessToken(accessToken);
+      sessionStorage.setItem('refreshToken', refreshToken);
+      
+      router.push('/');
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data;
+        const errorMessage =
+          errorResponse?.body?.detail || '로그인 요청 중 오류가 발생했습니다.';
+        alert(errorMessage);
+      } else {
+        alert('로그인 요청 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Container>
+      <Title>로그인</Title>
+      <Formik
+        initialValues={{ email: '', password: '', rememberMe: false }}
+        validationSchema={Yup.object({
+          email: Yup.string()
             .email('유효한 이메일 형식을 입력하세요.')
             .required('이메일은 필수 입력 항목입니다.'),
-            password: Yup.string()
-            .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/, '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.')
+          password: Yup.string()
+            .matches(
+              /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/,
+              '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.'
+            )
             .required('비밀번호는 필수 입력 항목입니다.'),
-            rememberMe: Yup.boolean(),
-          })}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => { 
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
-          }}
-        >
+          rememberMe: Yup.boolean(),
+        })}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
           <StyledForm>
             <StyledField name="email" type="email" placeholder="이메일" />
             <StyledErrorMessage name="email" component="div" />
             <StyledField name="password" type="password" placeholder="비밀번호" />
             <StyledErrorMessage name="password" component="div" />
             <CheckboxLabel>
-                <CheckboxField name="rememberMe" type="checkbox" />
-                자동 로그인
+              <CheckboxField name="rememberMe" type="checkbox" />
+              자동 로그인
             </CheckboxLabel>
-            <Button type="submit">로그인</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              로그인
+            </Button>
             <Div>
-                <Link href="#" onClick={() => router.push("/")}>비밀번호를 잊으셨나요?</Link>
-                <Link href="#" onClick={() => router.push("/signup")}>회원가입</Link>
+              <Link href="#" onClick={() => router.push('/')}>
+                비밀번호를 잊으셨나요?
+              </Link>
+              <Link href="#" onClick={() => router.push('/signup')}>
+                회원가입
+              </Link>
             </Div>
           </StyledForm>
-        </Formik>
-      </Container>
-    );
-  };
+        )}
+      </Formik>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   max-width: 400px;
@@ -65,10 +110,9 @@ const Title = styled.h2`
 `;
 
 const Div = styled.div`
-    display: flex;
-    justify-content: space-between;
-
-`
+  display: flex;
+  justify-content: space-between;
+`;
 
 const StyledForm = styled(Form)`
   display: flex;
@@ -100,13 +144,13 @@ const Button = styled.button`
   padding: 0.7em;
   font-size: 1em;
   color: #fff;
-  background-color: #0070f3;
+  background-color: #f9803a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background-color: #005bb5;
+    background-color: #ff5e01;
   }
 `;
 
@@ -114,9 +158,9 @@ const Link = styled.a`
   text-align: center;
   display: block;
   margin-top: 1em;
-  color: #0070f3;
+  color: #000000;
   cursor: pointer;
-  text-decoration: none; 
+  text-decoration: none;
 `;
 
-export default SignupForm
+export default LoginForm;

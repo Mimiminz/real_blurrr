@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
+import { useAuthStore } from '@/store/authStore';
 import Notifications from './Notifications';
 
 const NavBar = () => {
   const router = useRouter();
+  const { isLoggedIn, setIsLoggedIn } = useAuthStore(state => ({
+    isLoggedIn: state.isLoggedIn,
+    setIsLoggedIn: state.setIsLoggedIn
+  }))
   const [showNotifications, setShowNotifications] = useState(false);
+  const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setClientIsLoggedIn(isLoggedIn);
+  }, [isLoggedIn]);
+
   const handleNotificationsClick = () => {
     setShowNotifications(true);
   };
@@ -16,18 +27,41 @@ const NavBar = () => {
     setShowNotifications(false);
   };
 
+  const handleLogout = () => {
+    useAuthStore.getState().clearAccessToken();
+    setIsLoggedIn(false);
+    alert('로그아웃되었습니다.');
+
+    router.push('/');
+  };
+
+
   return (
     <Nav>
-      <Image src = '/images/logo/logo.png' onClick={() => router.push('/')}></Image>
+      <Image src='/images/logo/logo.png' onClick={() => router.push('/')} />
       <Menu>
-        <MenuItem onClick={() => router.push('/')}>Home</MenuItem>
+        <MenuItem onClick={() => router.push('/')}>홈</MenuItem>
         <MenuItem onClick={() => router.push('/league')}>리그</MenuItem>
         <MenuItem onClick={() => router.push('/channels')}>채널</MenuItem>
-        <IoMdNotifications onClick={() => router.push('/notifications')} />
-        <MenuItem onClick={() => router.push('/login')}>로그인</MenuItem>
-        <MenuItem onClick={() => router.push('/signup')}>회원가입</MenuItem>
-        <CgProfile onClick={() => router.push('/mypage')}/>
+        
+        {clientIsLoggedIn === null ? (
+          <Spinner />
+        ) : clientIsLoggedIn ? (
+          <>
+            <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+            <IconWrapper>
+              <IoMdNotifications onClick={handleNotificationsClick} />
+              <CgProfile onClick={() => router.push('/mypage')} />
+            </IconWrapper>
+          </>
+        ) : (
+          <>
+            <MenuItem onClick={() => router.push('/login')}>로그인</MenuItem>
+            <MenuItem onClick={() => router.push('/signup')}>회원가입</MenuItem>
+          </>
+        )}
       </Menu>
+      {showNotifications && <Notifications onClose={handleCloseNotifications} />}
     </Nav> 
   );
 };
@@ -51,6 +85,19 @@ const Menu = styled.div`
   gap: 40px;
 `;
 
+
+const IconWrapper = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
 const MenuItem = styled.div`
   cursor: pointer;
   &:hover {
@@ -61,4 +108,18 @@ const MenuItem = styled.div`
 const Image = styled.img`
   width: 90px;
   height: 30px;
+`;
+
+const Spinner = styled.div`
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f4f4f;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 `;
