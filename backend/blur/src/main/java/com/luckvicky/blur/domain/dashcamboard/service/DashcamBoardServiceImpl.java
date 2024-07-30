@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.luckvicky.blur.global.enums.code.ErrorCode;
+import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -61,9 +62,9 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
                 Sort.by(Sort.Direction.DESC, criteria));
 
-        Page<Dashcam> dashcamPage = dashcamRepository.findAll(pageable);
+        List<Dashcam> dashcamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
 
-        return dashcamBoardMapper.toDashcamBoardListDtos(dashcamPage.getContent());
+        return dashcamBoardMapper.toDashcamBoardListDtos(dashcamBoards);
     }
 
     @Override
