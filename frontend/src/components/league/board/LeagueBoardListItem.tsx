@@ -27,7 +27,7 @@ function LeagueBoardListItem({
           <Icon>
             <MdAccessTime />
           </Icon>
-          {createdAt}
+          {createdAt.slice(0, 10)}
         </LikeSection>
         <LikeSection>
           <Icon>

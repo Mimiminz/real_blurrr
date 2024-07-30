@@ -67,8 +67,8 @@ export default function BoardDetailPage({
           </WriterContainer>
           <LiaCommentDots />8
         </CommentNumber>
-        <CreateComment />
-        {BoardDetail.comments.map((comment) => (
+        {/* <CreateComment /> */}
+        {/* {BoardDetail.comments.map((comment) => (
           <>
             <Comment
               key={comment.id}
@@ -90,7 +90,7 @@ export default function BoardDetailPage({
                 />
               ))}
           </>
-        ))}
+        ))} */}
       </CommentContainer>
     </>
   );
