@@ -15,7 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const handleSubmit = () => {
-    if (!keyword.trim()) return;
+    // if (!keyword.trim()) return;
     onSearch(keyword);
     setKeyword("");
   };
