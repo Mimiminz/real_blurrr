@@ -22,4 +22,8 @@ public interface BoardService {
 
     Boolean deleteBoard(UUID boardId, UUID memberId);
 
+    List<BoardDto> findLikeBoardsByMember(UUID id, int pageNumber, String criteria);
+
+    List<BoardDto> findBoardsByMember(UUID id, int pageNumber, String criteria);
+
 }
