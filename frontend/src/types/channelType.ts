@@ -6,6 +6,13 @@ export interface SimpleMember {
   carTitle: string;
 }
 
+export interface PostMember {
+  id: string;
+  profileUrl: string;
+  nickname: string;
+  carTitle: string;
+}
+
 export interface Member {
   id: string;
   email: string;
@@ -17,7 +24,6 @@ export interface Member {
 }
 
 export interface Mentioned {
-   id: string;
    name: string;
  }
 
@@ -75,10 +81,28 @@ export interface Reply {
   status: CommentStatus;
 }
 
-export interface Channel {
-   id: number;
-   title: string;
-   followers: number;
-   tags: string[];
-   img: string;
+export interface Channels {
+   id: string;
+   name: string;
+   imgUrl: string;
+   info: string;
+   owner: string;
+   followCount: number;
+   tags: Mentioned[];
  }
+
+ export interface PostData {
+  board: Posts;
+  mentionedLeagues: Mentioned[];
+}
+
+ export interface Posts {
+  id: string;
+  member: PostMember;
+  title: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  createdAt: string; 
+  content: string;
+}
