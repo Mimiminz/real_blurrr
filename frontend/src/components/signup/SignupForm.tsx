@@ -1,8 +1,8 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
-import api from '../../api/index';
+import api, { requestEmailVerificationCode, verifyEmailCode } from '../../api/index';
 import { SignupFormValues } from '@/types/authTypes';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
@@ -37,13 +37,18 @@ const SignupForm = () => {
   const [buttonColor, setButtonColor] = useState<boolean>(false);
   const [nicknameError, setNicknameError] = useState<string>('');
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [emailVerificationError, setEmailVerificationError] = useState<string>('');
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [timer, setTimer] = useState<number>(0);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
 
   const debouncedCheckNickname = debounce(async (nickname: string) => {
     if (nickname) {
       try {
         const isAvailable = await checkNicknameAvailability(nickname);
         setIsNicknameAvailable(isAvailable);
-        setNicknameError(isAvailable ? '가능' : '이미 사용 중인 닉네임입니다.');
+        setNicknameError(isAvailable ? '' : '이미 사용 중인 닉네임입니다.');
       } catch (error) {
         setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
       }
@@ -53,6 +58,32 @@ const SignupForm = () => {
     }
   }, 500);
 
+  const handleSendVerification = async (email: string) => {
+    try {
+      await requestEmailVerificationCode(email);
+      alert('인증번호가 전송되었습니다.');
+      setTimer(300);
+      setIsTimerActive(true);
+    } catch (error) {
+      alert('인증번호 전송 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleVerifyEmailCode = async (email: string, code: string) => {
+    try {
+      const response = await verifyEmailCode(email, code);
+      if (response === true) {
+        setEmailVerified(true);
+        setEmailVerificationError('인증번호가 확인되었습니다.');
+      } else {
+        setEmailVerified(false);
+        setEmailVerificationError('인증번호가 일치하지 않습니다.');
+      }
+    } catch (error) {
+      setEmailVerified(false);
+      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
+    }
+  };
 
   const checkAll = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -86,13 +117,39 @@ const SignupForm = () => {
         alert('회원가입에 실패했습니다.');
       }
 
-      alert('회원가입이 완료되었습니다.');
     } catch (error) {
       console.error('회원가입 중 오류가 발생했습니다.', error);
       alert('회원가입 중 오류가 발생했습니다.');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (isTimerActive && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            clearInterval(intervalId!);
+            setIsTimerActive(false);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isTimerActive, timer]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
   return (
@@ -104,7 +161,7 @@ const SignupForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, setFieldValue }) => (
+        {({ values, errors, touched, setFieldValue }) => (
           <StyledForm>
             <InputContainer>
               <StyledField
@@ -113,11 +170,19 @@ const SignupForm = () => {
                 placeholder="이메일"
                 className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
               />
-              <Button type="button">인증번호 전송</Button>
+              <Button
+                type="button"
+                onClick={() => handleSendVerification(values.email)}
+              >
+                인증번호 전송
+              </Button>              
             </InputContainer>
             <StyledErrorMessage name="email" component="div" />
-            {touched.email && !errors.email && (
-              <SuccessMessage>인증이 완료되었습니다. 사용 가능한 이메일입니다.</SuccessMessage>
+            {emailValid === false && (
+              <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
+            )}
+            {touched.email && !errors.email && emailValid && (
+              <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
             )}
 
             <InputContainer>
@@ -127,11 +192,20 @@ const SignupForm = () => {
                 placeholder="인증번호 입력"
                 className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
               />
-              <Button type="button">인증번호 확인</Button>
+              <Button
+                type="button"
+                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
+              >
+                인증번호 확인
+              </Button>
             </InputContainer>
             <StyledErrorMessage name="emailVerification" component="div" />
             {touched.emailVerification && !errors.emailVerification && (
-              <SuccessMessage>인증번호가 확인되었습니다.</SuccessMessage>
+              <SuccessMessage>{emailVerificationError}</SuccessMessage>
+            )}
+
+            {isTimerActive && (
+              <TimerDisplay>{formatTime(timer)}</TimerDisplay>
             )}
 
             <StyledField
@@ -156,9 +230,9 @@ const SignupForm = () => {
               className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
             />
             <StyledErrorMessage name="password" component="div" />
-            {touched.password && !errors.password && (
+            {/* {touched.password && !errors.password && (
               <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
-            )}
+            )} */}
 
             <StyledField
               name="passwordCheck"
@@ -167,9 +241,9 @@ const SignupForm = () => {
               className={touched.passwordCheck ? (errors.passwordCheck ? 'error' : 'valid') : ''}
             />
             <StyledErrorMessage name="passwordCheck" component="div" />
-            {touched.passwordCheck && !errors.passwordCheck && (
+            {/* {touched.passwordCheck && !errors.passwordCheck && (
               <SuccessMessage>비밀번호가 일치합니다.</SuccessMessage>
-            )}
+            )} */}
             
             {/* 약관 동의 부분 */}
             <TermsContainer>
@@ -274,7 +348,7 @@ const StyledField = styled(Field)`
   border: 2px solid;
   border-radius: 5px;
   transition: border-color 0.3s, color 0.3s;
-  border-color: #ccc;
+  border: 1.5px solid #EEEEEE;
 
   &.valid {
     border-color: #4caf50;
@@ -349,6 +423,13 @@ const Separator = styled.hr`
   height: 1px;
   background-color: #ddd;
   margin: 1em 0;
+`;
+
+const TimerDisplay = styled.div`
+  font-size: 1em;
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 10px;
 `;
 
 export default SignupForm;

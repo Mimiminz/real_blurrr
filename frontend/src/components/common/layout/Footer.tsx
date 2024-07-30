@@ -16,7 +16,7 @@ export default Footer;
 
 const FooterContainer = styled.footer`
   display: flex;
-  height: 200px;
+  height: 150px;
   justify-content: center;
   align-items: center;
   background-color: #d16d34 ;
