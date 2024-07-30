@@ -74,7 +74,7 @@ public class AuthController {
     @Operation(summary = "이메일 인증번호 생성 API")
     @GetMapping("/email/{email}")
     public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
-        return ResponseEntity.ok(memberService.authEmail(email));
+        return ResponseEntity.ok(memberService.createEmailAuthCode(email));
     }
 
     @Operation(summary = "이메일 인증번호 확인")
@@ -83,4 +83,15 @@ public class AuthController {
         return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
     }
 
+    @Operation(summary = "비밀번호 찾기 이메일 인증 요청")
+    @GetMapping("/passwrod/email/{email}")
+    public ResponseEntity<Boolean> createPaaswordChangeAuthcode(@PathVariable String email){
+        return ResponseEntity.ok(memberService.createPasswordAuthCode(email));
+    }
+
+    @Operation(summary = "비밀번호 찾기 이메일 인증 코드 확인")
+    @PostMapping("/password/email")
+    public ResponseEntity<Boolean> validPasswordAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
+        return null;
+    }
 }

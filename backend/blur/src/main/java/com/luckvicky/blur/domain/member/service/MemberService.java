@@ -19,6 +19,8 @@ public interface MemberService {
     Boolean checkNickname(String nickname);
     MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
 
-    boolean authEmail(String email);
+    boolean createEmailAuthCode(String email);
     boolean validEmailAuth(EmailAuth emailAuth);
+    boolean createPasswordAuthCode(String email);
+    boolean validPasswordAuthCode(EmailAuth emailAuth);
 }
