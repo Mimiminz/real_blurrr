@@ -24,7 +24,7 @@ const LeagueBoardList = ({ leagueId, criteria }: boardListProp) => {
   }, [leagueId, criteria]);
 
   const handleCardClick = (id: string) => {
-    router.push(`league/${leagueId}/${id}`);
+    router.push(`${leagueId}/${id}`);
   };
 
   return (

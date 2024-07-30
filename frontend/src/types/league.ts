@@ -75,18 +75,21 @@ export interface Comment {
   replies: Comment[];
 }
 
+export interface Member {
+  id: string;
+  profileUrl: string;
+  nickname: string;
+  carTitle: string;
+}
+
 export interface BoardDetail {
   title: string;
   content: string;
   createdAt: string;
   viewCount: number;
   likeCount: number;
-  member: {
-    id: string;
-    profileUrl: string;
-    nickname: string;
-    carTitle: string;
-  };
+  commentCount: number;
+  member: Member;
   comments: Comment[];
 }
 

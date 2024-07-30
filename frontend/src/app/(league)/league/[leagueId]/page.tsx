@@ -60,8 +60,6 @@ export default function LeaguePage({
     tabs.find((t) => t.id === leagueId)?.name
   } 리그`;
 
-  console.log(leagueId.slice(7));
-
   if (activeTabName == `${undefined} 리그`) {
     activeTabName = `채널에서 ${
       tabs.find((t) => t.id === leagueId.slice(7))?.name
