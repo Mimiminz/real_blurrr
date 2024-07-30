@@ -13,6 +13,7 @@ import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
 
+    private final ModelMapper mapper;
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;

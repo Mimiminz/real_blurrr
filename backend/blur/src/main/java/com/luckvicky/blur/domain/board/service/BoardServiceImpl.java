@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.board.service;
 
+import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.HOT_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
@@ -21,6 +22,8 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.like.model.entity.Like;
+import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
@@ -60,6 +63,47 @@ public class BoardServiceImpl implements BoardService {
         );
 
         return isCreated(createdBoard);
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BoardDto> findLikeBoardsByMember(UUID id, int pageNumber, String criteria) {
+
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                GENERAL_PAGE_SIZE,
+                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+        );
+
+        Member member = memberRepository.getOrThrow(id);
+        List<Board> likeBoards = boardRepository.findByMember(member, ActivateStatus.ACTIVE, pageable);
+
+        return likeBoards.stream()
+                .map(likeBoard -> mapper.map(likeBoard, BoardDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BoardDto> findBoardsByMember(UUID memberId, int pageNumber, String criteria) {
+
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                LEAGUE_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+        );
+
+        Member member = memberRepository.getOrThrow(memberId);
+        List<Board> boards = boardRepository.findAllByMember(member, pageable).getContent();
+
+        return boards.stream()
+                .map(board -> mapper.map(board,  BoardDto.class))
+                .collect(Collectors.toList());
 
     }
 
