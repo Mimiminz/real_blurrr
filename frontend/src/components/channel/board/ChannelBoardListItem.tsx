@@ -3,63 +3,45 @@ import styled from 'styled-components';
 import { FaRegHeart } from 'react-icons/fa6';
 import { LiaCommentDots } from 'react-icons/lia';
 import { MdAccessTime } from 'react-icons/md';
+import { Posts } from '@/types/channelType';
 
 interface ChannelBoardListItemProps {
-  mentions: string;
-  title: string;
-  texts: string;
-  writer: string;
-  writertag: string;
-  times: number;
-  likes: number;
-  comments: number;
+  post: Posts;
 }
 
-function ChannelBoardListItem({
-  mentions,
-  title,
-  texts,
-  writer,
-  writertag,
-  times,
-  likes,
-  comments,
-}: ChannelBoardListItemProps) {
-  const mentionArray = mentions.split(',').map((mention, index) => (
-    <Channel key={index}>{mention.trim()}</Channel>
-  ));
+function ChannelBoardListItem({ post }: ChannelBoardListItemProps) { // post를 props로 사용
 
   return (
     <ArticleDetail>
       <ArticleInfo>
         <ChannelContainer>
-          {mentionArray}
+          <span>대체 이게 뭔데</span>
         </ChannelContainer>
-        <Title>{title}</Title>
+        <Title>{post.title}</Title>
         <UserContainer>
-          <UserName>{writer}</UserName>
-          <UserTags>{writertag}</UserTags>
+          <UserName>{post.member.nickname}</UserName>
+          <UserTags>{post.member.carTitle}</UserTags>
         </UserContainer>
-        <Text>{texts}</Text>
+        <Text>{post.content}</Text>
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
           <Icon>
             <MdAccessTime />
           </Icon>
-          {times}
+          {post.createdAt}
         </LikeSection>
         <LikeSection>
           <Icon>
             <FaRegHeart />
           </Icon>
-          {likes}
+          {post.likeCount}
         </LikeSection>
         <LikeSection>
           <Icon>
             <LiaCommentDots />
           </Icon>
-          {comments}
+          {post.commentCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
