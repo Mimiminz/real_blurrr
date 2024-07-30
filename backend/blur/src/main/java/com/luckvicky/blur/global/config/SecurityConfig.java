@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -72,6 +73,7 @@ public class SecurityConfig {
                 .requestMatchers(SWAGGER_URI).permitAll()
                 .requestMatchers(permitAll).permitAll()
                 .requestMatchers(BASIC).hasAnyRole("BASIC_USER", "AUTH_USER")
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated());
 
         //JwtFilter
