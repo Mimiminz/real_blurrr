@@ -46,7 +46,6 @@ export default function BoardDetailPage({
     const loadBoardDetail = async () => {
       try {
         const details = await fetchLeagueDetail(boardId);
-        console.log(details);
         setBoardDetail(details);
       } catch (error) {
         console.log(error);
@@ -61,7 +60,7 @@ export default function BoardDetailPage({
         <Breadcrumb
           channel="리그"
           subChannel="GV70 리그"
-          channelUrl="/league"
+          channelUrl={`/league/${leagueId}`}
         />
       </BreadcrumbContainer>
       <LeagueDetailTitle
