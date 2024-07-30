@@ -73,12 +73,13 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 20px 80px 20px 80px;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   color: black;
 `;
 
 const Menu = styled.div`
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -101,13 +102,13 @@ const IconWrapper = styled.div`
 const MenuItem = styled.div`
   cursor: pointer;
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 `;
 
 const Image = styled.img`
-  width: 90px;
-  height: 30px;
+  width: 80px;
+  height: 25px;
 `;
 
 const Spinner = styled.div`
