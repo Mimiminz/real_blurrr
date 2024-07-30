@@ -9,6 +9,7 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.INVALID_BOARD_TYPE;
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InvalidBoardTypeException;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
+import com.luckvicky.blur.domain.board.exception.UnauthorizedBoardDeleteException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
@@ -94,7 +95,7 @@ public class BoardServiceImpl implements BoardService {
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
-        return BoardDetailDto.of(board.getContent(), board.getViewCount(), comments);
+        return BoardDetailDto.of(board, comments);
 
     }
 
@@ -129,6 +130,20 @@ public class BoardServiceImpl implements BoardService {
                 .map(board -> mapper.map(board, HotBoardDto.class))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteBoard(UUID boardId, UUID memberId) {
+        Board board = boardRepository.getOrThrow(boardId);
+
+        if(!board.getMember().getId().equals(memberId)){
+            throw new UnauthorizedBoardDeleteException();
+        }
+
+        board.inactive();
+
+        return true;
     }
 
     private boolean isCreated(Board createdBoard) {

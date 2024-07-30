@@ -47,7 +47,7 @@ public record ChannelBoardCreateRequest (
                 .channel(channel)
                 .title(this.title)
                 .content(this.content)
-                .type(BoardType.LEAGUE)
+                .type(BoardType.CHANNEL)
                 .viewCount(0L)
                 .commentCount(0L)
                 .likeCount(0L)

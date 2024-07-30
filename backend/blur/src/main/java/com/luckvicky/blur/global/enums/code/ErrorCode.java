@@ -40,6 +40,7 @@ public enum ErrorCode {
      * [403 Forbidden]
      * -  요청한 자원에 대해 권한 없음
      */
+    UNAUTHORIZED_BOARD_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
 
     /**
      * [404 Not Found]

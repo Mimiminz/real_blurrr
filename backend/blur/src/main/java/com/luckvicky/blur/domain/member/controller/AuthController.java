@@ -6,14 +6,11 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
-import com.luckvicky.blur.infra.aws.service.S3ImageService;
-import com.luckvicky.blur.infra.mail.service.AmazonSMTPService;
-import com.luckvicky.blur.infra.mail.service.MailService;
+import com.luckvicky.blur.infra.swagger.NoAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +30,7 @@ public class AuthController {
         this.memberService = memberService;
     }
 
+    @NoAuthorization
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
@@ -40,18 +38,21 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
+    @NoAuthorization
     @Operation(summary = "로그인")
     @PostMapping("/signin")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
         return ResponseEntity.ok(memberService.login(signInDto));
     }
 
+    @NoAuthorization
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<JwtDto> tokenReissue(@Valid @RequestBody ReissueDto reissue) {
         return ResponseEntity.ok(memberService.reissueToken(reissue));
     }
 
+    @NoAuthorization
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<Boolean> checkNickName(
@@ -61,8 +62,6 @@ public class AuthController {
         return ResponseEntity.ok(!memberService.checkNickname(nickname));
     }
 
-
-
 //    @GetMapping("/aws/test")
 //    public ResponseEntity<Map<String, String>> test(
 //            @RequestParam(name = "fileName")
@@ -71,12 +70,14 @@ public class AuthController {
 //        return ResponseEntity.ok(s3ImageService.getPresignedUrl("images", fileName));
 //    }
 
+    @NoAuthorization
     @Operation(summary = "이메일 인증번호 생성 API")
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
-        return ResponseEntity.ok(memberService.createEmailAuthCode(email));
+    public ResponseEntity<Boolean> createEmailAuth(@PathVariable String email) {
+        return ResponseEntity.ok(memberService.authEmail(email));
     }
 
+    @NoAuthorization
     @Operation(summary = "이메일 인증번호 확인")
     @PostMapping("/email")
     public ResponseEntity<Boolean> validEmailAuth(@Valid @RequestBody EmailAuth emailAuth) {

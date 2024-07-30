@@ -94,7 +94,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
-        return BoardDetailDto.of(board.getContent(), board.getViewCount(), comments);
+        return BoardDetailDto.of(board, comments);
 
     }
 

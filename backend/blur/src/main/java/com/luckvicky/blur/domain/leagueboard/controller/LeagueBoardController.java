@@ -9,6 +9,7 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
+import com.luckvicky.blur.infra.swagger.NoAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -66,9 +67,10 @@ public class LeagueBoardController {
 
     }
 
+    @NoAuthorization
     @Operation(
-            summary = "특정 리그 게시글 목록 조회 API",
-            description = "특정 리그에 대한 게시물 목록을 가져온다."
+            summary = "브랜드 리그 게시글 목록 조회 API",
+            description = "브랜드 리그에 대한 게시물 목록을 가져온다."
     )
     @ApiResponses({
             @ApiResponse(
@@ -99,8 +101,8 @@ public class LeagueBoardController {
                     }
             ),
     })
-    @GetMapping("/{leagueId}/boards")
-    public ResponseEntity getLeagueBoards(
+    @GetMapping("/brands/{leagueId}/boards")
+    public ResponseEntity getBrandLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
@@ -125,6 +127,66 @@ public class LeagueBoardController {
         );
 
     }
+
+//    @Operation(
+//            summary = "모델 리그 게시글 목록 조회 API",
+//            description = "모델 리그에 대한 게시물 목록을 가져온다."
+//    )
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "게시글 목록 조회 성공",
+//                    content = @Content(schema = @Schema(implementation = LeagueBoardListResponse.class))
+//            ),
+//            @ApiResponse(
+//                    responseCode = "201",
+//                    description = "게시글 목록 조회 성공 (단, 게시글 없음)"
+//            ),
+//            @ApiResponse(
+//                    responseCode = "404",
+//                    description = "게시글 목록 조회 실패"
+//            )
+//    })
+//    @Parameters({
+//            @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
+//            @Parameter(name = "pageNumber", description = "페이지 번호"),
+//            @Parameter(
+//                    name = "criteria",
+//                    description = "정렬 기준",
+//                    examples = {
+//                            @ExampleObject(name = "최신", value = "TIME"),
+//                            @ExampleObject(name = "좋아요", value = "LIKE"),
+//                            @ExampleObject(name = "조회수", value = "VIEW"),
+//                            @ExampleObject(name = "댓글", value = "COMMENT"),
+//                    }
+//            ),
+//    })
+//    @GetMapping("/models/{leagueId}/boards")
+//    public ResponseEntity getModelLeagueBoards(
+//            @PathVariable(name = "leagueId") UUID leagueId,
+//            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+//            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+//    ) {
+//
+//        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(
+//                leagueId,
+//                pageNumber,
+//                criteria
+//        );
+//
+//        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
+//            return ResponseUtil.noContent(
+//                    Result.builder().build()
+//            );
+//        }
+//
+//        return ResponseUtil.ok(
+//                Result.builder()
+//                        .data(LeagueBoardListResponse.of(boardDtos))
+//                        .build()
+//        );
+//
+//    }
 
     @Operation(summary = "리그 게시글 상세 조회 API")
     @ApiResponses({

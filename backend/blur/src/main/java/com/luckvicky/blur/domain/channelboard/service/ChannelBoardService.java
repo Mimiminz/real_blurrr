@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface ChannelBoardService {
 
-    List<ChannelBoardListDto> getChannelBoards(UUID channelId);
+    List<ChannelBoardListDto> getChannelBoards(UUID channelId, int pageNumber, String criteria);
 
     BoardDetailDto getBoardDetail(UUID boardId);
 

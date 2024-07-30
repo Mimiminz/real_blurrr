@@ -1,13 +1,22 @@
 package com.luckvicky.blur.global.config;
 
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+
+import static com.luckvicky.blur.global.constant.StringFormat.AUTH;
+import static com.luckvicky.blur.global.constant.StringFormat.GENERAL_USER_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.JWT;
+import static com.luckvicky.blur.global.constant.StringFormat.NO_AUTH;
+import static com.luckvicky.blur.global.constant.StringFormat.PERMIT_ALL_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;
-import com.luckvicky.blur.global.security.AuthUser;
+
+import com.luckvicky.blur.infra.swagger.NoAuthorization;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import java.lang.annotation.Annotation;
+import java.util.Objects;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
@@ -16,29 +25,44 @@ import org.springframework.data.domain.Pageable;
 
 @Configuration
 public class SwaggerConfig {
+
     static {
         SpringDocUtils.getConfig().addRequestWrapperToIgnore(Pageable.class, ContextMember.class);
     }
+
     @Bean
     public GroupedOpenApi noAuthApi() {
-        // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화한다.
-        String[] noAuthPaths = {"/v1/auth/**"};
 
         return GroupedOpenApi.builder()
-                .group("no auth")  // 그룹 이름을 설정한다.
-                .pathsToMatch(noAuthPaths)     // 그룹에 속하는 경로 패턴을 지정한다.
+                .group(NO_AUTH)
+                .addOpenApiMethodFilter(method -> {
+                    if (Objects.isNull(method.getAnnotation(NoAuthorization.class))){
+                        return false;
+                    }
+                    return true;
+                })
                 .build();
+
     }
 
     @Bean
     public GroupedOpenApi authApi() {
-        String[] authPaths = {"/spots/**", "/v1/leagues/**", "/v1/boards/**","/v1/channels/**", "/v1/members/**", "/v1/comments/**"};
+
         return GroupedOpenApi.builder()
-                .group("auth")
-                .pathsToMatch(authPaths)
-                .addOpenApiCustomizer(openApi -> openApi
-                        .addSecurityItem(new SecurityRequirement().addList("bearerAuth")))
+                .group(AUTH)
+                .addOpenApiMethodFilter(method -> {
+                    if (Objects.isNull(method.getAnnotation(NoAuthorization.class))){
+                        return true;
+                    }
+                    return false;
+                })
+                .addOpenApiCustomizer(openApi
+                        -> openApi.addSecurityItem(
+                                new SecurityRequirement().addList(TOKEN_PREFIX)
+                        )
+                )
                 .build();
+
     }
 
     @Bean
@@ -46,11 +70,12 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(apiInfo())
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth",
+                        .addSecuritySchemes(
+                                TOKEN_PREFIX,
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("Bearer")
-                                        .bearerFormat("JWT")));
+                                        .scheme(TOKEN_PREFIX)
+                                        .bearerFormat(JWT)));
     }
 
     private Info apiInfo() {

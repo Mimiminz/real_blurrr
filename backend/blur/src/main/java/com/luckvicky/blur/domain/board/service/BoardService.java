@@ -20,4 +20,6 @@ public interface BoardService {
 
     List<HotBoardDto> getHotBoard();
 
+    Boolean deleteBoard(UUID boardId, UUID memberId);
+
 }
