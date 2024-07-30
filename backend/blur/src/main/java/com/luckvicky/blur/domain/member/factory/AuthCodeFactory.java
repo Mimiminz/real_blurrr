@@ -1,13 +1,11 @@
 package com.luckvicky.blur.domain.member.factory;
 
-import com.luckvicky.blur.global.util.UuidUtil;
-
 public interface AuthCodeFactory {
-    default Boolean saveAuthCode(String email) {
+    default String saveAuthCode(String email) {
         String code = creatAuthCode();
 
         saveCode(generateKey(email), code);
-        return true;
+        return code;
     }
 
     String creatAuthCode();

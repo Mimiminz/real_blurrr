@@ -19,11 +19,9 @@ import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
 import com.luckvicky.blur.global.util.ResourceUtil;
-import com.luckvicky.blur.global.util.UuidUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import com.luckvicky.blur.infra.mail.service.MailService;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
-import com.luckvicky.blur.infra.redis.service.RedisEmailService;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -50,37 +48,35 @@ public class MemberServiceImpl implements MemberService {
     private final MailService mailService;
 
     private final ResourceUtil resourceUtil;
-
-    private final RedisEmailService redisEmailService;
     private final PasswordAuthFactory passwordAuthFactory;
     private final EmailAuthFactory emailAuthFactory;
     private final RedisAuthCodeAdapter authCodeAdapter;
+    private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
-                             RedisEmailService redisEmailService, PasswordAuthFactory passwordAuthFactory,
+                             PasswordAuthFactory passwordAuthFactory,
                              EmailAuthFactory emailAuthFactory,
-                             RedisAuthCodeAdapter authCodeAdapter) {
+                             RedisAuthCodeAdapter authCodeAdapter, RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.s3ImageService = s3ImageService;
         this.mailService = mailService;
         this.resourceUtil = resourceUtil;
-        this.redisEmailService = redisEmailService;
         this.passwordAuthFactory = passwordAuthFactory;
         this.emailAuthFactory = emailAuthFactory;
         this.authCodeAdapter = authCodeAdapter;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
+        this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
 
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
-        if (redisEmailService.getAuthEmail(signupDto.email()) == null) {
-            throw new InvalidEmailVerificationException();
-        }
+        redisAuthCodeAdapter.getValue(emailAuthFactory.generateAvailableKey(signupDto.email()))
+                .orElseThrow(InvalidEmailVerificationException::new);
 
         signupDto.valid();
 
@@ -187,22 +183,22 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
-        String authCode = UuidUtil.createSequentialUUID().toString().substring(0, 8);
+        String authCode = emailAuthFactory.saveAuthCode(email);
 
         String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
 
         htmlContent = htmlContent.replace("{{authCode}}", authCode);
         mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
 
-        redisEmailService.saveOrUpdate(email, authCode);
-
         return true;
     }
 
     @Override
     public boolean validEmailAuth(EmailAuth emailAuth) {
-        if (!checkAuthCode(emailAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) return false;
-        redisEmailService.saveAuthEmail(emailAuth.email());
+        if (!checkAuthCode(emailAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) {
+            return false;
+        }
+        emailAuthFactory.pushAvailableEmail(emailAuth.email());
         return true;
     }
 
@@ -211,17 +207,21 @@ public class MemberServiceImpl implements MemberService {
         if (!memberRepository.existsByEmail(email)) {
             throw new NotExistMemberException();
         }
-        return passwordAuthFactory.saveAuthCode(email);
+
+        passwordAuthFactory.saveAuthCode(email);
+        return true;
     }
 
     @Override
     public boolean validPasswordAuthCode(EmailAuth emailAuth) {
-        if (!checkAuthCode(passwordAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) return false;
+        if (!checkAuthCode(passwordAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) {
+            return false;
+        }
         return true;
     }
 
     private boolean checkAuthCode(String key, String code) {
-        String getCode = redisEmailService.getValue(key).orElseThrow(ExpiredEmailAuthException::new);
+        String getCode = redisAuthCodeAdapter.getValue(key).orElseThrow(ExpiredEmailAuthException::new);
 
         if (!getCode.equals(code)) {
             return false;
