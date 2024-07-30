@@ -22,6 +22,7 @@ public class ChannelMapper {
                 .tags(tags.stream()
                         .map(TagDto::of)
                         .collect(Collectors.toList()))
+                .followCount(channel.getFollowCount())
                 .build();
     }
 }

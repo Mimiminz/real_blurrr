@@ -20,6 +20,9 @@ public class SimpleMemberDto {
     @Schema(description = "사용자 식별값")
     private UUID id;
 
+    @Schema(description = "사용자 프로필")
+    private String profileUrl;
+
     @Schema(description = "사용자 닉네임")
     private String nickname;
 
@@ -29,6 +32,7 @@ public class SimpleMemberDto {
     public static SimpleMemberDto of(Member member){
         return SimpleMemberDto.builder()
                 .id(member.getId())
+                .profileUrl(member.getProfileUrl())
                 .nickname(member.getNickname())
                 .carTitle(member.getCarTitle())
                 .build();

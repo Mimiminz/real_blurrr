@@ -19,8 +19,10 @@ import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -90,10 +92,31 @@ public class ChannelBoardController {
                     description = "게시물 목록 조회 실패"
             )
     })
-    @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
+    @Parameters({
+            @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH),
+            @Parameter(name = "pageNumber", description = "페이지 번호"),
+            @Parameter(
+                    name = "criteria",
+                    description = "정렬 기준",
+                    examples = {
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
+                    }
+            ),
+    })
     @GetMapping
-    public ResponseEntity getChannelBoard(@PathVariable(name = "channelId")UUID channelId){
-        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(channelId);
+    public ResponseEntity getChannelBoard(
+            @PathVariable(name = "channelId")UUID channelId,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+    ){
+        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(
+                channelId,
+                pageNumber,
+                criteria
+        );
 
         if (Objects.isNull(channelBoardListDtos) || channelBoardListDtos.isEmpty()) {
             return ResponseUtil.noContent(
