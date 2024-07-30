@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
 import CreateComment from '@/components/common/UI/comment/CreateComment';
@@ -10,6 +10,8 @@ import Reply from '@/components/common/UI/comment/Reply';
 import Vote from '@/components/channel/dashcam/detail/Vote';
 import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaRegEye } from "react-icons/fa";
+import { fetchDashCamDetail } from '@/api/channel';
+import { DashCamDetail, DashCamContentData } from '@/types/channelType';
 
 const Container = styled.div`
   padding-top: 20px;
@@ -94,59 +96,84 @@ const StatGroup = styled.div`
 
 const Page = () => {
    const pathname = usePathname();
-   const searchParams = useSearchParams();
-
    const dashcamId = pathname.split('/').pop();
+
+   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
+
+   useEffect(() => {
+      const loadDetail = async () => {
+         try {
+            const data = await fetchDashCamDetail(dashcamId as string); // API 호출
+            setDashCamDetail(data);
+         } catch (error) {
+            console.error('Failed to load dash cam detail:', error);
+         }
+      };
+
+      if (dashcamId) {
+         loadDetail();
+      }
+   }, [dashcamId]);
+
+   if (!dashCamDetail) {
+      return <div>Loading...</div>;
+   }
+
+   const dashCamContentData: DashCamContentData = {
+      id: dashCamDetail.id,
+      member: dashCamDetail.member,
+      title: dashCamDetail.title,
+      createdAt: dashCamDetail.createdAt,
+      videoUrl: dashCamDetail.videoUrl,
+      content: dashCamDetail.content,
+      mentionedLeagues: dashCamDetail.mentionedLeagues,
+   };
 
    return (
       <Container>
          <ContentContainer>
             <InnerContentContainer>
                <LeftColumn>
-                  <DashCamContent />
+                  <DashCamContent
+                     id={dashCamDetail.id}
+                     member={dashCamDetail.member}
+                     title={dashCamDetail.title}
+                     createdAt={dashCamDetail.createdAt}
+                     videoUrl={dashCamDetail.videoUrl}
+                     content={dashCamDetail.content}
+                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
                </LeftColumn>
                <RightColumn>
                   <CommentsSection>
                      <StatsContainer>
                         <StatItem>
-                           <LiaCommentDots /> 34
+                           <LiaCommentDots /> {dashCamDetail.commentCount}
                         </StatItem>
                         <StatGroup>
                            <StatItem>
-                              <FaRegEye /> 1245
+                              <FaRegEye /> {dashCamDetail.viewCount}
                            </StatItem>
                            <StatItem>
-                              <FaRegHeart /> 34
+                              <FaRegHeart /> {dashCamDetail.likeCount}
                            </StatItem>
                         </StatGroup>
                      </StatsContainer>
                      <CreateComment />
                      <CommentContainer>
-                        <Comment
-                           avatarUrl="https://i.pravatar.cc/30"
-                           userName="돌판"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.dfawefawtfawerfawv eravwrwaerwaetferwavfwervawbawrnsrysebrtaeawegrawgawgrgedgawsrg."
-                           time="23h"
-                        />
-                        <Reply
-                           avatarUrl="https://i.pravatar.cc/30"
-                           userName="해결사요"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요."
-                           time="6h"
-                        />
-                        <Comment
-                           avatarUrl="https://i.pravatar.cc/300"
-                           userName="돌판"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.."
-                           time="23h"
-                        />
+                        {dashCamDetail.comments.map((comment) => (
+                           <Comment
+                              key={comment.id}
+                              avatarUrl={comment.member.profileUrl}
+                              userName={comment.member.nickname}
+                              userDetail={comment.member.carTitle}
+                              text={comment.content}
+                              time={comment.createdAt}
+                           />
+                        ))}
                      </CommentContainer>
                   </CommentsSection>
                   <VoteSection>
-                     <Vote />
+                     <Vote options={dashCamDetail.options} />
                   </VoteSection>
                </RightColumn>
             </InnerContentContainer>
