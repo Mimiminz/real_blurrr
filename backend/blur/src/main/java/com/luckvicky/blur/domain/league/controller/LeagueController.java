@@ -7,10 +7,9 @@ import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse
 import com.luckvicky.blur.domain.league.service.LeagueService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
+import com.luckvicky.blur.infra.swagger.NoAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "리그 API")
@@ -62,8 +60,8 @@ public class LeagueController {
     }
 
     @Operation(
-            summary = "리그 유형별 조회 API",
-            description = "유형이 일치하는 리그 목록을 조회한다."
+            summary = "모델 리그 조회 API",
+            description = "모델 리그 목록을 조회한다."
     )
     @ApiResponses({
             @ApiResponse(
@@ -72,20 +70,11 @@ public class LeagueController {
                     content = @Content(schema = @Schema(implementation = LeagueListResponse.class))
             )
     })
-    @Parameter(
-            name = "type",
-            description = "조회할 리그 유형",
-            examples = {
-                    @ExampleObject(name = "brand", value = "BRAND", description = "브랜드"),
-                    @ExampleObject(name = "model", value = "MODEL", description = "모델 ")
-            }
-    )
-    @GetMapping
-    public ResponseEntity findLeagueByType(
-            @RequestParam(name = "type") String type
+    @GetMapping("/models")
+    public ResponseEntity getModelLeagues(
     ) {
 
-        List<LeagueDto> leagues = leagueService.findLeagueByType(type);
+        List<LeagueDto> leagues = leagueService.getModelLeagues();
 
         if (Objects.isNull(leagues) || leagues.isEmpty()) {
             return ResponseUtil.noContent(
@@ -101,6 +90,39 @@ public class LeagueController {
 
     }
 
+    @NoAuthorization
+    @Operation(
+            summary = "브랜드 리그 조회 API",
+            description = "브랜드 리그 목록을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료 응답",
+                    content = @Content(schema = @Schema(implementation = LeagueListResponse.class))
+            )
+    })
+    @GetMapping("/brands")
+    public ResponseEntity getBrandLeagues(
+    ) {
+
+        List<LeagueDto> leagues = leagueService.getBrandLeagues();
+
+        if (Objects.isNull(leagues) || leagues.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder().build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(LeagueListResponse.of(leagues))
+                        .build()
+        );
+
+    }
+
+    @NoAuthorization
     @Operation(
             summary = "리그 랭킹 조회 API",
             description = "리그 인원수를 기준으로 내림차순 조회한다."

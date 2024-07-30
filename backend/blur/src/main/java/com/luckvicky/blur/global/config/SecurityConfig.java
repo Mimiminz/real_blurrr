@@ -1,91 +1,89 @@
 package com.luckvicky.blur.global.config;
 
+import static com.luckvicky.blur.global.constant.StringFormat.AUTH_USER_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.BASIC_USER_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.GENERAL_USER_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.PERMIT_ALL_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.SWAGGER_URI;
+
 import com.luckvicky.blur.global.jwt.filter.JwtFilter;
 import com.luckvicky.blur.global.jwt.handler.JwtAccessDeniedHandler;
 import com.luckvicky.blur.global.jwt.handler.JwtAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final JwtAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    private final String[] BASIC = {
-            "/v1/members/**"
-    };
-
-    private final String[] permitAll = {
-            "/v1/auth/**",
-            "/swagger-ui/**",
-            "/h2-console/**",
-            "/health"
-    };
-
-    private final String[] SWAGGER_URI = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.index.html",
-            "/webjars/**",
-            "/swagger-resources/**"
-    };
-
-    public SecurityConfig(JwtFilter jwtFilter, JwtAccessDeniedHandler accessDeniedHandler,
-                          JwtAuthenticationEntryPoint authenticationEntryPoint) {
-        this.jwtFilter = jwtFilter;
-        this.accessDeniedHandler = accessDeniedHandler;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
-
 
     @Bean
-    public SecurityFilterChain fiterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrfConfigurer -> csrfConfigurer.disable());
-        http.cors(corsConfigurer -> corsConfigurer.disable());
-        http.formLogin(formLoginConfigurer -> formLoginConfigurer.disable());
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        http.httpBasic(httpBasicConfigurer -> httpBasicConfigurer.disable());
+        return http
+                .httpBasic(AbstractHttpConfigurer::disable)
 
-        http.headers(header ->
-                header.frameOptions(
-                        HeadersConfigurer.FrameOptionsConfig::sameOrigin
-                )
-        );
+                .formLogin(AbstractHttpConfigurer::disable)
 
-        http.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
-                SessionCreationPolicy.STATELESS));
+                .csrf(AbstractHttpConfigurer::disable)
 
-        http.authorizeHttpRequests(requestConfigurer -> requestConfigurer
-                .requestMatchers(SWAGGER_URI).permitAll()
-                .requestMatchers(permitAll).permitAll()
-                .requestMatchers(BASIC).hasAnyRole("BASIC_USER", "AUTH_USER")
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .anyRequest().authenticated());
+                .cors(AbstractHttpConfigurer::disable)
 
-        //JwtFilter
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .headers(header ->
+                        header.frameOptions(
+                                HeadersConfigurer.FrameOptionsConfig::sameOrigin
+                        ))
 
-        // 인증되지 않은 요청에 대한 처리 (401 Unauthorized 응답)
-        http.exceptionHandling(exceptionHandling ->
-                exceptionHandling
-                        .accessDeniedHandler(accessDeniedHandler)
-                        .authenticationEntryPoint(authenticationEntryPoint)
-        );
-        return http.build();
+                .sessionManagement(sessionManagementConfigurer
+                        -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+
+                .authorizeHttpRequests(requestConfigurer -> requestConfigurer
+
+                        
+                        // 허용 URI
+                        .requestMatchers(PERMIT_ALL_URI).permitAll()
+
+                        // SWAGGER URI
+                        .requestMatchers(SWAGGER_URI).permitAll()
+
+                        // 일반 유저 URI (GET METHOD만 허용)
+                        .requestMatchers(HttpMethod.GET, GENERAL_USER_URI).permitAll()
+
+                        // 미인증 유저 URI
+                        .requestMatchers(BASIC_USER_URI).hasAnyRole("BASIC_USER", "AUTH_USER")
+
+                        // 인증 유저 URI
+                        .requestMatchers(AUTH_USER_URI).hasAnyRole("AUTH_USER")
+
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+
+                        .anyRequest().authenticated())
+
+                //JwtFilter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .accessDeniedHandler(accessDeniedHandler)
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                ).build();
+
     }
 
     @Bean

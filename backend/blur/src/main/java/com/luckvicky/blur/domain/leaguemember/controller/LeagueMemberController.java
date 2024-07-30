@@ -9,7 +9,6 @@ import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +18,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import javax.naming.Context;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,7 +64,7 @@ public class LeagueMemberController {
     }
 
     @Operation(
-            summary = "사용자 리그 조회 API",
+            summary = "사용자 참여 리그 조회 API",
             description = "사용자가 참여한 리그 목록을 조회한다."
     )
     @ApiResponses({

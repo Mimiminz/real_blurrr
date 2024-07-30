@@ -31,15 +31,21 @@ public class LeagueServiceImpl implements LeagueService {
     private final LeagueRepository leagueRepository;
 
     @Override
-    public List<LeagueDto> findLeagueByType(String type) {
-
-        LeagueType leagueType = LeagueType.convertToEnum(type);
-        List<League> leagues = leagueRepository.findAllByType(leagueType);
+    public List<LeagueDto> getModelLeagues() {
+        List<League> leagues = leagueRepository.findAllByType(LeagueType.MODEL);
 
         return leagues.stream()
                 .map(league -> mapper.map(league, LeagueDto.class))
                 .collect(Collectors.toList());
+    }
 
+    @Override
+    public List<LeagueDto> getBrandLeagues() {
+        List<League> leagues = leagueRepository.findAllByType(LeagueType.BRAND);
+
+        return leagues.stream()
+                .map(league -> mapper.map(league, LeagueDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -68,6 +74,7 @@ public class LeagueServiceImpl implements LeagueService {
         return isCreated(createdLeague);
 
     }
+
 
     private boolean isCreated(League league) {
 
