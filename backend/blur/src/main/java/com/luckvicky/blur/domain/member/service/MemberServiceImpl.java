@@ -6,6 +6,7 @@ import com.luckvicky.blur.domain.member.exception.InvalidEmailCodeException;
 import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
+import com.luckvicky.blur.domain.member.factory.PasswordAuthFactory;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
@@ -14,8 +15,6 @@ import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import com.luckvicky.blur.global.execption.BaseException;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
@@ -23,23 +22,18 @@ import com.luckvicky.blur.global.util.ResourceUtil;
 import com.luckvicky.blur.global.util.UuidUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import com.luckvicky.blur.infra.mail.service.MailService;
+import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import com.luckvicky.blur.infra.redis.service.RedisEmailService;
-import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenService;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final RedisRefreshTokenService redisRefreshTokenService;
+    private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
     private final S3ImageService s3ImageService;
 
     private final MailService mailService;
@@ -58,19 +52,24 @@ public class MemberServiceImpl implements MemberService {
     private final ResourceUtil resourceUtil;
 
     private final RedisEmailService redisEmailService;
+    private final PasswordAuthFactory passwordAuthFactory;
+    private final RedisAuthCodeAdapter authCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
-                             JwtProvider jwtProvider, RedisRefreshTokenService redisRefreshTokenService,
+                             JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
-                             RedisEmailService redisEmailService) {
+                             RedisEmailService redisEmailService, PasswordAuthFactory passwordAuthFactory,
+                             RedisAuthCodeAdapter authCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
-        this.redisRefreshTokenService = redisRefreshTokenService;
         this.s3ImageService = s3ImageService;
         this.mailService = mailService;
         this.resourceUtil = resourceUtil;
         this.redisEmailService = redisEmailService;
+        this.passwordAuthFactory = passwordAuthFactory;
+        this.authCodeAdapter = authCodeAdapter;
+        this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
     }
 
     @Transactional
@@ -93,7 +92,6 @@ public class MemberServiceImpl implements MemberService {
                 .role(Role.ROLE_BASIC_USER)
                 .build();
 
-
         memberRepository.save(member);
     }
 
@@ -109,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
 
-        redisRefreshTokenService.saveOrUpdate(member.getId().toString(), refreshToken);
+        redisRefreshTokenAdapter.saveOrUpdate(member.getId().toString(), refreshToken);
 
         return new JwtDto(accessToken, refreshToken);
     }
@@ -135,16 +133,17 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(NotExistMemberException::new);
 
         // Redis에서 Refresh Token 검증
-        String storedRefreshToken = redisRefreshTokenService.getValue(member.getId().toString());
+        String storedRefreshToken = redisRefreshTokenAdapter.getValue(member.getId().toString())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        if (storedRefreshToken == null || !storedRefreshToken.equals(reissue.refreshToken())) {
+        if (!storedRefreshToken.equals(reissue.refreshToken())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
 
-        redisRefreshTokenService.saveOrUpdate(member.getId().toString(), refreshToken);
+        redisRefreshTokenAdapter.saveOrUpdate(member.getId().toString(), refreshToken);
         return new JwtDto(accessToken, refreshToken);
     }
 
@@ -181,11 +180,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public boolean authEmail(String email) {
+    public boolean createEmailAuthCode(String email) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
-        String authCode = UuidUtil.createSequentialUUID().toString().substring(0,8);
+        String authCode = UuidUtil.createSequentialUUID().toString().substring(0, 8);
 
         String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
 
@@ -199,17 +198,28 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean validEmailAuth(EmailAuth emailAuth) {
-        String saveCode = redisEmailService.getValue(emailAuth.email());
+        String code = redisEmailService.getValue(emailAuth.email()).orElseThrow(ExpiredEmailAuthException::new);
 
-        if (!StringUtils.hasText(saveCode)) {
-            throw new ExpiredEmailAuthException();
-        }
-
-        if (!emailAuth.authCode().equals(saveCode)) {
+        if (!emailAuth.authCode().equals(code)) {
             throw new InvalidEmailCodeException();
         }
 
         redisEmailService.saveAuthEmail(emailAuth.email());
+        return false;
+    }
+
+    @Override
+    public boolean createPasswordAuthCode(String email) {
+        if (!memberRepository.existsByEmail(email)) {
+            throw new NotExistMemberException();
+        }
+        return passwordAuthFactory.saveAuthCode(email);
+    }
+
+    @Override
+    public boolean validPasswordAuthCode(EmailAuth emailAuth) {
+        String code = String.valueOf(authCodeAdapter.getValue(passwordAuthFactory.generateKey(emailAuth.email())));
+        validEmailAuth(emailAuth);
         return false;
     }
 }

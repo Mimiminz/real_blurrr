@@ -32,6 +32,7 @@ public class StringFormat {
     public static final String CONDITION_CONTENT = "comment";
     public static final String CONDITION_NICKNAME = "nickname";
 
+    public static final String PASSWORD_AUTH_PREFIX = "passwordAuth:";
 
     // 허용 URI
     public static final String[] PERMIT_ALL_URI = {
@@ -73,6 +74,5 @@ public class StringFormat {
             "createLeague",
             "createBoard",
     };
-
 }
 
