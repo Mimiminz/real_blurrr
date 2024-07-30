@@ -15,7 +15,7 @@ export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
 // 리그 보드 목록을 가져오는 함수
 export const fetchLeagueBoardList = async (
   leagueId: string,
-  criteria: string = "TIME"
+  criteria: string
 ): Promise<LeagueBoardItem[]> => {
   try {
     const response = await api.get(`/v1/leagues/brands/${leagueId}/boards`, {

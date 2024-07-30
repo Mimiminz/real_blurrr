@@ -6,22 +6,9 @@ import { fetchLeagueBoardList } from "@/api/league";
 import { useEffect, useState } from "react";
 import { boardListProp, LeagueBoardItem } from "@/types/league";
 
-const LeagueBoardList = ({ leagueId, criteria }: boardListProp) => {
+const LeagueBoardList = ({ leagueId, boardList }: boardListProp) => {
   const router = useRouter();
-  const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
-
-  useEffect(() => {
-    const loadBoardData = async () => {
-      try {
-        const boardData = await fetchLeagueBoardList(leagueId, criteria);
-        setBoardList(boardData);
-      } catch (error) {
-        console.error("Failed to fetch board data", error);
-      }
-    };
-
-    loadBoardData();
-  }, [leagueId, criteria]);
+  
 
   const handleCardClick = (id: string) => {
     router.push(`${leagueId}/${id}`);
