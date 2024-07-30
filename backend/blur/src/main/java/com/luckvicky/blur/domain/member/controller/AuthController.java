@@ -79,7 +79,7 @@ public class AuthController {
 
     @Operation(summary = "이메일 인증번호 확인")
     @PostMapping("/email")
-    public ResponseEntity<Boolean> validEmailAuth(@RequestBody EmailAuth emailAuth) {
+    public ResponseEntity<Boolean> validEmailAuth(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
     }
 
