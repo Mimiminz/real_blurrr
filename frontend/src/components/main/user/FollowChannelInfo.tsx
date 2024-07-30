@@ -14,7 +14,7 @@ const FollowChannelInfo: React.FC = () => {
 export default FollowChannelInfo;
 
 const Container = styled.div`
-  width: 40%;
+  width: 32%;
   padding: 18px;
   padding-bottom: 8px;
   border-radius: 12px;
@@ -22,7 +22,7 @@ const Container = styled.div`
   border: 1px solid #e5e7eb;
   background: #ffffff;
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     display: none;
   }
 

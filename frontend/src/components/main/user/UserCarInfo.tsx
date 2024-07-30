@@ -10,12 +10,8 @@ const userLeague = dummy.leagueMembers;
 const UserCarInfo: React.FC = () => {
   const router = useRouter();
 
-  const handleLeagueClick = () => {
-    router.push("/league");
-  };
-
   const handleUserLeagueClick = (tabId: string) => {
-    router.push(`/league?tab=${tabId}`);
+    router.push(`/league/${tabId}`);
   };
 
   return (

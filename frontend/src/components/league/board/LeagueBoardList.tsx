@@ -4,12 +4,7 @@ import LeagueBoardListItem from "./LeagueBoardListItem";
 
 import { fetchLeagueBoardList } from "@/api/league";
 import { useEffect, useState } from "react";
-import { LeagueBoardItem } from "@/types/league";
-
-interface boardListProp {
-  leagueId: string;
-  criteria: string;
-}
+import { boardListProp, LeagueBoardItem } from "@/types/league";
 
 const LeagueBoardList = ({ leagueId, criteria }: boardListProp) => {
   const router = useRouter();
