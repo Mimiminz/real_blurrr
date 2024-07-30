@@ -20,25 +20,22 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import com.luckvicky.blur.global.enums.code.ErrorCode;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import static com.luckvicky.blur.global.constant.Number.DASHCAM_BOARD_PAGE_SIZE;
-import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +57,8 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
         Pageable pageable = PageRequest.of(
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, criteria));
+                Sort.by(Sort.Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
+                );
 
         List<Dashcam> dashcamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
 
