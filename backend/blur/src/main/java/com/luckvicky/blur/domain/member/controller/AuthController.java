@@ -73,7 +73,7 @@ public class AuthController {
     @NoAuthorization
     @Operation(summary = "이메일 인증번호 생성 API")
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
+    public ResponseEntity<Boolean> createEmailAuth(@PathVariable String email) {
         return ResponseEntity.ok(memberService.authEmail(email));
     }
 
