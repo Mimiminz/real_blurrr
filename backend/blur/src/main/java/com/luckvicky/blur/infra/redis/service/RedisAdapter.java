@@ -1,7 +1,9 @@
 package com.luckvicky.blur.infra.redis.service;
 
+import java.util.Optional;
+
 public interface RedisAdapter {
     void saveOrUpdate(String key, String value);
-    String getValue(String key);
+    Optional<String> getValue(String key);
     void delete(String key);
 }

@@ -1,6 +1,7 @@
 package com.luckvicky.blur.infra.redis.service;
 
 import com.luckvicky.blur.global.constant.StringFormat;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,8 +28,12 @@ public class RedisEmailService implements RedisAdapter {
     }
 
     @Override
-    public String getValue(String key) {
-        return (String) redisTemplate.opsForValue().get(generateKey(key));
+    public Optional<String> getValue(String key) {
+        Object value = redisTemplate.opsForValue().get(generateKey(key));
+        if (value instanceof String) {
+            return Optional.of((String) value);
+        }
+        return Optional.empty();
     }
 
     @Override
