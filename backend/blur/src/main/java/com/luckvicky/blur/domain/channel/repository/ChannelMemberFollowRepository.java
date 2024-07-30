@@ -18,6 +18,8 @@ public interface ChannelMemberFollowRepository extends JpaRepository<ChannelMemb
     @Query("SELECT cmf.channel.id FROM ChannelMemberFollow cmf WHERE cmf.member.id = :memberId")
     List<UUID> findChannelIdsByMemberId(@Param("memberId") UUID memberId);
 
+    List<ChannelMemberFollow> findAllByMember(Member member);
+
     List<ChannelMemberFollow> findByMemberId(UUID memberId);
 
     Optional<ChannelMemberFollow> findByMemberAndChannel(Member member, Channel channel);
