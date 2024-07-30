@@ -36,12 +36,12 @@ public class StringFormat {
     // 허용 URI
     public static final String[] PERMIT_ALL_URI = {
             "/h2-console/**",
+            "/v1/auth/**",
             "/health",
     };
 
     // 일반 회원 허용 URI
     public static final String[] GENERAL_USER_URI = {
-            "/v1/auth/**",
             "/v1/boards/hot",
             "/v1/leagues/ranking",
             "/v1/leagues/brands",
