@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.controller;
 
+import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
@@ -27,14 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/auth")
 public class AuthController {
     private final MemberService memberService;
-    private final MailService mailService;
-    private final AmazonSMTPService amazonSMTPService;
 
-    public AuthController(MemberService memberService, MailService mailService,
-                          AmazonSMTPService amazonSMTPService) {
+    public AuthController(MemberService memberService) {
         this.memberService = memberService;
-        this.mailService = mailService;
-        this.amazonSMTPService = amazonSMTPService;
     }
 
     @Operation(summary = "회원가입")
@@ -79,6 +75,12 @@ public class AuthController {
     @GetMapping("/email/{email}")
     public ResponseEntity<Boolean> createEmailAuth(@RequestParam String email) {
         return ResponseEntity.ok(memberService.authEmail(email));
+    }
+
+    @Operation(summary = "이메일 인증번호 확인")
+    @PostMapping("/email")
+    public ResponseEntity<Boolean> validEmailAuth(@RequestBody EmailAuth emailAuth) {
+        return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
     }
 
 }

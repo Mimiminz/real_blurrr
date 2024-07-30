@@ -21,13 +21,15 @@ public enum ErrorCode {
     INVALID_LEAGUE_TYPE(HttpStatus.BAD_REQUEST,"유효하지 않은 리그 유형입니다."),
     INVALID_SORTING_CRITERIA(HttpStatus.BAD_REQUEST,"유효하지 않은 정렬 기준입니다."),
     INVALID_SEARCH_CONDITION(HttpStatus.BAD_REQUEST,"유효하지 않은 검색 조건입니다."),
-
+    INVALID_EMAIL_CODE(HttpStatus.BAD_REQUEST, "유효하지 않은 인증 코드입니다. 다시 시도해 주세요."),
+    INVALID_EMAIL_VERIFIED(HttpStatus.BAD_REQUEST, "인증되지 않은 이메일입니다."),
 
     FAIL_TO_VALIDATE(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
     //사용자 관련 요청 예외
     MISSMATCH_PASSWROD(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다."),
+    EXPIRED_EMAIL_CODE(HttpStatus.BAD_REQUEST, "인증 코드의 유효시간이 경과했습니다. 다시 시도해 주세요."),
 
     /**
      * [401 UnAuthorized]
