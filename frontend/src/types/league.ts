@@ -1,6 +1,6 @@
 // src/types/league.ts
 
-export interface League {
+export interface LeagueList {
   id: string;
   name: string;
   type: string;
@@ -32,4 +32,31 @@ export interface LeagueBoardListItemProps {
   createdAt: string;
   likeCount: number;
   commentCount: number;
+}
+
+export interface boardListProp {
+  leagueId: string;
+  criteria: string;
+}
+
+export interface Tab {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface moreTabProps {
+  activeTabId: string;
+  moreTabs: Tab[];
+  activeTabName?: string;
+}
+
+export interface TabButtonProps {
+  $isActive: boolean;
+}
+
+export interface UserTabProps {
+  activeTabId: string;
+  tabs: Tab[];
+  mentionTabs: Tab[];
 }

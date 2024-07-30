@@ -6,11 +6,25 @@ import { useRouter } from "next/navigation";
 import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
+import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
+
+import { LeagueList } from "@/types/league";
 
 // API
 import dummy from "@/db/mainPageData.json";
 import { fetchBrandLeagues } from "@/api/league";
-import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
+
+const tabs = dummy.leagueMembers.map((league) => ({
+  id: league.id,
+  name: league.name,
+  type: league.type,
+}));
+
+const mentionTabs = dummy.leagueMembers.map((league) => ({
+  id: `mention${league.id}`,
+  name: league.name,
+  type: league.type,
+}));
 
 export default function LeaguePage({
   params,
@@ -19,6 +33,42 @@ export default function LeaguePage({
 }) {
   const router = useRouter();
   const leagueId = params.leagueId;
+
+  // 더보기 안에 있는 요소들
+  const [moreTabs, setMoreTabs] = useState<
+    { id: string; name: string; type: string }[]
+  >([]);
+
+  useEffect(() => {
+    const loadBrandLeagues = async () => {
+      try {
+        const leagues: LeagueList[] = await fetchBrandLeagues();
+        const formattedLeagues = leagues.map((league: LeagueList) => ({
+          id: league.id,
+          name: league.name,
+          type: league.type,
+        }));
+        setMoreTabs(formattedLeagues);
+      } catch (error) {
+        console.error("Failed to fetch brand leagues", error);
+      }
+    };
+
+    loadBrandLeagues();
+  }, []);
+
+  let activeTabName = `${
+    moreTabs.find((t) => t.id === leagueId)?.name ||
+    tabs.find((t) => t.id === leagueId)?.name
+  } 리그`;
+
+  console.log(leagueId.slice(7));
+
+  if (activeTabName == `${undefined} 리그`) {
+    activeTabName = `채널에서 ${
+      tabs.find((t) => t.id === leagueId.slice(7))?.name
+    }가 멘션된 글`;
+  }
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -43,10 +93,6 @@ export default function LeaguePage({
   //   }
   // };
 
-  // const activeTabType =
-  //   tabs.find((t) => t.id === activeTab)?.type ||
-  //   moreTabs.find((t) => t.id === activeTab)?.type;
-
   // const renderContent = (): JSX.Element => {
   //   return (
   //     <Title>
@@ -60,19 +106,27 @@ export default function LeaguePage({
   return (
     <Container>
       <TopComponent>
-        <UserTab activeTabId={leagueId} />
+        <UserTab activeTabId={leagueId} tabs={tabs} mentionTabs={mentionTabs} />
         <SearchBar />
       </TopComponent>
-      <MoreBrandTab activeTabId={leagueId} />
+      <MoreBrandTab
+        activeTabId={leagueId}
+        moreTabs={moreTabs}
+        activeTabName={activeTabName}
+      />
       <FilterSection>
-      <StyledSelect value={criteria} onChange={handleCriteriaChange}>
-            <option value="TIME">최신순</option>
-            <option value="VIEW">조회수 순</option>
-            <option value="COMMENT">댓글 순</option>
-            <option value="LIKE">좋아요 순</option>
-          </StyledSelect>
+        <StyledSelect value={criteria} onChange={handleCriteriaChange}>
+          <option value="TIME">최신순</option>
+          <option value="VIEW">조회수 순</option>
+          <option value="COMMENT">댓글 순</option>
+          <option value="LIKE">좋아요 순</option>
+        </StyledSelect>
       </FilterSection>
-      <LeagueBoardList leagueId={leagueId} criteria={criteria} />
+      {leagueId.includes("mention") ? (
+        <h1>채널 게시글</h1>
+      ) : (
+        <LeagueBoardList leagueId={leagueId} criteria={criteria} />
+      )}
     </Container>
   );
 }
@@ -85,8 +139,6 @@ const TopComponent = styled.div`
   align-items: center;
   margin-top: 30px;
 `;
-
-
 
 const TabContent = styled.div`
   padding: 20px 0;

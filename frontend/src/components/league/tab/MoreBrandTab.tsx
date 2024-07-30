@@ -4,59 +4,27 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
-import { League } from "@/types/league";
-// API
-import dummy from "@/db/mainPageData.json";
-import { fetchBrandLeagues } from "@/api/league";
+import { moreTabProps, TabButtonProps } from "@/types/league";
 
-interface TabButtonProps {
-  $isActive: boolean;
-}
-
-interface TabProps {
-  activeTabId: string;
-}
-
-export default function MoreBrandTab({ activeTabId }: TabProps) {
+export default function MoreBrandTab({
+  activeTabId,
+  moreTabs,
+  activeTabName,
+}: moreTabProps) {
   // 더보기 눌렀는지 여부 확인
   const [showMoreTabs, setShowMoreTabs] = useState(false);
-
-  // 더보기 안에 있는 요소들
-  const [moreTabs, setMoreTabs] = useState<
-    { id: string; name: string; type: string }[]
-  >([]);
-
-  useEffect(() => {
-    const loadBrandLeagues = async () => {
-      try {
-        const leagues: League[] = await fetchBrandLeagues();
-        const formattedLeagues = leagues.map((league: League) => ({
-          id: league.id,
-          name: league.name,
-          type: league.type,
-        }));
-        setMoreTabs(formattedLeagues);
-      } catch (error) {
-        console.error("Failed to fetch brand leagues", error);
-      }
-    };
-
-    loadBrandLeagues();
-  }, []);
 
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
   };
 
   const activeTabType = moreTabs.find((t) => t.id === activeTabId)?.type;
-  const activeTabName = moreTabs.find((t) => t.id === activeTabId)?.name;
-
 
   return (
     <>
       <TabContent>
         <HeaderContainer>
-          <Title>{activeTabName} 리그</Title>
+          <Title>{activeTabName}</Title>
           {activeTabType === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>
               더보기 {showMoreTabs ? "▲" : "▼"}
