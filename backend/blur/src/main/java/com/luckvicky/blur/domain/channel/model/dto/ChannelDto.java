@@ -29,6 +29,9 @@ public class ChannelDto {
         @Schema(description = "채널 소유자")
         String owner;
 
+        @Schema(description = "채널 팔로우수")
+        Long followCount;
+
         @Schema(description = "채널 태그")
         List<TagDto> tags;
 
@@ -39,6 +42,7 @@ public class ChannelDto {
                         .imgUrl(channel.getImgUrl())
                         .info(channel.getInfo())
                         .owner(channel.getOwner().getId().toString())
+                        .followCount(channel.getFollowCount())
                         .tags(new ArrayList<>())
                         .build();
         }
