@@ -10,7 +10,9 @@ import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,13 +29,7 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "게시글 API")
 @RestController
@@ -59,6 +55,27 @@ public class BoardController {
         return ResponseUtil.created(
                 Result.builder()
                         .data(boardService.createBoard(request))
+                        .build()
+        );
+
+    }
+
+    @Operation(summary = "게시글 삭제 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 삭제 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "게시글 삭제 실패"
+            )
+    })
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity deleteBoard(@PathVariable UUID boardId, @AuthUser ContextMember contextMember) {
+        return ResponseUtil.created(
+                Result.builder()
+                        .data(boardService.deleteBoard(boardId, contextMember.getId()))
                         .build()
         );
 
