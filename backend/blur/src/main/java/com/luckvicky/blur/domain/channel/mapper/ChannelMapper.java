@@ -20,7 +20,7 @@ public class ChannelMapper {
                 .info(channel.getInfo())
                 .owner(channel.getOwner().getId().toString())
                 .tags(tags.stream()
-                        .map(TagDto::from)
+                        .map(TagDto::of)
                         .collect(Collectors.toList()))
                 .build();
     }

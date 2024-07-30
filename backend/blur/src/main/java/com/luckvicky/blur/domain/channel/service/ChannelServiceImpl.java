@@ -1,11 +1,16 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import com.luckvicky.blur.domain.channel.exception.FailToCreateFollowException;
+import com.luckvicky.blur.domain.channel.exception.FailToDeleteFollowException;
+import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
+import com.luckvicky.blur.domain.channel.repository.ChannelMemberFollowRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
@@ -13,6 +18,7 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChannelServiceImpl implements ChannelService{
@@ -29,6 +35,7 @@ public class ChannelServiceImpl implements ChannelService{
     private final ChannelTagRepository channelTagRepository;
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
+    private final ChannelMemberFollowRepository channelMemberFollowRepository;
     private final ChannelMapper channelMapper;
 
     @Override
@@ -70,12 +77,30 @@ public class ChannelServiceImpl implements ChannelService{
 
 
     @Override
-    public List<ChannelDto> getAllChannels(){
-        List<Channel> channels = channelRepository.findAll();
-        List<UUID> channelIds = channels.stream()
-                .map(Channel::getId)
-                .collect(Collectors.toList());
+    public List<ChannelDto> getAllChannels() {
+        List<UUID> channelIds = channelRepository.findAllChannelIds();
+        return getChannelDtos(channelIds);
+    }
 
+    @Override
+    public List<ChannelDto> getFollowedChannels(UUID memberId) {
+        List<UUID> channelIds = channelMemberFollowRepository.findChannelIdsByMemberId(memberId);
+        return getChannelDtos(channelIds);
+    }
+
+    @Override
+    public List<ChannelDto> getCreatedChannels(UUID memberId) {
+        List<UUID> channelIds = channelRepository.findChannelIdsByOwnerId(memberId);
+        return getChannelDtos(channelIds);
+    }
+
+
+    private List<ChannelDto> getChannelDtos(List<UUID> channelIds) {
+        if (channelIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Channel> channels = channelRepository.findAllById(channelIds);
         List<ChannelTag> channelTags = channelTagRepository.findByChannelIdIn(channelIds);
 
         Map<UUID, List<Tag>> channelTagsMap = channelTags.stream()
@@ -89,6 +114,7 @@ public class ChannelServiceImpl implements ChannelService{
                         channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
@@ -104,5 +130,38 @@ public class ChannelServiceImpl implements ChannelService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public Boolean createFollow(UUID memberId, UUID channelId) {
+        Member member = memberRepository.getOrThrow(memberId);
+        Channel channel = channelRepository.getOrThrow(channelId);
+
+        channel.increaseFollowCount();
+
+        ChannelMemberFollow createdFollow = channelMemberFollowRepository.save(
+                ChannelMemberFollow.builder()
+                        .member(member)
+                        .channel(channel)
+                        .build()
+        );
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteFollow(UUID memberId, UUID channelId) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+        Channel channel = channelRepository.getOrThrow(channelId);
+
+
+        ChannelMemberFollow findFollow = channelMemberFollowRepository.findByMemberAndChannel(member, channel)
+                .orElseThrow(NotExistFollowException::new);
+
+        channel.decreaseFollowCount();
+        channelMemberFollowRepository.deleteById(findFollow.getId());
+
+        return true;
+    }
 
 }

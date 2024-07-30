@@ -52,6 +52,7 @@ public enum ErrorCode {
     NOT_EXIST_DASHCAM(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."),
     NOT_EXIST_CHANNEL(HttpStatus.NOT_FOUND, "존재하지 않는 채널입니다."),
     NOT_EXIST_LIKE(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요입니다."),
+    NOT_EXIST_FOLLOW(HttpStatus.NOT_FOUND, "존재하지 않는 팔로우입니다."),
 
     /**
      * [500 INTERNAL_SERVER_ERROR]
@@ -62,7 +63,9 @@ public enum ErrorCode {
     FAIL_TO_CREATE_BOARD(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 생성을 실패했습니다."),
     FAIL_TO_CREATE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 생성을 실패했습니다."),
     FAIL_TO_DELETE_LIKE(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 삭제를 실패했습니다."),
-    FAIL_TO_DELETE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 삭제를 실패했습니다." );
+    FAIL_TO_DELETE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글 삭제를 실패했습니다." ),
+    FAIL_TO_CREATE_FOLLOW(HttpStatus.INTERNAL_SERVER_ERROR, "팔로우 생성을 실패했습니다."),
+    FAIL_TO_DELETE_FOLLOW(HttpStatus.INTERNAL_SERVER_ERROR, "팔로우 삭제를 실패했습니다.");
 
     private final HttpStatus code;
     private final String message;
