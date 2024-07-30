@@ -48,8 +48,15 @@ export const fetchLeagueDetail = async (
 };
 
 // 리그 게시글 검색 함수
-// export const fetchBoardSearch = async (leagueId: string) => {
-//   try {
-//     const response = await api.get(`/v1/leagues`)
-//   }
-// }
+export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
+  try {
+    const response = await api.get(`/v1/leagues/${leagueId}/boards/search`, {
+      params: { keyword },
+    });
+
+    console.log(response.data.data);
+    return response.data.data.boards;
+  } catch (error) {
+    throw error;
+  }
+};

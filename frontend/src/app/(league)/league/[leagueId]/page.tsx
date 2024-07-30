@@ -12,7 +12,7 @@ import { LeagueList, Tab } from "@/types/league";
 
 // API
 import dummy from "@/db/mainPageData.json";
-import { fetchBrandLeagues } from "@/api/league";
+import { fetchBrandLeagues, fetchBoardSearch } from "@/api/league";
 
 const tabs = dummy.leagueMembers.map((league) => ({
   id: league.id,
@@ -89,21 +89,24 @@ export default function LeaguePage({
   //   }
   // };
 
-  // const renderContent = (): JSX.Element => {
-  //   return (
-  //     <Title>
-  //       {activeTabName.startsWith("@")
-  //         ? `채널에서 ${activeTabName.slice(2)}가 멘션된 글`
-  //         : `${activeTabName} 리그`}
-  //     </Title>
-  //   );
-  // };
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  const handleSearch = async (keyword: string) => {
+    setIsSearching(true);
+    try {
+      const results = await fetchBoardSearch(leagueId, keyword);
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
 
   return (
     <Container>
       <TopComponent>
         <UserTab activeTabId={leagueId} tabs={tabs} mentionTabs={mentionTabs} />
-        <SearchBar />
+        <SearchBar onSearch={handleSearch} />
       </TopComponent>
       <MoreBrandTab
         activeTabId={leagueId}

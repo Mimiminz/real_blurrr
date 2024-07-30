@@ -1,6 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { HiOutlineSearch } from "react-icons/hi";
+import { fetchBoardSearch } from "@/api/league";
+
+interface SearchBarProps {
+  onSearch: (keyword: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const [keyword, setKeyword] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!keyword.trim()) return;
+    onSearch(keyword);
+    setKeyword("");
+  };
+  return (
+    <Container>
+      <SearchContainer>
+        <SearchIcon>
+          <HiOutlineSearch />
+        </SearchIcon>
+        <SearchInput
+          type="text"
+          placeholder="Search"
+          value={keyword}
+          onChange={handleChange}
+        />
+      </SearchContainer>
+      <button onClick={handleSubmit}>검색</button>
+    </Container>
+  );
+};
+
+export default SearchBar;
 
 const Container = styled.div`
   width: 40%;
@@ -46,19 +83,3 @@ const SearchInput = styled.input`
   font-size: 1rem;
   border-radius: 50px;
 `;
-
-const SearchBar: React.FC = () => {
-  return (
-    <Container>
-      <SearchContainer>
-        <SearchIcon>
-          <HiOutlineSearch />
-        </SearchIcon>
-        <SearchInput type="text" placeholder="Search" />
-      </SearchContainer>
-      <button>검색</button>
-    </Container>
-  );
-};
-
-export default SearchBar;
