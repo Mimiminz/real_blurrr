@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 interface UserChannelCardProps {
   name: string;
-  followers: number;
-  img: string; // img prop 추가
+  followCount: number;
+  imgUrl: string; // img prop 추가
 }
 
 const CardContainer = styled.div`
@@ -16,14 +16,14 @@ const CardContainer = styled.div`
   margin: 0 auto;
 `;
 
-const ImageContainer = styled.div<{ img: string }>`
+const ImageContainer = styled.div<{ imgUrl: string }>`
   width: 100%;
   height: 120px;
   background-color: #e5e7eb;
   border-radius: 8px;
   background-size: cover;
   background-position: center;
-  background-image: url(${props => props.img});
+  background-image: url(${props => props.imgUrl});
 `;
 
 const Title = styled.h3`
@@ -34,12 +34,12 @@ const Followers = styled.p`
   color: #6b7280;
 `;
 
-const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followers, img }) => {
+const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, imgUrl }) => {
   return (
     <CardContainer>
-      <ImageContainer img={img} />
+      <ImageContainer imgUrl={imgUrl == "" ? 'images/eg_img.png' : imgUrl} />
       <Title>{name}</Title>
-      <Followers>{followers} Followers</Followers>
+      <Followers>{followCount} Followers</Followers>
     </CardContainer>
   );
 };

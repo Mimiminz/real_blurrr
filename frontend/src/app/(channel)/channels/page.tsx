@@ -1,14 +1,16 @@
 "use client";
 
-import React from 'react';
+import dummy from '@/db/data.json'
+
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import dummy from "@/db/data.json";
 import ChannelCard from '@/components/channel/list/ChannelCard';
 import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
 import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
 import { useRouter } from 'next/navigation';
-
-type Props = {}
+import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels } from '@/api/channel';
+import { Channels } from '@/types/channelType';
+import { useAuthStore } from '@/store/authStore';
 
 const SectionTitle = styled.h3`
   margin-top: 40px;
@@ -82,8 +84,31 @@ const GridContainer = styled.div`
   }
 `;
 
-const Channels: React.FC<Props> = (props) => {
+const ChannelPage: React.FC = () => {
+
+  const [Channels, setChannels] = useState<Channels[]>([]);
+  const [FollowingChannels, setFollowingChannels] = useState<Channels[]>([]);
+  const [CreatedChannels, setCreatedChannels] = useState<Channels[]>([]);
+
   const router = useRouter();
+  const accessToken = useAuthStore.getState().accessToken;
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const ChannelData = await fetchChannels();
+        const FollowingChannelData = await fetchFollowingChannels();
+        const CreatedChannelData = await fetchCreatedChannels();
+        setChannels(ChannelData);
+        setFollowingChannels(FollowingChannelData);
+        setCreatedChannels(CreatedChannelData);
+      } catch (error) {
+        console.error('Failed to channels data:', error);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const handleCreateChannel = () => {
     router.push('/channels/dashcam')
@@ -92,25 +117,29 @@ const Channels: React.FC<Props> = (props) => {
 
   return (
     <>
-      <ButtonContainer>
-        <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
-      </ButtonContainer>
+      {accessToken && (
+        <>
+          <ButtonContainer>
+            <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
+          </ButtonContainer>
 
-      <SectionTitle>내가 생성한 채널</SectionTitle>
-      <ChannelCarousel slides={dummy.createList.map(slide => ({
-        id: slide.id,
-        name: slide.name,
-        followers: slide.followers,
-        img: slide.img || ''
-      }))} />
+          <SectionTitle>내가 생성한 채널</SectionTitle>
+          <ChannelCarousel slides={CreatedChannels.map(slide => ({
+            id: slide.id,
+            name: slide.name,
+            followCount: slide.followCount,
+            imgUrl: slide.imgUrl || ''
+          }))} />
 
-      <SectionTitle>내가 팔로우한 채널</SectionTitle>
-      <ChannelCarousel slides={dummy.createList.map(slide => ({
-        id: slide.id,
-        name: slide.name,
-        followers: slide.followers,
-        img: slide.img || ''
-      }))} />
+          <SectionTitle>내가 팔로우한 채널</SectionTitle>
+          <ChannelCarousel slides={FollowingChannels.map(followChannel => ({
+            id: followChannel.id,
+            name: followChannel.name,
+            followCount: followChannel.followCount,
+            imgUrl: followChannel.imgUrl || ''
+          }))} />
+        </>
+      )}
 
       <TitleAndSearchContainer>
         <SectionTitle>전체 채널</SectionTitle>
@@ -120,13 +149,13 @@ const Channels: React.FC<Props> = (props) => {
       </TitleAndSearchContainer>
       <PageContainer>
         <GridContainer>
-          {dummy.AllChannels.map((item) => (
-            <div key={item.id} onClick={() => console.log("item pressed")}>
+          {Channels.map((channel) => (
+            <div key={channel.id} onClick={() => console.log("item pressed")}>
               <ChannelCard
-                title={item.title}
-                followers={item.followers} // 좋아요 수로 가정
-                tags={item.tags}
-                img={item.img}
+                name={channel.name}
+                followCount={channel.followCount}
+                tags={channel.tags}
+                imgUrl={channel.imgUrl}
               />
             </div>
           ))}
@@ -136,4 +165,4 @@ const Channels: React.FC<Props> = (props) => {
   );
 }
 
-export default Channels;
+export default ChannelPage;

@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Mentioned } from '@/types/channelType';
 
 interface ChannelCardProps {
-  title: string;
-  followers: number;
-  tags: string[];
-  img: string;
+  name: string;
+  followCount: number;
+  tags: Mentioned[];
+  imgUrl: string;
 }
 
 const CardContainer = styled.div`
@@ -19,14 +20,14 @@ const CardContainer = styled.div`
   
 `;
 
-const ImageContainer = styled.div<{ img: string }>`
+const ImageContainer = styled.div<{ imgUrl: string }>`
   width: 100%;
   height: 120px;
   background-color: #e5e7eb;
   border-radius: 8px;
   background-size: cover;
   background-position: center;
-  background-image: url(${props => props.img});
+  background-image: url(${props => props.imgUrl});
 `;
 
 const TagsContainer = styled.div`
@@ -60,19 +61,19 @@ const LikeIcon = styled.span`
   color: #f59e0b;
 `;
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ title, followers, tags, img }) => {
+const ChannelCard: React.FC<ChannelCardProps> = ({ name, followCount, tags, imgUrl }) => {
   return (
     <CardContainer>
-      <ImageContainer img={img} />
+      <ImageContainer imgUrl={imgUrl == "" ? 'images/eg_img.png' : imgUrl} />
       <TagsContainer>
-        {tags.map((tag, index) => (
-          <Tag key={index}>@ {tag}</Tag>
+        {tags.map((tag) => (
+          <Tag key={tag.id}>@ {tag.name}</Tag>
         ))}
       </TagsContainer>
-      <Title>{title}</Title>
+      <Title>{name}</Title>
       <LikesContainer>
         <LikeIcon>👍</LikeIcon>
-        <span>{followers}</span>
+        <span>{followCount}</span>
       </LikesContainer>
     </CardContainer>
   );
