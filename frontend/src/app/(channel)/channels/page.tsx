@@ -60,7 +60,6 @@ const GridContainer = styled.div`
   justify-content: center; /* 그리드 항목을 수평으로 중앙에 배치 */
   margin: 0 auto;
   width: 100%;
-  max-width: 1200px; /* 전체 그리드의 최대 너비 설정 */
 
   /* 핸드폰 설정 */
   @media (max-width: 480px) {
