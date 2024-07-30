@@ -119,16 +119,6 @@ const Page = () => {
       return <div>Loading...</div>;
    }
 
-   const dashCamContentData: DashCamContentData = {
-      id: dashCamDetail.id,
-      member: dashCamDetail.member,
-      title: dashCamDetail.title,
-      createdAt: dashCamDetail.createdAt,
-      videoUrl: dashCamDetail.videoUrl,
-      content: dashCamDetail.content,
-      mentionedLeagues: dashCamDetail.mentionedLeagues,
-   };
-
    return (
       <Container>
          <ContentContainer>

@@ -39,8 +39,8 @@ interface ChannelCarouselProps {
    slides: Array<{
       id: string;
       name: string;
-      followers: number;
-      img: string;
+      followCount: number;
+      imgUrl: string;
    }>;
 }
 
@@ -88,8 +88,8 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
                <SwiperSlide key={slide.id}>
                   <UserChannelCard
                      name={slide.name}
-                     followers={slide.followers}
-                     img={slide.img}
+                     followCount={slide.followCount}
+                     imgUrl={slide.imgUrl}
                   />
                </SwiperSlide>
             ))}

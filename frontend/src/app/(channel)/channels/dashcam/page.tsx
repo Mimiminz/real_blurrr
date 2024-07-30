@@ -40,11 +40,7 @@ const DashCam: React.FC = () => {
       const loadData = async () => {
          try {
             const data = await fetchDashCams(0, 'createdAt');
-            if (Array.isArray(data)) {
-               setDashCams(data); // 데이터가 배열인지 확인
-            } else {
-               console.error('API did not return an array:', data);
-            }
+            setDashCams(data);
          } catch (error) {
             console.error('Failed to load dash cam data:', error);
          }
