@@ -1,5 +1,65 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import { fetchCommentCreate, fetchReplyCreate } from "@/api/comment";
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Comment } from "@/types/league";
+
+interface CreateCommentProps {
+  boardId: string;
+  isReply: boolean;
+  commentId: string;
+}
+
+export default function CreateComment({
+  boardId,
+  isReply,
+  commentId,
+}: CreateCommentProps) {
+  const [comment, setComment] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handleSubmit11 = () => {
+    // 댓글 작성 로직을 추가하세요.
+    console.log("Comment submitted:", comment);
+    fetchCommentCreate(comment, boardId);
+    setComment("");
+  };
+
+  const handleSubmit = async () => {
+    if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
+
+    if (isReply) {
+      try {
+        await fetchReplyCreate(commentId, boardId, comment);
+        setComment("");
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
+    } else {
+      try {
+        await fetchCommentCreate(boardId, comment);
+        setComment("");
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
+    }
+  };
+
+  return (
+    <Container>
+      <Avatar />
+      <Input
+        type="text"
+        placeholder="댓글 달기..."
+        value={comment}
+        onChange={handleChange}
+      />
+      <Button onClick={handleSubmit}>작성</Button>
+    </Container>
+  );
+}
 
 const Container = styled.div`
   display: flex;
@@ -35,32 +95,3 @@ const Button = styled.button`
   font-weight: bold;
   cursor: pointer;
 `;
-
-const CreateComment: React.FC = () => {
-   const [comment, setComment] = useState('');
-
-   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setComment(e.target.value);
-   };
-
-   const handleSubmit = () => {
-      // 댓글 작성 로직을 추가하세요.
-      console.log('Comment submitted:', comment);
-      setComment('');
-   };
-
-   return (
-      <Container>
-         <Avatar />
-         <Input
-            type="text"
-            placeholder="댓글 달기..."
-            value={comment}
-            onChange={handleChange}
-         />
-         <Button onClick={handleSubmit}>작성</Button>
-      </Container>
-   );
-};
-
-export default CreateComment;

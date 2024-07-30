@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 interface ReplyProps {
   avatarUrl: string;
   userName: string;
-  userDetail: string;  // 새로운 속성 추가
+  userDetail: string; // 새로운 속성 추가
   text: string;
   time: string;
 }
@@ -16,7 +16,7 @@ const Container = styled.div`
   margin-left: 20px; /* Adjust the indentation for replies */
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -57,17 +57,23 @@ const Time = styled.span`
   margin-top: 8px;
 `;
 
-const Reply: React.FC<ReplyProps> = ({ avatarUrl, userName, userDetail, text, time }) => {
+const Reply: React.FC<ReplyProps> = ({
+  avatarUrl,
+  userName,
+  userDetail,
+  text,
+  time,
+}) => {
   return (
     <Container>
-      <Avatar />
+      <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
       <Content>
         <UsernameWrapper>
           <Username>{userName}</Username>
           <UserDetail>· {userDetail}</UserDetail>
         </UsernameWrapper>
-        <Text>픽시자전거이며 브레이크를 밟았는데도 멈추질 못했다고 하네요</Text>
-        <Time>6h</Time>
+        <Text>{text}</Text>
+        <Time>{time.slice(0, 10)}</Time>
       </Content>
     </Container>
   );

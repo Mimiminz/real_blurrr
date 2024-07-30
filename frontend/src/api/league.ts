@@ -4,9 +4,7 @@ import { LeagueList, LeagueBoardItem, BoardDetail } from "@/types/league";
 // 리그 목록을 가져오는 함수
 export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
   try {
-    const response = await api.get(`/v1/leagues`, {
-      params: { type: "BRAND" },
-    });
+    const response = await api.get(`/v1/leagues/brands`);
     return response.data.data.leagues;
   } catch (error) {
     console.error("Failed to fetch league list", error);
@@ -20,7 +18,7 @@ export const fetchLeagueBoardList = async (
   criteria: string = "TIME"
 ): Promise<LeagueBoardItem[]> => {
   try {
-    const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
+    const response = await api.get(`/v1/leagues/brands/${leagueId}/boards`, {
       params: { criteria },
     });
     if (response.status === 204) {
@@ -42,10 +40,16 @@ export const fetchLeagueDetail = async (
 ): Promise<BoardDetail> => {
   try {
     const response = await api.get(`/v1/leagues/boards/${boardId}`);
-    console.log(response.data);
     return response.data.data.boardDetail;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
+
+// 리그 게시글 검색 함수
+// export const fetchBoardSearch = async (leagueId: string) => {
+//   try {
+//     const response = await api.get(`/v1/leagues`)
+//   }
+// }
