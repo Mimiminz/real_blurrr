@@ -42,11 +42,11 @@ public class RedisEmailService implements RedisAdapter {
     }
 
     public void saveAuthEmail(String email) {
-        redisTemplate.opsForValue().set(generateAvailableKey(email) ,true, availableTime, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(generateAvailableKey(email) ,String.valueOf(true), availableTime, TimeUnit.MILLISECONDS);
     }
 
     public Boolean getAuthEmail(String email) {
-        return (Boolean) redisTemplate.opsForValue().get(generateAvailableKey(email));
+        return Boolean.parseBoolean((String) redisTemplate.opsForValue().get(generateAvailableKey(email)));
     }
 
     private String generateAvailableKey(String email) {
