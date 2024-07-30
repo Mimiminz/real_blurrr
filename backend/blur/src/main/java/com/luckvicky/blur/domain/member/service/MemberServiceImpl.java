@@ -50,7 +50,6 @@ public class MemberServiceImpl implements MemberService {
     private final ResourceUtil resourceUtil;
     private final PasswordAuthFactory passwordAuthFactory;
     private final EmailAuthFactory emailAuthFactory;
-    private final RedisAuthCodeAdapter authCodeAdapter;
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
@@ -58,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
                              PasswordAuthFactory passwordAuthFactory,
                              EmailAuthFactory emailAuthFactory,
-                             RedisAuthCodeAdapter authCodeAdapter, RedisAuthCodeAdapter redisAuthCodeAdapter) {
+                             RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
@@ -67,7 +66,6 @@ public class MemberServiceImpl implements MemberService {
         this.resourceUtil = resourceUtil;
         this.passwordAuthFactory = passwordAuthFactory;
         this.emailAuthFactory = emailAuthFactory;
-        this.authCodeAdapter = authCodeAdapter;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
         this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
@@ -123,7 +121,6 @@ public class MemberServiceImpl implements MemberService {
         if (!jwtProvider.validation(reissue.refreshToken())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        //유저 조회
 
         String email = jwtProvider.getEmail(reissue.refreshToken());
 
@@ -183,14 +180,19 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
+
         String authCode = emailAuthFactory.saveAuthCode(email);
 
+        sendAuthCodeEmail(email, authCode);
+
+        return true;
+    }
+
+    private void sendAuthCodeEmail(String email, String authCode) {
         String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
 
         htmlContent = htmlContent.replace("{{authCode}}", authCode);
         mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
-
-        return true;
     }
 
     @Override
@@ -217,6 +219,7 @@ public class MemberServiceImpl implements MemberService {
         if (!checkAuthCode(passwordAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) {
             return false;
         }
+        passwordAuthFactory.pushAvailableEmail(emailAuth.email());
         return true;
     }
 

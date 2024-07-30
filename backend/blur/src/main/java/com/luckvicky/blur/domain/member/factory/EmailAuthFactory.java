@@ -16,12 +16,7 @@ public class EmailAuthFactory implements AuthCodeFactory{
     }
 
     @Override
-    public String creatAuthCode() {
-        return UuidUtil.createSequentialUUID().toString().substring(0,8);
-    }
-
-    @Override
-    public void saveCode(String key, String code) {
+    public void saveToRedis(String key, String code) {
         redisAuthCodeAdapter.saveOrUpdate(key, code, 5);
     }
 

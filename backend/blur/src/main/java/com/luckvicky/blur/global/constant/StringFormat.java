@@ -19,7 +19,10 @@ public class StringFormat {
     public static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
 
     public static final String EMAIL_AUTH_PREFIX = "emailauth:";
-    public static final String EMAIL_AVAILABLE_PREFIX = "ValidEmail";
+    public static final String EMAIL_AVAILABLE_PREFIX = "validEmail";
+
+    public static final String PASSWORD_AUTH_PREFIX = "passwordAuth:";
+    public static final String PASSWORD_CHANGE_AVAILABLE_PREFIX = "validPasswordChange:";
 
     public static final String CRITERIA_TIME = "createdAt";
     public static final String CRITERIA_LIKE = "likeCount";
@@ -32,7 +35,6 @@ public class StringFormat {
     public static final String CONDITION_CONTENT = "comment";
     public static final String CONDITION_NICKNAME = "nickname";
 
-    public static final String PASSWORD_AUTH_PREFIX = "passwordAuth:";
 
     // 허용 URI
     public static final String[] PERMIT_ALL_URI = {

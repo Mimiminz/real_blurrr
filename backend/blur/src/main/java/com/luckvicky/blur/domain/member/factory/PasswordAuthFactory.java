@@ -16,17 +16,20 @@ public class PasswordAuthFactory implements AuthCodeFactory{
     }
 
     @Override
-    public String creatAuthCode() {
-        return UUID.randomUUID().toString().substring(0,8);
-    }
-
-    @Override
-    public void saveCode(String key, String code) {
+    public void saveToRedis(String key, String code) {
         redisAuthCodeAdapter.saveOrUpdate(key, code, 5);
     }
 
     @Override
     public String generateKey(String email) {
         return StringFormat.PASSWORD_AUTH_PREFIX + email;
+    }
+
+    public void pushAvailableEmail(String email) {
+        redisAuthCodeAdapter.saveOrUpdate(generateAvailableKey(email), String.valueOf(true), 720);
+    }
+
+    public String generateAvailableKey(String email) {
+        return StringFormat.PASSWORD_CHANGE_AVAILABLE_PREFIX + email;
     }
 }
