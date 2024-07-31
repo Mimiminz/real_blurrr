@@ -67,6 +67,7 @@ deploy:
   script:
     - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh &"
+    - echo "Complete"
  
   environment:
     name: dev
