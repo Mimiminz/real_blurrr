@@ -22,11 +22,6 @@ init:
     - apt-get install -y wget unzip openjdk-17-jdk
     - echo "Setting up JAVA_HOME and PATH..."
     - java -version
-    - echo "install gradle"
-    - GRADLE_LATEST_VERSION=$(curl -s https://services.gradle.org/versions/current | jq -r '.version')
-    - wget -q --show-progress -O gradle-${GRADLE_LATEST_VERSION}-bin.zip https://services.gradle.org/distributions/gradle-${GRADLE_LATEST_VERSION}-bin.zip
-    - unzip -d /opt/gradle gradle-${GRADLE_LATEST_VERSION}-bin.zip
-    - rm gradle-${GRADLE_LATEST_VERSION}-bin.zip
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
     # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
@@ -44,6 +39,7 @@ build:
     - cd backend/blur
     - chmod +x ./gradlew
   script:
+    - ./gradlew --version
     - ./gradlew clean build
   artifacts:
     paths:
