@@ -73,15 +73,15 @@ const LoginForm = () => {
             <StyledErrorMessage name="email" component="div" />
             <StyledField name="password" type="password" placeholder="비밀번호" />
             <StyledErrorMessage name="password" component="div" />
-            <CheckboxLabel>
+            {/* <CheckboxLabel>
               <CheckboxField name="rememberMe" type="checkbox" />
               자동 로그인
-            </CheckboxLabel>
+            </CheckboxLabel> */}
             <Button type="submit" disabled={isSubmitting}>
               로그인
             </Button>
             <Div>
-              <Link href="#" onClick={() => router.push('/')}>
+              <Link href="#" onClick={() => router.push('/findpassword')}>
                 비밀번호를 잊으셨나요?
               </Link>
               <Link href="#" onClick={() => router.push('/signup')}>
@@ -106,7 +106,7 @@ const Container = styled.div`
 
 const Title = styled.h2`
   text-align: center;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 `;
 
 const Div = styled.div`
@@ -121,8 +121,11 @@ const StyledForm = styled(Form)`
 
 const StyledField = styled(Field)`
   margin-bottom: 1em;
+  border-radius: 5px;
   padding: 0.5em;
   font-size: 1em;
+  border: 1.5px solid #EEEEEE;
+  
 `;
 
 const StyledErrorMessage = styled(ErrorMessage)`
@@ -141,6 +144,8 @@ const CheckboxField = styled(Field)`
 `;
 
 const Button = styled.button`
+  margin-top: 30px;
+  margin-bottom: 10px;
   padding: 0.7em;
   font-size: 1em;
   color: #fff;

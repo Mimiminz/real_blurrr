@@ -59,10 +59,10 @@ public class DashcamBoardController {
                     name = "criteria",
                     description = "정렬 기준",
                     examples = {
-                            @ExampleObject(name = "최신", value = "createdAt"),
-                            @ExampleObject(name = "좋아요", value = "likeCount"),
-                            @ExampleObject(name = "조회수", value = "viewCount"),
-                            @ExampleObject(name = "댓글", value = "commentCount"),
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
                     }
             ),
     })

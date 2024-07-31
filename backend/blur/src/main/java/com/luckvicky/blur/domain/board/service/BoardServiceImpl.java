@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.board.service;
 
+import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.HOT_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
@@ -9,6 +10,7 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.INVALID_BOARD_TYPE;
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InvalidBoardTypeException;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
+import com.luckvicky.blur.domain.board.exception.UnauthorizedBoardDeleteException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
@@ -20,6 +22,8 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.like.model.entity.Like;
+import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
@@ -64,6 +68,47 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<BoardDto> findLikeBoardsByMember(UUID id, int pageNumber, String criteria) {
+
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                GENERAL_PAGE_SIZE,
+                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+        );
+
+        Member member = memberRepository.getOrThrow(id);
+        List<Board> likeBoards = boardRepository.findByMember(member, ActivateStatus.ACTIVE, pageable);
+
+        return likeBoards.stream()
+                .map(likeBoard -> mapper.map(likeBoard, BoardDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BoardDto> findBoardsByMember(UUID memberId, int pageNumber, String criteria) {
+
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                LEAGUE_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+        );
+
+        Member member = memberRepository.getOrThrow(memberId);
+        List<Board> boards = boardRepository.findAllByMember(member, pageable).getContent();
+
+        return boards.stream()
+                .map(board -> mapper.map(board,  BoardDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
 
         BoardType boardType = BoardType.convertToEnum(type);
@@ -94,7 +139,7 @@ public class BoardServiceImpl implements BoardService {
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
-        return BoardDetailDto.of(board.getContent(), board.getViewCount(), comments);
+        return BoardDetailDto.of(board, comments);
 
     }
 
@@ -129,6 +174,20 @@ public class BoardServiceImpl implements BoardService {
                 .map(board -> mapper.map(board, HotBoardDto.class))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteBoard(UUID boardId, UUID memberId) {
+        Board board = boardRepository.getOrThrow(boardId);
+
+        if(!board.getMember().getId().equals(memberId)){
+            throw new UnauthorizedBoardDeleteException();
+        }
+
+        board.inactive();
+
+        return true;
     }
 
     private boolean isCreated(Board createdBoard) {

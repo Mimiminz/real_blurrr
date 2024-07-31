@@ -7,6 +7,7 @@ import Header from "@/components/common/layout/Header";
 import Footer from "@/components/common/layout/Footer";
 import GlobalStyle from "../styles/GlobalStyle";
 import { theme } from "../styles/theme";
+import PageTransition from "@/components/common/UI/PageTransition";
 
 export default function RootLayout({
   children,
@@ -21,7 +22,11 @@ export default function RootLayout({
             <GlobalStyle />
             <Layout>
               <Header />
-              <Main>{children}</Main>
+              <PageTransition>
+                <Main>
+                {children}
+                </Main>
+              </PageTransition>
               <Footer />
             </Layout>
           </ThemeProvider>

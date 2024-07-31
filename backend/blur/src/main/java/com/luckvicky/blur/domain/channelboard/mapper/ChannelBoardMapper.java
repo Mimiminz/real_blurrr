@@ -1,7 +1,7 @@
 package com.luckvicky.blur.domain.channelboard.mapper;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
@@ -53,13 +53,13 @@ public class ChannelBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public ChannelBoardDto toChannelBoardDto(ChannelBoard channelBoard) {
+    public ChannelBoardDetailDto toChannelBoardDto(ChannelBoard channelBoard) {
         BoardDto boardDto = toBoardDto(channelBoard);
         List<ChannelBoardMentionDto> mentionedLeagues = channelBoardMentionRepository.findByChannelBoard(channelBoard).stream()
                 .map(ChannelBoardMentionDto::of)
                 .collect(Collectors.toList());
 
-        return ChannelBoardDto.builder()
+        return ChannelBoardDetailDto.builder()
                 .id(channelBoard.getId())
                 .member(SimpleMemberDto.of(channelBoard.getMember()))
                 .title(channelBoard.getTitle())

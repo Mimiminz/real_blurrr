@@ -8,11 +8,15 @@ import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 
-import { LeagueList, Tab } from "@/types/league";
+import { LeagueBoardItem, LeagueList, Tab } from "@/types/league";
 
 // API
 import dummy from "@/db/mainPageData.json";
-import { fetchBrandLeagues } from "@/api/league";
+import {
+  fetchBrandLeagues,
+  fetchBoardSearch,
+  fetchLeagueBoardList,
+} from "@/api/league";
 
 const tabs = dummy.leagueMembers.map((league) => ({
   id: league.id,
@@ -34,33 +38,39 @@ export default function LeaguePage({
   const router = useRouter();
   const leagueId = params.leagueId;
 
+  const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
+
   // 더보기 안에 있는 요소들
   const [moreTabs, setMoreTabs] = useState<Tab[]>([]);
 
+  // 정렬 기준
+  const [criteria, setCriteria] = useState<string>("TIME");
+
+  // 검색
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<LeagueBoardItem[]>([]);
+
   useEffect(() => {
-    const loadBrandLeagues = async () => {
+    const loadLeagues = async () => {
       try {
-        const leagues: LeagueList[] = await fetchBrandLeagues();
-        const formattedLeagues = leagues.map((league: LeagueList) => ({
-          id: league.id,
-          name: league.name,
-          type: league.type,
-        }));
-        setMoreTabs(formattedLeagues);
+        const [leagues, boardData] = await Promise.all([
+          fetchBrandLeagues(),
+          fetchLeagueBoardList(leagueId, criteria),
+        ]);
+        setMoreTabs(leagues);
+        setBoardList(boardData);
       } catch (error) {
         console.error("Failed to fetch brand leagues", error);
       }
     };
 
-    loadBrandLeagues();
-  }, []);
+    loadLeagues();
+  }, [leagueId, criteria]);
 
   let activeTabName = `${
     moreTabs.find((t) => t.id === leagueId)?.name ||
     tabs.find((t) => t.id === leagueId)?.name
   } 리그`;
-
-  console.log(leagueId.slice(7));
 
   if (activeTabName == `${undefined} 리그`) {
     activeTabName = `채널에서 ${
@@ -68,13 +78,14 @@ export default function LeaguePage({
     }가 멘션된 글`;
   }
 
-  // 정렬 기준
-  const [criteria, setCriteria] = useState<string>("TIME");
-
   const handleCriteriaChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCriteria(event.target.value);
+  };
+
+  const handleSearchBack = () => {
+    setIsSearching(false);
   };
 
   // const handleWriteClick = () => {
@@ -91,21 +102,21 @@ export default function LeaguePage({
   //   }
   // };
 
-  // const renderContent = (): JSX.Element => {
-  //   return (
-  //     <Title>
-  //       {activeTabName.startsWith("@")
-  //         ? `채널에서 ${activeTabName.slice(2)}가 멘션된 글`
-  //         : `${activeTabName} 리그`}
-  //     </Title>
-  //   );
-  // };
+  const handleSearch = async (keyword: string) => {
+    setIsSearching(true);
+    try {
+      const results = await fetchBoardSearch(leagueId, keyword);
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
 
   return (
     <Container>
       <TopComponent>
         <UserTab activeTabId={leagueId} tabs={tabs} mentionTabs={mentionTabs} />
-        <SearchBar />
+        <SearchBar onSearch={handleSearch} />
       </TopComponent>
       <MoreBrandTab
         activeTabId={leagueId}
@@ -122,8 +133,13 @@ export default function LeaguePage({
       </FilterSection>
       {leagueId.includes("mention") ? (
         <h1>채널 게시글</h1>
+      ) : isSearching ? (
+        <>
+          <SearchResult onClick={handleSearchBack}> 검색 취소 </SearchResult>
+          <LeagueBoardList leagueId={leagueId} boardList={searchResults} />
+        </>
       ) : (
-        <LeagueBoardList leagueId={leagueId} criteria={criteria} />
+        <LeagueBoardList leagueId={leagueId} boardList={boardList} />
       )}
     </Container>
   );
@@ -196,4 +212,9 @@ const StyledButton = styled.button`
   &:active {
     background-color: #ccc;
   }
+`;
+
+const SearchResult = styled.button`
+  cursor: pointer;
+  color: #333;
 `;

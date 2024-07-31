@@ -1,26 +1,24 @@
 package com.luckvicky.blur.domain.channelboard.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
-import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.response.BoardDetailResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardDetailResponse;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
-import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -62,9 +60,9 @@ public class ChannelBoardController {
             @Valid @RequestBody ChannelBoardCreateRequest request,
             @AuthUser ContextMember contextMember
             ) {
-        ChannelBoardDto createdBoard = channelBoardService.createChannelBoard(channelId, request,contextMember.getId());
+        ChannelBoardDetailDto createdBoard = channelBoardService.createChannelBoard(channelId, request,contextMember.getId());
         return ResponseUtil.created(
-                Result.<ChannelBoardDto>builder()
+                Result.<ChannelBoardDetailDto>builder()
                         .data(createdBoard)
                         .build()
         );
@@ -90,10 +88,31 @@ public class ChannelBoardController {
                     description = "게시물 목록 조회 실패"
             )
     })
-    @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
+    @Parameters({
+            @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH),
+            @Parameter(name = "pageNumber", description = "페이지 번호"),
+            @Parameter(
+                    name = "criteria",
+                    description = "정렬 기준",
+                    examples = {
+                            @ExampleObject(name = "최신", value = "TIME"),
+                            @ExampleObject(name = "좋아요", value = "LIKE"),
+                            @ExampleObject(name = "조회수", value = "VIEW"),
+                            @ExampleObject(name = "댓글", value = "COMMENT"),
+                    }
+            ),
+    })
     @GetMapping
-    public ResponseEntity getChannelBoard(@PathVariable(name = "channelId")UUID channelId){
-        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(channelId);
+    public ResponseEntity getChannelBoard(
+            @PathVariable(name = "channelId")UUID channelId,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+    ){
+        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(
+                channelId,
+                pageNumber,
+                criteria
+        );
 
         if (Objects.isNull(channelBoardListDtos) || channelBoardListDtos.isEmpty()) {
             return ResponseUtil.noContent(
@@ -118,7 +137,7 @@ public class ChannelBoardController {
             @ApiResponse(
                     responseCode = "200",
                     description = "조회 완료",
-                    content = @Content(schema = @Schema(implementation = BoardDetailResponse.class))
+                    content = @Content(schema = @Schema(implementation = ChannelBoardDetailResponse.class))
             ),
             @ApiResponse(
                     responseCode = "204",
@@ -135,11 +154,11 @@ public class ChannelBoardController {
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        BoardDetailDto boardDetail = boardService.getBoardDetail(boardId);
+        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId);
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(BoardDetailResponse.of(boardDetail))
+                        .data(ChannelBoardDetailResponse.of(boardDetail))
                         .build()
         );
 

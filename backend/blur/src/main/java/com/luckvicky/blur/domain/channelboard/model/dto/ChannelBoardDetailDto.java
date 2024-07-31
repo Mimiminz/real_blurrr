@@ -1,5 +1,7 @@
 package com.luckvicky.blur.domain.channelboard.model.dto;
 
+import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamMentionDto;
 import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @Schema(name = "채널 게시글 DTO")
-public class ChannelBoardDto {
+public class ChannelBoardDetailDto {
     @Schema(description = "게시물 고유 식별값")
     private UUID id;
 
@@ -32,7 +34,7 @@ public class ChannelBoardDto {
     private Long commentCount;
 
     @Schema(description = "좋아요 개수")
-    private Long  likeCount;
+    private Long likeCount;
 
     @Schema(description = "게시물 생성 시간")
     private LocalDateTime createdAt;
@@ -42,4 +44,22 @@ public class ChannelBoardDto {
 
     @Schema(description = "멘션된 리그 목록")
     private List<ChannelBoardMentionDto> mentionedLeagues;
+
+    @Schema(description = "댓글 목록")
+    List<CommentDto> comments;
+
+    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<ChannelBoardMentionDto> mentionedLeagues, List<CommentDto> comments){
+        return ChannelBoardDetailDto.builder()
+                .id(channelBoard.getId())
+                .member(SimpleMemberDto.of(channelBoard.getMember()))
+                .title(channelBoard.getTitle())
+                .viewCount(channelBoard.getViewCount())
+                .commentCount(channelBoard.getCommentCount())
+                .likeCount(channelBoard.getLikeCount())
+                .createdAt(channelBoard.getCreatedAt())
+                .content(channelBoard.getContent())
+                .mentionedLeagues(mentionedLeagues)
+                .comments(comments)
+                .build();
+    }
 }

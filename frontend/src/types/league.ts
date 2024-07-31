@@ -1,4 +1,9 @@
-// src/types/league.ts
+export interface Member {
+  id: string;
+  profileUrl: string;
+  nickname: string;
+  carTitle: string;
+}
 
 export interface LeagueList {
   id: string;
@@ -9,20 +14,11 @@ export interface LeagueList {
 
 export interface LeagueBoardItem {
   id: string;
-  member: {
-    id: string;
-    nickname: string;
-    carTitle: string;
-  };
+  member: Member;
   title: string;
   createdAt: string;
   commentCount: number;
   likeCount: number;
-}
-
-export interface BoardListProps {
-  leagueId: string;
-  boardList: LeagueBoardItem[];
 }
 
 export interface LeagueBoardListItemProps {
@@ -36,7 +32,7 @@ export interface LeagueBoardListItemProps {
 
 export interface boardListProp {
   leagueId: string;
-  criteria: string;
+  boardList: LeagueBoardItem[];
 }
 
 export interface Tab {
@@ -81,12 +77,8 @@ export interface BoardDetail {
   createdAt: string;
   viewCount: number;
   likeCount: number;
-  member: {
-    id: string;
-    profileUrl: string;
-    nickname: string;
-    carTitle: string;
-  };
+  commentCount: number;
+  member: Member;
   comments: Comment[];
 }
 

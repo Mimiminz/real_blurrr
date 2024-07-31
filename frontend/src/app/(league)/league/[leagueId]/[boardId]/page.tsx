@@ -10,8 +10,26 @@ import { Divider } from "@nextui-org/divider";
 import { LiaCommentDots } from "react-icons/lia";
 import { useEffect, useState } from "react";
 
-import { BoardDetail } from "@/types/league";
+import { BoardDetail, Comment as CommentProp } from "@/types/league";
 import { fetchLeagueDetail } from "@/api/league";
+import { fetchCommentDelete } from "@/api/comment";
+import React from "react";
+
+const initialBoardDetail: BoardDetail = {
+  title: "",
+  content: "",
+  createdAt: "",
+  viewCount: 0,
+  likeCount: 0,
+  commentCount: 0,
+  member: {
+    id: "",
+    profileUrl: "",
+    nickname: "",
+    carTitle: "",
+  },
+  comments: [],
+};
 
 export default function BoardDetailPage({
   params,
@@ -21,9 +39,8 @@ export default function BoardDetailPage({
   const leagueId = params.leagueId;
   const boardId = params.boardId;
 
-  const [BoardDetail, setBoardDetail] = useState<BoardDetail>(
-    {} as BoardDetail
-  );
+  const [BoardDetail, setBoardDetail] =
+    useState<BoardDetail>(initialBoardDetail);
 
   useEffect(() => {
     const loadBoardDetail = async () => {
@@ -43,10 +60,9 @@ export default function BoardDetailPage({
         <Breadcrumb
           channel="리그"
           subChannel="GV70 리그"
-          channelUrl="/league"
+          channelUrl={`/league/${leagueId}`}
         />
       </BreadcrumbContainer>
-
       <LeagueDetailTitle
         title={BoardDetail.title}
         createdAt={BoardDetail.createdAt}
@@ -65,31 +81,41 @@ export default function BoardDetailPage({
             <WriterButton>수정</WriterButton>
             <WriterButton>삭제</WriterButton>
           </WriterContainer>
-          <LiaCommentDots />8
+          <LiaCommentDots />
+          {BoardDetail.commentCount}
         </CommentNumber>
-        <CreateComment />
-        {BoardDetail.comments.map((comment) => (
-          <>
-            <Comment
-              key={comment.id}
-              avatarUrl={comment.member.profileUrl}
-              userName={comment.member.nickname}
-              userDetail={comment.member.carTitle}
-              text={comment.content}
-              time={comment.createdAt}
-            />
-            {comment.replies.length > 0 &&
-              comment.replies.map((reply) => (
-                <Reply
-                  key={reply.id}
-                  avatarUrl={reply.member.profileUrl}
-                  userName={reply.member.nickname}
-                  userDetail={reply.member.carTitle}
-                  text={reply.content}
-                  time={reply.createdAt}
+        <CreateComment boardId={boardId} isReply={false} commentId="" />
+        {BoardDetail.comments.map((comment, index) => (
+          <React.Fragment key={comment.id}>
+            {comment.status === "ACTIVE" ? (
+              <CommentWrapper>
+                <Comment
+                  id={comment.id}
+                  boardId={boardId}
+                  avatarUrl={comment.member.profileUrl}
+                  userName={comment.member.nickname}
+                  userDetail={comment.member.carTitle}
+                  text={comment.content}
+                  time={comment.createdAt}
                 />
-              ))}
-          </>
+              </CommentWrapper>
+            ) : (
+              "없는 댓글"
+            )}
+            <>
+              {comment.replies.length > 0 &&
+                comment.replies.map((reply) => (
+                  <Reply
+                    key={reply.id}
+                    avatarUrl={reply.member.profileUrl}
+                    userName={reply.member.nickname}
+                    userDetail={reply.member.carTitle}
+                    text={reply.content}
+                    time={reply.createdAt}
+                  />
+                ))}
+            </>
+          </React.Fragment>
         ))}
       </CommentContainer>
     </>
@@ -137,4 +163,8 @@ const WriterButton = styled.button`
   background-color: white;
   margin-right: 10px;
   cursor: pointer;
+`;
+
+const CommentWrapper = styled.div`
+  width: 100%;
 `;

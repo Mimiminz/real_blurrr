@@ -17,7 +17,7 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
       <Title>{title}</Title>
       <InfoRow>
         <Infoleft>
-          <Date>{createdAt}</Date>
+          <Date>{createdAt.slice(0, 10)}</Date>
           <Icons>
             <FaEye />
             <Views>{viewCount}</Views>

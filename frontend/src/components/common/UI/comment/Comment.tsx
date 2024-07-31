@@ -1,18 +1,72 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { fetchCommentDelete } from "@/api/comment";
+
+import CreateComment from "@/components/common/UI/comment/CreateComment";
 
 interface CommentProps {
+  id: string;
+  boardId: string;
   avatarUrl: string;
   userName: string;
-  userDetail: string;  // 새로운 속성 추가
+  userDetail: string;
   text: string;
   time: string;
 }
+
+const Comment: React.FC<CommentProps> = ({
+  id,
+  boardId,
+  avatarUrl,
+  userName,
+  userDetail,
+  text,
+  time,
+}) => {
+  const [showReply, setShowReply] = useState(false);
+  const handleDelete = async () => {
+    try {
+      await fetchCommentDelete(boardId, id);
+      console.error("Delete Complate");
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
+  const handleReplyToggle = () => {
+    setShowReply(!showReply);
+  };
+  return (
+    <Container>
+      <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
+      <Content>
+        <UsernameWrapper>
+          <Username>{userName}</Username>
+          <UserDetail>· {userDetail}</UserDetail>
+        </UsernameWrapper>
+        <Text>{text}</Text>
+        <div>
+          <Reply onClick={handleReplyToggle}>답글</Reply>
+          <Delete onClick={handleDelete}>삭제</Delete>
+          <Time>{time.slice(0, 10)}</Time>
+        </div>
+        {showReply && (
+          <ReplyCreate>
+          <CreateComment boardId={boardId} isReply={true} commentId={id} />
+          </ReplyCreate>
+        )}
+      </Content>
+    </Container>
+  );
+};
+
+export default Comment;
 
 const Container = styled.div`
   display: flex;
   align-items: flex-start;
   margin-bottom: 16px;
+  width: 100%;
 `;
 
 const Avatar = styled.img`
@@ -26,6 +80,7 @@ const Avatar = styled.img`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const UsernameWrapper = styled.div`
@@ -54,6 +109,15 @@ const Reply = styled.span`
   font-size: 12px;
   color: #999;
   margin-top: 8px;
+  cursor: pointer;
+`;
+
+const Delete = styled.span`
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+  margin-left: 6px;
+  cursor: pointer;
 `;
 
 const Time = styled.span`
@@ -63,23 +127,6 @@ const Time = styled.span`
   margin-left: 8px;
 `;
 
-const Comment: React.FC<CommentProps> = ({ avatarUrl, userName, userDetail, text, time }) => {
-  return (
-    <Container>
-      <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
-      <Content>
-        <UsernameWrapper>
-          <Username>{userName}</Username>
-          <UserDetail>· {userDetail}</UserDetail>
-        </UsernameWrapper>
-        <Text>{text}</Text>
-        <div>
-          <Reply>답글</Reply>
-          <Time>{time}</Time>
-        </div>
-      </Content>
-    </Container>
-  );
-};
-
-export default Comment;
+const ReplyCreate = styled.div`
+  margin-top: 10px;
+`;

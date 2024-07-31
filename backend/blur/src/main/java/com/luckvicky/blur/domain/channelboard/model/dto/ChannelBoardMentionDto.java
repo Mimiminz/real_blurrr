@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -19,5 +22,11 @@ public class ChannelBoardMentionDto {
         return ChannelBoardMentionDto.builder()
                 .name(channelBoardMention.getLeague().getName())
                 .build();
+    }
+
+    public static List<ChannelBoardMentionDto> of(List<ChannelBoardMention> mentions) {
+        return mentions.stream()
+                .map(ChannelBoardMentionDto::of)
+                .collect(Collectors.toList());
     }
 }
