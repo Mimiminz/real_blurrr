@@ -6,6 +6,7 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -18,5 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
     Optional<Like> findByMemberAndBoard(Member member, Board board);
+
+    Boolean existsByMemberIdAndBoardId(UUID memberId, UUID boardId);
 
 }

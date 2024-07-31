@@ -22,6 +22,7 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
@@ -50,6 +51,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     public Boolean createBoard(BoardCreateRequest request) {
@@ -208,7 +210,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public BoardDetailDto getBoardDetail(UUID boardId) {
+    public BoardDetailDto getBoardDetail(UUID memberId, UUID boardId) {
 
         Board board = boardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
@@ -218,7 +220,9 @@ public class BoardServiceImpl implements BoardService {
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
-        return BoardDetailDto.of(board, comments);
+        return BoardDetailDto.of(
+                board, comments, likeRepository.existsByMemberIdAndBoardId(memberId, boardId)
+        );
 
     }
 

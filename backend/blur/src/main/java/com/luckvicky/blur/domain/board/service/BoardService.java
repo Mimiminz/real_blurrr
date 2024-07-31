@@ -16,7 +16,7 @@ public interface BoardService {
 
     List<BoardDto> findBoardsByType(String boardType, int pageNumber, String criteria);
 
-    BoardDetailDto getBoardDetail(UUID boardId);
+    BoardDetailDto getBoardDetail(UUID boardId, UUID id);
 
     List<CommentDto> getComments(UUID boardId);
 
