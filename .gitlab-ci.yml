@@ -10,18 +10,6 @@ variables:
   DEPLOY_PATH: "/home/ubuntu/app"
   SPRING_PROFILE: "dev"
 
-init:
-  stage: init
-  script:
-
-    - echo "init start"
-    - apt-get update
-
-    # 자바 17 설치
-    - echo "install java"
-    - apt-get install openjdk-17-jdk -y
-    - java -version
-    
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
     # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
@@ -29,15 +17,18 @@ init:
     # - chmod 700 ~/.ssh
     # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
     # - chmod 644 ~/.ssh/known_hosts
-  tags:
-    - blurrr-deploy
 
 build:
   stage: build
   before_script:
 
-  # 설치된 JDK의 경로를 확인합니다
-  - dpkg --list | grep openjdk
+  - echo "init start"
+  - apt-get update
+
+  # 자바 17 설치
+  - echo "install java"
+  - apt-get install openjdk-17-jdk -y
+  - java -version
 
   # 설치된 Java 실행 파일의 경로를 확인합니다
   - which java
