@@ -1,7 +1,6 @@
 image: ubuntu:22.04
 
 stages:
-  - init
   - build
   - deploy
 
@@ -37,7 +36,7 @@ build:
   - readlink -f $(which java)
 
   # JAVA_HOME 환경 변수 설정
-  - export JAVA_HOME="readlink -f $(which java)"
+  - export JAVA_HOME="$(readlink -f $(which java)"
   - export PATH="$JAVA_HOME/bin:$PATH"
   
   # JAVA_HOME과 PATH 확인
@@ -64,7 +63,7 @@ deploy:
   stage: deploy
   script:
     - echo "Deploying the project"
-    - scp target/*.jar $DEPLOY_SERVER:$DEPLOY_PATH/
+    - scp build/libs/*.jar $DEPLOY_SERVER:$DEPLOY_PATH/
     - ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && ./deploy.sh"
   environment:
     name: dev
