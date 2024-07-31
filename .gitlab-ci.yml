@@ -29,7 +29,7 @@ build:
     paths:
       - target/*.jar
   tags:
-    - docker
+    - blurrr-deploy
   # only:
     # - dev
 
@@ -44,4 +44,4 @@ deploy:
   # only:
   #   - dev
   tags:
-    - docker
+    - blurrr-deploy
