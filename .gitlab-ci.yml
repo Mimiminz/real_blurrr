@@ -13,14 +13,6 @@ build:
   stage: build
   before_script:
 
-  # - 'which ssh-agent || ( apt-get install -y openssh-client )'
-  # - eval $(ssh-agent -s)
-  # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
-  # - mkdir -p ~/.ssh
-  # - chmod 700 ~/.ssh
-  # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
-  # - chmod 644 ~/.ssh/known_hosts
-
   # 자바 17 설치
   - apt-get update
   - echo "install java"
@@ -40,7 +32,6 @@ build:
     - cd backend/blur
     - chmod +x ./gradlew
     - ./gradlew clean build -x test
-    - ls -R build/libs  # 생성된 JAR 파일 목록 확인
     
   artifacts:
     paths:
@@ -54,10 +45,27 @@ build:
 
 deploy:
   stage: deploy
+  before_script:
+
+    - echo "Setting up SSH key..."
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
+
+  # - 'which ssh-agent || ( apt-get install -y openssh-client )'
+  # - eval $(ssh-agent -s)
+  # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
+  # - mkdir -p ~/.ssh
+  # - chmod 700 ~/.ssh
+  # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
+  # - chmod 644 ~/.ssh/known_hosts
+
   script:
     - echo "Deploying the project"
-    - scp build/libs/*.jar $DEPLOY_SERVER:$DEPLOY_PATH/
-    - ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && ./deploy.sh"
+    - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar $DEPLOY_SERVER:$DEPLOY_PATH/
+    - ssh -i ~/.ssh/id_rsa $DEPLOY_SERVER "cd $DEPLOY_PATH && ./deploy.sh"
+
   environment:
     name: dev
   # only:
