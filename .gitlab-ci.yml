@@ -46,6 +46,9 @@ build:
 deploy:
   stage: deploy
   before_script:
+    
+    - apt-get update
+    - apt-get install openssh-client -y
 
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
