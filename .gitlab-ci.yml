@@ -14,6 +14,7 @@ before_script:
   - echo "Setting up environment"
   - apt-get update
   - apt-get install openjdk-17-jdk -y
+  - apt-get install gradle -y
   # - 'which ssh-agent || ( apt-get install -y openssh-client )'
   # - eval $(ssh-agent -s)
   # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
