@@ -13,11 +13,15 @@ variables:
 init:
   stage: init
   script:
+
     - echo "init start"
     - apt-get update
+
+    # 자바 17 설치
     - echo "install java"
     - apt-get install openjdk-17-jdk -y
     - java -version
+    
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
     # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
@@ -31,10 +35,19 @@ init:
 build:
   stage: build
   before_script:
+    
+    # 환경 변수 설정
     - echo "Setting up JAVA_HOME and PATH..."
+    - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+    - export PATH="$JAVA_HOME/bin:$PATH"
+    - echo "JAVA_HOME is set to $JAVA_HOME"
+    - echo "PATH is set to $PATH"
+
+    # 빌드
     - echo 'build start'
     - cd backend/blur
     - chmod +x ./gradlew
+
   script:
     - ./gradlew --version
     - ./gradlew clean build
