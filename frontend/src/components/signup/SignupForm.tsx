@@ -48,9 +48,9 @@ const SignupForm = () => {
       try {
         const isAvailable = await checkNicknameAvailability(nickname);
         setIsNicknameAvailable(isAvailable);
-        setNicknameError(isAvailable ? '' : '이미 사용 중인 닉네임입니다.');
+        setNicknameError(isAvailable ? '' : '이미 사용 중인 닉네임입니다');
       } catch (error) {
-        setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
+        setNicknameError('닉네임 확인 중 오류가 발생했습니다');
       }
     } else {
       setIsNicknameAvailable(null);
@@ -61,11 +61,11 @@ const SignupForm = () => {
   const handleSendVerification = async (email: string) => {
     try {
       await requestEmailVerificationCode(email);
-      alert('인증번호가 전송되었습니다.');
+      alert('인증번호가 전송되었습니다');
       setTimer(300);
       setIsTimerActive(true);
     } catch (error) {
-      alert('인증번호 전송 중 오류가 발생했습니다.');
+      alert('인증번호 전송 중 오류가 발생했습니다');
     }
   };
 
@@ -74,14 +74,14 @@ const SignupForm = () => {
       const response = await verifyEmailCode(email, code);
       if (response === true) {
         setEmailVerified(true);
-        setEmailVerificationError('인증번호가 확인되었습니다.');
+        setEmailVerificationError('인증번호가 확인되었습니다');
       } else {
         setEmailVerified(false);
-        setEmailVerificationError('인증번호가 일치하지 않습니다.');
+        setEmailVerificationError('인증번호가 일치하지 않습니다');
       }
     } catch (error) {
       setEmailVerified(false);
-      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
+      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다');
     }
   };
 
