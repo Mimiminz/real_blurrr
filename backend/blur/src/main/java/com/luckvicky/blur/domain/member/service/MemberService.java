@@ -23,4 +23,5 @@ public interface MemberService {
     boolean validEmailAuth(EmailAuth emailAuth);
     boolean createPasswordAuthCode(String email);
     boolean validPasswordAuthCode(EmailAuth emailAuth);
+    void logout(UUID memberId);
 }
