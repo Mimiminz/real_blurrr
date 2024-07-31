@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChannelBoardServiceImpl implements ChannelBoardService{
 
+
     private final ModelMapper mapper;
     private final ChannelBoardMapper channelBoardMapper;
     private final MemberRepository memberRepository;
@@ -57,7 +58,6 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     @Override
     @Transactional(readOnly = true)
     public List<ChannelBoardListDto> getChannelBoards(UUID channelId, int pageNumber, String criteria) {
-
         Channel channel = channelRepository.getOrThrow(channelId);
 
         Pageable pageable = PageRequest.of(
@@ -74,6 +74,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
         return channelBoardMapper.toChannelBoardListDtoList(channelBoards, mentionList);
 
     }
+
 
     @Override
     @Transactional(readOnly = true)

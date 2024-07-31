@@ -19,6 +19,7 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
 
     List<ChannelBoard> findByChannel (Channel channel);
 
+
     @Query("SELECT b "
             + "FROM ChannelBoard b "
             + "LEFT JOIN FETCH b.comments c "
