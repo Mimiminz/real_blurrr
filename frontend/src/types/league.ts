@@ -35,15 +35,10 @@ export interface boardListProp {
   boardList: LeagueBoardItem[];
 }
 
-export interface Tab {
-  id: string;
-  name: string;
-  type: string;
-}
 
 export interface moreTabProps {
   activeTabId: string;
-  moreTabs: Tab[];
+  moreTabs: LeagueList[];
   activeTabName?: string;
 }
 
@@ -53,8 +48,8 @@ export interface TabButtonProps {
 
 export interface UserTabProps {
   activeTabId: string;
-  tabs: Tab[];
-  mentionTabs: Tab[];
+  tabs: LeagueList[];
+  mentionTabs: LeagueList[];
 }
 
 export interface Comment {
@@ -85,4 +80,8 @@ export interface BoardDetailProps {
   username: string;
   authorprofileUrl: string;
   authorCarTitle: string;
+}
+
+export interface UserLeague {
+  league: LeagueList;
 }

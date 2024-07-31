@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useRouter } from "next/navigation";
 import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
-import { useAuthStore } from '@/store/authStore';
-import Notifications from './Notifications';
+import { useAuthStore } from "@/store/authStore";
+import Notifications from "./Notifications";
 
 const NavBar = () => {
   const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn } = useAuthStore(state => ({
+  const { isLoggedIn, setIsLoggedIn } = useAuthStore((state) => ({
     isLoggedIn: state.isLoggedIn,
-    setIsLoggedIn: state.setIsLoggedIn
-  }))
+    setIsLoggedIn: state.setIsLoggedIn,
+  }));
   const [showNotifications, setShowNotifications] = useState(false);
-  const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(null);
+  const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
+    null
+  );
 
   useEffect(() => {
     setClientIsLoggedIn(isLoggedIn);
@@ -30,20 +32,23 @@ const NavBar = () => {
   const handleLogout = () => {
     useAuthStore.getState().clearAccessToken();
     setIsLoggedIn(false);
-    alert('로그아웃되었습니다.');
+    alert("로그아웃되었습니다.");
 
-    router.push('/');
+    router.push("/");
   };
-
 
   return (
     <Nav>
-      <Image src='/images/logo/logo.png' onClick={() => router.push('/')} />
+      <Image
+        src="/images/logo/logo.png"
+        alt="로고"
+        onClick={() => router.push("/")}
+      />
       <Menu>
-        <MenuItem onClick={() => router.push('/')}>홈</MenuItem>
-        <MenuItem onClick={() => router.push('/league')}>리그</MenuItem>
-        <MenuItem onClick={() => router.push('/channels')}>채널</MenuItem>
-        
+        <MenuItem onClick={() => router.push("/")}>홈</MenuItem>
+        <MenuItem onClick={() => router.push(`/league`)}>리그</MenuItem>
+        <MenuItem onClick={() => router.push("/channels")}>채널</MenuItem>
+
         {clientIsLoggedIn === null ? (
           <Spinner />
         ) : clientIsLoggedIn ? (
@@ -51,18 +56,20 @@ const NavBar = () => {
             <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
             <IconWrapper>
               <IoMdNotifications onClick={handleNotificationsClick} />
-              <CgProfile onClick={() => router.push('/mypage')} />
+              <CgProfile onClick={() => router.push("/mypage")} />
             </IconWrapper>
           </>
         ) : (
           <>
-            <MenuItem onClick={() => router.push('/login')}>로그인</MenuItem>
-            <MenuItem onClick={() => router.push('/signup')}>회원가입</MenuItem>
+            <MenuItem onClick={() => router.push("/login")}>로그인</MenuItem>
+            <MenuItem onClick={() => router.push("/signup")}>회원가입</MenuItem>
           </>
         )}
       </Menu>
-      {showNotifications && <Notifications onClose={handleCloseNotifications} />}
-    </Nav> 
+      {showNotifications && (
+        <Notifications onClose={handleCloseNotifications} />
+      )}
+    </Nav>
   );
 };
 
@@ -79,13 +86,12 @@ const Nav = styled.nav`
 `;
 
 const Menu = styled.div`
-  font-size: 1.0rem;
+  font-size: 1rem;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 40px;
 `;
-
 
 const IconWrapper = styled.div`
   display: flex;
@@ -120,7 +126,11 @@ const Spinner = styled.div`
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;

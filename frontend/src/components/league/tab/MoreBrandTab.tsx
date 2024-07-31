@@ -24,7 +24,13 @@ export default function MoreBrandTab({
     <>
       <TabContent>
         <HeaderContainer>
-          <Title>{activeTabName}</Title>
+          <TitleContainer>
+            <Title>{activeTabName}</Title>
+            <Subtitle>
+              해당 브랜드의 차량을 소유하지 않은 사용자는 게시글을 볼 수
+              없습니다.
+            </Subtitle>
+          </TitleContainer>
           {activeTabType === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>
               더보기 {showMoreTabs ? "▲" : "▼"}
@@ -132,5 +138,13 @@ const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin: 5px 0;
+`;
+
+const TitleContainer = styled.div``;
+
+const Subtitle = styled.p`
+  color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 14px;
+  margin: 0;
   margin-bottom: 20px;
 `;
