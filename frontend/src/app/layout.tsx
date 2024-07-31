@@ -23,9 +23,7 @@ export default function RootLayout({
             <Layout>
               <Header />
               <PageTransition>
-                <Main>
-                {children}
-                </Main>
+                <Main>{children}</Main>
               </PageTransition>
               <Footer />
             </Layout>
@@ -45,25 +43,24 @@ const Layout = styled.div`
 const Main = styled.main`
   flex: 1;
   justify-content: center;
-  margin: 80px 20px;
-
+  margin: 100px 20px;
   /* 핸드폰 설정 */
   @media (min-width: 480px) {
-    margin: 80px 20px;
+    margin: 100px 20px;
   }
 
   /* 태블릿 크기 이상 설정 */
   @media (min-width: 768px) {
-    margin: 80px 60px;
+    margin: 100px 60px;
   }
 
   /* 데스크탑 크기 이상 설정 */
   @media (min-width: 1024px) {
-    margin: 80px 80px;
+    margin: 100px 80px;
   }
 
   /* 큰 데스크탑 크기 이상 설정 */
   @media (min-width: 1440px) {
-    margin: 80px 190px;
+    margin: 100px 190px;
   }
 `;
