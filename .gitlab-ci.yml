@@ -50,15 +50,11 @@ deploy:
     - apt-get update
     - apt-get install openssh-client -y
 
-    - echo "$SSH_HOST"
-    - echo "$SSH_KEY_PEM"
-
-    - echo "Deploying the project"  
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H ubuntu@$SSH_HOST >> ~/.ssh/known_hosts
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
   # - 'which ssh-agent || ( apt-get install -y openssh-client )'
   # - eval $(ssh-agent -s)
