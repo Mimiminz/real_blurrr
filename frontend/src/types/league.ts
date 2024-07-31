@@ -59,12 +59,7 @@ export interface UserTabProps {
 
 export interface Comment {
   id: string;
-  member: {
-    id: string;
-    profileUrl: string;
-    nickname: string;
-    carTitle: string;
-  };
+  member: Member;
   content: string;
   createdAt: string;
   status: string;

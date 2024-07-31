@@ -53,14 +53,15 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        const [leagues, boardData] = await Promise.all([
-          fetchBrandLeagues(),
-          fetchLeagueBoardList(leagueId, criteria),
-        ]);
+        const leagues = await fetchBrandLeagues();
         setMoreTabs(leagues);
-        setBoardList(boardData);
+
+        if (!leagueId.includes("mention")) {
+          const boardData = await fetchLeagueBoardList(leagueId, criteria);
+          setBoardList(boardData);
+        }
       } catch (error) {
-        console.error("Failed to fetch brand leagues", error);
+        console.error("Failed to fetch brand leagues or board data", error);
       }
     };
 
@@ -103,6 +104,10 @@ export default function LeaguePage({
   // };
 
   const handleSearch = async (keyword: string) => {
+    if (!keyword.trim()) {
+      setIsSearching(false);
+      return;
+    }
     setIsSearching(true);
     try {
       const results = await fetchBoardSearch(leagueId, keyword);
@@ -134,10 +139,7 @@ export default function LeaguePage({
       {leagueId.includes("mention") ? (
         <h1>채널 게시글</h1>
       ) : isSearching ? (
-        <>
-          <SearchResult onClick={handleSearchBack}> 검색 취소 </SearchResult>
-          <LeagueBoardList leagueId={leagueId} boardList={searchResults} />
-        </>
+        <LeagueBoardList leagueId={leagueId} boardList={searchResults} />
       ) : (
         <LeagueBoardList leagueId={leagueId} boardList={boardList} />
       )}
