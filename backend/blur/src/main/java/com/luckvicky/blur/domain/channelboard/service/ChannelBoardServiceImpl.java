@@ -7,8 +7,9 @@ import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channelboard.mapper.ChannelBoardMapper;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoardMention;
@@ -75,18 +76,19 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
 
     @Override
     @Transactional(readOnly = true)
-    public BoardDetailDto getBoardDetail(UUID boardId) {
+    public ChannelBoardDetailDto getBoardDetail(UUID boardId) {
 
-        Board board = boardRepository.findByIdWithCommentAndReply(boardId)
+        ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
+
+       List<ChannelBoardMention> mentionedLeagues = channelBoardMentionRepository.findByChannelBoard(board);
 
         List<CommentDto> comments = board.getComments().stream()
                 .filter(comment -> comment.getType().equals(CommentType.COMMENT))
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
-        return BoardDetailDto.of(board, comments);
-
+        return ChannelBoardDetailDto.of(board, ChannelBoardMentionDto.of(mentionedLeagues), comments);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     }
 
     @Override
-    public ChannelBoardDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId) {
+    public ChannelBoardDetailDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId) {
         Channel channel = channelRepository.getOrThrow(channelId);
 
         Member member = memberRepository.getOrThrow(memberId);
