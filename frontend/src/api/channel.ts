@@ -1,7 +1,7 @@
 import api from '@/api/index'; 
-import { Channels, DashCams, DashCamDetail, PostData } from '@/types/channelType';
+import { Channels, DashCams, DashCamDetail, PostData, PostDetail } from '@/types/channelType';
 
-// 전체 채날 목록 데이터를 가져오는 함수
+// 전체 채널 목록 데이터를 가져오는 함수
 export const fetchChannels = async (): Promise<Channels[]> => {
   try {
     const response = await api.get('/v1/channels');
@@ -34,7 +34,7 @@ export const fetchCreatedChannels = async (): Promise<Channels[]> => {
   }
 };
 
-// 채널 게시글 데이터를 가져오는 함수
+// 채널 게시글 목록 데이터를 가져오는 함수
 export const fetchPosts = async (channelId: string, pageNumber: number, criteria: string): Promise<PostData[]> => {
   try {
     const response = await api.get(`/v1/channels/${channelId}/boards`, {
@@ -49,6 +49,35 @@ export const fetchPosts = async (channelId: string, pageNumber: number, criteria
     throw error;
   }
 };
+
+// 채널 게시글 상세 정보를 가져오는 함수
+export const fetchChannelPostDetail = async (
+  boardId: string,
+  channelId: string
+): Promise<PostDetail> => {
+  try {
+    const response = await api.get(`/v1/channels/${channelId}/boards/${boardId}`);
+    console.log(response.data.data)
+    return response.data.data.channelBoard;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// 채널 게시글 검색 함수
+// export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
+//   try {
+//     const response = await api.get(`/v1/leagues/${leagueId}/boards/search`, {
+//       params: { keyword },
+//     });
+
+//     console.log(response.data.data);
+//     return response.data.data.boards;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 // 블랙박스 목록 데이터를 가져오는 함수
 export const fetchDashCams = async (pageNumber: number, criteria: string): Promise<DashCams[]> => {

@@ -1,52 +1,52 @@
 import React from "react";
 import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
+import { WiTime4 } from "react-icons/wi";
+import { Mentioned, PostMember } from "@/types/channelType";
 
 interface BoardDetailTitleProps {
   title: string;
-  date: string;
-  views: number;
-  likes: number;
-  username: string;
-  authorCarInfo: string;
-  avatarUrl: string;
-  tags: string[]; // 태그들을 나타내기 위한 새로운 속성
+  createdAt: string;
+  viewCount: number;
+  likeCount: number;
+  member: PostMember;
+  tags: Mentioned[]; // 태그들을 나타내기 위한 새로운 속성
 }
 
 const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
   title,
-  date,
-  views,
-  likes,
-  username,
-  authorCarInfo,
-  avatarUrl,
+  createdAt,
+  viewCount,
+  likeCount,
+  member,
   tags,
 }) => {
+
   return (
     <Container>
       <Title>{title}</Title>
       <Tags>
         {tags.map((tag, index) => (
-          <Tag key={index}>@{tag}</Tag>
+          <Tag key={index}>@{tag.name}</Tag>
         ))}
       </Tags>
       <InfoRow>
         <InfoLeft>
-          <Date>{date}</Date>
           <Icons>
+            <WiTime4 />
+            <Date>{createdAt}</Date>
             <FaEye />
-            <Views>{views}</Views>
+            <Views>{viewCount}</Views>
             <FaHeart />
-            <Likes>{likes}</Likes>
+            <Likes>{likeCount}</Likes>
           </Icons>
         </InfoLeft>
         <AuthorInfo>
           <Author>
-            <Avatar src={avatarUrl} alt={`${username}'s avatar`} />
-            <Username>{username}</Username>
+            <Avatar src={member.profileUrl} alt={`${member.nickname}'s avatar`} />
+            <Username>{member.nickname}</Username>
           </Author>
-          <CarInfo>{authorCarInfo}</CarInfo>
+          <CarInfo>{member.carTitle}</CarInfo>
         </AuthorInfo>
       </InfoRow>
     </Container>
@@ -87,17 +87,17 @@ const InfoRow = styled.div`
   font-size: 14px;
 `;
 
-const Date = styled.span`
-  margin-right: 15px;
-`;
-
 const Icons = styled.div`
   display: flex;
   align-items: center;
-
+  
   svg {
     margin-right: 5px;
   }
+  `;
+
+const Date = styled.span`
+  margin-right: 16px;
 `;
 
 const Views = styled.span`

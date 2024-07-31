@@ -11,7 +11,7 @@ import Vote from '@/components/channel/dashcam/detail/Vote';
 import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaRegEye } from "react-icons/fa";
 import { fetchDashCamDetail } from '@/api/channel';
-import { DashCamDetail, DashCamContentData } from '@/types/channelType';
+import { DashCamDetail, CommentStatus } from '@/types/channelType';
 
 const Container = styled.div`
   padding-top: 20px;
@@ -94,6 +94,14 @@ const StatGroup = styled.div`
   }
 `;
 
+const StyleCreateComment = styled.div`
+  margin: 16px 0px;
+`;
+
+const CommentWrapper = styled.div`
+  width: 100%;
+`;
+
 const Page = () => {
    const pathname = usePathname();
    const dashcamId = pathname.split('/').pop();
@@ -148,19 +156,40 @@ const Page = () => {
                            </StatItem>
                         </StatGroup>
                      </StatsContainer>
-                     <CreateComment />
-                     <CommentContainer>
-                        {dashCamDetail.comments.map((comment) => (
-                           <Comment
-                              key={comment.id}
-                              avatarUrl={comment.member.profileUrl}
-                              userName={comment.member.nickname}
-                              userDetail={comment.member.carTitle}
-                              text={comment.content}
-                              time={comment.createdAt}
-                           />
-                        ))}
-                     </CommentContainer>
+                     <StyleCreateComment>
+                        <CreateComment boardId={dashCamDetail.id} isReply={false} commentId="" />
+                     </StyleCreateComment>
+                     {dashCamDetail.comments.map((comment) => (
+                        <React.Fragment key={comment.id}>
+                           {comment.status === CommentStatus.ACTIVE ? (
+                              <CommentWrapper>
+                                 <Comment
+                                    id={comment.id}
+                                    boardId={dashCamDetail.id}
+                                    avatarUrl={comment.member.profileUrl}
+                                    userName={comment.member.nickname}
+                                    userDetail={comment.member.carTitle}
+                                    text={comment.content}
+                                    time={comment.createdAt}
+                                 />
+                              </CommentWrapper>
+                           ) : (
+                              "없는 댓글"
+                           )}
+                           {comment.replies.length > 0 && (
+                              comment.replies.map((reply) => (
+                                 <Reply
+                                    key={reply.id}
+                                    avatarUrl={reply.member.profileUrl}
+                                    userName={reply.member.nickname}
+                                    userDetail={reply.member.carTitle}
+                                    text={reply.content}
+                                    time={reply.createdAt}
+                                 />
+                              ))
+                           )}
+                        </React.Fragment>
+                     ))}
                   </CommentsSection>
                   <VoteSection>
                      <Vote options={dashCamDetail.options} />
