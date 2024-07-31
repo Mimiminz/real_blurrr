@@ -14,6 +14,7 @@ import { BoardDetail, Comment as CommentProp } from "@/types/league";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useLeagueStore } from "@/store/leagueStore";
 
 const initialBoardDetail: BoardDetail = {
   title: "",
@@ -40,6 +41,7 @@ export default function BoardDetailPage({
   const boardId = params.boardId;
 
   const router = useRouter();
+  const { activeTabName } = useLeagueStore();
 
   const [BoardDetail, setBoardDetail] =
     useState<BoardDetail>(initialBoardDetail);
@@ -74,7 +76,7 @@ export default function BoardDetailPage({
       <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
-          subChannel="GV70 리그"
+          subChannel={activeTabName}
           channelUrl={`/league/${leagueId}`}
         />
       </BreadcrumbContainer>

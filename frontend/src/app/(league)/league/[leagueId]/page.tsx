@@ -31,16 +31,22 @@ export default function LeaguePage({
   const leagueId = params.leagueId;
 
   const { isLoggedIn } = useAuthStore((state) => state);
-  const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
-    useLeagueStore();
+  const {
+    brandLeagueList,
+    setBrandLeagueTab,
+    userLeagueList,
+    setUserLeagueList,
+    mentionTabs,
+    setMentionTabs,
+    initialized,
+    setInitialized,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
+    activeTabName,
+    setActiveTabName,
+  } = useLeagueStore();
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
-
-  const [tabs, setTabs] = useState<LeagueList[]>([]);
-  const [mentionTabs, setMentionTabs] = useState<LeagueList[]>([]);
-
-  // 더보기 안에 있는 요소들
-  // const [moreTabs, setMoreTabs] = useState<LeagueList[]>([]);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -52,7 +58,7 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        if (isLoggedIn) {
+        if (isLoggedIn && !isLoadUserLeagues) {
           const userLeagues: UserLeague[] = await fetchUserLeagueList();
           const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
             id: userLeague.league.id,
@@ -60,7 +66,7 @@ export default function LeaguePage({
             type: userLeague.league.type,
             peopleCount: userLeague.league.peopleCount,
           }));
-          setTabs(userTabs);
+          setUserLeagueList(userTabs);
           const userMentionTabs: LeagueList[] = userLeagues.map(
             (userLeague) => ({
               id: `mention${userLeague.league.id}`,
@@ -70,6 +76,7 @@ export default function LeaguePage({
             })
           );
           setMentionTabs(userMentionTabs);
+          setIsLoadUserLeagues(true);
         }
 
         if (!initialized) {
@@ -102,18 +109,26 @@ export default function LeaguePage({
     setBrandLeagueTab,
     initialized,
     setInitialized,
+    setUserLeagueList,
+    setMentionTabs,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
   ]);
 
-  let activeTabName = `${
-    brandLeagueList.find((t) => t.id === leagueId)?.name ||
-    tabs.find((t) => t.id === leagueId)?.name
-  } 리그`;
-
-  if (activeTabName == `${undefined} 리그`) {
-    activeTabName = `채널에서 ${
-      tabs.find((t) => t.id === leagueId.slice(7))?.name
-    }가 멘션된 글`;
-  }
+  useEffect(() => {
+    console.log(userLeagueList);
+    let name = `${
+      brandLeagueList.find((t) => t.id === leagueId)?.name ||
+      userLeagueList.find((t) => t.id === leagueId)?.name
+    } 리그`;
+    if (name == `${undefined} 리그`) {
+      name = `채널에서 ${
+        userLeagueList.find((t) => t.id === leagueId.slice(7))?.name
+      }가 멘션된 글`;
+    }
+    console.log(name);
+    setActiveTabName(name);
+  }, [brandLeagueList, userLeagueList, leagueId, setActiveTabName]);
 
   const handleCriteriaChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -125,7 +140,7 @@ export default function LeaguePage({
     router.push(`/league/${leagueId}/write`);
   };
 
-  const isLeagueIdInTabs = tabs.some((tab) => tab.id === leagueId);
+  const isLeagueIdInTabs = userLeagueList.some((tab) => tab.id === leagueId);
 
   const handleSearch = async (keyword: string) => {
     if (!keyword.trim()) {
@@ -144,10 +159,10 @@ export default function LeaguePage({
   return (
     <Container>
       <TopComponent>
-        {isLoggedIn && tabs.length > 0 ? (
+        {isLoggedIn && userLeagueList.length > 0 ? (
           <UserTab
             activeTabId={leagueId}
-            tabs={tabs}
+            tabs={userLeagueList}
             mentionTabs={mentionTabs}
           />
         ) : (
