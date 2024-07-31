@@ -4,6 +4,8 @@ stages:
 build:
   stage: build
   only:
-    - cicd-test
+    - cicd-test  # 실제 브랜치 이름으로 변경
   before_script:
-    - echo 'build starts'
+    - echo 'Build starts successfully!'
+  script:
+    - echo 'build start!'
