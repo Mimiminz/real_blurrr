@@ -11,9 +11,9 @@ import { LiaCommentDots } from "react-icons/lia";
 import { useEffect, useState } from "react";
 
 import { BoardDetail, Comment as CommentProp } from "@/types/league";
-import { fetchLeagueDetail } from "@/api/league";
-import { fetchCommentDelete } from "@/api/comment";
+import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const initialBoardDetail: BoardDetail = {
   title: "",
@@ -39,6 +39,8 @@ export default function BoardDetailPage({
   const leagueId = params.leagueId;
   const boardId = params.boardId;
 
+  const router = useRouter();
+
   const [BoardDetail, setBoardDetail] =
     useState<BoardDetail>(initialBoardDetail);
 
@@ -53,6 +55,19 @@ export default function BoardDetailPage({
     };
     loadBoardDetail();
   }, [boardId]);
+
+  const handleDelete = async () => {
+    try {
+      await fetchBoardDelete(boardId);
+      const isDelete = confirm("정말 삭제하실건가요?");
+      if (!isDelete) {
+        return;
+      }
+      router.push(`/league/${leagueId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -78,8 +93,7 @@ export default function BoardDetailPage({
       <CommentContainer>
         <CommentNumber>
           <WriterContainer>
-            <WriterButton>수정</WriterButton>
-            <WriterButton>삭제</WriterButton>
+            <WriterButton onClick={handleDelete}>삭제</WriterButton>
           </WriterContainer>
           <LiaCommentDots />
           {BoardDetail.commentCount}

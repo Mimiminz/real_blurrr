@@ -78,3 +78,13 @@ export const fetchBoardWrite = async (
     throw error;
   }
 };
+
+// 리그 게시글 삭제
+export const fetchBoardDelete = async (boardId: string) => {
+  try {
+    const response = await api.delete(`/v1/boards/${boardId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
