@@ -9,9 +9,6 @@ variables:
   DEPLOY_SERVER: "ubuntu@$SSH_HOST"
   DEPLOY_PATH: "/home/ubuntu/app"
   SPRING_PROFILE: "dev"
-  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk"
-  GRADLE_HOME: "/opt/gradle"
-  PATH: "$JAVA_HOME/bin:$GRADLE_HOME/bin:$PATH"
 
 init:
   stage: init
