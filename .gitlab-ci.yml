@@ -7,18 +7,18 @@ build:
     - cicd-test
   before_script:
     - echo 'build starts'
-    - chmod +x ./backend/blur/gradlew
+    # - chmod +x ./backend/blur/gradlew
     # - cp $CI_PROJECT_DIR/.secure_files/application.yml ./backend/blur/src/main/resources/application.yml
     # - cp $CI_PROJECT_DIR/.secure_files/application-dev.yml ./backend/blur/src/main/resources/application-dev.yml
     # - cp $CI_PROJECT_DIR/.secure_files/application-jwt.yml ./backend/blur/src/main/resources/application-jwt.yml
     # - cp $CI_PROJECT_DIR/.secure_files/application-email.yml ./backend/blur/src/main/resources/application-email.yml
     # - cp $CI_PROJECT_DIR/.secure_files/application-aws.yml ./backend/blur/src/main/resources/application-aws.yml
 
-  script:
-    - ./backend/blur/gradlew clean build
-  artifacts:
-    paths:
-      - ./backend/blur/build/libs/*.jar
-    expire_in: 1 week 
+  # script:
+  #   - ./backend/blur/gradlew clean build
+  # artifacts:
+  #   paths:
+  #     - ./backend/blur/build/libs/*.jar
+  #   expire_in: 1 week 
   tags:
     - test-deploy
