@@ -80,7 +80,6 @@ export default function LeagueMainPage() {
     setIsLoadUserLeagues,
   ]);
 
-  console.log(isLoadUserLeagues);
 
   return (
     <>
