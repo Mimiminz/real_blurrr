@@ -1,4 +1,4 @@
-package com.luckvicky.blur.domain.dashcamboard.model.entity;
+package com.luckvicky.blur.domain.dashcam.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -3,10 +3,10 @@ package com.luckvicky.blur.domain.channelboard.mapper;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
-import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoardMention;
-import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardMentionRepository;
+import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
+import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChannelBoardMapper {
 
-    private final ChannelBoardMentionRepository channelBoardMentionRepository;
+    private final MentionRepository mentionRepository;
 
-    public ChannelBoardListDto toChannelBoardListDto(ChannelBoard channelBoard, List<ChannelBoardMention> mentions) {
+    public ChannelBoardListDto toChannelBoardListDto(ChannelBoard channelBoard, List<Mention> mentions) {
         BoardDto boardDto = toBoardDto(channelBoard);
-        List<ChannelBoardMentionDto> mentionDtos = toChannelBoardMentionDtoList(mentions);
+        List<MentionDto> mentionDtos = toChannelBoardMentionDtoList(mentions);
 
         return ChannelBoardListDto.of(boardDto, mentionDtos);
     }
@@ -38,13 +38,13 @@ public class ChannelBoardMapper {
                 .build();
     }
 
-    private List<ChannelBoardMentionDto> toChannelBoardMentionDtoList(List<ChannelBoardMention> mentions) {
+    private List<MentionDto> toChannelBoardMentionDtoList(List<Mention> mentions) {
         return mentions.stream()
-                .map(ChannelBoardMentionDto::of)
+                .map(MentionDto::of)
                 .collect(Collectors.toList());
     }
 
-    public List<ChannelBoardListDto> toChannelBoardListDtoList(List<ChannelBoard> channelBoards, List<List<ChannelBoardMention>> mentionsList) {
+    public List<ChannelBoardListDto> toChannelBoardListDtoList(List<ChannelBoard> channelBoards, List<List<Mention>> mentionsList) {
         return channelBoards.stream()
                 .map(channelBoard -> {
                     int index = channelBoards.indexOf(channelBoard);
@@ -55,8 +55,8 @@ public class ChannelBoardMapper {
 
     public ChannelBoardDetailDto toChannelBoardDto(ChannelBoard channelBoard) {
         BoardDto boardDto = toBoardDto(channelBoard);
-        List<ChannelBoardMentionDto> mentionedLeagues = channelBoardMentionRepository.findByChannelBoard(channelBoard).stream()
-                .map(ChannelBoardMentionDto::of)
+        List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(channelBoard).stream()
+                .map(MentionDto::of)
                 .collect(Collectors.toList());
 
         return ChannelBoardDetailDto.builder()

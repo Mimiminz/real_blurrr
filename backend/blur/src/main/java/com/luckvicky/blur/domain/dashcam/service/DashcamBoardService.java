@@ -1,9 +1,9 @@
-package com.luckvicky.blur.domain.dashcamboard.service;
+package com.luckvicky.blur.domain.dashcam.service;
 
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
 
 import java.util.List;
 import java.util.UUID;

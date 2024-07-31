@@ -1,6 +1,6 @@
-package com.luckvicky.blur.domain.dashcamboard.model.dto.response;
+package com.luckvicky.blur.domain.dashcam.model.dto.response;
 
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
