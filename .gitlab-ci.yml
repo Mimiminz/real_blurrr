@@ -1,11 +1,24 @@
 stages:
-  - deploy
+  - build
 
-deploy: # 임의로 지정한 JOB 이름
-  stage: deploy # build, test, deploy 3단계 스테이지 중 하나
+build:
+  stage: build
   only:
-    - cicd-test # develop 브랜치 이벤트 발생시 실행
+    - cicd-test
+  before_script:
+    - echo 'build starts'
+    - chmod +x ./backend/blur/gradlew
+    - cp $SECURE_FILES/application.yml ./backend/blur/src/main/resources/application.yml
+    - cp $SECURE_FILES/application-jwt.yml ./backend/blur/src/main/resources/application-jwt.yml
+    - cp $SECURE_FILES/application-dev.yml ./backend/blur/src/main/resources/application-dev.yml
+    - cp $SECURE_FILES/application-email.yml ./backend/blur/src/main/resources/application-email.yml
+    - cp $SECURE_FILES/application-aws.yml ./backend/blur/src/main/resources/application-aws.yml
+
   script:
-    - echo "Hello World" # 실행할 스크립트
+    - ./backend/blur/gradlew clean build
+  artifacts:
+    paths:
+      - ./backend/blur/build/libs/*.jar
+    expire_in: 1 week 
   tags:
-    - test-deploy # build-server 태그가 달린 runner에서 실행
+    - test-deploy
