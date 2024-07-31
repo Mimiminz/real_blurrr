@@ -45,11 +45,12 @@ const RightColumn = styled.div`
 `;
 
 const Section = styled.div`
-  background-color: #fff;
+  background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 30px 16px;
   box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const CommentsSection = styled(Section)`
@@ -58,7 +59,13 @@ const CommentsSection = styled(Section)`
   margin-bottom: 16px;
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 `;
-const VoteSection = styled(Section)``;
+const VoteSection = styled.div`
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
 
 const CommentContainer = styled.div`
   margin: 16px 10px;
@@ -108,20 +115,17 @@ const Page = () => {
 
    const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
 
-   useEffect(() => {
-      const loadDetail = async () => {
-         try {
-            const data = await fetchDashCamDetail(dashcamId as string); // API 호출
-            setDashCamDetail(data);
-         } catch (error) {
-            console.error('Failed to load dash cam detail:', error);
-         }
-      };
-
-      if (dashcamId) {
-         loadDetail();
+   const loadDetail = async () => {
+      try {
+         const data = await fetchDashCamDetail(dashcamId as string); // API 호출
+         setDashCamDetail(data);
+      } catch (error) {
+         console.error('Failed to load dash cam detail:', error);
       }
-   }, [dashcamId]);
+   };
+   useEffect(() => {
+      loadDetail();
+   });
 
    if (!dashCamDetail) {
       return <div>Loading...</div>;
@@ -157,7 +161,7 @@ const Page = () => {
                         </StatGroup>
                      </StatsContainer>
                      <StyleCreateComment>
-                        <CreateComment boardId={dashCamDetail.id} isReply={false} commentId="" />
+                        <CreateComment boardId={dashCamDetail.id} isReply={false} commentId="" onCommentAdded={loadDetail} />
                      </StyleCreateComment>
                      {dashCamDetail.comments.map((comment) => (
                         <React.Fragment key={comment.id}>
@@ -171,6 +175,7 @@ const Page = () => {
                                     userDetail={comment.member.carTitle}
                                     text={comment.content}
                                     time={comment.createdAt}
+                                    onCommentAdded={loadDetail}
                                  />
                               </CommentWrapper>
                            ) : (
