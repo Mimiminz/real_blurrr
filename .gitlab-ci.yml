@@ -22,6 +22,12 @@ build:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
+   - echo "$APPLICATION_YML" > src/main/resources/application.yml
+   - echo "$APPLICATION_MAIL_YML" > src/main/resources/application-mail.yml
+   - echo "$APPLICATION_JWT_YML" > src/main/resources/application-jwt.yml
+   - echo "$APPLICATION_DEV_YML" > src/main/resources/application-dev.yml
+   - echo "$APPLICATION_AWS_YML" > src/main/resources/application-aws.yml
+
   script:
     - echo 'build'
     - cd backend/blur
