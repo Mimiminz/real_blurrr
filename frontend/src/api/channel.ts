@@ -43,7 +43,6 @@ export const fetchPosts = async (channelId: string, pageNumber: number, criteria
         criteria,   // 정렬 기준
       },
     });
-    console.log(response.data);
     return response.data.data.boards;
   } catch (error) {
     console.error('Error fetching channel post list:', error);

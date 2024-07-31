@@ -3,19 +3,38 @@ import styled from 'styled-components';
 import { FaRegHeart } from 'react-icons/fa6';
 import { LiaCommentDots } from 'react-icons/lia';
 import { MdAccessTime } from 'react-icons/md';
-import { Posts } from '@/types/channelType';
+import { Mentioned, Posts } from '@/types/channelType';
 
 interface ChannelBoardListItemProps {
   post: Posts;
+  mentions: Mentioned[];
+  onClick: () => void;
 }
 
-function ChannelBoardListItem({ post }: ChannelBoardListItemProps) { // post를 props로 사용
+function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemProps) { // post를 props로 사용
+
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      // If the date is today, return only the time
+      return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else {
+      // If not today, return the date
+      return postDate.toISOString().split('T')[0].replace(/-/g, '.');
+    }
+  };
+
+  const mentionArray = mentions.map((mention, index) => (
+    <Channel key={index}>{mention.name}</Channel>
+  ));
 
   return (
-    <ArticleDetail>
+    <ArticleDetail onClick={onClick}>
       <ArticleInfo>
         <ChannelContainer>
-          <span>대체 이게 뭔데</span>
+          {mentionArray}
         </ChannelContainer>
         <Title>{post.title}</Title>
         <UserContainer>
@@ -29,7 +48,7 @@ function ChannelBoardListItem({ post }: ChannelBoardListItemProps) { // post를 
           <Icon>
             <MdAccessTime />
           </Icon>
-          {post.createdAt}
+          {formatPostDate(post.createdAt)}
         </LikeSection>
         <LikeSection>
           <Icon>

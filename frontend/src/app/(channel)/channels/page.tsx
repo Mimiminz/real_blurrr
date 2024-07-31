@@ -112,7 +112,10 @@ const ChannelPage: React.FC = () => {
 
   const handleCreateChannel = () => {
     router.push('/channels/dashcam')
-    // 채널 생성 로직 추가
+  };
+
+  const handleChannelClick = (channelId: string) => {
+    router.push(`/channels/${channelId}`)
   };
 
   return (
@@ -150,7 +153,7 @@ const ChannelPage: React.FC = () => {
       <PageContainer>
         <GridContainer>
           {Channels.map((channel) => (
-            <div key={channel.id} onClick={() => console.log("item pressed")}>
+            <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
               <ChannelCard
                 name={channel.name}
                 followCount={channel.followCount}
