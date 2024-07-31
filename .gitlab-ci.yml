@@ -30,8 +30,8 @@ build:
       - target/*.jar
   tags:
     - docker
-  only:
-    - dev
+  # only:
+    # - dev
 
 deploy:
   stage: deploy
@@ -41,7 +41,7 @@ deploy:
     - ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && ./deploy.sh"
   environment:
     name: dev
-  only:
-    - dev
+  # only:
+  #   - dev
   tags:
     - docker
