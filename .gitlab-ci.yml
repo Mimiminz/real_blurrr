@@ -44,7 +44,9 @@ build:
     
   artifacts:
     paths:
-      - /backend/blur/build/libs/*.jar
+      - backend/blur/build/libs/*.jar
+    expire_in: 1 week
+    
   tags:
     - blurrr-deploy
   # only:
