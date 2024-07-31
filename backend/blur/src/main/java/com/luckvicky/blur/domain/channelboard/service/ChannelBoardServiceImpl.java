@@ -1,6 +1,10 @@
 package com.luckvicky.blur.domain.channelboard.service;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
+<<<<<<< HEAD
+=======
+import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
+>>>>>>> 9eb5c920 (refact : BoardDto 필드 변경 (#35))
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
@@ -80,17 +84,22 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
     @Transactional(readOnly = true)
     public ChannelBoardDetailDto getBoardDetail(UUID boardId) {
 
+
         ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
 
        List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
+
 
         List<CommentDto> comments = board.getComments().stream()
                 .filter(comment -> comment.getType().equals(CommentType.COMMENT))
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
+
         return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), comments);
+
+
     }
 
     @Override
