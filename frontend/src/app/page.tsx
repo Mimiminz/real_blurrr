@@ -15,8 +15,30 @@ import LeagueRanking from "@/components/main/aside/LeageRanking";
 import UserCarInfo from "@/components/main/user/UserCarInfo";
 import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
 
+import { useLeagueStore } from "@/store/leagueStore";
+import { useEffect } from "react";
+import { fetchBrandLeagues } from "@/api/league";
+
 export default function Home() {
   const router = useRouter();
+  const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
+    useLeagueStore();
+
+  useEffect(() => {
+    const initailizeTabs = async () => {
+      if (!initialized) {
+        try {
+          const leagues = await fetchBrandLeagues();
+          setBrandLeagueTab(leagues);
+          setInitialized(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    initailizeTabs();
+  }, [initialized, setBrandLeagueTab, setInitialized]);
   const handleMoreClickLeage = () => {
     router.push("/league");
   };

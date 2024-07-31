@@ -1,10 +1,29 @@
 import api from "./index";
-import { LeagueList, LeagueBoardItem, BoardDetail } from "@/types/league";
+import {
+  LeagueList,
+  LeagueBoardItem,
+  BoardDetail,
+  UserLeague,
+} from "@/types/league";
+
+// 사용자 리그 가져오는 함수
+export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
+  try {
+    const response = await api.get(`/v1/leagues/members`);
+    if (!response.data.data) {
+      return [];
+    }
+    return response.data.data.leagueMembers;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // 리그 목록을 가져오는 함수
 export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
   try {
     const response = await api.get(`/v1/leagues/brands`);
+    console.log("api 호출");
     return response.data.data.leagues;
   } catch (error) {
     console.error("Failed to fetch league list", error);

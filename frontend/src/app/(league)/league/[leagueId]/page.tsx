@@ -9,7 +9,9 @@ import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 import { useAuthStore } from "@/store/authStore";
 
-import { LeagueBoardItem, LeagueList, Tab } from "@/types/league";
+import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/league";
+
+import { useLeagueStore } from "@/store/leagueStore";
 
 // API
 import dummy from "@/db/mainPageData.json";
@@ -17,19 +19,8 @@ import {
   fetchBrandLeagues,
   fetchBoardSearch,
   fetchLeagueBoardList,
+  fetchUserLeagueList,
 } from "@/api/league";
-
-const tabs = dummy.leagueMembers.map((league) => ({
-  id: league.id,
-  name: league.name,
-  type: league.type,
-}));
-
-const mentionTabs = dummy.leagueMembers.map((league) => ({
-  id: `mention${league.id}`,
-  name: league.name,
-  type: league.type,
-}));
 
 export default function LeaguePage({
   params,
@@ -40,11 +31,16 @@ export default function LeaguePage({
   const leagueId = params.leagueId;
 
   const { isLoggedIn } = useAuthStore((state) => state);
+  const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
+    useLeagueStore();
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
 
+  const [tabs, setTabs] = useState<LeagueList[]>([]);
+  const [mentionTabs, setMentionTabs] = useState<LeagueList[]>([]);
+
   // 더보기 안에 있는 요소들
-  const [moreTabs, setMoreTabs] = useState<Tab[]>([]);
+  // const [moreTabs, setMoreTabs] = useState<LeagueList[]>([]);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -56,8 +52,37 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        const leagues = await fetchBrandLeagues();
-        setMoreTabs(leagues);
+        if (isLoggedIn) {
+          const userLeagues: UserLeague[] = await fetchUserLeagueList();
+          const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+            id: userLeague.league.id,
+            name: userLeague.league.name,
+            type: userLeague.league.type,
+            peopleCount: userLeague.league.peopleCount,
+          }));
+          setTabs(userTabs);
+          const userMentionTabs: LeagueList[] = userLeagues.map(
+            (userLeague) => ({
+              id: `mention${userLeague.league.id}`,
+              name: userLeague.league.name,
+              type: userLeague.league.type,
+              peopleCount: userLeague.league.peopleCount,
+            })
+          );
+          setMentionTabs(userMentionTabs);
+        }
+
+        if (!initialized) {
+          try {
+            const leagues = await fetchBrandLeagues();
+            setBrandLeagueTab(leagues);
+            setInitialized(true);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        // const leagues = await fetchBrandLeagues();
+        // setMoreTabs(leagues);
 
         if (!leagueId.includes("mention")) {
           const boardData = await fetchLeagueBoardList(leagueId, criteria);
@@ -69,10 +94,18 @@ export default function LeaguePage({
     };
 
     loadLeagues();
-  }, [leagueId, criteria]);
+  }, [
+    leagueId,
+    criteria,
+    isLoggedIn,
+    brandLeagueList,
+    setBrandLeagueTab,
+    initialized,
+    setInitialized,
+  ]);
 
   let activeTabName = `${
-    moreTabs.find((t) => t.id === leagueId)?.name ||
+    brandLeagueList.find((t) => t.id === leagueId)?.name ||
     tabs.find((t) => t.id === leagueId)?.name
   } 리그`;
 
@@ -111,12 +144,20 @@ export default function LeaguePage({
   return (
     <Container>
       <TopComponent>
-        <UserTab activeTabId={leagueId} tabs={tabs} mentionTabs={mentionTabs} />
+        {isLoggedIn && tabs.length > 0 ? (
+          <UserTab
+            activeTabId={leagueId}
+            tabs={tabs}
+            mentionTabs={mentionTabs}
+          />
+        ) : (
+          <div />
+        )}
         <SearchBar onSearch={handleSearch} />
       </TopComponent>
       <MoreBrandTab
         activeTabId={leagueId}
-        moreTabs={moreTabs}
+        moreTabs={brandLeagueList}
         activeTabName={activeTabName}
       />
       <FilterSection>
@@ -208,7 +249,6 @@ const StyledButton = styled.button`
   }
 `;
 
-const SearchResult = styled.button`
-  cursor: pointer;
-  color: #333;
+const noTab = styled.div`
+  width: 100%;
 `;
