@@ -17,7 +17,6 @@ init:
     - apt-get update
     - echo "install java"
     - apt-get install openjdk-17-jdk -y
-    - echo "Setting up JAVA_HOME and PATH..."
     - java -version
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
@@ -30,13 +29,9 @@ init:
     - blurrr-deploy
 
 build:
-  variables:
-    JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
-    PATH: "$JAVA_HOME/bin:$PATH"
   stage: build
   before_script:
-    - echo "JAVA_HOME is set to $JAVA_HOME"
-    - echo "PATH is set to $PATH"
+    - echo "Setting up JAVA_HOME and PATH..."
     - echo 'build start'
     - cd backend/blur
     - chmod +x ./gradlew
