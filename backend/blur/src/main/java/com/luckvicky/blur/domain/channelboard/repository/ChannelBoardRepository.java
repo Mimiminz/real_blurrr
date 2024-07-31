@@ -29,7 +29,20 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
     Optional<ChannelBoard> findByIdWithCommentAndReply(UUID id);
 
     @EntityGraph(attributePaths = "member")
-    Page<ChannelBoard> findAllByChannelAndStatus(Channel channel, Pageable pageable, ActivateStatus status);
+    Page<ChannelBoard> findAllByChannelAndStatusAndTitleContainingOrContentContaining(
+            Channel channel,
+            ActivateStatus status,
+            String titleKeyword,
+            String contentKeyword,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = "member")
+    Page<ChannelBoard> findAllByChannelAndStatus(
+            Channel channel,
+            ActivateStatus status,
+            Pageable pageable
+    );
 
     Optional<ChannelBoard> findByIdAndChannel(UUID id, Channel channel);
 
