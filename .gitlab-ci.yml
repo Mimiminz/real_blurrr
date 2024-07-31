@@ -23,7 +23,7 @@ build:
   - echo "PATH is set to $PATH"
 
   # YML 파일 생성
-  - echo "$APPLICATION_YML" > bakcend/blur/src/main/resources/application.yml
+  - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
   - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
   - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
   - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
