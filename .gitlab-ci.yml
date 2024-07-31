@@ -43,7 +43,7 @@ build:
 
   artifacts:
     paths:
-      - build/libs/*.jar
+      - /backend/blur/build/libs/*.jar
   tags:
     - blurrr-deploy
   # only:
