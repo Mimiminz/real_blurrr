@@ -36,7 +36,7 @@ build:
   - readlink -f $(which java)
 
   # JAVA_HOME 환경 변수 설정
-  - export JAVA_HOME="$(readlink -f $(which java))"
+  - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
   - export PATH="$JAVA_HOME/bin:$PATH"
   
   # JAVA_HOME과 PATH 확인
@@ -46,10 +46,9 @@ build:
   # 빌드
   - echo 'build start'
   - cd backend/blur
-  - chmod +x ./gradlew
 
   script:
-    - ./gradlew --version
+    - chmod +x ./gradlew
     - ./gradlew clean build
   artifacts:
     paths:
