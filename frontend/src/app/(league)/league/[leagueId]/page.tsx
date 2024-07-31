@@ -116,7 +116,6 @@ export default function LeaguePage({
   ]);
 
   useEffect(() => {
-    console.log(userLeagueList);
     let name = `${
       brandLeagueList.find((t) => t.id === leagueId)?.name ||
       userLeagueList.find((t) => t.id === leagueId)?.name

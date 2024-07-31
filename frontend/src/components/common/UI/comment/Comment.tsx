@@ -37,6 +37,20 @@ const Comment: React.FC<CommentProps> = ({
     }
   };
 
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleDateString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
+
   const handleReplyToggle = () => {
     setShowReply(!showReply);
   };
@@ -47,20 +61,25 @@ const Comment: React.FC<CommentProps> = ({
       <Content>
         <UsernameWrapper>
           <Username>{userName}</Username>
-          <UserDetail>· {userDetail || "뚜벅이"}</UserDetail>
+          <UserDetail> · {userDetail || "뚜벅이"}</UserDetail>
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>
-          <Reply onClick={handleReplyToggle}>답글</Reply>
+          <Reply onClick={handleReplyToggle}>{showReply ? '닫기' : '답글'}</Reply>
           <Delete onClick={handleDelete}>삭제</Delete>
           <Time>
-            <WiTime4 style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-            {time.slice(0, 10)}
+            <WiTime4 style={{ marginRight: "4px", verticalAlign: "middle" }} />
+            {formatPostDate(time)}
           </Time>
         </ActionRow>
         {showReply && (
           <ReplyCreate>
-            <CreateComment boardId={boardId} isReply={true} commentId={id} onCommentAdded={onCommentAdded} />
+            <CreateComment
+              boardId={boardId}
+              isReply={true}
+              commentId={id}
+              onCommentAdded={onCommentAdded}
+            />
           </ReplyCreate>
         )}
       </Content>

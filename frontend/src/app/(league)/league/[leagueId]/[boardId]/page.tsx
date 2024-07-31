@@ -1,36 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
 import Comment from "@/components/common/UI/comment/Comment";
+import NoComment from "@/components/common/UI/comment/NoComment";
 import Reply from "@/components/common/UI/comment/Reply";
 import CreateComment from "@/components/common/UI/comment/CreateComment";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 import { Divider } from "@nextui-org/divider";
 import { LiaCommentDots } from "react-icons/lia";
-import { useEffect, useState } from "react";
 
 import { BoardDetail, Comment as CommentProp } from "@/types/league";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
-
-const initialBoardDetail: BoardDetail = {
-  title: "",
-  content: "",
-  createdAt: "",
-  viewCount: 0,
-  likeCount: 0,
-  commentCount: 0,
-  member: {
-    id: "",
-    profileUrl: "",
-    nickname: "",
-    carTitle: "",
-  },
-  comments: [],
-};
 
 export default function BoardDetailPage({
   params,
@@ -41,22 +26,59 @@ export default function BoardDetailPage({
   const boardId = params.boardId;
 
   const router = useRouter();
-  const { activeTabName } = useLeagueStore();
+  const { activeTabName, brandLeagueList, userLeagueList, setActiveTabName } =
+    useLeagueStore();
 
-  const [BoardDetail, setBoardDetail] =
-    useState<BoardDetail>(initialBoardDetail);
+  const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
+
+  const [isLiked, setIsLiked] = useState(false);
+
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
+  };
+
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleDateString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
+
+  const loadBoardDetail = async () => {
+    try {
+      const details = await fetchLeagueDetail(boardId);
+      setBoardDetail(details);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const loadBoardDetail = async () => {
-      try {
-        const details = await fetchLeagueDetail(boardId);
-        setBoardDetail(details);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     loadBoardDetail();
-  }, [boardId]);
+  });
+
+  useEffect(() => {
+    if (!activeTabName || activeTabName === `${undefined} 리그`) {
+      const name = `${
+        brandLeagueList.find((t) => t.id === leagueId)?.name ||
+        userLeagueList.find((t) => t.id === leagueId)?.name
+      } 리그`;
+      setActiveTabName(name);
+    }
+  }, [
+    activeTabName,
+    brandLeagueList,
+    userLeagueList,
+    leagueId,
+    setActiveTabName,
+  ]);
 
   const handleDelete = async () => {
     try {
@@ -71,6 +93,10 @@ export default function BoardDetailPage({
     }
   };
 
+  if (!boardDetail) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <BreadcrumbContainer>
@@ -81,16 +107,16 @@ export default function BoardDetailPage({
         />
       </BreadcrumbContainer>
       <LeagueDetailTitle
-        title={BoardDetail.title}
-        createdAt={BoardDetail.createdAt}
-        viewCount={BoardDetail.viewCount}
-        likeCount={BoardDetail.likeCount}
-        username={BoardDetail.member.nickname}
-        authorprofileUrl={BoardDetail.member.profileUrl}
-        authorCarTitle={BoardDetail.member.carTitle}
+        title={boardDetail.title}
+        createdAt={formatPostDate(boardDetail.createdAt)}
+        viewCount={boardDetail.viewCount}
+        likeCount={boardDetail.likeCount}
+        username={boardDetail.member.nickname}
+        authorprofileUrl={boardDetail.member.profileUrl}
+        authorCarTitle={boardDetail.member.carTitle}
       />
       <Divider />
-      <Content dangerouslySetInnerHTML={{ __html: BoardDetail.content }} />
+      <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
       <Divider />
       <CommentContainer>
         <CommentNumber>
@@ -98,10 +124,15 @@ export default function BoardDetailPage({
             <WriterButton onClick={handleDelete}>삭제</WriterButton>
           </WriterContainer>
           <LiaCommentDots />
-          {BoardDetail.commentCount}
+          {boardDetail.commentCount}
         </CommentNumber>
-        <CreateComment boardId={boardId} isReply={false} commentId="" />
-        {BoardDetail.comments.map((comment, index) => (
+        <CreateComment
+          boardId={boardId}
+          isReply={false}
+          commentId=""
+          onCommentAdded={loadBoardDetail}
+        />
+        {boardDetail.comments.map((comment, index) => (
           <React.Fragment key={comment.id}>
             {comment.status === "ACTIVE" ? (
               <CommentWrapper>
@@ -113,24 +144,31 @@ export default function BoardDetailPage({
                   userDetail={comment.member.carTitle}
                   text={comment.content}
                   time={comment.createdAt}
+                  onCommentAdded={loadBoardDetail}
                 />
               </CommentWrapper>
             ) : (
-              "없는 댓글"
+              <NoComment isReply={false} />
             )}
-            <>
-              {comment.replies.length > 0 &&
-                comment.replies.map((reply) => (
-                  <Reply
-                    key={reply.id}
-                    avatarUrl={reply.member.profileUrl}
-                    userName={reply.member.nickname}
-                    userDetail={reply.member.carTitle}
-                    text={reply.content}
-                    time={reply.createdAt}
-                  />
-                ))}
-            </>
+            {comment.replies.length > 0 &&
+              comment.replies.map((reply) => (
+                <React.Fragment key={reply.id}>
+                  {reply.status === "ACTIVE" ? (
+                    <Reply
+                      id={reply.id}
+                      boardId={boardId}
+                      avatarUrl={reply.member.profileUrl}
+                      userName={reply.member.nickname}
+                      userDetail={reply.member.carTitle}
+                      text={reply.content}
+                      time={reply.createdAt}
+                      onCommentAdded={loadBoardDetail}
+                    />
+                  ) : (
+                    <NoComment isReply={true} />
+                  )}
+                </React.Fragment>
+              ))}
           </React.Fragment>
         ))}
       </CommentContainer>
