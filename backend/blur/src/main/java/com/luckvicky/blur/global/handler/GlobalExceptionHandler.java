@@ -51,12 +51,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity handleRuntimeException(
-            RuntimeException e, WebRequest request
-    ) {
+    protected ResponseEntity handleRuntimeException(RuntimeException e) {
         e.printStackTrace();
-        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
