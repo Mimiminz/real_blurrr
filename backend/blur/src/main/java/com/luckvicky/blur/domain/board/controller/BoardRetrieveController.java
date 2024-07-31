@@ -4,7 +4,8 @@ import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
-import com.luckvicky.blur.domain.board.model.dto.HotMyCarDto;
+import com.luckvicky.blur.domain.board.model.dto.response.TodayMyCarResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
 import com.luckvicky.blur.domain.board.model.dto.response.BoardDetailResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.HotDashcamResponse;
@@ -13,7 +14,6 @@ import com.luckvicky.blur.domain.board.model.dto.response.MemberBoardListRespons
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
-import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.like.model.response.LikeBoardListResponse;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -287,14 +287,57 @@ public class BoardRetrieveController {
                     description = "조회 완료 (단, 데이터 없음)"
             )
     })
-    @GetMapping("/dachcams")
+    @GetMapping("/dashcam")
     public ResponseEntity getHotDashcamBoard() {
 
         List<HotDashcamDto> dashcamDtos = boardService.getHotDashcamBoard();
 
+        if (Objects.isNull(dashcamDtos) || dashcamDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
         return ResponseUtil.ok(
                 Result.builder()
                         .data(HotDashcamResponse.of(dashcamDtos))
+                        .build()
+        );
+
+    }
+
+    @NoAuthorization
+    @Operation(
+            summary = "오늘의차 조회 API",
+            description = "어제 차자랑 게시글 중 가장 좋아요가 높았던 1개 게시글을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료",
+                    content = @Content(schema = @Schema(implementation = TodayMyCarResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "조회 완료 (단, 데이터 없음)"
+            )
+    })
+    @GetMapping("/today/mycar")
+    public ResponseEntity geTodayMyCarBoard() {
+
+        MyCarDto todayMyCar = boardService.getTodayMyCarBoard();
+
+        if (Objects.isNull(todayMyCar)) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(TodayMyCarResponse.of(todayMyCar))
                         .build()
         );
 
@@ -319,11 +362,18 @@ public class BoardRetrieveController {
     @GetMapping("/mycar")
     public ResponseEntity getHotMyCarBoard() {
 
-        List<HotMyCarDto> dashcamDtos = boardService.getHotMyCarBoard();
+        List<MyCarDto> mycarDtos = boardService.getHotMyCarBoard();
+
+        if (Objects.isNull(mycarDtos) || mycarDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(HotMyCarResponse.of(dashcamDtos))
+                        .data(HotMyCarResponse.of(mycarDtos))
                         .build()
         );
 

@@ -4,7 +4,7 @@ import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
-import com.luckvicky.blur.domain.board.model.dto.HotMyCarDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import java.util.List;
@@ -30,6 +30,8 @@ public interface BoardService {
 
     List<HotDashcamDto> getHotDashcamBoard();
 
-    List<HotMyCarDto> getHotMyCarBoard();
+    List<MyCarDto> getHotMyCarBoard();
+
+    MyCarDto getTodayMyCarBoard();
 
 }
