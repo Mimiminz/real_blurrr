@@ -10,6 +10,7 @@ variables:
 
 before_script:
   - echo "Setting up environment"
+  - ls -al
   - apt-get update -y
   - apt-get install -y maven openjdk-17-jdk ssh
   - 'which ssh-agent || ( apt-get install -y openssh-client )'
