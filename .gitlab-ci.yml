@@ -27,6 +27,7 @@ build:
   stage: build
   before_script:
     - echo 'build start'
+    - cd backend/blur
     - chmod +x ./gradlew
   script:
     - ./gradlew clean build
