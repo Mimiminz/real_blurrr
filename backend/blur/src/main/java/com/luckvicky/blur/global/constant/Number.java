@@ -15,4 +15,6 @@ public class Number {
     public static int HOT_DASHCAM_BOARD_PAGE_SIZE = 5;
     public static int HOT_MYCAR_BOARD_PAGE_SIZE = 20;
 
+    public static int TODAY_MYCAR_BOARD_PAGE_SIZE = 20;
+
 }

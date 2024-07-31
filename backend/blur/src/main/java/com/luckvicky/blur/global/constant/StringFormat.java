@@ -46,9 +46,13 @@ public class StringFormat {
     // 일반 회원 허용 URI
     public static final String[] GENERAL_USER_URI = {
             "/v1/boards/hot",
+            "/v1/boards/mycar",
+            "/v1/boards/today/mycar",
+            "/v1/boards/dashcam",
             "/v1/leagues/ranking",
             "/v1/leagues/brands",
-            "/v1/leagues/brands/*/boards"
+            "/v1/leagues/brands/*/boards",
+            "/v1/leagues/*/boards/search"
     };
 
     // 차량 미인증 허용 URI
