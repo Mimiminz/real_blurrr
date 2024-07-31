@@ -5,8 +5,8 @@ import com.luckvicky.blur.domain.member.exception.ExpiredEmailAuthException;
 import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
-import com.luckvicky.blur.domain.member.factory.EmailAuthFactory;
-import com.luckvicky.blur.domain.member.factory.PasswordAuthFactory;
+import com.luckvicky.blur.domain.member.factory.EmailAuthStrategy;
+import com.luckvicky.blur.domain.member.factory.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
@@ -48,15 +48,15 @@ public class MemberServiceImpl implements MemberService {
     private final MailService mailService;
 
     private final ResourceUtil resourceUtil;
-    private final PasswordAuthFactory passwordAuthFactory;
-    private final EmailAuthFactory emailAuthFactory;
+    private final PasswordAuthStrategy passwordAuthFactory;
+    private final EmailAuthStrategy emailAuthFactory;
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
-                             PasswordAuthFactory passwordAuthFactory,
-                             EmailAuthFactory emailAuthFactory,
+                             PasswordAuthStrategy passwordAuthFactory,
+                             EmailAuthStrategy emailAuthFactory,
                              RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;

@@ -2,9 +2,8 @@ package com.luckvicky.blur.domain.member.factory;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Random;
 
-public interface AuthCodeFactory {
+public interface AuthCodeStrategy {
     default String saveAuthCode(String email) {
         String code = createCode();
 
