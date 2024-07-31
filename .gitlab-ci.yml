@@ -9,6 +9,9 @@ variables:
   DEPLOY_SERVER: "ubuntu@$SSH_HOST"
   DEPLOY_PATH: "/home/ubuntu/app"
   SPRING_PROFILE: "dev"
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk"
+  GRADLE_HOME: "/opt/gradle"
+  PATH: "$JAVA_HOME/bin:$GRADLE_HOME/bin:$PATH"
 
 init:
   stage: init
@@ -16,14 +19,14 @@ init:
     - echo "init start"
     - apt-get update
     - echo "install java"
-    - apt-get install openjdk-17-jdk -y
-    - JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java)))
+    - apt-get install -y wget unzip openjdk-17-jdk
     - echo "Setting up JAVA_HOME and PATH..."
-    - echo "export JAVA_HOME=$JAVA_HOME" >> ~/.bashrc
-    - source ~/.bashrc
     - java -version
     - echo "install gradle"
-    - apt-get install gradle -y
+    - GRADLE_LATEST_VERSION=$(curl -s https://services.gradle.org/versions/current | grep -oP '(?<="version": ")[^"]*'
+    - wget -q --show-progress -O gradle-${GRADLE_LATEST_VERSION}-bin.zip https://services.gradle.org/distributions/gradle-${GRADLE_LATEST_VERSION}-bin.zip
+    - unzip -d /opt/gradle gradle-${GRADLE_LATEST_VERSION}-bin.zip
+    - rm gradle-${GRADLE_LATEST_VERSION}-bin.zip
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
     # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
@@ -37,7 +40,6 @@ init:
 build:
   stage: build
   before_script:
-    - echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> ~/.bashrc
     - echo 'build start'
     - cd backend/blur
     - chmod +x ./gradlew
