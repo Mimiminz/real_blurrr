@@ -30,8 +30,13 @@ init:
     - blurrr-deploy
 
 build:
+  variables:
+    JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
+    PATH: "$JAVA_HOME/bin:$PATH"
   stage: build
   before_script:
+    - echo "JAVA_HOME is set to $JAVA_HOME"
+    - echo "PATH is set to $PATH"
     - echo 'build start'
     - cd backend/blur
     - chmod +x ./gradlew
