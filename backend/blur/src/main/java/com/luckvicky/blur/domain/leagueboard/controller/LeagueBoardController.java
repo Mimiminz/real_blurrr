@@ -216,6 +216,7 @@ public class LeagueBoardController {
 
     }
 
+    @NoAuthorization
     @Operation(
             summary = "특정 리그 게시글 검색 API",
             description = "특정 리그에 대한 게시물에 대하여 검색한다."
