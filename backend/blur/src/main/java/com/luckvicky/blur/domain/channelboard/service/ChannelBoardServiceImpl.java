@@ -28,11 +28,13 @@ import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import static com.luckvicky.blur.global.constant.Number.CHANNEL_BOARD_PAGE_SIZE;
 
 import java.util.List;
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ChannelBoardServiceImpl implements ChannelBoardService{
+public class ChannelBoardServiceImpl implements ChannelBoardService {
 
 
     private final ModelMapper mapper;
@@ -57,15 +59,35 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChannelBoardListDto> getChannelBoards(UUID channelId, int pageNumber, String criteria) {
+    public List<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria) {
         Channel channel = channelRepository.getOrThrow(channelId);
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
 
         Pageable pageable = PageRequest.of(
                 pageNumber, CHANNEL_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
+                Sort.by(Sort.Direction.DESC, sortingCriteria.getCriteria())
         );
 
-        List<ChannelBoard> channelBoards = channelBoardRepository.findAllByChannelAndStatus(channel, pageable, ActivateStatus.ACTIVE).getContent();
+
+        Page<ChannelBoard> channelBoardPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            channelBoardPage = channelBoardRepository.findAllByChannelAndStatus(
+                    channel,
+                    ActivateStatus.ACTIVE,
+                    pageable
+            );
+        } else {
+            channelBoardPage = channelBoardRepository.findAllByChannelAndStatusAndTitleContainingOrContentContaining(
+                    channel,
+                    ActivateStatus.ACTIVE,
+                    keyword,
+                    keyword,
+                    pageable
+            );
+        }
+
+        List<ChannelBoard> channelBoards = channelBoardPage.getContent();
 
         List<List<Mention>> mentionList = channelBoards.stream()
                 .map(mentionRepository::findAllByBoard)
@@ -84,7 +106,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
         ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
 
-       List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
+        List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
 
 
         List<CommentDto> comments = board.getComments().stream()
@@ -106,7 +128,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
 
         List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
 
-        return  comments.stream()
+        return comments.stream()
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
 
@@ -120,7 +142,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService{
         ChannelBoard channelBoard = channelBoardRepository.save(request.toEntity(channel, member));
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
 
-        if(mentionedLeagues.size() != request.mentionedLeagueNames().size()){
+        if (mentionedLeagues.size() != request.mentionedLeagueNames().size()) {
             throw new NotExistLeagueException();
         }
 
