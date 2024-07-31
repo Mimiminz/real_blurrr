@@ -108,7 +108,7 @@ export default function ChannelBoardDetailPage({
 
    useEffect(() => {
       loadBoardDetail();
-   }, [boardId, channelId]);
+   });
 
    if (!boardDetail) {
       return <div>Loading...</div>;
