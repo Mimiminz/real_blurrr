@@ -21,6 +21,7 @@ init:
     - echo "install java"
     - apt-get install openjdk-17-jdk -y
     - java -version
+    - which java
     
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
