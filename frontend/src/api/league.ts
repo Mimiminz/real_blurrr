@@ -23,7 +23,6 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
 export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
   try {
     const response = await api.get(`/v1/leagues/brands`);
-    console.log("api 호출");
     return response.data.data.leagues;
   } catch (error) {
     console.error("Failed to fetch league list", error);

@@ -6,6 +6,7 @@ import styled from "styled-components";
 import QuillEditor from "@/components/channel/board/QuillEditor";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
 import { fetchBoardWrite } from "@/api/league";
+import { useLeagueStore } from "@/store/leagueStore";
 
 export default function WritePage({
   params,
@@ -17,6 +18,7 @@ export default function WritePage({
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const { activeTabName } = useLeagueStore();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -39,7 +41,7 @@ export default function WritePage({
       <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
-          subChannel="GV70 리그"
+          subChannel={activeTabName}
           channelUrl={`/league/${leagueId}`}
         />
       </BreadcrumbContainer>
