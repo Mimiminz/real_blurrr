@@ -2,6 +2,8 @@ package com.luckvicky.blur.domain.board.service;
 
 import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.HOT_BOARD_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.HOT_DASHCAM_BOARD_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.HOT_MYCAR_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_BOARD;
@@ -14,6 +16,8 @@ import com.luckvicky.blur.domain.board.exception.UnauthorizedBoardDeleteExceptio
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
+import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
+import com.luckvicky.blur.domain.board.model.dto.HotMyCarDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
@@ -22,6 +26,8 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
+import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
 import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -51,6 +57,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final DashcamRepository dashcamRepository;
 
     @Override
     public Boolean createBoard(BoardCreateRequest request) {
@@ -108,6 +115,65 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public List<HotBoardDto> getHotBoard() {
+
+        Pageable pageable = PageRequest.of(
+                ZERO,
+                HOT_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria())
+        );
+
+        LocalDateTime now = ClockUtil.getLocalDateTime();
+        List<Board> boards = boardRepository
+                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.CHANNEL, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
+                .getContent();
+
+        return boards.stream()
+                .map(board -> mapper.map(board, HotBoardDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<HotDashcamDto> getHotDashcamBoard() {
+
+        Pageable pageable = PageRequest.of(
+                ZERO,
+                HOT_DASHCAM_BOARD_PAGE_SIZE
+        );
+
+        LocalDateTime now = ClockUtil.getLocalDateTime();
+        List<Board> boards = boardRepository
+                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.DASHCAM, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
+                .getContent();
+
+        return boards.stream()
+                .map(board -> mapper.map(board, HotDashcamDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<HotMyCarDto> getHotMyCarBoard() {
+
+        Pageable pageable = PageRequest.of(
+                ZERO,
+                HOT_MYCAR_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.VIEW.getCriteria())
+        );
+
+        LocalDateTime now = ClockUtil.getLocalDateTime();
+        List<Board> boards = boardRepository
+                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.MYCAR, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
+                .getContent();
+
+        return boards.stream()
+                .map(board -> mapper.map(board, HotMyCarDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
 
@@ -152,26 +218,6 @@ public class BoardServiceImpl implements BoardService {
 
         return  comments.stream()
                 .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public List<HotBoardDto> getHotBoard() {
-
-        Pageable pageable = PageRequest.of(
-                ZERO,
-                HOT_BOARD_PAGE_SIZE,
-                Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria())
-        );
-
-        LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<Board> boards = boardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.CHANNEL, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
-
-        return boards.stream()
-                .map(board -> mapper.map(board, HotBoardDto.class))
                 .collect(Collectors.toList());
 
     }

@@ -1,9 +1,12 @@
 package com.luckvicky.blur.domain.dashcam.repository;
 
+import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
