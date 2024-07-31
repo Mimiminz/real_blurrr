@@ -35,13 +35,10 @@ init:
 build:
   stage: build
   before_script:
-    
-  - echo "Checking Java installation path..."
-  - update-alternatives --config java
-  - which java
-  - readlink -f $(which java)
 
   # JAVA_HOME 환경 변수 설정
+  - cd /usr/lib/jvm/java-17-openjdk-amd64
+  - ls -al
   - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
   - export PATH="$JAVA_HOME/bin:$PATH"
   
