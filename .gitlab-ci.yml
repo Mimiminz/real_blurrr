@@ -21,7 +21,6 @@ init:
     - echo "install java"
     - apt-get install openjdk-17-jdk -y
     - java -version
-    - which java
     
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
@@ -37,6 +36,11 @@ build:
   stage: build
   before_script:
     
+  - echo "Checking Java installation path..."
+  - update-alternatives --config java
+  - which java
+  - readlink -f $(which java)
+
   # JAVA_HOME 환경 변수 설정
   - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
   - export PATH="$JAVA_HOME/bin:$PATH"
