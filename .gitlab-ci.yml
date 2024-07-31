@@ -24,6 +24,8 @@ init:
     # - chmod 700 ~/.ssh
     # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
     # - chmod 644 ~/.ssh/known_hosts
+  tags:
+    - blurrr-deploy
 
 build:
   stage: build
