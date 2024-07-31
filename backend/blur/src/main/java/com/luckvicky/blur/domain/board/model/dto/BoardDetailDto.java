@@ -6,6 +6,7 @@ import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +14,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Schema(name = "게시물 상세 정보")
 public class BoardDetailDto {
 
@@ -40,13 +41,15 @@ public class BoardDetailDto {
     private Long commentCount;
 
     @Schema(description = "좋아요 개수")
-    private Long  likeCount;
+    private Long likeCount;
+
+    @Schema(description = "좋아요 여부")
+    private Boolean isLike;
 
     @Schema(description = "댓글 목록")
-    List<CommentDto> comments;
+    private List<CommentDto> comments;
 
-
-    public static BoardDetailDto of(Board board, List<CommentDto> comments) {
+    public static BoardDetailDto of(Board board, List<CommentDto> comments, Boolean isLike) {
         return BoardDetailDto.builder()
                 .id(board.getId())
                 .member(SimpleMemberDto.of(board.getMember()))
@@ -56,6 +59,7 @@ public class BoardDetailDto {
                 .viewCount(board.getViewCount())
                 .commentCount(board.getCommentCount())
                 .likeCount(board.getLikeCount())
+                .isLike(isLike)
                 .comments(comments)
                 .build();
     }

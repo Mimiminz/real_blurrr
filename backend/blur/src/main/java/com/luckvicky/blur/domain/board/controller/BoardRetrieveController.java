@@ -187,10 +187,11 @@ public class BoardRetrieveController {
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{boardId}")
     public ResponseEntity getBoardDetail(
+            @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        BoardDetailDto boardDetail = boardService.getBoardDetail(boardId);
+        BoardDetailDto boardDetail = boardService.getBoardDetail(member.getId(), boardId);
 
         return ResponseUtil.ok(
                 Result.builder()

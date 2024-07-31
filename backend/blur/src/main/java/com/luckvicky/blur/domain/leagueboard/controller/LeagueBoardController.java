@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
@@ -49,7 +50,8 @@ public class LeagueBoardController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "게시글 생성 성공"
+                    description = "게시글 생성 성공",
+                    content = @Content(schema = @Schema(implementation = LeagueBoardCreateResponse.class))
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -65,7 +67,11 @@ public class LeagueBoardController {
     ) {
         return ResponseUtil.created(
                 Result.builder()
-                        .data(leagueBoardService.createLeagueBoard(member.getId(), leagueId ,request))
+                        .data(
+                                LeagueBoardCreateResponse.of(
+                                        leagueBoardService.createLeagueBoard(member.getId(), leagueId ,request)
+                                )
+                        )
                         .build()
         );
 
@@ -206,11 +212,14 @@ public class LeagueBoardController {
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity getLeagueBoardDetail(@PathVariable(name = "boardId") UUID boardId) {
+    public ResponseEntity getLeagueBoardDetail(
+            @AuthUser ContextMember member,
+            @PathVariable(name = "boardId") UUID boardId
+    ) {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(LeagueBoardDetailResponse.of(leagueBoardService.getLeagueBoardDetail(boardId)))
+                        .data(LeagueBoardDetailResponse.of(leagueBoardService.getLeagueBoardDetail(member, boardId)))
                         .build()
         );
 
