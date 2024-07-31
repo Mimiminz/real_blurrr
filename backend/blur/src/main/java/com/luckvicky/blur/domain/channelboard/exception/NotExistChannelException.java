@@ -5,7 +5,8 @@ import com.luckvicky.blur.global.execption.BaseException;
 
 public class NotExistChannelException extends BaseException {
 
-    public NotExistChannelException(ErrorCode errorCode){
-        super(errorCode);
+    public NotExistChannelException(){
+        super(ErrorCode.NOT_EXIST_CHANNEL);
     }
+
 }

@@ -39,8 +39,6 @@ import java.util.UUID;
 public class ChannelBoardController {
 
     private final ChannelBoardService channelBoardService;
-    private final BoardService boardService;
-
 
     @Operation(summary = "채널 게시글 생성 API")
     @ApiResponses({
@@ -126,8 +124,6 @@ public class ChannelBoardController {
                         .build()
         );
     }
-
-
 
     @Operation(
             summary = "채널 게시글 상세 조회 API",

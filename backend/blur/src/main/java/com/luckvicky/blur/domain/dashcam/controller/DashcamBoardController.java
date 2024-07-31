@@ -1,11 +1,11 @@
-package com.luckvicky.blur.domain.dashcamboard.controller;
+package com.luckvicky.blur.domain.dashcam.controller;
 
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.request.DashcamBoardCreateRequest;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardListResponse;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.response.DashcamBoardResponse;
-import com.luckvicky.blur.domain.dashcamboard.service.DashcamBoardService;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
+import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
+import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
@@ -13,7 +13,6 @@ import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;

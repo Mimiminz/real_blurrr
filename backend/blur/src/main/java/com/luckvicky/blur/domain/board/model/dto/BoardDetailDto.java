@@ -1,9 +1,7 @@
 package com.luckvicky.blur.domain.board.model.dto;
 
 import com.luckvicky.blur.domain.board.model.entity.Board;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardMentionDto;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

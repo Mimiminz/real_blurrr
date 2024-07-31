@@ -74,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
+
         redisAuthCodeAdapter.getValue(emailAuthStrategy.generateAvailableKey(signupDto.email()))
                 .orElseThrow(InvalidEmailVerificationException::new);
 

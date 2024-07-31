@@ -1,9 +1,10 @@
-package com.luckvicky.blur.domain.dashcamboard.model.dto.request;
+package com.luckvicky.blur.domain.dashcam.model.dto.request;
 
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Video;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
+import com.luckvicky.blur.domain.dashcam.model.entity.Option;
+import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -11,7 +12,6 @@ import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Schema(name = "블랙박스 게시글 생성 요청 ")
 public record DashcamBoardCreateRequest(
@@ -60,8 +60,9 @@ public record DashcamBoardCreateRequest(
         mentionedLeagueNames = (mentionedLeagueNames != null) ? mentionedLeagueNames : new ArrayList<>();
     }
 
-    public Dashcam toEntity(Member member) {
-        return Dashcam.builder()
+    public DashCam toEntity(Channel channel, Member member) {
+        return DashCam.builder()
+                .channel(channel)
                 .member(member)
                 .title(this.title)
                 .content(this.content)

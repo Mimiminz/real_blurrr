@@ -36,7 +36,9 @@ public record ChannelBoardCreateRequest (
     )
     @Size(max = 4, message = "멘션은 최대 4개까지만 가능합니다.")
     List<String> mentionedLeagueNames
+
 ){
+
     public ChannelBoardCreateRequest {
         mentionedLeagueNames = (mentionedLeagueNames != null) ? mentionedLeagueNames : new ArrayList<>();
     }

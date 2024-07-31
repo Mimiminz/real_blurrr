@@ -1,13 +1,13 @@
-package com.luckvicky.blur.domain.dashcamboard.mapper;
+package com.luckvicky.blur.domain.dashcam.mapper;
 
+import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
+import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardDetailDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamBoardListDto;
-import com.luckvicky.blur.domain.dashcamboard.model.dto.DashcamMentionDto;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Dashcam;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Option;
-import com.luckvicky.blur.domain.dashcamboard.model.entity.Video;
-import com.luckvicky.blur.domain.dashcamboard.repository.DashcamMentionRepository;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
+import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
+import com.luckvicky.blur.domain.dashcam.model.entity.Option;
+import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DashcamBoardMapper {
 
-    private final DashcamMentionRepository dashcamMentionRepository;
+    private final MentionRepository mentionRepository;
 
-    public DashcamBoardListDto toDashcamBoardListDto(Dashcam dashcam) {
+    public DashcamBoardListDto toDashcamBoardListDto(DashCam dashcam) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getVideoUrl)
                 .collect(Collectors.toList());
 
-        List<DashcamMentionDto> mentionedLeagues = dashcamMentionRepository.findByDashcam(dashcam).stream()
-                .map(DashcamMentionDto::of)
+        List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(dashcam).stream()
+                .map(MentionDto::of)
                 .collect(Collectors.toList());
 
         return DashcamBoardListDto.builder()
@@ -44,13 +44,13 @@ public class DashcamBoardMapper {
                 .build();
     }
 
-    public List<DashcamBoardListDto> toDashcamBoardListDtos(List<Dashcam> dashcams) {
-        return dashcams.stream()
+    public List<DashcamBoardListDto> toDashcamBoardListDtos(List<DashCam> dashCams) {
+        return dashCams.stream()
                 .map(this::toDashcamBoardListDto)
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDetailDto toDashcamBoardDetailDto(Dashcam dashcam, List<CommentDto> comments) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, List<CommentDto> comments) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getVideoUrl)
                 .collect(Collectors.toList());
@@ -59,8 +59,8 @@ public class DashcamBoardMapper {
                 .sorted(Comparator.comparingInt(Option::getNum))
                 .collect(Collectors.toList());
 
-        List<DashcamMentionDto> mentionedLeagues = dashcamMentionRepository.findByDashcam(dashcam).stream()
-                .map(DashcamMentionDto::of)
+        List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(dashcam).stream()
+                .map(MentionDto::of)
                 .collect(Collectors.toList());
 
 
