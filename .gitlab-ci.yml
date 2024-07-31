@@ -36,20 +36,27 @@ build:
   stage: build
   before_script:
 
-  # JAVA_HOME 환경 변수 설정
-  - cd /usr/lib/jvm/java-17-openjdk-amd64
-  - ls -al
-  - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-  - export PATH="$JAVA_HOME/bin:$PATH"
-  
-  # JAVA_HOME과 PATH 확인
-  - echo "JAVA_HOME is set to $JAVA_HOME"
-  - echo "PATH is set to $PATH"
+  # 설치된 JDK의 경로를 확인합니다
+  - dpkg --list | grep openjdk
 
-  # 빌드
-  - echo 'build start'
-  - cd backend/blur
-  - chmod +x ./gradlew
+  # 설치된 Java 실행 파일의 경로를 확인합니다
+  - which java
+
+  # Java 실행 파일의 실제 경로를 확인합니다
+  - readlink -f $(which java)
+
+  # # JAVA_HOME 환경 변수 설정
+  # - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+  # - export PATH="$JAVA_HOME/bin:$PATH"
+  
+  # # JAVA_HOME과 PATH 확인
+  # - echo "JAVA_HOME is set to $JAVA_HOME"
+  # - echo "PATH is set to $PATH"
+
+  # # 빌드
+  # - echo 'build start'
+  # - cd backend/blur
+  # - chmod +x ./gradlew
 
   script:
     - ./gradlew --version
