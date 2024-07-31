@@ -40,7 +40,8 @@ build:
     - cd backend/blur
     - chmod +x ./gradlew
     - ./gradlew clean build -x test
-
+    - ls -R build/libs  # 생성된 JAR 파일 목록 확인
+    
   artifacts:
     paths:
       - /backend/blur/build/libs/*.jar
