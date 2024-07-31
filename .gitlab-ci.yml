@@ -16,7 +16,7 @@ init:
     - echo "init start"
     - apt-get update
     - echo "install java"
-    - apt-get install -y wget unzip openjdk-17-jdk
+    - apt-get install openjdk-17-jdk -y
     - echo "Setting up JAVA_HOME and PATH..."
     - java -version
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
