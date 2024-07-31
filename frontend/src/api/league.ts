@@ -60,3 +60,21 @@ export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
     throw error;
   }
 };
+
+// 리그 게시글 작성
+export const fetchBoardWrite = async (
+  leagueId: string,
+  title: string,
+  content: string
+) => {
+  try {
+    const response = await api.post(`/v1/leagues/${leagueId}/boards`, {
+      title: title,
+      content: content,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
