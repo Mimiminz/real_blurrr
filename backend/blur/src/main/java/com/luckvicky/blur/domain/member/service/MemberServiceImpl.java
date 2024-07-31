@@ -238,6 +238,12 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    @Override
+    public void logout(UUID memberId) {
+        Member member = memberRepository.getOrThrow(memberId);
+        redisRefreshTokenAdapter.delete(member.getId().toString());
+    }
+
     private boolean checkAuthCode(String key, String code) {
         String getCode = redisAuthCodeAdapter.getValue(key).orElseThrow(ExpiredEmailAuthException::new);
 

@@ -44,4 +44,11 @@ public class MemberController {
             throws MalformedURLException {
         return ResponseEntity.ok(memberService.modifyMember(member.getId(), update));
     }
+
+    @Operation(description = "로그아웃")
+    @GetMapping("/logout")
+    public ResponseEntity<Boolean> logout(@AuthUser ContextMember member) {
+        memberService.logout(member.getId());
+        return ResponseEntity.ok(true);
+    }
 }
