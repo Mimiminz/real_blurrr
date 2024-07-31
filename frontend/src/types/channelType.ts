@@ -40,6 +40,7 @@ export interface DashCams {
 }
 
 export interface DashCamDetail {
+   board: DashCamDetail | PromiseLike<DashCamDetail>;
    id: string;
    member: SimpleMember;
    title: string;
@@ -60,8 +61,8 @@ export interface DashCamDetail {
  }
 
  export enum CommentStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive'
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE'
 }
 
 export interface Comment {
@@ -70,17 +71,8 @@ export interface Comment {
   content: string;
   createdAt: string;
   status: CommentStatus;
-  replies: Reply[];
+  replies: Comment[];
 }
-
-export interface Reply {
-  id: string;
-  member: Member;
-  content: string;
-  createdAt: string;
-  status: CommentStatus;
-}
-
 export interface Channels {
    id: string;
    name: string;
@@ -105,4 +97,22 @@ export interface Channels {
   likeCount: number;
   createdAt: string; 
   content: string;
+}
+
+export interface PostDetailData {
+  board: PostDetail;
+  mentionedLeagues: Mentioned[];
+}
+
+export interface PostDetail {
+  id: string;
+  member: PostMember;
+  title: string;
+  content: string;
+  createdAt: string; 
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  mentionedLeagues: Mentioned[];
+  comments: Comment[];
 }

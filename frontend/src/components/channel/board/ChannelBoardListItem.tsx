@@ -18,10 +18,10 @@ function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemP
     const today = new Date();
 
     if (postDate.toDateString() === today.toDateString()) {
-      // If the date is today, return only the time
+      // 만약 작성 시간이 당일이면 시간으로 표시
       return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } else {
-      // If not today, return the date
+      // 당일이 아니면 날짜만 표시
       return postDate.toISOString().split('T')[0].replace(/-/g, '.');
     }
   };
