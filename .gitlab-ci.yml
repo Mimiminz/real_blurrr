@@ -50,6 +50,7 @@ deploy:
     - apt-get update
     - apt-get install openssh-client -y
 
+    - echo "Deploying the project"  
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
@@ -66,7 +67,8 @@ deploy:
 
   script:
     - echo "Deploying the project"
-    - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH/
+    - echo "@$SSH_HOST"
+    - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && ./deploy.sh"
 
   environment:
