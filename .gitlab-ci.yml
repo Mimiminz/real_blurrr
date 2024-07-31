@@ -13,9 +13,16 @@ variables:
 init:
   stage: init
   script:
-    - echo "Setting up environment"
+    - echo "init start"
     - apt-get update
+    - echo "install java"
     - apt-get install openjdk-17-jdk -y
+    - JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java)))
+    - echo "Setting up JAVA_HOME and PATH..."
+    - echo "export JAVA_HOME=$JAVA_HOME" >> ~/.bashrc
+    - source ~/.bashrc
+    - java -version
+    - echo "install gradle"
     - apt-get install gradle -y
     # - 'which ssh-agent || ( apt-get install -y openssh-client )'
     # - eval $(ssh-agent -s)
@@ -30,6 +37,7 @@ init:
 build:
   stage: build
   before_script:
+    - echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> ~/.bashrc
     - echo 'build start'
     - cd backend/blur
     - chmod +x ./gradlew
