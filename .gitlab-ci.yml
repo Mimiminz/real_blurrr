@@ -9,3 +9,5 @@ build:
     - echo 'Build starts successfully!'
   script:
     - echo 'build start!'
+  tags:
+    - test-deploy
