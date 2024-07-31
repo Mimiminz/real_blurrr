@@ -8,11 +8,11 @@ build:
   before_script:
     - echo 'build starts'
     - chmod +x ./backend/blur/gradlew
-    - cp $SECURE_FILES/application.yml ./backend/blur/src/main/resources/application.yml
-    - cp $SECURE_FILES/application-jwt.yml ./backend/blur/src/main/resources/application-jwt.yml
-    - cp $SECURE_FILES/application-dev.yml ./backend/blur/src/main/resources/application-dev.yml
-    - cp $SECURE_FILES/application-email.yml ./backend/blur/src/main/resources/application-email.yml
-    - cp $SECURE_FILES/application-aws.yml ./backend/blur/src/main/resources/application-aws.yml
+    # - cp $SECURE_FILES/application.yml ./backend/blur/src/main/resources/application.yml
+    # - cp $SECURE_FILES/application-jwt.yml ./backend/blur/src/main/resources/application-jwt.yml
+    # - cp $SECURE_FILES/application-dev.yml ./backend/blur/src/main/resources/application-dev.yml
+    # - cp $SECURE_FILES/application-email.yml ./backend/blur/src/main/resources/application-email.yml
+    # - cp $SECURE_FILES/application-aws.yml ./backend/blur/src/main/resources/application-aws.yml
 
   script:
     - ./backend/blur/gradlew clean build
