@@ -26,7 +26,7 @@ build:
   stage: build
   script:
     - cd backend/blur
-    - /gradlew build -x test
+    - ./gradlew build -x test
     - echo "Building the project"
     - mvn $MAVEN_CLI_OPTS clean package
   artifacts:
