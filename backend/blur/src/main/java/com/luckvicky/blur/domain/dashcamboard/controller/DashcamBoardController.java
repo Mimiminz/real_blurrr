@@ -69,7 +69,7 @@ public class DashcamBoardController {
     @GetMapping
     public ResponseEntity getDashcamBoards(
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ){
         List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards(
                 pageNumber,
