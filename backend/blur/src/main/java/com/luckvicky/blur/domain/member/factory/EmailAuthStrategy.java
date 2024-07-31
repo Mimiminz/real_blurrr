@@ -1,28 +1,21 @@
 package com.luckvicky.blur.domain.member.factory;
 
 import com.luckvicky.blur.global.constant.StringFormat;
-import com.luckvicky.blur.global.util.UuidUtil;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailAuthFactory implements AuthCodeFactory{
+public class EmailAuthStrategy implements AuthCodeStrategy {
 
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
-    public EmailAuthFactory(RedisAuthCodeAdapter redisAuthCodeAdapter) {
+    public EmailAuthStrategy(RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
 
     @Override
-    public String creatAuthCode() {
-        return UuidUtil.createSequentialUUID().toString().substring(0,8);
-    }
-
-    @Override
-    public void saveCode(String key, String code) {
-        redisAuthCodeAdapter.saveOrUpdate(key, code, 5);
+    public void saveToRedis(String key, String code) {
+        redisAuthCodeAdapter.saveOrUpdate(key, code, 10);
     }
 
     @Override
