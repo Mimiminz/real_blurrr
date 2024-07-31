@@ -1,4 +1,7 @@
-test-job: # 임의로 지정한 JOB 이름
+stages:
+  - deploy
+
+deploy: # 임의로 지정한 JOB 이름
   stage: deploy # build, test, deploy 3단계 스테이지 중 하나
   only:
     - cicd-test # develop 브랜치 이벤트 발생시 실행
