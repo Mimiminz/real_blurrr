@@ -73,7 +73,7 @@ export default function BoardDetailPage({
         authorCarTitle={BoardDetail.member.carTitle}
       />
       <Divider />
-      <Content>{BoardDetail.content}</Content>
+      <Content dangerouslySetInnerHTML={{ __html: BoardDetail.content }} />
       <Divider />
       <CommentContainer>
         <CommentNumber>

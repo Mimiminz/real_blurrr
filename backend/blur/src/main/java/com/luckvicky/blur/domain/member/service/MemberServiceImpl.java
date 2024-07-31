@@ -7,6 +7,7 @@ import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
 import com.luckvicky.blur.domain.member.factory.EmailAuthStrategy;
 import com.luckvicky.blur.domain.member.factory.PasswordAuthStrategy;
+import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
@@ -48,15 +49,15 @@ public class MemberServiceImpl implements MemberService {
     private final MailService mailService;
 
     private final ResourceUtil resourceUtil;
-    private final PasswordAuthStrategy passwordAuthFactory;
-    private final EmailAuthStrategy emailAuthFactory;
+    private final PasswordAuthStrategy passwordAuthStrategy;
+    private final EmailAuthStrategy emailAuthStrategy;
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
-                             PasswordAuthStrategy passwordAuthFactory,
-                             EmailAuthStrategy emailAuthFactory,
+                             PasswordAuthStrategy passwordAuthStrategy,
+                             EmailAuthStrategy emailAuthStrategy,
                              RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
@@ -64,8 +65,8 @@ public class MemberServiceImpl implements MemberService {
         this.s3ImageService = s3ImageService;
         this.mailService = mailService;
         this.resourceUtil = resourceUtil;
-        this.passwordAuthFactory = passwordAuthFactory;
-        this.emailAuthFactory = emailAuthFactory;
+        this.passwordAuthStrategy = passwordAuthStrategy;
+        this.emailAuthStrategy = emailAuthStrategy;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
         this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
@@ -73,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
-        redisAuthCodeAdapter.getValue(emailAuthFactory.generateAvailableKey(signupDto.email()))
+        redisAuthCodeAdapter.getValue(emailAuthStrategy.generateAvailableKey(signupDto.email()))
                 .orElseThrow(InvalidEmailVerificationException::new);
 
         signupDto.valid();
@@ -174,6 +175,20 @@ public class MemberServiceImpl implements MemberService {
         return reuslt;
     }
 
+    @Override
+    public boolean modifyPassword(ChangePassword changePassword) {
+        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changePassword.email()))
+                .orElseThrow(InvalidEmailVerificationException::new);
+
+        if (!changePassword.password().equals(changePassword.passwordCheck())) {
+            throw new PasswordMismatchException();
+        }
+
+        Member member = memberRepository.findByEmail(changePassword.email()).orElseThrow(NotExistMemberException::new);
+        member.updatePassword(passwordEncoder.encode(changePassword.password()));
+        return true;
+    }
+
     @Transactional
     @Override
     public boolean createEmailAuthCode(String email) {
@@ -181,7 +196,7 @@ public class MemberServiceImpl implements MemberService {
             throw new DuplicateEmailException();
         }
 
-        String authCode = emailAuthFactory.saveAuthCode(email);
+        String authCode = emailAuthStrategy.saveAuthCode(email);
 
         sendAuthCodeEmail(email, authCode);
 
@@ -197,10 +212,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean validEmailAuth(EmailAuth emailAuth) {
-        if (!checkAuthCode(emailAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) {
+        if (!checkAuthCode(emailAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
             return false;
         }
-        emailAuthFactory.pushAvailableEmail(emailAuth.email());
+        emailAuthStrategy.pushAvailableEmail(emailAuth.email());
         return true;
     }
 
@@ -210,17 +225,23 @@ public class MemberServiceImpl implements MemberService {
             throw new NotExistMemberException();
         }
 
-        passwordAuthFactory.saveAuthCode(email);
+        passwordAuthStrategy.saveAuthCode(email);
         return true;
     }
 
     @Override
     public boolean validPasswordAuthCode(EmailAuth emailAuth) {
-        if (!checkAuthCode(passwordAuthFactory.generateKey(emailAuth.email()), emailAuth.authCode())) {
+        if (!checkAuthCode(passwordAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
             return false;
         }
-        passwordAuthFactory.pushAvailableEmail(emailAuth.email());
+        passwordAuthStrategy.pushAvailableEmail(emailAuth.email());
         return true;
+    }
+
+    @Override
+    public void logout(UUID memberId) {
+        Member member = memberRepository.getOrThrow(memberId);
+        redisRefreshTokenAdapter.delete(member.getId().toString());
     }
 
     private boolean checkAuthCode(String key, String code) {

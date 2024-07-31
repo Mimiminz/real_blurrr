@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.controller;
 
+import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
@@ -11,15 +12,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = "로그인, 회원가입 API")
 @RestController
 @RequestMapping("/v1/auth")
@@ -96,5 +100,12 @@ public class AuthController {
     @PostMapping("/password/email")
     public ResponseEntity<Boolean> validPasswordAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validPasswordAuthCode(emailAuth));
+    }
+
+    @NoAuthorization
+    @Operation(summary = "비밀번호 변경")
+    @PutMapping("/password")
+    public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangePassword changePassword) {
+        return ResponseEntity.ok(memberService.modifyPassword(changePassword));
     }
 }

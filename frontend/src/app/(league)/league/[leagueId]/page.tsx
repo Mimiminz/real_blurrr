@@ -7,6 +7,7 @@ import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
+import { useAuthStore } from "@/store/authStore";
 
 import { LeagueBoardItem, LeagueList, Tab } from "@/types/league";
 
@@ -37,6 +38,8 @@ export default function LeaguePage({
 }) {
   const router = useRouter();
   const leagueId = params.leagueId;
+
+  const { isLoggedIn } = useAuthStore((state) => state);
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
 
@@ -85,23 +88,11 @@ export default function LeaguePage({
     setCriteria(event.target.value);
   };
 
-  const handleSearchBack = () => {
-    setIsSearching(false);
+  const handleWriteClick = () => {
+    router.push(`/league/${leagueId}/write`);
   };
 
-  // const handleWriteClick = () => {
-  //   const selectedLeague = moreTabs.find(
-  //     (league) => league.label === activeTabName
-  //   );
-  //   if (selectedLeague) {
-  //     const leagueId = selectedLeague.id;
-  //     router.push(
-  //       `/league/${leagueId}/write?leagueName=${encodeURIComponent(
-  //         activeTabName
-  //       )}`
-  //     );
-  //   }
-  // };
+  const isLeagueIdInTabs = tabs.some((tab) => tab.id === leagueId);
 
   const handleSearch = async (keyword: string) => {
     if (!keyword.trim()) {
@@ -135,6 +126,11 @@ export default function LeaguePage({
           <option value="COMMENT">댓글 순</option>
           <option value="LIKE">좋아요 순</option>
         </StyledSelect>
+        {isLoggedIn && isLeagueIdInTabs && (
+          <StyledButton className="setPosition" onClick={handleWriteClick}>
+            글 작성 +
+          </StyledButton>
+        )}
       </FilterSection>
       {leagueId.includes("mention") ? (
         <h1>채널 게시글</h1>
@@ -199,8 +195,8 @@ const StyledSelect = styled.select`
 
 const StyledButton = styled.button`
   padding: 10px;
-  background-color: #f1f1f1;
-  border: none;
+  background: none;
+  border: 1px solid #e0e0e0;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
@@ -208,11 +204,7 @@ const StyledButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background-color: #ddd;
-  }
-
-  &:active {
-    background-color: #ccc;
+    color: #f97316;
   }
 `;
 
