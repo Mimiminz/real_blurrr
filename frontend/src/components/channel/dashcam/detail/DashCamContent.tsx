@@ -133,8 +133,8 @@ const DashCamContent: React.FC<DashCamContentData> = ({
          </Header>
          <Body>
             <Tags>
-               {mentionedLeagues.map((league =>
-                  <Tag key={league.id}>{league.name}</Tag>
+               {mentionedLeagues.map((league, index) => (
+                  <span key={index}>@ {league.name}</span>
                ))}
             </Tags>
             <VideoContainer>

@@ -3,63 +3,64 @@ import styled from 'styled-components';
 import { FaRegHeart } from 'react-icons/fa6';
 import { LiaCommentDots } from 'react-icons/lia';
 import { MdAccessTime } from 'react-icons/md';
+import { Mentioned, Posts } from '@/types/channelType';
 
 interface ChannelBoardListItemProps {
-  mentions: string;
-  title: string;
-  texts: string;
-  writer: string;
-  writertag: string;
-  times: number;
-  likes: number;
-  comments: number;
+  post: Posts;
+  mentions: Mentioned[];
+  onClick: () => void;
 }
 
-function ChannelBoardListItem({
-  mentions,
-  title,
-  texts,
-  writer,
-  writertag,
-  times,
-  likes,
-  comments,
-}: ChannelBoardListItemProps) {
-  const mentionArray = mentions.split(',').map((mention, index) => (
-    <Channel key={index}>{mention.trim()}</Channel>
+function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemProps) { // post를 props로 사용
+
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      // If the date is today, return only the time
+      return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else {
+      // If not today, return the date
+      return postDate.toISOString().split('T')[0].replace(/-/g, '.');
+    }
+  };
+
+  const mentionArray = mentions.map((mention, index) => (
+    <Channel key={index}>{mention.name}</Channel>
   ));
 
   return (
-    <ArticleDetail>
+    <ArticleDetail onClick={onClick}>
       <ArticleInfo>
         <ChannelContainer>
           {mentionArray}
         </ChannelContainer>
-        <Title>{title}</Title>
+        <Title>{post.title}</Title>
         <UserContainer>
-          <UserName>{writer}</UserName>
-          <UserTags>{writertag}</UserTags>
+          <UserName>{post.member.nickname}</UserName>
+          <UserTags>{post.member.carTitle}</UserTags>
         </UserContainer>
-        <Text>{texts}</Text>
+        <Text>{post.content}</Text>
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
           <Icon>
             <MdAccessTime />
           </Icon>
-          {times}
+          {formatPostDate(post.createdAt)}
         </LikeSection>
         <LikeSection>
           <Icon>
             <FaRegHeart />
           </Icon>
-          {likes}
+          {post.likeCount}
         </LikeSection>
         <LikeSection>
           <Icon>
             <LiaCommentDots />
           </Icon>
-          {comments}
+          {post.commentCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
