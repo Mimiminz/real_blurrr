@@ -9,31 +9,23 @@ variables:
   DEPLOY_PATH: "/home/ubuntu/app"
   SPRING_PROFILE: "dev"
 
-    # - 'which ssh-agent || ( apt-get install -y openssh-client )'
-    # - eval $(ssh-agent -s)
-    # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
-    # - mkdir -p ~/.ssh
-    # - chmod 700 ~/.ssh
-    # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
-    # - chmod 644 ~/.ssh/known_hosts
-
 build:
   stage: build
   before_script:
 
-  - echo "init start"
-  - apt-get update
+  # - 'which ssh-agent || ( apt-get install -y openssh-client )'
+  # - eval $(ssh-agent -s)
+  # - echo "$SSH_KEY_PEM" | tr -d '\r' | ssh-add - > /dev/null
+  # - mkdir -p ~/.ssh
+  # - chmod 700 ~/.ssh
+  # - ssh-keyscan your-server-ip >> ~/.ssh/known_hosts
+  # - chmod 644 ~/.ssh/known_hosts
 
   # 자바 17 설치
+  - apt-get update
   - echo "install java"
   - apt-get install openjdk-17-jdk -y
   - java -version
-
-  # 설치된 Java 실행 파일의 경로를 확인합니다
-  - which java
-
-  # Java 실행 파일의 실제 경로를 확인합니다
-  - readlink -f $(which java)
 
   # JAVA_HOME 환경 변수 설정
   - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
@@ -43,13 +35,13 @@ build:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-  # 빌드
-  - echo 'build start'
-  - cd backend/blur
-
   script:
+    - echo 'build'
+    - cd backend/blur
     - chmod +x ./gradlew
     - ./gradlew clean build
+    - ./gradlew clean build -x test
+
   artifacts:
     paths:
       - build/libs/*.jar
