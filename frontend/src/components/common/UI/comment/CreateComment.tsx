@@ -2,19 +2,23 @@ import { fetchCommentCreate, fetchReplyCreate } from "@/api/comment";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Comment } from "@/types/league";
+import { useRouter } from "next/navigation";
 
 interface CreateCommentProps {
   boardId: string;
   isReply: boolean;
   commentId: string;
+  onCommentAdded: () => void;
 }
 
 export default function CreateComment({
   boardId,
   isReply,
   commentId,
+  onCommentAdded,
 }: CreateCommentProps) {
   const [comment, setComment] = useState("");
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -30,20 +34,16 @@ export default function CreateComment({
   const handleSubmit = async () => {
     if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
 
-    if (isReply) {
-      try {
+    try {
+      if (isReply) {
         await fetchReplyCreate(commentId, boardId, comment);
-        setComment("");
-      } catch (error) {
-        console.error("Error submitting comment:", error);
-      }
-    } else {
-      try {
+      } else {
         await fetchCommentCreate(boardId, comment);
-        setComment("");
-      } catch (error) {
-        console.error("Error submitting comment:", error);
       }
+      setComment("");
+      onCommentAdded(); // 댓글 작성 후 콜백 호출
+    } catch (error) {
+      console.error("Error submitting comment:", error);
     }
   };
 
