@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -50,18 +51,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<Object> handleRuntimeException(
+    protected ResponseEntity handleRuntimeException(
             RuntimeException e, WebRequest request
     ) {
+        e.printStackTrace();
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
 
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse
-                        .builder(e, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())
-                        .title(e.getClass().getSimpleName())
-                        .instance(URI.create(servletWebRequest.getRequest().getRequestURI()))
-                        .build());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
 
