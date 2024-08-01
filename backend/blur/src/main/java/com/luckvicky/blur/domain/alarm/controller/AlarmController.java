@@ -58,7 +58,9 @@ public class AlarmController {
     }
     @Operation(summary = "알림 읽음 처리")
     @PutMapping("/read/{id}")
-    public ResponseEntity<Boolean> modifyReadStatus(@PathVariable(name = "id") UUID alarmId) {
-        return ResponseEntity.ok(alarmService.modifyReadStatus(alarmId));
+    public ResponseEntity<Boolean> modifyReadStatus(
+            @AuthUser ContextMember member,
+            @PathVariable(name = "id") UUID alarmId) {
+        return ResponseEntity.ok(alarmService.modifyReadStatus(member.getId(),alarmId));
     }
 }

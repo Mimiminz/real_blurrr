@@ -81,8 +81,9 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Transactional
     @Override
-    public boolean modifyReadStatus(UUID alarmId) {
-        Alarm alarm = alarmRepository.getOrThrow(alarmId);
+    public boolean modifyReadStatus(UUID memberId, UUID alarmId) {
+        Member member = memberRepository.getOrThrow(memberId);
+        Alarm alarm = alarmRepository.getOrThrow(alarmId, member);
 
         alarm.changeRead();
 
