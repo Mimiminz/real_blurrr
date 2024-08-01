@@ -8,16 +8,17 @@ import { useRouter } from "next/navigation";
 
 interface ChannelBoardListProps {
   keyword: string; // keyword를 props로 받음
+  criteria: string;
 }
 
-const ChannelBoardList: React.FC<ChannelBoardListProps> = ({ keyword }) => {
+const ChannelBoardList: React.FC<ChannelBoardListProps> = ({ keyword, criteria }) => {
   const [Posts, setPosts] = useState<PostData[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchPosts('11ef4e3b-36d9-9292-a7f5-1d7ed3babb22', keyword, 0, 'TIME');
+        const data = await fetchPosts('11ef4e3b-36d9-9292-a7f5-1d7ed3babb22', keyword, 0, criteria);
         setPosts(data);
         console.log('Posts loaded:', data);
       } catch (error) {
@@ -26,7 +27,7 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({ keyword }) => {
     };
 
     loadData();
-  }, [keyword]);
+  }, [keyword, criteria]);
   const handlePostClick = (boardId: string) => {
     router.push(`/channels/11ef4e3b-36d9-9292-a7f5-1d7ed3babb22/${boardId}`);
   };

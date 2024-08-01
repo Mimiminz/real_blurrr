@@ -35,15 +35,28 @@ export const fetchCreatedChannels = async (): Promise<Channels[]> => {
 };
 
 // 채널 게시글 목록 데이터를 가져오는 함수
-export const fetchPosts = async (channelId: string, pageNumber: number, criteria: string): Promise<PostData[]> => {
+export const fetchPosts = async (channelId: string, keyword: string, pageNumber: number, criteria: string): Promise<PostData[]> => {
   try {
     const response = await api.get(`/v1/channels/${channelId}/boards`, {
       params: {
+        keyword,
         pageNumber, // 페이지 번호
         criteria,   // 정렬 기준
       },
     });
-    return response.data.data.boards;
+    console.log('channelPost call');
+
+    if (response.status === 204) {
+      return []; // 검색 결과가 없는 경우 빈 배열 반환
+    }
+
+    // 응답 데이터가 정의되어 있는지 확인
+    if (response.data && response.data.data && response.data.data.boards) {
+      return response.data.data.boards;
+    } else {
+      console.error('Unexpected response structure:', response);
+      return [];
+    }
   } catch (error) {
     console.error('Error fetching channel post list:', error);
     throw error;
@@ -57,27 +70,13 @@ export const fetchChannelPostDetail = async (
 ): Promise<PostDetail> => {
   try {
     const response = await api.get(`/v1/channels/${channelId}/boards/${boardId}`);
-    console.log(response.data.data)
+    console.log('channelPostDetail call')
     return response.data.data.channelBoard;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
-
-// 채널 게시글 검색 함수
-// export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
-//   try {
-//     const response = await api.get(`/v1/leagues/${leagueId}/boards/search`, {
-//       params: { keyword },
-//     });
-
-//     console.log(response.data.data);
-//     return response.data.data.boards;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 // 블랙박스 목록 데이터를 가져오는 함수
 export const fetchDashCams = async (pageNumber: number, criteria: string): Promise<DashCams[]> => {
