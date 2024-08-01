@@ -6,8 +6,9 @@ import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;
 import com.luckvicky.blur.domain.league.service.LeagueService;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.CertificationMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -70,6 +71,7 @@ public class LeagueController {
                     content = @Content(schema = @Schema(implementation = LeagueListResponse.class))
             )
     })
+    @CertificationMember
     @GetMapping("/models")
     public ResponseEntity getModelLeagues(
     ) {
@@ -90,7 +92,6 @@ public class LeagueController {
 
     }
 
-    @NoAuthorization
     @Operation(
             summary = "브랜드 리그 조회 API",
             description = "브랜드 리그 목록을 조회한다."
@@ -102,6 +103,7 @@ public class LeagueController {
                     content = @Content(schema = @Schema(implementation = LeagueListResponse.class))
             )
     })
+    @GeneralMember
     @GetMapping("/brands")
     public ResponseEntity getBrandLeagues(
     ) {
@@ -122,7 +124,6 @@ public class LeagueController {
 
     }
 
-    @NoAuthorization
     @Operation(
             summary = "리그 랭킹 조회 API",
             description = "리그 인원수를 기준으로 내림차순 조회한다."
@@ -134,6 +135,7 @@ public class LeagueController {
                     content = @Content(schema = @Schema(implementation = LeagueRankingResponse.class))
             )
     })
+    @GeneralMember
     @GetMapping("/ranking")
     public ResponseEntity getLeagueRanking() {
         return ResponseUtil.ok(
@@ -142,6 +144,5 @@ public class LeagueController {
                         .build()
         );
     }
-
 
 }

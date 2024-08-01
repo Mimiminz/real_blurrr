@@ -3,19 +3,16 @@ package com.luckvicky.blur.global.config;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 
 import static com.luckvicky.blur.global.constant.StringFormat.AUTH;
-import static com.luckvicky.blur.global.constant.StringFormat.GENERAL_USER_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.JWT;
 import static com.luckvicky.blur.global.constant.StringFormat.NO_AUTH;
-import static com.luckvicky.blur.global.constant.StringFormat.PERMIT_ALL_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;
 
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import java.lang.annotation.Annotation;
 import java.util.Objects;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.SpringDocUtils;
@@ -36,10 +33,10 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group(NO_AUTH)
                 .addOpenApiMethodFilter(method -> {
-                    if (Objects.isNull(method.getAnnotation(NoAuthorization.class))){
-                        return false;
+                    if (!Objects.isNull(method.getAnnotation(GeneralMember.class))){
+                        return true;
                     }
-                    return true;
+                    return false;
                 })
                 .build();
 
@@ -51,7 +48,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group(AUTH)
                 .addOpenApiMethodFilter(method -> {
-                    if (Objects.isNull(method.getAnnotation(NoAuthorization.class))){
+                    if (Objects.isNull(method.getAnnotation(GeneralMember.class))){
                         return true;
                     }
                     return false;

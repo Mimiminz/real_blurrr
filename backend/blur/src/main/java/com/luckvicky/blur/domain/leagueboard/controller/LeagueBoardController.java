@@ -12,8 +12,9 @@ import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.CertificationMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -59,6 +60,7 @@ public class LeagueBoardController {
             )
     })
     @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH)
+    @CertificationMember
     @PostMapping("/{leagueId}/boards")
     public ResponseEntity createLeagueBoard(
             @AuthUser ContextMember member,
@@ -77,7 +79,6 @@ public class LeagueBoardController {
 
     }
 
-    @NoAuthorization
     @Operation(
             summary = "브랜드 리그 게시글 목록 조회 API",
             description = "브랜드 리그에 대한 게시물 목록을 가져온다."
@@ -111,15 +112,18 @@ public class LeagueBoardController {
                     }
             ),
     })
+    @GeneralMember
     @GetMapping("/brands/{leagueId}/boards")
     public ResponseEntity getBrandLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
+            @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
         List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(
                 leagueId,
+                member.getId(),
                 pageNumber,
                 criteria
         );
@@ -171,15 +175,18 @@ public class LeagueBoardController {
                     }
             ),
     })
+    @CertificationMember
     @GetMapping("/{leagueId}/mentions")
     public ResponseEntity getModelLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
+            @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
         List<ChannelBoardDto> channelBoards = leagueBoardService.getMentionLeagueBoards(
                 leagueId,
+                member.getId(),
                 pageNumber,
                 criteria
         );
@@ -211,6 +218,7 @@ public class LeagueBoardController {
             )
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
+    @CertificationMember
     @GetMapping("/boards/{boardId}")
     public ResponseEntity getLeagueBoardDetail(
             @AuthUser ContextMember member,
@@ -219,13 +227,14 @@ public class LeagueBoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(LeagueBoardDetailResponse.of(leagueBoardService.getLeagueBoardDetail(member, boardId)))
+                        .data(LeagueBoardDetailResponse.of(
+                                leagueBoardService.getLeagueBoardDetail(member.getId(), boardId))
+                        )
                         .build()
         );
 
     }
 
-    @NoAuthorization
     @Operation(
             summary = "특정 리그 게시글 검색 API",
             description = "특정 리그에 대한 게시물에 대하여 검색한다."
@@ -272,6 +281,7 @@ public class LeagueBoardController {
                     }
             ),
     })
+    @GeneralMember
     @GetMapping("/{leagueId}/boards/search")
     public ResponseEntity search(
             @PathVariable("leagueId") UUID leagueId,
