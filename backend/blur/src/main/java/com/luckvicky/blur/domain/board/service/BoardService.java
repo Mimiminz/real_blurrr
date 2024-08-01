@@ -14,11 +14,7 @@ public interface BoardService {
 
     Boolean createBoard(BoardCreateRequest request);
 
-    List<BoardDto> findBoardsByType(String boardType, int pageNumber, String criteria);
-
     BoardDetailDto getBoardDetail(UUID boardId, UUID id);
-
-    List<CommentDto> getComments(UUID boardId);
 
     List<HotBoardDto> getHotBoard();
 

@@ -5,10 +5,10 @@ import com.luckvicky.blur.global.execption.BaseException;
 import lombok.Getter;
 
 @Getter
-public class NotHasAuthorityOfLeagueException extends BaseException {
+public class NotAllocatedLeagueException extends BaseException {
 
-    public NotHasAuthorityOfLeagueException() {
-        super(ErrorCode.NOT_HAS_AUTHORITY_OF_LEAGUE);
+    public NotAllocatedLeagueException() {
+        super(ErrorCode.NOT_ALLOCATED_LEAGUE);
     }
 
 }

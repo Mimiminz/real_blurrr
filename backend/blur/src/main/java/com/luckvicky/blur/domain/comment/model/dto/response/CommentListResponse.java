@@ -8,12 +8,19 @@ import lombok.Builder;
 @Builder
 @Schema(name = "댓글 목록 조회 응답")
 public record CommentListResponse(
-        List<CommentDto> comments
+        
+        @Schema(description = "댓글 목록")
+        List<CommentDto> comments,
+
+        @Schema(description = "댓글 개수 (대댓글 포함)")
+        Long commentCount
+        
 ) {
 
-    public static CommentListResponse of(List<CommentDto> comments) {
+    public static CommentListResponse of(List<CommentDto> comments, Long commentCount) {
         return CommentListResponse.builder()
                 .comments(comments)
+                .commentCount(commentCount)
                 .build();
     }
 
