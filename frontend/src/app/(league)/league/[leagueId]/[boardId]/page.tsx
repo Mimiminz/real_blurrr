@@ -9,11 +9,11 @@ import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 import { BoardDetail } from "@/types/leagueTypes";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 
-import { Comment } from "@/types/commentTypes";
+import { fetchComment } from "@/types/commentTypes";
 
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
-import { fetchCommentList } from "@/api/comment";
+import { fetchLeagueCommentList } from "@/api/comment";
 import CommentList from "@/components/common/UI/comment/CommentList";
 
 export default function BoardDetailPage({
@@ -30,7 +30,7 @@ export default function BoardDetailPage({
     useLeagueStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentList, setCommentList] = useState<fetchComment | null>(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -42,7 +42,8 @@ export default function BoardDetailPage({
     const today = new Date();
 
     if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleDateString([], {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
         hour: "2-digit",
         minute: "2-digit",
       });
@@ -59,10 +60,11 @@ export default function BoardDetailPage({
       console.log(error);
     }
   };
+
   const loadCommentDetail = async () => {
     try {
-      const commentsList = await fetchCommentList(boardId);
-      setComments(commentsList);
+      const fetchcommentsList = await fetchLeagueCommentList(boardId);
+      setCommentList(fetchcommentsList);
     } catch (error) {
       console.log(error);
     }
@@ -102,7 +104,7 @@ export default function BoardDetailPage({
     }
   };
 
-  if (!boardDetail) {
+  if (!boardDetail || !commentList) {
     return <div>Loading...</div>;
   }
 
@@ -125,15 +127,16 @@ export default function BoardDetailPage({
         authorCarTitle={boardDetail.member.carTitle}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <HeartButton onClick={toggleLike}>
-        {isLiked ? <FaHeart /> : <FaRegHeart />}
-      </HeartButton>
       <CommentContainer>
         <WriterContainer>
+          <HeartButton onClick={toggleLike}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </HeartButton>
           <WriterButton onClick={handleDelete}>삭제</WriterButton>
         </WriterContainer>
         <CommentList
-          comments={comments}
+          comments={commentList.comments}
+          commentCount={commentList.commentCount}
           boardId={boardId}
           onCommentAdded={loadCommentDetail}
         />
@@ -156,51 +159,42 @@ const Content = styled.div`
   border-top: 1px solid #bebebe;
 `;
 
-const CommentNumber = styled.div`
-  margin-top: 10px;
-  font-size: 18px;
-
-  svg {
-    margin-right: 5px;
-    margin-top: 12px;
-  }
-`;
-
 const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-left: 20px;
   border-top: 1px solid #bebebe;
 `;
 
 const WriterContainer = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  margin-top: 10px;
 `;
 
-const WriterButton = styled.button`
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
+const WriterButton = styled.p`
+  padding: 0px;
+  /* border-radius: 40px; */
+  /* border: 1px solid #ddd; */
+  font-size: 14px;
   background-color: white;
-  margin-right: 10px;
+  margin: 5px 10px 20px 0;
   cursor: pointer;
-`;
 
-const CommentWrapper = styled.div`
-  width: 100%;
+  &:hover {
+    color: #666;
+  }
 `;
 
 const HeartButton = styled.button`
-  margin: 5px 0px 20px auto;
+  margin: 5px 0px 20px 0px;
+  min-width: 30px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 20px;
   color: #666;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 
   &:hover {
     color: #666;

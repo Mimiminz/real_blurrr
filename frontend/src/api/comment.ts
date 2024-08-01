@@ -1,12 +1,17 @@
 import api from "./index";
-import { Comment } from "@/types/commentTypes";
+import { fetchComment } from "@/types/commentTypes";
 
-// 댓글 목록 조회
-export const fetchCommentList = async (boardId: string): Promise<Comment[]> => {
+// 리그 댓글 목록 조회
+export const fetchLeagueCommentList = async (
+  boardId: string
+): Promise<fetchComment> => {
   try {
-    const response = await api.get(`/v1/boards/${boardId}/comments`);
+    const response = await api.get(`/v1/leagues/boards/${boardId}/comments`);
     console.log(response.data);
-    return response.data;
+    if (response.status === 204) {
+      return { comments: [], commentCount: 0 };
+    }
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;
