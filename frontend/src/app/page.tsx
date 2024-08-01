@@ -18,8 +18,8 @@ import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
 import { useLeagueStore } from "@/store/leagueStore";
 import { useEffect, useState } from "react";
 import { fetchBrandLeagues } from "@/api/league";
-import { fetchHotArticles } from "@/api/mainPage";
-import { HotBoardItem } from "@/types/mainPageTypes";
+import { fetchHotArticles, fetchMyCars, fetchTodayCar } from "@/api/mainPage";
+import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
 
 export default function Home() {
   const router = useRouter();
@@ -27,12 +27,20 @@ export default function Home() {
     useLeagueStore();
 
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
+  const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
+  const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
 
   useEffect(() => {
     const fetchMainProps = async () => {
       try {
         const hot = await fetchHotArticles();
         setHotBoards(hot);
+
+        // const today = await fetchTodayCar();
+        // setTodayCar(today);
+
+        // const car = await fetchMyCars();
+        // setMyCarBoards(car);
       } catch (error) {
         console.log(error);
       }

@@ -11,3 +11,9 @@ export interface HotBoardItem {
   likeCount: number;
   commentCount: number;
 }
+
+export interface TodayCarItem {
+  id: string;
+  title: string;
+  voteCount: number;
+}

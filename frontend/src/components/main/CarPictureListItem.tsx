@@ -17,6 +17,7 @@ const CarPictureListItem: React.FC<CarPictureListItemProps> = ({ items }) => {
       {items.map((item, index) => (
         <CarPictureCard
           key={index}
+          id={`${index}`}
           name={item.name}
           description={item.description}
           image={item.image}
