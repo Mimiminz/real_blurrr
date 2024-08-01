@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { fetchCommentDelete } from "@/api/comment";
-import { WiTime4 } from "react-icons/wi";
-import CreateComment from "@/components/common/UI/comment/CreateComment";
-
-interface NoCommentProps {
-  isReply: boolean;
-}
+import { NoCommentProps } from "@/types/commentTypes";
 
 const NoComment: React.FC<NoCommentProps> = ({ isReply }) => {
   return (
     <>
       {isReply ? (
         <ReplyContainer>
-          <DotLine />
           <Avatar />
           <Content>
             <Text>삭제된 댓글입니다.</Text>
@@ -61,6 +54,7 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  height: 100%;
 `;
 
 const DotLine = styled.div`
@@ -71,8 +65,8 @@ const DotLine = styled.div`
   border-left: 2px dotted #ccc;
 `;
 
-const Text = styled.p`
+const Text = styled.span`
   font-size: 14px;
   color: #333;
-  margin: 8px 0 2px 0;
+  margin-bottom: 2px;
 `;

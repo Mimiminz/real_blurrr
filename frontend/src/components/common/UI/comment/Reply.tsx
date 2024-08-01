@@ -2,17 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { fetchCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
-
-interface ReplyProps {
-  id: string;
-  boardId: string;
-  avatarUrl: string;
-  userName: string;
-  userDetail: string | null;
-  text: string;
-  time: string;
-  onCommentAdded: () => void;
-}
+import { CommentListItemProps } from "@/types/commentTypes";
 
 const Container = styled.div`
   display: flex;
@@ -87,7 +77,7 @@ const DotLine = styled.div`
   border-left: 2px dotted #ccc;
 `;
 
-const Reply: React.FC<ReplyProps> = ({
+const Reply: React.FC<CommentListItemProps> = ({
   id,
   boardId,
   avatarUrl,

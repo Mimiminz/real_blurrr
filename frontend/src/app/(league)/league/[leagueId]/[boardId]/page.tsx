@@ -2,21 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
-import Comment from "@/components/common/UI/comment/Comment";
-import CreateComment from "@/components/common/UI/comment/CreateComment";
-import NoComment from "@/components/common/UI/comment/NoComment";
-import Reply from "@/components/common/UI/comment/Reply";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
-import { Divider } from "@nextui-org/divider";
 
-import { BoardDetail, Comment as CommentProp } from "@/types/league";
+import { BoardDetail } from "@/types/leagueTypes";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
+
+import { Comment } from "@/types/commentTypes";
 
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
+import { fetchCommentList } from "@/api/comment";
+import CommentList from "@/components/common/UI/comment/CommentList";
 
 export default function BoardDetailPage({
   params,
@@ -32,6 +30,7 @@ export default function BoardDetailPage({
     useLeagueStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -60,9 +59,18 @@ export default function BoardDetailPage({
       console.log(error);
     }
   };
+  const loadCommentDetail = async () => {
+    try {
+      const commentsList = await fetchCommentList(boardId);
+      setComments(commentsList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     loadBoardDetail();
+    loadCommentDetail();
   }, [boardId]);
 
   useEffect(() => {
@@ -100,13 +108,13 @@ export default function BoardDetailPage({
 
   return (
     <>
-      {/* <BreadcrumbContainer>
+      <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
           subChannel={activeTabName}
           channelUrl={`/league/${leagueId}`}
         />
-      </BreadcrumbContainer> */}
+      </BreadcrumbContainer>
       <LeagueDetailTitle
         title={boardDetail.title}
         createdAt={formatPostDate(boardDetail.createdAt)}
@@ -121,58 +129,14 @@ export default function BoardDetailPage({
         {isLiked ? <FaHeart /> : <FaRegHeart />}
       </HeartButton>
       <CommentContainer>
-        <CommentNumber>
-          <WriterContainer>
-            <WriterButton onClick={handleDelete}>삭제</WriterButton>
-          </WriterContainer>
-          <LiaCommentDots />
-          {boardDetail.commentCount}
-        </CommentNumber>
-        <CreateComment
+        <WriterContainer>
+          <WriterButton onClick={handleDelete}>삭제</WriterButton>
+        </WriterContainer>
+        <CommentList
+          comments={comments}
           boardId={boardId}
-          isReply={false}
-          commentId=""
-          onCommentAdded={loadBoardDetail}
+          onCommentAdded={loadCommentDetail}
         />
-        {boardDetail.comments.map((comment, index) => (
-          <React.Fragment key={comment.id}>
-            {comment.status === "ACTIVE" ? (
-              <CommentWrapper>
-                <Comment
-                  id={comment.id}
-                  boardId={boardId}
-                  avatarUrl={comment.member.profileUrl}
-                  userName={comment.member.nickname}
-                  userDetail={comment.member.carTitle}
-                  text={comment.content}
-                  time={comment.createdAt}
-                  onCommentAdded={loadBoardDetail}
-                />
-              </CommentWrapper>
-            ) : (
-              <NoComment isReply={false} />
-            )}
-            {comment.replies.length > 0 &&
-              comment.replies.map((reply) => (
-                <React.Fragment key={reply.id}>
-                  {reply.status === "ACTIVE" ? (
-                    <Reply
-                      id={reply.id}
-                      boardId={boardId}
-                      avatarUrl={reply.member.profileUrl}
-                      userName={reply.member.nickname}
-                      userDetail={reply.member.carTitle}
-                      text={reply.content}
-                      time={reply.createdAt}
-                      onCommentAdded={loadBoardDetail}
-                    />
-                  ) : (
-                    <NoComment isReply={true} />
-                  )}
-                </React.Fragment>
-              ))}
-          </React.Fragment>
-        ))}
       </CommentContainer>
     </>
   );
@@ -193,6 +157,7 @@ const Content = styled.div`
 `;
 
 const CommentNumber = styled.div`
+  margin-top: 10px;
   font-size: 18px;
 
   svg {

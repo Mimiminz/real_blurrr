@@ -3,7 +3,7 @@
 import styled from "styled-components";
 import Link from "next/link";
 
-import { UserTabProps, TabButtonProps } from "@/types/league";
+import { UserTabProps, TabButtonProps } from "@/types/leagueTypes";
 
 // 아이콘
 import { FaCar } from "react-icons/fa";
