@@ -76,7 +76,7 @@ export interface Comment {
 export interface Channels {
    id: string;
    name: string;
-   imgUrl: string;
+   img: string;
    info: string;
    owner: string;
    followCount: number;
