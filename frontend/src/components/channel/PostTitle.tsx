@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchBar from '@/components/common/UI/SearchBar';
 import { useRouter } from "next/navigation";
+import { useAuthStore } from '@/store/authStore';
+import { followChannel, unfollowChannel } from '@/api/channel';
 
 
 interface PostTitleProps {
@@ -68,7 +70,7 @@ const DropdownButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   color: #969696;
-  width: 100px; 
+  width: 110px; 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,7 +80,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   padding: 5px 0px;
   top: 45px;
-  width: 100px;
+  width: 110px;
   font-size: 14px;
   background-color: white;
   border: 1px solid #ddd;
@@ -103,12 +105,23 @@ const SideSection = styled.div`
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+
+  
 `;
 
 const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortChange }) => {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedSort, setSelectedSort] = useState('게시물 정렬');
+  const [selectedSort, setSelectedSort] = useState('게시글 정렬');
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  useEffect(() => {
+    const accessToken = useAuthStore.getState().accessToken;
+    setIsLoggedIn(!!accessToken);
+
+    setIsFollowing(accessToken ? true : false);
+  }, []);
 
   const handleCreatePost = () => {
     router.push(`/channels/${channel}/write`);
@@ -117,6 +130,19 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortC
   const handleDropdownToggle = () => {
     setDropdownVisible((prev) => !prev);
   };
+
+  const handleFollowChannel = async () => {
+    try {
+      if (isFollowing) {
+        await unfollowChannel(channel);
+      } else {
+        await followChannel(channel);
+      }
+      setIsFollowing(!isFollowing); // 팔로우 상태 토글
+    } catch (error) {
+      console.error('Error updating follow status:', error);
+    }
+  }
 
   const handleBlur = () => {
     setTimeout(() => setDropdownVisible(false), 200); // 드롭다운 메뉴가 닫히기 전에 클릭 이벤트가 발생하도록 시간을 둠
@@ -133,7 +159,11 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortC
       <TitleSection>
         <h1>{title}</h1>
         <SideSection>
-          <button className="setButton">팔로우 +</button>
+          {isLoggedIn && (
+            <button className="setButton" onClick={handleFollowChannel}>
+              {isFollowing ? '언팔로우 -' : '팔로우 +'}
+            </button>
+          )}
           <SearchBar onSearch={onSearch} />
         </SideSection>
         <FilterSection>
@@ -153,7 +183,11 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortC
               ))}
             </DropdownMenu>
           )}
-          <button className="setPosition setButton" onClick={handleCreatePost}>글 작성 +</button>
+          {isLoggedIn && (
+            <button className="setPosition setButton" onClick={handleCreatePost}>
+              글 작성 +
+            </button>
+          )}
         </FilterSection>
       </TitleSection>
     </Container>

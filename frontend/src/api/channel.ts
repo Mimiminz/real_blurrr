@@ -1,21 +1,15 @@
 import api from '@/api/index'; 
 import { Channels, DashCams, DashCamDetail, PostData, PostDetail } from '@/types/channelType';
 
-// 전체 채널 목록 데이터를 가져오는 함수
-export const fetchChannels = async (): Promise<Channels[]> => {
-  try {
-    const response = await api.get('/v1/channels');
-    return response.data.data.channels;
-  } catch (error) {
-    console.error('Error fetching channels data:', error);
-    throw error;
-  }
-};
-
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
 export const fetchFollowingChannels = async (): Promise<Channels[]> => {
   try {
     const response = await api.get('/v1/channels/followers');
+    
+    if (response.status === 204) {
+      return []; // 검색 결과가 없는 경우 빈 배열 반환
+    }
+    
     return response.data.data.channels;
   } catch (error) {
     console.error('Error fetching following channels data:', error);
@@ -27,9 +21,52 @@ export const fetchFollowingChannels = async (): Promise<Channels[]> => {
 export const fetchCreatedChannels = async (): Promise<Channels[]> => {
   try {
     const response = await api.get('/v1/channels/created');
+    
+    if (response.status === 204) {
+      return []; 
+    }
+    
     return response.data.data.channels;
   } catch (error) {
     console.error('Error fetching created channels data:', error);
+    throw error;
+  }
+};
+
+// 전체 채널 목록 데이터를 가져오는 함수
+export const fetchChannels = async (): Promise<Channels[]> => {
+  try {
+    const response = await api.get('/v1/channels');
+
+    if (response.status === 204) {
+      return []; 
+    }
+
+    return response.data.data.channels;
+  } catch (error) {
+    console.error('Error fetching channels data:', error);
+    throw error;
+  }
+};
+
+// 채널 태그 검색
+export const fetchSearchTags = async (tags: string[]): Promise<Channels[]> => {
+  try {
+    const params = new URLSearchParams();
+    tags.forEach(tag => params.append('tags', tag));
+
+    const response = await api.get('/v1/channels/search', {
+      params,
+    });
+
+    if (response.status === 204) {
+      return []; 
+    }
+
+    console.log(`main channel tag search : ${response.data.data.channels}`);
+    return response.data.data.channels;
+  } catch (error) {
+    console.error('Error fetching channels data:', error);
     throw error;
   }
 };
@@ -73,10 +110,32 @@ export const fetchChannelPostDetail = async (
     console.log('channelPostDetail call')
     return response.data.data.channelBoard;
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching channel post detail:', error);
     throw error;
   }
 };
+
+// 채널 팔로우 / 언팔로우 하는 함수
+export const followChannel = async (channelId: string) => {
+  try {
+    const response = await api.post(`/v1/channels/${channelId}/followers`);
+    return response.data;
+  } catch (error) {
+    console.error('Error following channel:', error);
+    throw error;
+  }
+};
+
+export const unfollowChannel = async (channelId: string) => {
+  try {
+    const response = await api.delete(`/v1/channels/${channelId}/followers`);
+    return response.data;
+  } catch (error) {
+    console.error('Error unfollowing channel:', error);
+    throw error;
+  }
+};
+
 
 // 블랙박스 목록 데이터를 가져오는 함수
 export const fetchDashCams = async (pageNumber: number, criteria: string): Promise<DashCams[]> => {

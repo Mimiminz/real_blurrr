@@ -7,6 +7,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import UserChannelCard from './UserChannelCard';
+import { useRouter } from 'next/navigation';
 
 SwiperCore.use([Navigation, Scrollbar, Autoplay]);
 
@@ -40,11 +41,12 @@ interface ChannelCarouselProps {
       id: string;
       name: string;
       followCount: number;
-      imgUrl: string;
+      img: string;
    }>;
+   handleChannelClick: (channelId: string) => void;
 }
 
-const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
+const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannelClick }) => {
    const swiperRef = useRef<SwiperCore>();
 
    return (
@@ -56,7 +58,6 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
             loop={true}
             spaceBetween={0}
             navigation={true}
-            slideToClickedSlide={true}
             slidesOffsetAfter={10}
             autoplay={{
                delay: 2500,
@@ -89,12 +90,16 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides }) => {
                   <UserChannelCard
                      name={slide.name}
                      followCount={slide.followCount}
-                     imgUrl={slide.imgUrl}
+                     img={slide.img}
+                     onClick={(e) => {
+                        e.stopPropagation();
+                        handleChannelClick(slide.id);
+                     }}
                   />
                </SwiperSlide>
             ))}
          </Swiper>
-      </SwiperContainer >
+      </SwiperContainer>
    );
 };
 

@@ -13,6 +13,22 @@ interface BoardDetailTitleProps {
   tags: Mentioned[]; // 태그들을 나타내기 위한 새로운 속성
 }
 
+// 포스트의 날짜를 형식화하는 함수
+const formatPostDate = (createdAt: string) => {
+  const postDate = new Date(createdAt);
+  const today = new Date();
+
+  if (postDate.toDateString() === today.toDateString()) {
+    return postDate.toLocaleTimeString([], {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } else {
+    return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+  }
+};
+
 const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
   title,
   createdAt,
@@ -21,6 +37,7 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
   member,
   tags,
 }) => {
+  const formattedDate = formatPostDate(createdAt); // 날짜를 포맷
 
   return (
     <Container>
@@ -34,7 +51,7 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
         <InfoLeft>
           <Icons>
             <WiTime4 />
-            <Date>{createdAt}</Date>
+            <FormatDate>{formattedDate}</FormatDate> {/* 포맷된 날짜를 출력 */}
             <FaEye />
             <Views>{viewCount}</Views>
             <FaHeart />
@@ -55,6 +72,7 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
 
 export default BoardDetailTitle;
 
+// 스타일 컴포넌트들
 const Container = styled.div`
   margin-bottom: 20px;
 `;
@@ -96,7 +114,7 @@ const Icons = styled.div`
   }
   `;
 
-const Date = styled.span`
+const FormatDate = styled.span`
   margin-right: 16px;
 `;
 

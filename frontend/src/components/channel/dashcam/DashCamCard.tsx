@@ -69,6 +69,21 @@ const Meta = styled.div`
 const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
   const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
 
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
+
   return (
     <Card>
       <Thumbnail src={videoUrl[0]} alt={title} />
@@ -82,7 +97,7 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
         <Meta>
           <span><FiEye /> {viewCount}</span>
           <span><FiHeart /> {likeCount}</span>
-          <span className="created">{createdAt}</span>
+          <span className="created">{formatPostDate(createdAt)}</span>
         </Meta>
       </Content>
     </Card>
