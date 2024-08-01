@@ -35,12 +35,14 @@ public class StringFormat {
     public static final String CONDITION_CONTENT = "comment";
     public static final String CONDITION_NICKNAME = "nickname";
 
+    public static final String SUBSCRIBE = "subscribe";
 
     // 허용 URI
     public static final String[] PERMIT_ALL_URI = {
             "/h2-console/**",
             "/v1/auth/**",
             "/health",
+            "/v1/alarm/**"
     };
 
     // 일반 회원 허용 URI
