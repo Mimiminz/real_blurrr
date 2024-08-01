@@ -57,18 +57,18 @@ const FilterSection = styled.div`
   display: flex;
   align-items: center;
   margin-top: 30px;
-  position: relative; /* 드롭다운 메뉴 위치를 위한 relative 속성 추가 */
+  position: relative; 
 `;
 
 const DropdownButton = styled.button`
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  background-color: white; /* 배경색 수정 */
+  background-color: white; 
   cursor: pointer;
   font-size: 14px;
   color: #969696;
-  width: 200px; /* 버튼 너비 설정 */
+  width: 100px; 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,7 +78,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   padding: 5px 0px;
   top: 45px;
-  width: 200px;
+  width: 100px;
   font-size: 14px;
   background-color: white;
   border: 1px solid #ddd;
