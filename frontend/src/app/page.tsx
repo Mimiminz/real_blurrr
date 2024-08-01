@@ -49,6 +49,7 @@ export default function Home() {
   const handleMoreClickBoast = () => {
     router.push("/channels/boast");
   };
+
   return (
     <PageContainer>
       <GridContainer>

@@ -13,6 +13,19 @@ function LeagueBoardListItem({
   likeCount,
   commentCount,
 }: LeagueBoardListItemProps) {
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleDateString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
   return (
     <ArticleDetail>
       <ArticleInfo>
@@ -27,7 +40,7 @@ function LeagueBoardListItem({
           <Icon>
             <MdAccessTime />
           </Icon>
-          {createdAt.slice(0, 10)}
+          {formatPostDate(createdAt)}
         </LikeSection>
         <LikeSection>
           <Icon>

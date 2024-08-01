@@ -125,7 +125,6 @@ export default function LeaguePage({
         userLeagueList.find((t) => t.id === leagueId.slice(7))?.name
       }가 멘션된 글`;
     }
-    console.log(name);
     setActiveTabName(name);
   }, [brandLeagueList, userLeagueList, leagueId, setActiveTabName]);
 
