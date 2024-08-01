@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { LeagueList } from "@/types/league";
+import { LeagueList } from "@/types/leagueTypes";
 
 interface LeagueState {
   brandLeagueList: LeagueList[];

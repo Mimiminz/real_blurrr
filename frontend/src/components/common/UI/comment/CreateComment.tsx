@@ -3,12 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 
-interface CreateCommentProps {
-  boardId: string;
-  isReply: boolean;
-  commentId: string;
-  onCommentAdded: () => void;
-}
+import { CreateCommentProps } from "@/types/commentTypes";
 
 export default function CreateComment({
   boardId,
