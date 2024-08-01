@@ -1,14 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { fetchCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
-
-interface ReplyProps {
-  avatarUrl: string;
-  userName: string;
-  userDetail: string | null;
-  text: string;
-  time: string;
-}
+import { CommentListItemProps } from "@/types/commentTypes";
 
 const Container = styled.div`
   display: flex;
@@ -56,13 +50,23 @@ const Text = styled.span`
   color: #333;
   margin-bottom: 2px;
 `;
+const ActionRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+`;
+const Delete = styled.span`
+  font-size: 12px;
+  color: #999;
+  cursor: pointer;
+`;
 
 const Time = styled.span`
   display: flex;
   align-items: center;
   font-size: 12px;
   color: #999;
-  margin-top: 5px;
+  margin-left: 8px;
 `;
 
 const DotLine = styled.div`
@@ -73,13 +77,39 @@ const DotLine = styled.div`
   border-left: 2px dotted #ccc;
 `;
 
-const Reply: React.FC<ReplyProps> = ({
+const Reply: React.FC<CommentListItemProps> = ({
+  id,
+  boardId,
   avatarUrl,
   userName,
   userDetail,
   text,
   time,
+  onCommentAdded,
 }) => {
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleDateString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await fetchCommentDelete(boardId, id);
+      console.error("Delete Complete");
+      onCommentAdded();
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
   return (
     <Container>
       <DotLine />
@@ -90,10 +120,13 @@ const Reply: React.FC<ReplyProps> = ({
           <UserDetail>· {userDetail || "뚜벅이"}</UserDetail>
         </UsernameWrapper>
         <Text>{text}</Text>
-        <Time>
-          <WiTime4 style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-          {time.slice(0, 10)}
-        </Time>
+        <ActionRow>
+          <Delete onClick={handleDelete}>삭제</Delete>
+          <Time>
+            <WiTime4 style={{ marginRight: "4px", verticalAlign: "middle" }} />
+            {formatPostDate(time)}
+          </Time>
+        </ActionRow>
       </Content>
     </Container>
   );

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BoardType {
 
-    CHANNEL("채널"), LEAGUE("리그"), DASHCAM("블랙박스");
+    CHANNEL("채널"), LEAGUE("리그"), DASHCAM("블랙박스"), MYCAR("차자랑");
 
     private final String name;
 

@@ -4,11 +4,10 @@ import LeagueBoardListItem from "./LeagueBoardListItem";
 
 import { fetchLeagueBoardList } from "@/api/league";
 import { useEffect, useState } from "react";
-import { boardListProp, LeagueBoardItem } from "@/types/league";
+import { boardListProp, LeagueBoardItem } from "@/types/leagueTypes";
 
 const LeagueBoardList = ({ leagueId, boardList }: boardListProp) => {
   const router = useRouter();
-  
 
   const handleCardClick = (id: string) => {
     router.push(`${leagueId}/${id}`);

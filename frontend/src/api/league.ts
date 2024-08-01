@@ -4,7 +4,7 @@ import {
   LeagueBoardItem,
   BoardDetail,
   UserLeague,
-} from "@/types/league";
+} from "@/types/leagueTypes";
 
 // 사용자 리그 가져오는 함수
 export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
@@ -23,7 +23,6 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
 export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
   try {
     const response = await api.get(`/v1/leagues/brands`);
-    console.log("api 호출");
     return response.data.data.leagues;
   } catch (error) {
     console.error("Failed to fetch league list", error);

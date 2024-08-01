@@ -68,6 +68,15 @@ public class Board extends BaseEntity {
         this.member = member;
     }
 
+    public void increaseViewCount()  {
+        this.viewCount++;
+    }
+
+    public void decreaseViewCount()  {
+        this.viewCount--;
+    }
+
+
     public void increaseCommentCount()  {
         this.commentCount++;
     }

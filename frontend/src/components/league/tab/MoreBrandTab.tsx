@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
-import { moreTabProps, TabButtonProps } from "@/types/league";
+import { moreTabProps, TabButtonProps } from "@/types/leagueTypes";
 
 export default function MoreBrandTab({
   activeTabId,

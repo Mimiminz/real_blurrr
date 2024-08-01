@@ -68,8 +68,8 @@ public class ChannelBoardController {
 
 
     @Operation(
-            summary = "채널 게시글 목록 조회 API",
-            description = "채널에 대한 게시물 목록을 가져온다."
+            summary = "채널 게시글 목록 검색 조회 API",
+            description = "채널에 대한 게시물 목록을 검색한다."
     )
     @ApiResponses({
             @ApiResponse(
@@ -103,11 +103,13 @@ public class ChannelBoardController {
     @GetMapping
     public ResponseEntity getChannelBoard(
             @PathVariable(name = "channelId")UUID channelId,
+            @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ){
         List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(
                 channelId,
+                keyword,
                 pageNumber,
                 criteria
         );
