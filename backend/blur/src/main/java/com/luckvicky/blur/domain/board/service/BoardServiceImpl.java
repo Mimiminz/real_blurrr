@@ -212,6 +212,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional(readOnly = true)
     public BoardDetailDto getBoardDetail(UUID memberId, UUID boardId) {
 
+        Member member = memberRepository.getOrThrow(memberId);
         Board board = boardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
 
@@ -221,7 +222,7 @@ public class BoardServiceImpl implements BoardService {
                 .collect(Collectors.toList());
 
         return BoardDetailDto.of(
-                board, comments, likeRepository.existsByMemberIdAndBoardId(memberId, boardId)
+                board, comments, isLike(member, board)
         );
 
     }
@@ -251,6 +252,10 @@ public class BoardServiceImpl implements BoardService {
         board.inactive();
 
         return true;
+    }
+
+    private Boolean isLike(Member member, Board board) {
+        return likeRepository.existsByMemberAndBoard(member, board);
     }
 
     private boolean isCreated(Board createdBoard) {

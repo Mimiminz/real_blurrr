@@ -24,13 +24,14 @@ import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
+import com.luckvicky.blur.domain.leaguemember.exception.NotHasAuthorityOfLeagueException;
+import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SearchCondition;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,12 +57,15 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private final ChannelBoardRepository channelBoardRepository;
     private final DashcamRepository dashcamRepository;
     private final LikeRepository likeRepository;
+    private final LeagueMemberRepository leagueMemberRepository;
 
     @Override
     public UUID createLeagueBoard(UUID memberId, UUID leagueId, LeagueBoardCreateRequest request) {
 
-        Member member = memberRepository.getOrThrow(memberId);
         League league = leagueRepository.getOrThrow(leagueId);
+        Member member = memberRepository.getOrThrow(memberId);
+
+        isAllocated(league, member);
 
         Board createdLeagueBoard = boardRepository.save(
                 request.toEntity(league, member)
@@ -73,9 +77,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChannelBoardDto> getMentionLeagueBoards(UUID leagueId, int pageNumber, String criteria) {
+    public List<ChannelBoardDto> getMentionLeagueBoards(UUID leagueId, UUID memberId, int pageNumber, String criteria) {
 
         League mentionedLeague = leagueRepository.getOrThrow(leagueId);
+        Member member = memberRepository.getOrThrow(memberId);
+
+        isAllocated(mentionedLeague, member);
 
         SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
         Pageable pageable = PageRequest.of(
@@ -108,9 +115,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardDto> getLeagueBoards(UUID leagueId, int pageNumber, String criteria) {
+    public List<BoardDto> getLeagueBoards(UUID leagueId, UUID memberId, int pageNumber, String criteria) {
 
         League league = leagueRepository.getOrThrow(leagueId);
+        Member member = memberRepository.getOrThrow(memberId);
+
+        isAllocated(league, member);
 
         Pageable pageable = PageRequest.of(
                 pageNumber, LEAGUE_BOARD_PAGE_SIZE,
@@ -127,15 +137,17 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     }
 
     @Override
-    public BoardDetailDto getLeagueBoardDetail(ContextMember member, UUID boardId) {
+    public BoardDetailDto getLeagueBoardDetail(UUID memberId, UUID boardId) {
 
-
-        Board board = boardRepository.findByIdForUpdate(boardId)
+        Member member = memberRepository.getOrThrow(memberId);
+        LeagueBoard board = leagueBoardRepository.findByIdForUpdate(boardId)
                 .orElseThrow(NotExistBoardException::new);
+
+        isAllocated(board.getLeague(), member);
 
         board.increaseViewCount();
 
-        board = boardRepository.findByIdWithCommentAndReply(boardId)
+        board = leagueBoardRepository.findByIdWithCommentAndReply(boardId, ActivateStatus.ACTIVE)
                 .orElseThrow(NotExistBoardException::new);
 
         List<CommentDto> comments = board.getComments().stream()
@@ -144,7 +156,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .collect(Collectors.toList());
 
         return BoardDetailDto.of(
-                board, comments, likeRepository.existsByMemberIdAndBoardId(member.getId(), board.getId())
+                board, comments, isLike(member, board)
         );
 
     }
@@ -185,6 +197,18 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
                 .collect(Collectors.toList());
 
+    }
+
+    private void isAllocated(League league, Member member) {
+
+        if (!leagueMemberRepository.existsByLeagueAndMember(league, member)) {
+            throw new NotHasAuthorityOfLeagueException();
+        }
+
+    }
+
+    private Boolean isLike(Member member, Board board) {
+        return likeRepository.existsByMemberAndBoard(member, board);
     }
 
     private UUID isCreated(Board createdLeagueBoard) {
