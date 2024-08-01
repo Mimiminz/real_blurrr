@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 public class ChannelBoard extends Board {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(16)")
     Channel channel;
 
     public ChannelBoard(String title, String content, BoardType type, Member member, Channel channel) {

@@ -37,6 +37,8 @@ public class StringFormat {
 
     public static final String SUBSCRIBE = "subscribe";
 
+    public static final String REDISSON_ADDRESS = "redis://localhost:6379";
+
     // 허용 URI
     public static final String[] PERMIT_ALL_URI = {
             "/h2-console/**",

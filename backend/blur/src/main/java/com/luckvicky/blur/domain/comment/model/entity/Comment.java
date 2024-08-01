@@ -29,18 +29,18 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "comment_id",
-            columnDefinition = "BINARY(36)",
+            columnDefinition = "BINARY(16)",
             referencedColumnName = "id",
             updatable = false
     )
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", columnDefinition = "BINARY(36)", nullable = false)
+    @JoinColumn(name = "board_id", columnDefinition = "BINARY(16)", nullable = false)
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)", nullable = false)
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)", nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)

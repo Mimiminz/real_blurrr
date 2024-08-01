@@ -25,11 +25,11 @@ public class ChannelMemberFollow {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(16)")
     private Channel channel;
 
     @Builder

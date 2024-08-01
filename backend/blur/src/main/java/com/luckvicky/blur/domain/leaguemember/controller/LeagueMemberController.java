@@ -47,7 +47,7 @@ public class LeagueMemberController {
                     description = "실패"
             )
     })
-    @PostMapping("/{leagueId}/members")
+    @PostMapping("/members")
     public ResponseEntity createLeagueMember(
             @RequestBody LeagueMemberCreateRequest request,
             @AuthUser ContextMember member
