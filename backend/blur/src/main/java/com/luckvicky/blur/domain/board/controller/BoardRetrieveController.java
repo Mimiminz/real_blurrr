@@ -19,7 +19,7 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -236,7 +236,7 @@ public class BoardRetrieveController {
 
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(
             summary = "HOT 게시판 조회 API",
             description = "최근 1주일 동안 가장 좋아요를 많이 받은 10개의 게시글을 조회한다."
@@ -272,7 +272,7 @@ public class BoardRetrieveController {
 
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(
             summary = "HOT 블랙박스 게시판 조회 API",
             description = "최근 1주일 동안 가장 투표를 많이 받은 5개의 게시글을 조회한다."
@@ -308,7 +308,7 @@ public class BoardRetrieveController {
 
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(
             summary = "오늘의차 조회 API",
             description = "어제 차자랑 게시글 중 가장 좋아요가 높았던 1개 게시글을 조회한다."
@@ -344,7 +344,7 @@ public class BoardRetrieveController {
 
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(
             summary = "HOT 차자랑 게시판 조회 API",
             description = "최근 1주일 동안 가장 조회수가 높은 많이 받은 20개의 게시글을 조회한다."

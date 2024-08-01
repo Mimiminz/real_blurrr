@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import javax.swing.text.html.HTML;
-
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ErrorCode {
@@ -35,11 +33,13 @@ public enum ErrorCode {
      * [401 UnAuthorized]
      * - 요청된 리소스에 대한 유효한 인증 자격 증명이 없음
      */
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
 
     /**
      * [403 Forbidden]
      * -  요청한 자원에 대해 권한 없음
      */
+    NOT_HAS_AUTHORITY_OF_LEAGUE(HttpStatus.FORBIDDEN, "리그 사용 권한이 없습니다."),
     UNAUTHORIZED_BOARD_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
 
     /**

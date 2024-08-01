@@ -29,9 +29,8 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
             + "FROM Board b "
             + "LEFT JOIN FETCH b.comments c "
             + "LEFT JOIN FETCH b.member m "
-            + "WHERE b.id = :id"
-    )
-    Optional<Board> findByIdWithCommentAndReply(UUID id);
+            + "WHERE b.id = :id ")
+    Optional<Board> findByIdWithCommentAndReply(@Param("id") UUID id);
 
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByMember(Member member, Pageable pageable);

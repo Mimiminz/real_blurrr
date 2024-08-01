@@ -7,7 +7,7 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -34,7 +33,7 @@ public class AuthController {
         this.memberService = memberService;
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
@@ -42,21 +41,21 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "로그인")
     @PostMapping("/signin")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
         return ResponseEntity.ok(memberService.login(signInDto));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<JwtDto> tokenReissue(@Valid @RequestBody ReissueDto reissue) {
         return ResponseEntity.ok(memberService.reissueToken(reissue));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<Boolean> checkNickName(
@@ -74,35 +73,35 @@ public class AuthController {
 //        return ResponseEntity.ok(s3ImageService.getPresignedUrl("images", fileName));
 //    }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "이메일 인증번호 생성 API")
     @GetMapping("/email/{email}")
     public ResponseEntity<Boolean> createEmailAuth(@PathVariable("email") String email) {
         return ResponseEntity.ok(memberService.createEmailAuthCode(email));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "이메일 인증번호 확인")
     @PostMapping("/email")
     public ResponseEntity<Boolean> validEmailAuth(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "비밀번호 찾기 이메일 인증 요청")
     @GetMapping("/passwrod/email/{email}")
     public ResponseEntity<Boolean> createPaaswordChangeAuthcode(@PathVariable String email){
         return ResponseEntity.ok(memberService.createPasswordAuthCode(email));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "비밀번호 찾기 이메일 인증 코드 확인")
     @PostMapping("/password/email")
     public ResponseEntity<Boolean> validPasswordAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validPasswordAuthCode(emailAuth));
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(summary = "비밀번호 변경")
     @PutMapping("/password")
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangePassword changePassword) {
