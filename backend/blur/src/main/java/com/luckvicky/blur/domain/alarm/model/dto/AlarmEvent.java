@@ -1,6 +1,5 @@
 package com.luckvicky.blur.domain.alarm.model.dto;
 
-import com.luckvicky.blur.domain.alarm.model.entity.Alarm;
 import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
 import java.util.UUID;
 
