@@ -16,13 +16,30 @@ import UserCarInfo from "@/components/main/user/UserCarInfo";
 import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
 
 import { useLeagueStore } from "@/store/leagueStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchBrandLeagues } from "@/api/league";
+import { fetchHotArticles } from "@/api/mainPage";
+import { HotBoardItem } from "@/types/mainPageTypes";
 
 export default function Home() {
   const router = useRouter();
   const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
     useLeagueStore();
+
+  const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
+
+  useEffect(() => {
+    const fetchMainProps = async () => {
+      try {
+        const hot = await fetchHotArticles();
+        setHotBoards(hot);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMainProps();
+  }, []);
 
   useEffect(() => {
     const initailizeTabs = async () => {
@@ -50,6 +67,10 @@ export default function Home() {
     router.push("/channels/boast");
   };
 
+  if (!hotBoards) {
+    return <div>loading...</div>;
+  }
+
   return (
     <PageContainer>
       <GridContainer>
@@ -60,7 +81,7 @@ export default function Home() {
           </UserInfoContainer>
           <ArticleSection>
             <SectionTitle>Hot</SectionTitle>
-            <HotArticleList />
+            <HotArticleList hotBoards={hotBoards} />
           </ArticleSection>
           <ArticleSection>
             <SectionHeader>
