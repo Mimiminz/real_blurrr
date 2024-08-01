@@ -39,7 +39,7 @@ public enum ErrorCode {
      * [403 Forbidden]
      * -  요청한 자원에 대해 권한 없음
      */
-    NOT_HAS_AUTHORITY_OF_LEAGUE(HttpStatus.FORBIDDEN, "리그 사용 권한이 없습니다."),
+    NOT_ALLOCATED_LEAGUE(HttpStatus.FORBIDDEN, "리그 사용 권한이 없습니다."),
     UNAUTHORIZED_BOARD_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
 
     /**

@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.comment.model.dto;
 
 import com.luckvicky.blur.domain.member.model.MemberDto;
+import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -15,7 +16,7 @@ public class CommentDto {
     private UUID id;
     
     @Schema(description = "작성자 정보")
-    private MemberDto member;
+    private SimpleMemberDto member;
 
     @Schema(description = "내용")
     private String content;

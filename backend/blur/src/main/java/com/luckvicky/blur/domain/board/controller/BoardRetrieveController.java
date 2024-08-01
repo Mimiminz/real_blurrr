@@ -14,6 +14,7 @@ import com.luckvicky.blur.domain.board.model.dto.response.MemberBoardListRespons
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
+import com.luckvicky.blur.domain.comment.service.CommentService;
 import com.luckvicky.blur.domain.like.model.response.LikeBoardListResponse;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardRetrieveController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @Operation(
             summary = "좋아요 게시글 조회 API",
@@ -226,11 +228,9 @@ public class BoardRetrieveController {
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        List<CommentDto> boardDetail = boardService.getComments(boardId);
-
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(CommentListResponse.of(boardDetail))
+                        .data(commentService.findCommentsByBoard(boardId))
                         .build()
         );
 

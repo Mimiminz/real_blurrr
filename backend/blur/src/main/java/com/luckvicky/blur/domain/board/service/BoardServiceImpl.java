@@ -188,25 +188,25 @@ public class BoardServiceImpl implements BoardService {
 
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
-
-        BoardType boardType = BoardType.convertToEnum(type);
-        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
-
-        Pageable pageable = PageRequest.of(
-                pageNumber, LEAGUE_BOARD_PAGE_SIZE,
-                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
-        );
-
-        List<Board> boards = boardRepository
-                .findAllByTypeAndStatus(boardType, pageable, ActivateStatus.ACTIVE).getContent();
-
-        return boards.stream()
-                .map(board -> mapper.map(board, BoardDto.class))
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
+//
+//        BoardType boardType = BoardType.convertToEnum(type);
+//        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+//
+//        Pageable pageable = PageRequest.of(
+//                pageNumber, LEAGUE_BOARD_PAGE_SIZE,
+//                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
+//        );
+//
+//        List<Board> boards = boardRepository
+//                .findAllByTypeAndStatus(boardType, pageable, ActivateStatus.ACTIVE).getContent();
+//
+//        return boards.stream()
+//                .map(board -> mapper.map(board, BoardDto.class))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -222,21 +222,8 @@ public class BoardServiceImpl implements BoardService {
                 .collect(Collectors.toList());
 
         return BoardDetailDto.of(
-                board, comments, isLike(member, board)
+                board, isLike(member, board)
         );
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getComments(UUID boardId) {
-
-        Board board = boardRepository.getOrThrow(boardId);
-        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
-
-        return  comments.stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
 
     }
 
