@@ -49,6 +49,10 @@ public class Alarm extends BaseEntity {
         super();
     }
 
+    public void changeRead() {
+        this.isRead = true;
+    }
+
     public void addMember(Member member) {
         this.member = member;
     }

@@ -11,4 +11,6 @@ public interface AlarmService {
     SseEmitter subscribe(UUID memberId);
     void sendAlarm(AlarmEvent alarm);
     List<AlarmDto> findAlarms(UUID memberId, Pageable pageable);
+
+    boolean modifyReadStatus(UUID alarmId);
 }

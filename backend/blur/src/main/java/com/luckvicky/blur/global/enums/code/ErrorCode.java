@@ -54,7 +54,7 @@ public enum ErrorCode {
     NOT_EXIST_CHANNEL(HttpStatus.NOT_FOUND, "존재하지 않는 채널입니다."),
     NOT_EXIST_LIKE(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요입니다."),
     NOT_EXIST_FOLLOW(HttpStatus.NOT_FOUND, "존재하지 않는 팔로우입니다."),
-
+    NOT_EXIST_ALARM(HttpStatus.NOT_FOUND, "존재하지 않는 알림입니다."),
     /**
      * [500 INTERNAL_SERVER_ERROR]
      * - 서버 오류

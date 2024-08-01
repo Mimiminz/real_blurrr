@@ -79,6 +79,16 @@ public class AlarmServiceImpl implements AlarmService {
         return alarmRepository.findAllByMember(member, pageable).stream().map(AlarmDto::of).toList();
     }
 
+    @Transactional
+    @Override
+    public boolean modifyReadStatus(UUID alarmId) {
+        Alarm alarm = alarmRepository.getOrThrow(alarmId);
+
+        alarm.changeRead();
+
+        return true;
+    }
+
     private void send(String event, Object data, UUID memberId, SseEmitter sseEmitter) {
         try {
             sseEmitter.send(SseEmitter.event()

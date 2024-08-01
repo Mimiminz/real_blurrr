@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,12 +46,6 @@ public class AlarmController {
         return alarmService.subscribe(memberId);
     }
 
-    @GetMapping(value = "/test")
-    public ResponseEntity<Boolean> test(@AuthUser ContextMember member) {
-        alarmService.sendAlarm(new AlarmEvent(member.getId(), AlarmType.ADD_COMMENT, "link", "test", "dddd"));
-        return ResponseEntity.ok(true);
-    }
-
     @Operation(summary = "알림 리스트 조회")
     @GetMapping("/list")
     public ResponseEntity<List<AlarmDto>> findAlarms(
@@ -60,5 +55,10 @@ public class AlarmController {
         Pageable pageable = PageRequest.of(pageNo, ALARM_PAGE_SIZE,
                 Sort.by(Direction.DESC, SortingCriteria.valueOf("TIME").getCriteria()));
         return ResponseEntity.ok(alarmService.findAlarms(member.getId(), pageable));
+    }
+    @Operation(summary = "알림 읽음 처리")
+    @PutMapping("/read/{id}")
+    public ResponseEntity<Boolean> modifyReadStatus(@PathVariable(name = "id") UUID alarmId) {
+        return ResponseEntity.ok(alarmService.modifyReadStatus(alarmId));
     }
 }
