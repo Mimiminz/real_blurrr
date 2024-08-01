@@ -110,10 +110,32 @@ export const fetchChannelPostDetail = async (
     console.log('channelPostDetail call')
     return response.data.data.channelBoard;
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching channel post detail:', error);
     throw error;
   }
 };
+
+// 채널 팔로우 / 언팔로우 하는 함수
+export const followChannel = async (channelId: string) => {
+  try {
+    const response = await api.post(`/v1/channels/${channelId}/followers`);
+    return response.data;
+  } catch (error) {
+    console.error('Error following channel:', error);
+    throw error;
+  }
+};
+
+export const unfollowChannel = async (channelId: string) => {
+  try {
+    const response = await api.delete(`/v1/channels/${channelId}/followers`);
+    return response.data;
+  } catch (error) {
+    console.error('Error unfollowing channel:', error);
+    throw error;
+  }
+};
+
 
 // 블랙박스 목록 데이터를 가져오는 함수
 export const fetchDashCams = async (pageNumber: number, criteria: string): Promise<DashCams[]> => {
