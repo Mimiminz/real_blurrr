@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 // 투표 결과 데이터
 const resData: Result[] = [
-  { id: 0, text: `정승훈ㅁㄴㅇㅁㄴㅇㅁㄴㄹㅈㅁㄹㄷㅁㅈㄷㄹㄷㄻㅈㄴㅁ아ㅡㅁㄴ이ㅏㅁㅇ`, votes: 3 },
+  { id: 0, text: `정승훈ㅁㄴㅇ아ㅡㅁㄴ이ㅏㅁㅇ`, votes: 3 },
   { id: 1, text: '박근석', votes: 6 },
   { id: 2, text: '최은혜', votes: 2 },
   { id: 3, text: '전상현', votes: 5 },
@@ -43,12 +43,21 @@ const EllipsisStyle = styled.div`
   ._is6ww, .poll-answer {
     white-space: nowrap !important; /* 한 줄로 설정 */
     text-overflow: ellipsis !important; /* 말줄임 표시 */
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 두 줄로 제한 */
-    -webkit-box-orient: vertical;
-    line-height: 1.2; /* 줄 간격 조정 */
-    max-height: 2.4em; /* 두 줄 높이에 맞게 설정 */
+    display: flex;
+    align-items: center;
+    line-height: 0.7; /* 줄 높이 조정 */
+    max-width: 300px;
   }
+
+  ._is6ww p {
+  margin: 0;
+  padding: 1rem;
+  font-weight: bold;
+  text-align: left;
+  word-wrap : break-word;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 `;
 
 const PollComponent: React.FC = () => {

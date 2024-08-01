@@ -4,9 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
-import CreateComment from '@/components/common/UI/comment/CreateComment';
-import Comment from '@/components/common/UI/comment/Comment';
-import Reply from '@/components/common/UI/comment/Reply';
 import Vote from '@/components/channel/dashcam/detail/Vote';
 import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaRegEye } from "react-icons/fa";
@@ -121,11 +118,12 @@ const Page = () => {
          setDashCamDetail(data);
       } catch (error) {
          console.error('Failed to load dash cam detail:', error);
+         // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
       }
    };
    useEffect(() => {
       loadDetail();
-   });
+   }, [dashcamId]);
 
    if (!dashCamDetail) {
       return <div>Loading...</div>;
@@ -147,7 +145,7 @@ const Page = () => {
                </LeftColumn>
                <RightColumn>
                   <CommentsSection>
-                     <StatsContainer>
+                     {/* <StatsContainer>
                         <StatItem>
                            <LiaCommentDots /> {dashCamDetail.commentCount}
                         </StatItem>
@@ -196,7 +194,7 @@ const Page = () => {
                               ))
                            )}
                         </React.Fragment>
-                     ))}
+                     ))} */}
                   </CommentsSection>
                   <VoteSection>
                      <Vote options={dashCamDetail.options} />

@@ -4,9 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from "styled-components";
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { LiaCommentDots } from 'react-icons/lia';
-import Comment from '@/components/common/UI/comment/Comment';
-import CreateComment from '@/components/common/UI/comment/CreateComment';
-import Reply from '@/components/common/UI/comment/Reply';
 import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
 import { PostDetail, Comment as CommentProp, CommentStatus } from "@/types/channelType";
 import { fetchChannelPostDetail } from "@/api/channel";
@@ -132,7 +129,7 @@ export default function ChannelBoardDetailPage({ params }: { params: { channelId
                <WriterButton>수정</WriterButton>
                <WriterButton>삭제</WriterButton>
             </WriterContainer>
-            <CommentNumber>
+            {/* <CommentNumber>
                <LiaCommentDots />
                {boardDetail.commentCount}
             </CommentNumber>
@@ -174,6 +171,12 @@ export default function ChannelBoardDetailPage({ params }: { params: { channelId
                   )}
                </React.Fragment>
             ))}
+            <CommentList
+          comments={commentList.comments}
+          commentCount={commentList.commentCount}
+          boardId={boardId}
+          onCommentAdded={loadCommentDetail}
+        /> */}
          </CommentContainer>
       </>
    );

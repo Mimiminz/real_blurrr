@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { DashCamContentData } from '@/types/channelType';
+import { MdAccessTime } from 'react-icons/md';
 
 const Container = styled.div`
   width: 100%;
@@ -59,7 +60,7 @@ const CarInfo = styled.div`
   margin-top: 4px;
 `;
 
-const Date = styled.div`
+const FormatDate = styled.div`
   font-size: 14px;
   color: #999;
 `;
@@ -93,6 +94,15 @@ const Content = styled.div`
   padding-top: 15px;
 `;
 
+const Icon = styled.span`
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  vertical-align: middle;
+`;
+
 const HeartButton = styled.button`
   margin: 5px 1px 5px auto;
   background: none;
@@ -108,6 +118,16 @@ const HeartButton = styled.button`
   }
 `;
 
+const TimeSection = styled.span`
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 8px;
+  margin-top: auto;
+  color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 14px;
+`;
+
 const DashCamContent: React.FC<DashCamContentData> = ({
    id, member, title, createdAt, videoUrl, content, mentionedLeagues
 }) => {
@@ -115,6 +135,21 @@ const DashCamContent: React.FC<DashCamContentData> = ({
 
    const toggleLike = () => {
       setIsLiked(!isLiked);
+   };
+
+   const formatPostDate = (createdAt: string) => {
+      const postDate = new Date(createdAt);
+      const today = new Date();
+
+      if (postDate.toDateString() === today.toDateString()) {
+         return postDate.toLocaleTimeString([], {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+         });
+      } else {
+         return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+      }
    };
 
    return (
@@ -130,7 +165,12 @@ const DashCamContent: React.FC<DashCamContentData> = ({
                   <CarInfo>{member.carTitle}</CarInfo>
                </UserInfo>
             </User>
-            <Date>{createdAt}</Date>
+            <TimeSection>
+               <Icon>
+                  <MdAccessTime />
+               </Icon>
+               <FormatDate>{formatPostDate(createdAt)}</FormatDate>
+            </TimeSection>
          </Header>
          <Body>
             <Tags>
