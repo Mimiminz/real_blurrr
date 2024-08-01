@@ -41,6 +41,7 @@ public class StringFormat {
             "/h2-console/**",
             "/v1/auth/**",
             "/health",
+            "/v1/alarm/**"
     };
 
     // 일반 회원 허용 URI

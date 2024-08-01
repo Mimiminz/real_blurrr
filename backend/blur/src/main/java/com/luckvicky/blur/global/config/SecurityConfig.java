@@ -55,10 +55,8 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer
                         -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-
                 .authorizeHttpRequests(requestConfigurer -> requestConfigurer
 
-                        
                         // 허용 URI
                         .requestMatchers(PERMIT_ALL_URI).permitAll()
 
