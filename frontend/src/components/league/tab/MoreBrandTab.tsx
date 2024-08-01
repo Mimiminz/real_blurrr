@@ -72,7 +72,7 @@ const MoreTabsButton = styled.button`
 
 const MoreTabsContainer = styled.div.attrs<{ $isOpen: boolean }>((props) => ({
   style: {
-    maxHeight: props.$isOpen ? "200px" : "0",
+    maxHeight: props.$isOpen ? "170px" : "0",
     padding: props.$isOpen ? "10px" : "0",
     display: props.$isOpen ? "flex" : "none",
   },
