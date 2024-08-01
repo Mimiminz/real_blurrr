@@ -7,6 +7,7 @@ const NoComment: React.FC<NoCommentProps> = ({ isReply }) => {
     <>
       {isReply ? (
         <ReplyContainer>
+          <DotLine />
           <Avatar />
           <Content>
             <Text>삭제된 댓글입니다.</Text>
@@ -28,13 +29,13 @@ export default NoComment;
 
 const Container = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
   width: 100%;
 `;
 const ReplyContainer = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
   margin-left: 30px;
   position: relative;

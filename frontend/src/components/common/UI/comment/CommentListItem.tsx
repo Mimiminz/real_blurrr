@@ -33,7 +33,8 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
     const today = new Date();
 
     if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleDateString([], {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
         hour: "2-digit",
         minute: "2-digit",
       });

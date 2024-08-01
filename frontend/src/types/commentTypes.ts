@@ -9,10 +9,16 @@ export interface Comment {
   replies: Comment[];
 }
 
+export interface fetchComment {
+  comments: Comment[];
+  commentCount: number;
+}
+
 export interface CommentListProps {
   comments: Comment[];
   boardId: string;
   onCommentAdded: () => void;
+  commentCount: number;
 }
 
 export interface CreateCommentProps {
