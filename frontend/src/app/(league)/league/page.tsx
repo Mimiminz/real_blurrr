@@ -7,7 +7,7 @@ import UserTab from "@/components/league/tab/UserTab";
 import LeagueListItem from "@/components/league/LeagueListItem";
 import { useAuthStore } from "@/store/authStore";
 
-import { UserLeague, LeagueList } from "@/types/league";
+import { UserLeague, LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
 
@@ -79,7 +79,6 @@ export default function LeagueMainPage() {
     isLoadUserLeagues,
     setIsLoadUserLeagues,
   ]);
-
 
   return (
     <>

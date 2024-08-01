@@ -2,21 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
-import Comment from "@/components/common/UI/comment/Comment";
-import CreateComment from "@/components/common/UI/comment/CreateComment";
-import NoComment from "@/components/common/UI/comment/NoComment";
-import Reply from "@/components/common/UI/comment/Reply";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
-import { Divider } from "@nextui-org/divider";
 
-import { BoardDetail, Comment as CommentProp } from "@/types/league";
+import { BoardDetail } from "@/types/leagueTypes";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
+
+import { fetchComment } from "@/types/commentTypes";
 
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
+import { fetchLeagueCommentList } from "@/api/comment";
+import CommentList from "@/components/common/UI/comment/CommentList";
 
 export default function BoardDetailPage({
   params,
@@ -32,6 +30,7 @@ export default function BoardDetailPage({
     useLeagueStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
+  const [commentList, setCommentList] = useState<fetchComment | null>(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -43,7 +42,8 @@ export default function BoardDetailPage({
     const today = new Date();
 
     if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleDateString([], {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
         hour: "2-digit",
         minute: "2-digit",
       });
@@ -61,8 +61,18 @@ export default function BoardDetailPage({
     }
   };
 
+  const loadCommentDetail = async () => {
+    try {
+      const fetchcommentsList = await fetchLeagueCommentList(boardId);
+      setCommentList(fetchcommentsList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     loadBoardDetail();
+    loadCommentDetail();
   }, [boardId]);
 
   useEffect(() => {
@@ -94,19 +104,19 @@ export default function BoardDetailPage({
     }
   };
 
-  if (!boardDetail) {
+  if (!boardDetail || !commentList) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
-      {/* <BreadcrumbContainer>
+      <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
           subChannel={activeTabName}
           channelUrl={`/league/${leagueId}`}
         />
-      </BreadcrumbContainer> */}
+      </BreadcrumbContainer>
       <LeagueDetailTitle
         title={boardDetail.title}
         createdAt={formatPostDate(boardDetail.createdAt)}
@@ -117,62 +127,19 @@ export default function BoardDetailPage({
         authorCarTitle={boardDetail.member.carTitle}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <HeartButton onClick={toggleLike}>
-        {isLiked ? <FaHeart /> : <FaRegHeart />}
-      </HeartButton>
       <CommentContainer>
-        <CommentNumber>
-          <WriterContainer>
-            <WriterButton onClick={handleDelete}>삭제</WriterButton>
-          </WriterContainer>
-          <LiaCommentDots />
-          {boardDetail.commentCount}
-        </CommentNumber>
-        <CreateComment
+        <WriterContainer>
+          <HeartButton onClick={toggleLike}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </HeartButton>
+          <WriterButton onClick={handleDelete}>삭제</WriterButton>
+        </WriterContainer>
+        <CommentList
+          comments={commentList.comments}
+          commentCount={commentList.commentCount}
           boardId={boardId}
-          isReply={false}
-          commentId=""
-          onCommentAdded={loadBoardDetail}
+          onCommentAdded={loadCommentDetail}
         />
-        {boardDetail.comments.map((comment, index) => (
-          <React.Fragment key={comment.id}>
-            {comment.status === "ACTIVE" ? (
-              <CommentWrapper>
-                <Comment
-                  id={comment.id}
-                  boardId={boardId}
-                  avatarUrl={comment.member.profileUrl}
-                  userName={comment.member.nickname}
-                  userDetail={comment.member.carTitle}
-                  text={comment.content}
-                  time={comment.createdAt}
-                  onCommentAdded={loadBoardDetail}
-                />
-              </CommentWrapper>
-            ) : (
-              <NoComment isReply={false} />
-            )}
-            {comment.replies.length > 0 &&
-              comment.replies.map((reply) => (
-                <React.Fragment key={reply.id}>
-                  {reply.status === "ACTIVE" ? (
-                    <Reply
-                      id={reply.id}
-                      boardId={boardId}
-                      avatarUrl={reply.member.profileUrl}
-                      userName={reply.member.nickname}
-                      userDetail={reply.member.carTitle}
-                      text={reply.content}
-                      time={reply.createdAt}
-                      onCommentAdded={loadBoardDetail}
-                    />
-                  ) : (
-                    <NoComment isReply={true} />
-                  )}
-                </React.Fragment>
-              ))}
-          </React.Fragment>
-        ))}
       </CommentContainer>
     </>
   );
@@ -192,50 +159,42 @@ const Content = styled.div`
   border-top: 1px solid #bebebe;
 `;
 
-const CommentNumber = styled.div`
-  font-size: 18px;
-
-  svg {
-    margin-right: 5px;
-    margin-top: 12px;
-  }
-`;
-
 const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-left: 20px;
   border-top: 1px solid #bebebe;
 `;
 
 const WriterContainer = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  margin-top: 10px;
 `;
 
-const WriterButton = styled.button`
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
+const WriterButton = styled.p`
+  padding: 0px;
+  /* border-radius: 40px; */
+  /* border: 1px solid #ddd; */
+  font-size: 14px;
   background-color: white;
-  margin-right: 10px;
+  margin: 5px 10px 20px 0;
   cursor: pointer;
-`;
 
-const CommentWrapper = styled.div`
-  width: 100%;
+  &:hover {
+    color: #666;
+  }
 `;
 
 const HeartButton = styled.button`
-  margin: 5px 0px 20px auto;
+  margin: 5px 0px 20px 0px;
+  min-width: 30px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 20px;
   color: #666;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 
   &:hover {
     color: #666;

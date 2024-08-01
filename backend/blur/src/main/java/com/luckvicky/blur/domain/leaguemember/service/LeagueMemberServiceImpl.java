@@ -32,6 +32,7 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
     private final LeagueMemberRepository leagueMemberRepository;
     private final MemberRepository memberRepository;
 
+
     @Override
     public Boolean createLeagueMember(LeagueMemberCreateRequest request, UUID memberId) {
 
@@ -57,6 +58,13 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
 
         member.updateRole(Role.ROLE_AUTH_USER);
         return true;
+
+    }
+
+
+    public Boolean checkLeagueAllocationOfMember(League league, Member member) {
+
+        return leagueMemberRepository.existsByLeagueAndMember(league, member);
 
     }
 

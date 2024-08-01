@@ -4,18 +4,9 @@ import { fetchCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
 import CreateComment from "@/components/common/UI/comment/CreateComment";
 
-interface CommentProps {
-  id: string;
-  boardId: string;
-  avatarUrl: string;
-  userName: string;
-  userDetail: string | null;
-  text: string;
-  time: string;
-  onCommentAdded: () => void;
-}
+import { CommentListItemProps } from "@/types/commentTypes";
 
-const Comment: React.FC<CommentProps> = ({
+const CommentListItem: React.FC<CommentListItemProps> = ({
   id,
   boardId,
   avatarUrl,
@@ -42,7 +33,8 @@ const Comment: React.FC<CommentProps> = ({
     const today = new Date();
 
     if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleDateString([], {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
         hour: "2-digit",
         minute: "2-digit",
       });
@@ -65,7 +57,9 @@ const Comment: React.FC<CommentProps> = ({
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>
-          <Reply onClick={handleReplyToggle}>{showReply ? '닫기' : '답글'}</Reply>
+          <Reply onClick={handleReplyToggle}>
+            {showReply ? "닫기" : "답글"}
+          </Reply>
           <Delete onClick={handleDelete}>삭제</Delete>
           <Time>
             <WiTime4 style={{ marginRight: "4px", verticalAlign: "middle" }} />
@@ -87,7 +81,7 @@ const Comment: React.FC<CommentProps> = ({
   );
 };
 
-export default Comment;
+export default CommentListItem;
 
 const Container = styled.div`
   display: flex;

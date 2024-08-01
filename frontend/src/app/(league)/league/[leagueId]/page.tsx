@@ -9,7 +9,7 @@ import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 import { useAuthStore } from "@/store/authStore";
 
-import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/league";
+import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
 

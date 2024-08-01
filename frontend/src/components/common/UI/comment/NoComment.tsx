@@ -1,12 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { fetchCommentDelete } from "@/api/comment";
-import { WiTime4 } from "react-icons/wi";
-import CreateComment from "@/components/common/UI/comment/CreateComment";
-
-interface NoCommentProps {
-  isReply: boolean;
-}
+import { NoCommentProps } from "@/types/commentTypes";
 
 const NoComment: React.FC<NoCommentProps> = ({ isReply }) => {
   return (
@@ -35,13 +29,13 @@ export default NoComment;
 
 const Container = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
   width: 100%;
 `;
 const ReplyContainer = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
   margin-left: 30px;
   position: relative;
@@ -61,6 +55,7 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  height: 100%;
 `;
 
 const DotLine = styled.div`
@@ -71,8 +66,8 @@ const DotLine = styled.div`
   border-left: 2px dotted #ccc;
 `;
 
-const Text = styled.p`
+const Text = styled.span`
   font-size: 14px;
   color: #333;
-  margin: 8px 0 2px 0;
+  margin-bottom: 2px;
 `;
