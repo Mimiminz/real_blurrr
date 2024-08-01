@@ -4,7 +4,7 @@ import {
   LeagueBoardItem,
   BoardDetail,
   UserLeague,
-} from "@/types/league";
+} from "@/types/leagueTypes";
 
 // 사용자 리그 가져오는 함수
 export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {

@@ -5,18 +5,19 @@ import styled from "styled-components";
 import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
-import Comment from "@/components/common/UI/comment/Comment";
+import CommentListItem from "@/components/common/UI/comment/CommentListItem";
 import CreateComment from "@/components/common/UI/comment/CreateComment";
 import NoComment from "@/components/common/UI/comment/NoComment";
 import Reply from "@/components/common/UI/comment/Reply";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 import { Divider } from "@nextui-org/divider";
 
-import { BoardDetail, Comment as CommentProp } from "@/types/league";
+import { BoardDetail, Comment as CommentProp } from "@/types/leagueTypes";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
+import { fetchCommentList } from "@/api/comment";
 
 export default function BoardDetailPage({
   params,
@@ -32,6 +33,7 @@ export default function BoardDetailPage({
     useLeagueStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
+  const [comments, setComments] = useState<CommentProp | null>(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -60,9 +62,18 @@ export default function BoardDetailPage({
       console.log(error);
     }
   };
+  const loadCommentDetail = async () => {
+    try {
+      const commentsList = await fetchCommentList(boardId);
+      setComments(commentsList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     loadBoardDetail();
+    loadCommentDetail();
   }, [boardId]);
 
   useEffect(() => {
@@ -122,6 +133,7 @@ export default function BoardDetailPage({
       </HeartButton>
       <CommentContainer>
         <CommentNumber>
+          {/* {boardDetail.member.nickname === } */}
           <WriterContainer>
             <WriterButton onClick={handleDelete}>삭제</WriterButton>
           </WriterContainer>
@@ -132,13 +144,13 @@ export default function BoardDetailPage({
           boardId={boardId}
           isReply={false}
           commentId=""
-          onCommentAdded={loadBoardDetail}
+          onCommentAdded={loadCommentDetail}
         />
         {boardDetail.comments.map((comment, index) => (
           <React.Fragment key={comment.id}>
             {comment.status === "ACTIVE" ? (
               <CommentWrapper>
-                <Comment
+                <CommentListItem
                   id={comment.id}
                   boardId={boardId}
                   avatarUrl={comment.member.profileUrl}
@@ -164,7 +176,7 @@ export default function BoardDetailPage({
                       userDetail={reply.member.carTitle}
                       text={reply.content}
                       time={reply.createdAt}
-                      onCommentAdded={loadBoardDetail}
+                      onCommentAdded={loadCommentDetail}
                     />
                   ) : (
                     <NoComment isReply={true} />
@@ -193,6 +205,7 @@ const Content = styled.div`
 `;
 
 const CommentNumber = styled.div`
+  margin-top: 10px;
   font-size: 18px;
 
   svg {

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
-import { BoardDetailProps } from "@/types/league";
+import { BoardDetailProps } from "@/types/leagueTypes";
 
 const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   title,

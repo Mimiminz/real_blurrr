@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
 import { MdAccessTime } from "react-icons/md";
-import { LeagueBoardListItemProps } from "@/types/league";
+import { LeagueBoardListItemProps } from "@/types/leagueTypes";
 
 function LeagueBoardListItem({
   title,
