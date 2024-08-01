@@ -36,7 +36,6 @@ public class ChannelEntityTest {
                 .name("Test Channel")
                 .imgUrl("https://car.withnews.kr/wp-content/uploads/2024/04/Lamborghini-Revuelto-Special-Edition.jpg")
                 .info("이것은 테스트입니다.")
-                .owner(UUID.randomUUID())
                 .build();
 
         Channel savedChannel = channelRepository.save(channel);

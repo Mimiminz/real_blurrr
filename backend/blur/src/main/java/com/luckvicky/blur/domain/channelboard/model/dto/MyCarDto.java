@@ -6,7 +6,7 @@ import java.util.UUID;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "인기 블랙박스 게시물 정보")
+@Schema(name = "인기 차자랑 게시물 정보")
 public class MyCarDto {
 
     @Schema(description = "고유 식별값")
@@ -14,6 +14,9 @@ public class MyCarDto {
 
     @Schema(description = "사용자 정보")
     private SimpleMemberDto member;
+
+    @Schema(description = "대표 이미지")
+    private String thumbnail;
 
     @Schema(description = "조회수")
     private Long viewCount;
