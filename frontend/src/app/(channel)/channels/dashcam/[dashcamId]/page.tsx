@@ -185,6 +185,8 @@ const Page = () => {
                               comment.replies.map((reply) => (
                                  <Reply
                                     key={reply.id}
+                                    id={reply.id}
+                                    boardId={dashCamDetail.id}
                                     avatarUrl={reply.member.profileUrl}
                                     userName={reply.member.nickname}
                                     userDetail={reply.member.carTitle}

@@ -1,7 +1,6 @@
-// ChannelBoardDetailPage.tsx
-'use client';
+"use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from "styled-components";
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { LiaCommentDots } from 'react-icons/lia';
@@ -27,7 +26,7 @@ const CommentNumber = styled.div`
   }
 `;
 
-const StyleCreateComment = styled.div`
+const CreateCommentContainer = styled.div`
   margin: 16px 0px;
 `;
 
@@ -71,19 +70,16 @@ const HeartButton = styled.button`
   }
 `;
 
-export default function ChannelBoardDetailPage({
-   params,
-}: {
-   params: { channelId: string; boardId: string };
-}) {
+export default function ChannelBoardDetailPage({ params }: { params: { channelId: string; boardId: string } }) {
    const channelId = params.channelId;
    const boardId = params.boardId;
 
    const [boardDetail, setBoardDetail] = useState<PostDetail | null>(null);
    const [isLiked, setIsLiked] = useState(false);
+   const [error, setError] = useState<string | null>(null);
 
    const toggleLike = () => {
-      setIsLiked(!isLiked);
+      setIsLiked((prevIsLiked) => !prevIsLiked);
    };
 
    const formatPostDate = (createdAt: string) => {
@@ -97,21 +93,22 @@ export default function ChannelBoardDetailPage({
       }
    };
 
-   const loadBoardDetail = async () => {
+   const loadBoardDetail = useCallback(async () => {
       try {
          const details = await fetchChannelPostDetail(boardId, channelId);
          setBoardDetail(details);
       } catch (error) {
-         console.log(error);
+         console.error(error);
+         setError("Failed to load post details. Please try again later.");
       }
-   };
+   }, [boardId, channelId]);
 
    useEffect(() => {
       loadBoardDetail();
-   });
+   }, [boardId, channelId]);
 
    if (!boardDetail) {
-      return <div>Loading...</div>;
+      return <div>{error ? error : 'Loading...'}</div>;
    }
 
    return (
@@ -122,7 +119,7 @@ export default function ChannelBoardDetailPage({
             viewCount={boardDetail.viewCount}
             likeCount={boardDetail.likeCount}
             member={boardDetail.member}
-            tags={boardDetail.mentionedLeagues} // 적절한 태그 리스트로 변경하세요
+            tags={boardDetail.mentionedLeagues}
          />
          <Content>
             {boardDetail.content}
@@ -139,9 +136,9 @@ export default function ChannelBoardDetailPage({
                <LiaCommentDots />
                {boardDetail.commentCount}
             </CommentNumber>
-            <StyleCreateComment>
+            <CreateCommentContainer>
                <CreateComment boardId={boardId} isReply={false} commentId="" onCommentAdded={loadBoardDetail} />
-            </StyleCreateComment>
+            </CreateCommentContainer>
             {boardDetail.comments.map((comment) => (
                <React.Fragment key={comment.id}>
                   {comment.status === CommentStatus.ACTIVE ? (
@@ -158,17 +155,20 @@ export default function ChannelBoardDetailPage({
                         />
                      </CommentWrapper>
                   ) : (
-                     "삭제된 댓글입니다."
+                     <div style={{ color: '#999', margin: '10px 0' }}>삭제된 댓글입니다.</div>
                   )}
                   {comment.replies.length > 0 && (
                      comment.replies.map((reply) => (
                         <Reply
                            key={reply.id}
+                           id={reply.id}
+                           boardId={boardId}
                            avatarUrl={reply.member.profileUrl}
                            userName={reply.member.nickname}
                            userDetail={reply.member.carTitle}
                            text={reply.content}
                            time={reply.createdAt}
+                           onCommentAdded={loadBoardDetail}
                         />
                      ))
                   )}
