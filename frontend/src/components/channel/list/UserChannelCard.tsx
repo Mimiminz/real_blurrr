@@ -4,7 +4,8 @@ import styled from 'styled-components';
 interface UserChannelCardProps {
   name: string;
   followCount: number;
-  imgUrl: string; // img prop 추가
+  img: string;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const CardContainer = styled.div`
@@ -14,16 +15,17 @@ const CardContainer = styled.div`
   text-align: center;
   max-width: 200px;  
   margin: 0 auto;
+  cursor: pointer;
 `;
 
-const ImageContainer = styled.div<{ imgUrl: string }>`
+const ImageContainer = styled.div<{ img: string }>`
   width: 100%;
   height: 120px;
   background-color: #e5e7eb;
   border-radius: 8px;
   background-size: cover;
   background-position: center;
-  background-image: url(${props => props.imgUrl});
+  background-image: url(${props => props.img});
 `;
 
 const Title = styled.h3`
@@ -34,10 +36,10 @@ const Followers = styled.p`
   color: #6b7280;
 `;
 
-const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, imgUrl }) => {
+const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, img, onClick }) => {
   return (
-    <CardContainer>
-      <ImageContainer imgUrl={imgUrl == "" ? 'images/eg_img.png' : imgUrl} />
+    <CardContainer onClick={onClick}>
+      <ImageContainer img={img == "" ? 'images/eg_img.png' : img} />
       <Title>{name}</Title>
       <Followers>{followCount} Followers</Followers>
     </CardContainer>
