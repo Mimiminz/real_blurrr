@@ -19,7 +19,11 @@ function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemP
 
     if (postDate.toDateString() === today.toDateString()) {
       // 만약 작성 시간이 당일이면 시간으로 표시
-      return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     } else {
       // 당일이 아니면 날짜만 표시
       return postDate.toISOString().split('T')[0].replace(/-/g, '.');
