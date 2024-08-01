@@ -3,18 +3,24 @@ package com.luckvicky.blur.domain.board.controller;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
+import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
+import com.luckvicky.blur.domain.board.model.dto.response.TodayMyCarResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
 import com.luckvicky.blur.domain.board.model.dto.response.BoardDetailResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.HotDashcamResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.HotMyCarResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.MemberBoardListResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
+import com.luckvicky.blur.domain.comment.service.CommentService;
 import com.luckvicky.blur.domain.like.model.response.LikeBoardListResponse;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
-import com.luckvicky.blur.infra.swagger.NoAuthorization;
+import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -43,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardRetrieveController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @Operation(
             summary = "좋아요 게시글 조회 API",
@@ -160,71 +167,6 @@ public class BoardRetrieveController {
 
     }
 
-//    @NoAuthorization
-//    @Operation(
-//            summary = "유형별 게시글 목록 조회 API",
-//            description = "유형과 일치하는 모든 게시글의 목록을 조회한다."
-//    )
-//    @ApiResponses({
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    description = "게시글 목록 조회 성공",
-//                    content = @Content(schema = @Schema(implementation = BoardListResponse.class))
-//            ),
-//            @ApiResponse(
-//                    responseCode = "204",
-//                    description = "게시글 목록 조회 성공(단, 데이터 없음)"
-//            ),
-//            @ApiResponse(
-//                    responseCode = "400",
-//                    description = "유효하지 않은 유형에 대한 게시글 조회로 실패"
-//            )
-//    })
-//    @Parameters({
-//            @Parameter(
-//                    name = "type",
-//                    description = "게시글 유형",
-//                    examples = {
-//                            @ExampleObject(name = "channel", value = "CHANNEL"),
-//                            @ExampleObject(name = "league", value = "LEAGUE"),
-//                            @ExampleObject(name = "dashcam", value = "DASHCAM"),
-//                    }
-//            ),
-//            @Parameter(name = "pageNumber", description = "페이지 번호"),
-//            @Parameter(
-//                    name = "criteria",
-//                    description = "정렬 기준",
-//                    examples = {
-//                            @ExampleObject(name = "최신", value = "TIME"),
-//                            @ExampleObject(name = "좋아요", value = "LIKE"),
-//                            @ExampleObject(name = "조회수", value = "VIEW"),
-//                            @ExampleObject(name = "댓글", value = "COMMENT"),
-//                    }
-//            ),
-//    })
-//    @GetMapping
-//    public ResponseEntity findBoardsByType(
-//            @RequestParam(name = "type") String type,
-//            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-//            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
-//    ) {
-//
-//        List<BoardDto> boards = boardService.findBoardsByType(type, pageNumber, criteria);
-//
-//        if (Objects.isNull(boards) || boards.isEmpty()) {
-//            return ResponseUtil.noContent(
-//                    Result.builder().build()
-//            );
-//        }
-//
-//        return ResponseUtil.ok(
-//                Result.builder()
-//                        .data(BoardListResponse.of(boards))
-//                        .build()
-//        );
-//
-//    }
-
     @Operation(
             summary = "게시글 상세 조회 API",
             description = "특정 게시글에 대한 본문, 조회수, 댓글을 조회한다."
@@ -247,10 +189,11 @@ public class BoardRetrieveController {
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{boardId}")
     public ResponseEntity getBoardDetail(
+            @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        BoardDetailDto boardDetail = boardService.getBoardDetail(boardId);
+        BoardDetailDto boardDetail = boardService.getBoardDetail(member.getId(), boardId);
 
         return ResponseUtil.ok(
                 Result.builder()
@@ -285,17 +228,15 @@ public class BoardRetrieveController {
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        List<CommentDto> boardDetail = boardService.getComments(boardId);
-
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(CommentListResponse.of(boardDetail))
+                        .data(commentService.findCommentsByBoard(boardId))
                         .build()
         );
 
     }
 
-    @NoAuthorization
+    @GeneralMember
     @Operation(
             summary = "HOT 게시판 조회 API",
             description = "최근 1주일 동안 가장 좋아요를 많이 받은 10개의 게시글을 조회한다."
@@ -326,6 +267,114 @@ public class BoardRetrieveController {
         return ResponseUtil.ok(
                 Result.builder()
                         .data(HotBoardResponse.of(boardDtos))
+                        .build()
+        );
+
+    }
+
+    @GeneralMember
+    @Operation(
+            summary = "HOT 블랙박스 게시판 조회 API",
+            description = "최근 1주일 동안 가장 투표를 많이 받은 5개의 게시글을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료",
+                    content = @Content(schema = @Schema(implementation = HotDashcamResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "조회 완료 (단, 데이터 없음)"
+            )
+    })
+    @GetMapping("/dashcam")
+    public ResponseEntity getHotDashcamBoard() {
+
+        List<HotDashcamDto> dashcamDtos = boardService.getHotDashcamBoard();
+
+        if (Objects.isNull(dashcamDtos) || dashcamDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(HotDashcamResponse.of(dashcamDtos))
+                        .build()
+        );
+
+    }
+
+    @GeneralMember
+    @Operation(
+            summary = "오늘의차 조회 API",
+            description = "어제 차자랑 게시글 중 가장 좋아요가 높았던 1개 게시글을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료",
+                    content = @Content(schema = @Schema(implementation = TodayMyCarResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "조회 완료 (단, 데이터 없음)"
+            )
+    })
+    @GetMapping("/today/mycar")
+    public ResponseEntity geTodayMyCarBoard() {
+
+        MyCarDto todayMyCar = boardService.getTodayMyCarBoard();
+
+        if (Objects.isNull(todayMyCar)) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(TodayMyCarResponse.of(todayMyCar))
+                        .build()
+        );
+
+    }
+
+    @GeneralMember
+    @Operation(
+            summary = "HOT 차자랑 게시판 조회 API",
+            description = "최근 1주일 동안 가장 조회수가 높은 많이 받은 20개의 게시글을 조회한다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료",
+                    content = @Content(schema = @Schema(implementation = HotMyCarResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "조회 완료 (단, 데이터 없음)"
+            )
+    })
+    @GetMapping("/mycar")
+    public ResponseEntity getHotMyCarBoard() {
+
+        List<MyCarDto> mycarDtos = boardService.getHotMyCarBoard();
+
+        if (Objects.isNull(mycarDtos) || mycarDtos.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.builder()
+                            .build()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(HotMyCarResponse.of(mycarDtos))
                         .build()
         );
 

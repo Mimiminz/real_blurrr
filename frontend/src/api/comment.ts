@@ -1,4 +1,22 @@
 import api from "./index";
+import { fetchComment } from "@/types/commentTypes";
+
+// 리그 댓글 목록 조회
+export const fetchLeagueCommentList = async (
+  boardId: string
+): Promise<fetchComment> => {
+  try {
+    const response = await api.get(`/v1/leagues/boards/${boardId}/comments`);
+    console.log(response.data);
+    if (response.status === 204) {
+      return { comments: [], commentCount: 0 };
+    }
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 // 댓글 작성
 export const fetchCommentCreate = async (boardId: string, content: string) => {

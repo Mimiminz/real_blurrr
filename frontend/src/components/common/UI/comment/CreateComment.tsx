@@ -1,15 +1,9 @@
 import { fetchCommentCreate, fetchReplyCreate } from "@/api/comment";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Comment } from "@/types/league";
 import { useRouter } from "next/navigation";
 
-interface CreateCommentProps {
-  boardId: string;
-  isReply: boolean;
-  commentId: string;
-  onCommentAdded: () => void;
-}
+import { CreateCommentProps } from "@/types/commentTypes";
 
 export default function CreateComment({
   boardId,
@@ -24,14 +18,8 @@ export default function CreateComment({
     setComment(e.target.value);
   };
 
-  const handleSubmit11 = () => {
-    // 댓글 작성 로직을 추가하세요.
-    console.log("Comment submitted:", comment);
-    fetchCommentCreate(comment, boardId);
-    setComment("");
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // 폼의 기본 동작을 막음
     if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
 
     try {
@@ -48,7 +36,7 @@ export default function CreateComment({
   };
 
   return (
-    <Container>
+    <Container onSubmit={handleSubmit}>
       <Avatar />
       <Input
         type="text"
@@ -56,12 +44,12 @@ export default function CreateComment({
         value={comment}
         onChange={handleChange}
       />
-      <Button onClick={handleSubmit}>작성</Button>
+      <Button type="submit">작성</Button>
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.form`
   display: flex;
   align-items: center;
   border: 1px solid #e0e0e0;

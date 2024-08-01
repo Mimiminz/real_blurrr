@@ -35,7 +35,6 @@ export interface boardListProp {
   boardList: LeagueBoardItem[];
 }
 
-
 export interface moreTabProps {
   activeTabId: string;
   moreTabs: LeagueList[];
@@ -52,15 +51,6 @@ export interface UserTabProps {
   mentionTabs: LeagueList[];
 }
 
-export interface Comment {
-  id: string;
-  member: Member;
-  content: string;
-  createdAt: string;
-  status: string;
-  replies: Comment[];
-}
-
 export interface BoardDetail {
   title: string;
   content: string;
@@ -69,7 +59,6 @@ export interface BoardDetail {
   likeCount: number;
   commentCount: number;
   member: Member;
-  comments: Comment[];
 }
 
 export interface BoardDetailProps {

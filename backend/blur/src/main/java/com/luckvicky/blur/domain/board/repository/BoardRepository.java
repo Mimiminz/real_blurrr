@@ -3,8 +3,6 @@ package com.luckvicky.blur.domain.board.repository;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
-import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
-import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import jakarta.persistence.LockModeType;
@@ -14,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -30,9 +29,8 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
             + "FROM Board b "
             + "LEFT JOIN FETCH b.comments c "
             + "LEFT JOIN FETCH b.member m "
-            + "WHERE b.id = :id"
-    )
-    Optional<Board> findByIdWithCommentAndReply(UUID id);
+            + "WHERE b.id = :id ")
+    Optional<Board> findByIdWithCommentAndReply(@Param("id") UUID id);
 
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByMember(Member member, Pageable pageable);
@@ -58,6 +56,12 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByTypeAndStatus(BoardType type, Pageable pageable, ActivateStatus status);
 
+    @EntityGraph(attributePaths = "member")
+    Board findByTypeAndStatusAndCreatedAtBetween(
+            BoardType type, Sort sort, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
+    );
+
+    @EntityGraph(attributePaths = "member")
     Page<Board> findAllByTypeAndStatusAndCreatedAtBetween(
             BoardType type, Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
     );

@@ -6,9 +6,16 @@ public class Number {
 
     public static int GENERAL_PAGE_SIZE = 10;
     public static int RANKING_PAGE_SIZE = 10;
-    public static int HOT_BOARD_PAGE_SIZE = 10;
+
     public static int LEAGUE_BOARD_PAGE_SIZE = 10;
     public static int CHANNEL_BOARD_PAGE_SIZE = 10;
+
+    public static int HOT_BOARD_PAGE_SIZE = 10;
     public static int DASHCAM_BOARD_PAGE_SIZE = 12;
     public static int ALARM_PAGE_SIZE = 10;
+    public static int HOT_DASHCAM_BOARD_PAGE_SIZE = 5;
+    public static int HOT_MYCAR_BOARD_PAGE_SIZE = 20;
+
+    public static int TODAY_MYCAR_BOARD_PAGE_SIZE = 20;
+
 }

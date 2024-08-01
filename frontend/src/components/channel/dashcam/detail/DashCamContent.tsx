@@ -7,9 +7,10 @@ const Container = styled.div`
   width: 100%;
   margin: 0 auto;
   padding-bottom: 30px;
-  background-color: #fff;
+  background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -134,7 +135,7 @@ const DashCamContent: React.FC<DashCamContentData> = ({
          <Body>
             <Tags>
                {mentionedLeagues.map((league, index) => (
-                  <span key={index}>@ {league.name}</span>
+                  <Tag key={index}>@ {league.name}</Tag>
                ))}
             </Tags>
             <VideoContainer>

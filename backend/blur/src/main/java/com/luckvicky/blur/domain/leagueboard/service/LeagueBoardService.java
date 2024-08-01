@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public interface LeagueBoardService {
 
-    Boolean createLeagueBoard(UUID leagueId, UUID id, LeagueBoardCreateRequest request);
+    UUID createLeagueBoard(UUID leagueId, UUID id, LeagueBoardCreateRequest request);
 
-    List<ChannelBoardDto> getMentionLeagueBoards(UUID leagueId, int pageNumber, String criteria);
+    List<ChannelBoardDto> getMentionLeagueBoards(UUID leagueId, UUID memberId, int pageNumber, String criteria);
 
-    List<BoardDto> getLeagueBoards(UUID leagueId, int pageNumber, String criteria);
+    List<BoardDto> getLeagueBoards(UUID leagueId, UUID memberId, int pageNumber, String criteria);
 
-    BoardDetailDto getLeagueBoardDetail(UUID boardId);
+    BoardDetailDto getLeagueBoardDetail(UUID memberId, UUID boardId);
 
     List<BoardDto> search(UUID leagueId, String keyword, String condition, int pageNumber, String criteria);
 

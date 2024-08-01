@@ -3,12 +3,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-
 import UserTab from "@/components/league/tab/UserTab";
 import LeagueListItem from "@/components/league/LeagueListItem";
 import { useAuthStore } from "@/store/authStore";
 
-import { UserLeague, LeagueList } from "@/types/league";
+import { UserLeague, LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
 
@@ -17,18 +16,23 @@ import { fetchBrandLeagues, fetchUserLeagueList } from "@/api/league";
 
 export default function LeagueMainPage() {
   const { isLoggedIn } = useAuthStore((state) => state);
-  const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
-    useLeagueStore();
-
-  const [tabs, setTabs] = useState<LeagueList[]>([]);
-  const [mentionTabs, setMentionTabs] = useState<LeagueList[]>([]);
-
-  
+  const {
+    brandLeagueList,
+    setBrandLeagueTab,
+    userLeagueList,
+    setUserLeagueList,
+    mentionTabs,
+    setMentionTabs,
+    initialized,
+    setInitialized,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
+  } = useLeagueStore();
 
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        if (isLoggedIn) {
+        if (isLoggedIn && !isLoadUserLeagues) {
           const userLeagues: UserLeague[] = await fetchUserLeagueList();
           const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
             id: userLeague.league.id,
@@ -36,7 +40,7 @@ export default function LeagueMainPage() {
             type: userLeague.league.type,
             peopleCount: userLeague.league.peopleCount,
           }));
-          setTabs(userTabs);
+          setUserLeagueList(userTabs);
           const userMentionTabs: LeagueList[] = userLeagues.map(
             (userLeague) => ({
               id: `mention${userLeague.league.id}`,
@@ -46,6 +50,7 @@ export default function LeagueMainPage() {
             })
           );
           setMentionTabs(userMentionTabs);
+          setIsLoadUserLeagues(true);
         }
 
         if (!initialized) {
@@ -69,13 +74,21 @@ export default function LeagueMainPage() {
     setBrandLeagueTab,
     initialized,
     setInitialized,
+    setUserLeagueList,
+    setMentionTabs,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
   ]);
 
   return (
     <>
       <TopComponent>
-        {isLoggedIn && tabs.length > 0 ? (
-          <UserTab activeTabId="" tabs={tabs} mentionTabs={mentionTabs} />
+        {isLoggedIn && userLeagueList.length > 0 ? (
+          <UserTab
+            activeTabId=""
+            tabs={userLeagueList}
+            mentionTabs={mentionTabs}
+          />
         ) : (
           <></>
         )}
