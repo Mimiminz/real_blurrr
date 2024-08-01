@@ -6,23 +6,27 @@ import { fetchPosts } from '@/api/channel';
 import { PostData } from '@/types/channelType';
 import { useRouter } from "next/navigation";
 
-const ChannelBoardList = () => {
+interface ChannelBoardListProps {
+  keyword: string; // keyword를 props로 받음
+}
+
+const ChannelBoardList: React.FC<ChannelBoardListProps> = ({ keyword }) => {
   const [Posts, setPosts] = useState<PostData[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchPosts('11ef4e3b-36d9-9292-a7f5-1d7ed3babb22', 0, 'TIME');
+        const data = await fetchPosts('11ef4e3b-36d9-9292-a7f5-1d7ed3babb22', keyword, 0, 'TIME');
         setPosts(data);
+        console.log('Posts loaded:', data);
       } catch (error) {
-        console.error('Failed to load dash cam data:', error);
+        console.error('Failed to load channel board list data:', error);
       }
     };
 
     loadData();
-  }, []);
-
+  }, [keyword]);
   const handlePostClick = (boardId: string) => {
     router.push(`/channels/11ef4e3b-36d9-9292-a7f5-1d7ed3babb22/${boardId}`);
   };

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 interface PostTitleProps {
   channel: string;
   title: string;
+  onSearch: (keyword: string) => void;
 }
 
 const Container = styled.div`
@@ -72,7 +73,7 @@ const SideSection = styled.div`
   margin-top: 10px;
 `;
 
-const PostTitle: React.FC<PostTitleProps> = ({ channel, title }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch }) => {
   const router = useRouter();
 
   const handleCreatePost = () => {
@@ -85,7 +86,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title }) => {
         <h1>{title}</h1>
         <SideSection>
           <button className="setButton">팔로우 +</button>
-          <SearchBar />
+          <SearchBar onSearch={onSearch} />
         </SideSection>
         <FilterSection>
           <select className="sort-select">
