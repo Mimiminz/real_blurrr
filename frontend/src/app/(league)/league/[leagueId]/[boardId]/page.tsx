@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { LiaCommentDots } from "react-icons/lia";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
 import Comment from "@/components/common/UI/comment/Comment";
+import CreateComment from "@/components/common/UI/comment/CreateComment";
 import NoComment from "@/components/common/UI/comment/NoComment";
 import Reply from "@/components/common/UI/comment/Reply";
-import CreateComment from "@/components/common/UI/comment/CreateComment";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 import { Divider } from "@nextui-org/divider";
-import { LiaCommentDots } from "react-icons/lia";
 
 import { BoardDetail, Comment as CommentProp } from "@/types/league";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
-import React from "react";
+
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
 
@@ -22,15 +23,15 @@ export default function BoardDetailPage({
 }: {
   params: { leagueId: string; boardId: string };
 }) {
+  const router = useRouter();
+
   const leagueId = params.leagueId;
   const boardId = params.boardId;
 
-  const router = useRouter();
   const { activeTabName, brandLeagueList, userLeagueList, setActiveTabName } =
     useLeagueStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
-
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -62,7 +63,7 @@ export default function BoardDetailPage({
 
   useEffect(() => {
     loadBoardDetail();
-  });
+  }, [boardId]);
 
   useEffect(() => {
     if (!activeTabName || activeTabName === `${undefined} 리그`) {
@@ -99,13 +100,13 @@ export default function BoardDetailPage({
 
   return (
     <>
-      <BreadcrumbContainer>
+      {/* <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
           subChannel={activeTabName}
           channelUrl={`/league/${leagueId}`}
         />
-      </BreadcrumbContainer>
+      </BreadcrumbContainer> */}
       <LeagueDetailTitle
         title={boardDetail.title}
         createdAt={formatPostDate(boardDetail.createdAt)}
@@ -115,9 +116,10 @@ export default function BoardDetailPage({
         authorprofileUrl={boardDetail.member.profileUrl}
         authorCarTitle={boardDetail.member.carTitle}
       />
-      <Divider />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <Divider />
+      <HeartButton onClick={toggleLike}>
+        {isLiked ? <FaHeart /> : <FaRegHeart />}
+      </HeartButton>
       <CommentContainer>
         <CommentNumber>
           <WriterContainer>
@@ -187,6 +189,7 @@ const Content = styled.div`
   color: #333;
   padding: 20px;
   padding-bottom: 50px;
+  border-top: 1px solid #bebebe;
 `;
 
 const CommentNumber = styled.div`
@@ -203,6 +206,7 @@ const CommentContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   padding-left: 20px;
+  border-top: 1px solid #bebebe;
 `;
 
 const WriterContainer = styled.div`
@@ -221,4 +225,19 @@ const WriterButton = styled.button`
 
 const CommentWrapper = styled.div`
   width: 100%;
+`;
+
+const HeartButton = styled.button`
+  margin: 5px 0px 20px auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #666;
+  display: flex;
+  justify-content: flex-end;
+
+  &:hover {
+    color: #666;
+  }
 `;

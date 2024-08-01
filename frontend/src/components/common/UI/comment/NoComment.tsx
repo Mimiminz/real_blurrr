@@ -13,6 +13,7 @@ const NoComment: React.FC<NoCommentProps> = ({ isReply }) => {
     <>
       {isReply ? (
         <ReplyContainer>
+          <DotLine />
           <Avatar />
           <Content>
             <Text>삭제된 댓글입니다.</Text>
@@ -60,7 +61,6 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 100%;
 `;
 
 const DotLine = styled.div`
@@ -71,8 +71,8 @@ const DotLine = styled.div`
   border-left: 2px dotted #ccc;
 `;
 
-const Text = styled.span`
+const Text = styled.p`
   font-size: 14px;
   color: #333;
-  margin-bottom: 2px;
+  margin: 8px 0 2px 0;
 `;
