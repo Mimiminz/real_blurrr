@@ -6,7 +6,8 @@ import java.util.UUID;
 
 @Schema(name = "리그 할당 요청")
 public record LeagueMemberCreateRequest(
-        @Schema(description = "할당할 리그 고유 식별값")
-        List<UUID> leagueIds
+        @Schema(description = "할당할 리그 이름", example = "[\"현대\", \"GV70\"]"
+        )
+        List<String> leagues
 ) {
 }

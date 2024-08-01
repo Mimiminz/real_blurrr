@@ -38,9 +38,9 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
 
         Member member = memberRepository.getOrThrow(memberId);
         List<LeagueMember> createdLeagueMembers = new ArrayList<>();
-        for (UUID leagueId : request.leagueIds()) {
+        for (String name : request.leagues()) {
 
-            League league =  leagueRepository.findByIdForUpdate(leagueId)
+            League league =  leagueRepository.findByNameForUpdate(name)
                     .orElseThrow(NotExistLeagueException::new);
 
            isCreated(
