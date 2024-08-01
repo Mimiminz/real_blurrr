@@ -1,24 +1,29 @@
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
-
-interface HotArticleListItemProps {
-  channel: string;
-  title: string;
-  likes: number;
-  comments: number;
-}
+import { HotBoardItem } from "@/types/mainPageTypes";
+import { useRouter } from "next/navigation";
 
 function HotArticleListItem({
+  id,
   channel,
   title,
-  likes,
-  comments,
-}: HotArticleListItemProps) {
+  likeCount,
+  commentCount,
+}: HotBoardItem) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (channel.name === "블랙박스") {
+      router.push(`/channels/dashcam/${id}`);
+    } else {
+      router.push(`/channels/${channel.id}/${id}`);
+    }
+  };
   return (
-    <ArticleDetail>
+    <ArticleDetail onClick={handleClick}>
       <ArticleInfo>
-        <Channel>{channel}</Channel>
+        <Channel>{channel.name}</Channel>
         <Title>{title}</Title>
       </ArticleInfo>
       <LikeAndComment>
@@ -26,13 +31,13 @@ function HotArticleListItem({
           <Icon>
             <FaRegHeart />
           </Icon>
-          {likes}
+          {likeCount}
         </LikeSection>
         <LikeSection>
           <Icon>
             <LiaCommentDots />
           </Icon>
-          {comments}
+          {commentCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
@@ -45,6 +50,11 @@ const ArticleDetail = styled.div`
   align-items: center;
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ebebeb3d;
+  }
 `;
 
 const ArticleInfo = styled.div`
@@ -61,7 +71,7 @@ const Channel = styled.p`
 
 const Title = styled.p`
   color: black;
-  font-size: 18px;
+  font-size: 16px;
   margin: 0;
   margin-bottom: 8px;
 `;

@@ -1,13 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import LeagueListItem from "./LeagueListItem";
+import { useLeagueStore } from "@/store/leagueStore";
 import dummy from "@/db/mainPageData.json";
 
 const LeagueList: React.FC = () => {
+  const { brandLeagueList } = useLeagueStore();
   return (
     <ListContainer>
-      {dummy.LeagueList.slice(0, 16).map((league, index) => (
-        <LeagueListItem key={index} name={league.name} count={league.count} />
+      {brandLeagueList.slice(0, 12).map((league) => (
+        <LeagueListItem
+          key={league.id}
+          id={league.id}
+          name={league.name}
+          peopleCount={league.peopleCount}
+        />
       ))}
     </ListContainer>
   );
