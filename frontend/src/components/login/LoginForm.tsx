@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuthStore } from '../../store/authStore'
 import { login as loginApi } from '@/api/authApi';
+import api from '../../api/index'
 
 interface LoginFormValues {
   email: string;
@@ -39,7 +40,7 @@ const LoginForm = () => {
       sessionStorage.setItem('refreshToken', refreshToken);
       sessionStorage.setItem('accessToken', accessToken);
 
-      const userResponse = await axios.get('/v1/members', {
+      const userResponse = await api.get('/v1/members', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setUser(userResponse.data);
@@ -87,7 +88,7 @@ const LoginForm = () => {
             <StyledErrorMessage name="password" component="div" />
             {/* <CheckboxLabel>
               <CheckboxField name="rememberMe" type="checkbox" />
-              자동 로그인
+              자동 로그인하기
             </CheckboxLabel> */}
             <Button type="submit" disabled={isSubmitting}>
               로그인
