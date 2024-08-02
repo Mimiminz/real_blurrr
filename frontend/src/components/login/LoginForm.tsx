@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuthStore } from '../../store/authStore'
 import { login as loginApi } from '@/api/authApi';
+import api from '../../api/index'
 
 interface LoginFormValues {
   email: string;
@@ -39,7 +40,7 @@ const LoginForm = () => {
       sessionStorage.setItem('refreshToken', refreshToken);
       sessionStorage.setItem('accessToken', accessToken);
 
-      const userResponse = await axios.get('/v1/members', {
+      const userResponse = await api.get('/v1/members', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setUser(userResponse.data);
