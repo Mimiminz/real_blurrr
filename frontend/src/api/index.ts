@@ -26,16 +26,19 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshToken = sessionStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
           const { accessToken } = await refreshAccessToken(refreshToken);
           useAuthStore.getState().setAccessToken(accessToken);
-          localStorage.setItem('accessToken', accessToken);
+          sessionStorage.setItem('accessToken', accessToken);
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
           console.error('Failed to refresh token', refreshError);
+          alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+          useAuthStore.getState().clearAuthState();
+          window.location.href = '/login';
         }
       }
     }
