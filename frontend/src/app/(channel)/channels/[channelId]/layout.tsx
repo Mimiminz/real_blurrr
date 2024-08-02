@@ -1,8 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Breadcrumb from '@/components/common/UI/BreadCrumb';
+import { useChannelStore } from '@/store/channelStore'; // zustand 상태 가져오기
 
 const LayoutContainer = styled.div`
   padding: 50px 16px;  // 패딩 추가
@@ -19,10 +20,33 @@ interface LayoutProps {
 }
 
 const ChannelLayout: React.FC<LayoutProps> = ({ children }) => {
+   const [isClient, setIsClient] = useState(false);
+
+   const channelName = useChannelStore((state) => state.channelName);
+   const channelId = useChannelStore((state) => state.channelId);
+
+   useEffect(() => {
+      setIsClient(true);
+   }, []);
+
    return (
       <LayoutContainer>
          <BreadcrumbContainer>
-            <Breadcrumb channel="채널" subChannel="아무 채널" channelUrl="/channels" />
+            {isClient ? (
+               <Breadcrumb
+                  channel="채널"
+                  subChannel={channelName || "임시 채널"}
+                  channelUrl="/channels"
+                  subChannelUrl={`/channels/${channelId}`}
+               />
+            ) : (
+               <Breadcrumb
+                  channel="채널"
+                  subChannel="로딩 중..."
+                  channelUrl="/channels"
+                  subChannelUrl="#"
+               />
+            )}
          </BreadcrumbContainer>
          {children}
       </LayoutContainer>

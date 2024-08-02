@@ -1,12 +1,43 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import ChannelBoardList from '@/components/channel/board/ChannelBoardList';
 import PostTitle from '@/components/channel/PostTitle';
+import { fetchChannelInfo } from '@/api/channel';
+import { PostInfo } from '@/types/channelType';
+import { useChannelStore } from '@/store/channelStore';
 
-const ChannelBoardPage: React.FC = () => {
+interface PageProps {
+   params: {
+      channelId: string;
+   };
+}
+
+const ChannelBoardPage: React.FC<PageProps> = ({ params }) => {
+   const { channelId } = params;
+
    const [keyword, setKeyword] = useState('');
    const [sortCriteria, setSortCriteria] = useState('TIME');
+   const [channelInfo, setChannelInfo] = useState<PostInfo | null>(null);
+
+   const setChannelName = useChannelStore((state) => state.setChannelName);
+   const setChannelId = useChannelStore((state) => state.setChannelId);
+
+   useEffect(() => {
+      const getChannelInfo = async () => {
+         try {
+            const info = await fetchChannelInfo(channelId);
+            setChannelInfo(info);
+            setChannelName(info.name);
+            setChannelId(channelId);
+         } catch (error) {
+            console.error('Error fetching channel info:', error);
+         }
+      };
+
+      getChannelInfo();
+   }, [channelId, setChannelName]);
 
    const handleSortChange = (newSort: string) => {
       // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환
@@ -27,13 +58,15 @@ const ChannelBoardPage: React.FC = () => {
 
    return (
       <>
-         <PostTitle
-            channel="something"
-            title="채널에 대한 설명 쓰는 공간입니다~"
-            onSearch={handleSearch}
-            onSortChange={handleSortChange}
-         />
-         <ChannelBoardList keyword={keyword} criteria={sortCriteria} />
+         {channelInfo && (
+            <PostTitle
+               channel={channelId}
+               title={channelInfo.info}
+               onSearch={handleSearch}
+               onSortChange={handleSortChange}
+            />
+         )}
+         <ChannelBoardList channelId={channelId} keyword={keyword} criteria={sortCriteria} />
       </>
    );
 };

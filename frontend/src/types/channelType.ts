@@ -99,6 +99,16 @@ export interface Channels {
   content: string;
 }
 
+export interface PostInfo {
+  id: string;
+  name: string;
+  imgUrl: string;
+  info: string;
+  owner: string;
+  followCount: number;
+  tags: Mentioned[];
+}
+
 export interface PostDetailData {
   board: PostDetail;
   mentionedLeagues: Mentioned[];

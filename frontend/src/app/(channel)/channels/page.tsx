@@ -18,6 +18,10 @@ const ChannelPage: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const router = useRouter();
 
+  const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID;
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
+
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -40,13 +44,13 @@ const ChannelPage: React.FC = () => {
   }, []);
 
   const handleCreateChannel = () => {
-    router.push('/channels/11ef4fda-4b03-5943-acdf-3f973caa821e');
+    router.push(`/channels/11ef4fda-4b03-5943-acdf-3f973caa821e`);
   };
 
   const handleChannelClick = (channelId: string) => {
-    if (channelId === `11ef4fda-4b03-5943-acdf-3f973caa821e`) {
+    if (channelId === dashcamId) {
       router.push('/channels/dashcam');
-    } else if (channelId === `11ef4fda-83a4-1d26-acdf-ff2aee252a6c`) {
+    } else if (channelId === boastId) {
       router.push('/channels/boast');
     } else {
       router.push(`/channels/${channelId}`);

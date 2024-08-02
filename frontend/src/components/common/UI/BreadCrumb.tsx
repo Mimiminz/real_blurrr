@@ -5,7 +5,8 @@ import Link from 'next/link';
 interface BreadcrumbProps {
   channel: string;
   subChannel: string;
-  channelUrl: string; // 추가된 속성
+  channelUrl: string;
+  subChannelUrl: string; // subChannelUrl 추가
 }
 
 const BreadcrumbContainer = styled.nav`
@@ -25,7 +26,7 @@ const BreadcrumbContainer = styled.nav`
     }
   }
 
-  span {
+  span, .breadcrumb-link {
     color: ${({ theme }) => theme.colors.main};
     margin-right: 5px;
 
@@ -37,13 +38,15 @@ const BreadcrumbContainer = styled.nav`
   }
 `;
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ channel, subChannel, channelUrl }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ channel, subChannel, channelUrl, subChannelUrl }) => {
   return (
     <BreadcrumbContainer>
       <Link href={channelUrl} legacyBehavior>
         <a>{channel}</a>
       </Link>
-      <span>{subChannel}</span>
+      <Link href={subChannelUrl} legacyBehavior>
+        <a className="breadcrumb-link">{subChannel}</a>
+      </Link>
     </BreadcrumbContainer>
   );
 };
