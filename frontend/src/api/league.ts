@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./index";
 import {
   LeagueList,
@@ -6,7 +7,7 @@ import {
   UserLeague,
 } from "@/types/leagueTypes";
 
-// 사용자 리그 가져오는 함수
+// 사용자 참여 리그 가져오는 함수
 export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
   try {
     const response = await api.get(`/v1/leagues/members`);
@@ -15,7 +16,16 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
     }
     return response.data.data.leagueMembers;
   } catch (error) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.status);
+      if (error.response?.status == 401) {
+        return [];
+      } else {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
   }
 };
 

@@ -80,6 +80,8 @@ export default function LeagueMainPage() {
     setIsLoadUserLeagues,
   ]);
 
+  console.log(userLeagueList);
+
   return (
     <>
       <TopComponent>
