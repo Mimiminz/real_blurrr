@@ -2,6 +2,9 @@ package com.luckvicky.blur.domain.comment.service;
 
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_COMMENT;
 
+import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
+import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
+import com.luckvicky.blur.domain.alarm.service.AlarmService;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -40,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
     private final BoardRepository boardRepository;
     private final LeagueMemberRepository leagueMemberRepository;
     private final LeagueBoardRepository leagueBoardRepository;
+    private final AlarmFacade alarmService;
 
     @Override
     public Boolean createComment(UUID memberId, CommentCreateRequest request) {
@@ -52,6 +56,8 @@ public class CommentServiceImpl implements CommentService {
         Comment createdComment = commentRepository.save(
                 request.toEntity(member, board)
         );
+
+        alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
 
         return isCreated(createdComment);
 
@@ -69,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
         Comment createdComment = commentRepository.save(
                 request.toEntity(parentComment, member, board)
         );
+        alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
 
         return isCreated(createdComment);
 
