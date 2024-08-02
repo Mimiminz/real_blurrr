@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import QuillEditor from "@/components/channel/board/QuillEditor";
@@ -18,7 +18,15 @@ export default function WritePage({
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { activeTabName } = useLeagueStore();
+  const { userLeagueList, activeTabName } = useLeagueStore();
+
+  useEffect(() => {
+    const hasAccess = userLeagueList.some((league) => league.id === leagueId);
+    if (!hasAccess) {
+      alert("허용되지 않은 리그입니다.");
+      router.back();
+    }
+  }, []);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -34,7 +42,6 @@ export default function WritePage({
       console.error("Error submitting comment:", error);
     }
   };
-  console.log(content);
 
   return (
     <Container>
