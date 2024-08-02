@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
+import { MdAddPhotoAlternate } from "react-icons/md";
 
 const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -38,6 +39,7 @@ const CarCertificationForm = () => {
 
       setImageSrc(canvas.toDataURL("image/png"));
 
+      videoRef.current.pause();
       videoRef.current.srcObject = null;
       if (videoStream) {
         videoStream.getTracks().forEach((track) => track.stop());
@@ -76,7 +78,8 @@ const CarCertificationForm = () => {
           ) : imageSrc ? (
             <Image src={imageSrc} alt="자동차 등록증 이미지 업로드" />
           ) : (
-            <Placeholder>+</Placeholder>
+            <Placeholder><MdAddPhotoAlternate/></Placeholder>
+            
           )}
         </ImageBox>
       </Body>
@@ -87,6 +90,7 @@ const CarCertificationForm = () => {
         style={{ display: "none" }}
         onChange={handleImageUpload}
       />
+      <Button>제출</Button>
       <ButtonContainer>
         <Button onClick={() => router.push("/")}>다음에 할게요.</Button>
         <Button onClick={() => router.push("/")}>완료</Button>
@@ -176,7 +180,7 @@ const Video = styled.video`
 `;
 
 const Placeholder = styled.span`
-  font-size: 2rem;
+  color:#ccc;
 `;
 
 const ButtonContainer = styled.div`
