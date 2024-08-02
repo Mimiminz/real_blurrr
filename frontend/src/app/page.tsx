@@ -74,7 +74,7 @@ export default function Home() {
     };
 
     fetchMainProps();
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     const initailizeTabs = async () => {
