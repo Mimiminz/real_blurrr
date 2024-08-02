@@ -55,6 +55,14 @@ export default function LeaguePage({
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<LeagueBoardItem[]>([]);
 
+  // useEffect(() => {
+  //   const hasAccess = userLeagueList.some((league) => league.id === leagueId);
+  //   if (!hasAccess) {
+  //     alert("허용되지 않은 리그입니다.");
+  //     router.back();
+  //   }
+  // }, []);
+
   useEffect(() => {
     const loadLeagues = async () => {
       try {

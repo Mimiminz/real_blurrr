@@ -41,7 +41,7 @@ export default function Home() {
     initialized,
     setInitialized,
   } = useLeagueStore();
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, user } = useAuthStore();
 
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
   const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
@@ -83,16 +83,21 @@ export default function Home() {
           const leagues = await fetchBrandLeagues();
           setBrandLeagueTab(leagues);
           if (isLoggedIn) {
-            const userLeagues: UserLeague[] = await fetchUserLeagueList();
-            const userTabs: LeagueListType[] = userLeagues.map(
-              (userLeague) => ({
-                id: userLeague.league.id,
-                name: userLeague.league.name,
-                type: userLeague.league.type,
-                peopleCount: userLeague.league.peopleCount,
-              })
-            );
-            setUserLeagueList(userTabs);
+            if (user?.isAuth) {
+              const userLeagues: UserLeague[] = await fetchUserLeagueList();
+              const userTabs: LeagueListType[] = userLeagues.map(
+                (userLeague) => ({
+                  id: userLeague.league.id,
+                  name: userLeague.league.name,
+                  type: userLeague.league.type,
+                  peopleCount: userLeague.league.peopleCount,
+                })
+              );
+              setUserLeagueList(userTabs);
+            } else {
+              const userTabs: LeagueListType[] = [];
+              setUserLeagueList(userTabs);
+            }
           }
           setInitialized(true);
         } catch (error) {
@@ -101,7 +106,14 @@ export default function Home() {
       }
     };
     initailizeTabs();
-  }, [isLoggedIn, initialized, setBrandLeagueTab, setInitialized]);
+  }, [
+    isLoggedIn,
+    initialized,
+    setBrandLeagueTab,
+    setInitialized,
+    user,
+    setUserLeagueList,
+  ]);
   const handleMoreClickLeage = () => {
     router.push("/league");
   };
