@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { DashCamContentData } from '@/types/channelType';
+import { MdAccessTime } from 'react-icons/md';
 
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
   padding-bottom: 30px;
-  background-color: #fff;
+  background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -57,7 +60,7 @@ const CarInfo = styled.div`
   margin-top: 4px;
 `;
 
-const Date = styled.div`
+const FormatDate = styled.div`
   font-size: 14px;
   color: #999;
 `;
@@ -91,6 +94,15 @@ const Content = styled.div`
   padding-top: 15px;
 `;
 
+const Icon = styled.span`
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  vertical-align: middle;
+`;
+
 const HeartButton = styled.button`
   margin: 5px 1px 5px auto;
   background: none;
@@ -106,54 +118,76 @@ const HeartButton = styled.button`
   }
 `;
 
-const DashCamContent: React.FC = () => {
+const TimeSection = styled.span`
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 8px;
+  margin-top: auto;
+  color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 14px;
+`;
+
+const DashCamContent: React.FC<DashCamContentData> = ({
+   id, member, title, createdAt, videoUrl, content, mentionedLeagues
+}) => {
    const [isLiked, setIsLiked] = useState(false);
 
    const toggleLike = () => {
       setIsLiked(!isLiked);
    };
 
+   const formatPostDate = (createdAt: string) => {
+      const postDate = new Date(createdAt);
+      const today = new Date();
+
+      if (postDate.toDateString() === today.toDateString()) {
+         return postDate.toLocaleTimeString([], {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+         });
+      } else {
+         return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+      }
+   };
+
    return (
       <Container>
          <Title>
-            <h2>과실 비율이 어떻게 되나요?</h2>
+            <h2>{title}</h2>
          </Title>
          <Header>
             <User>
                <Avatar />
                <UserInfo>
-                  <Username>blurrr</Username>
-                  <CarInfo>벤츠 GLS 600 4MATIC MANUFAKTUR 2024</CarInfo>
+                  <Username>{member.nickname}</Username>
+                  <CarInfo>{member.carTitle}</CarInfo>
                </UserInfo>
             </User>
-            <Date>2024.07.17</Date>
+            <TimeSection>
+               <Icon>
+                  <MdAccessTime />
+               </Icon>
+               <FormatDate>{formatPostDate(createdAt)}</FormatDate>
+            </TimeSection>
          </Header>
          <Body>
             <Tags>
-               <Tag>#현대</Tag>
-               <Tag>#제네시스</Tag>
-               <Tag>#기아</Tag>
+               {mentionedLeagues.map((league, index) => (
+                  <Tag key={index}>@ {league.name}</Tag>
+               ))}
             </Tags>
             <VideoContainer>
                <video controls autoPlay loop>
-                  <source src="/images/example_video.mp4" type="video/mp4" />
+                  <source src={videoUrl[0]} type="video/mp4" />
                </video>
             </VideoContainer>
             <HeartButton onClick={toggleLike}>
                {isLiked ? <FaHeart /> : <FaRegHeart />}
             </HeartButton>
             <Content>
-               지난주말에 장인어른이 당한 사고 내용입니다
-               접합 차량과 같은방향으로 진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만
-               그대로 박았습니다. 블박영상에는 충격이 전해지지만는데, 원본영상에서는 흔들리는 영상이
-               있습니다(원본은 아직 못올렸네요)
-
-               장마철 사고이기도해서 그냥 넘어가려고 했는데 내리자마자 "안박았다 왜그러냐" 란
-               식이었습니다 사과하면 그냥 넘어가려고 했으나 이렇게 무시를 하니가 "그럼 미안한데
-               블박보죠" 했다는데요.
-
-               바쁨바쁜 우선 연락처만 받고 자리에 이동하였고 장인어른이 이런상황이면 어쩌할줄 재서
-               거세게 차주분과 제가 연락을 해보았는데 엄한무인이라고요
+               {content}
             </Content>
          </Body>
       </Container>

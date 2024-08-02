@@ -24,11 +24,11 @@ public class LeagueMember {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "league_id", columnDefinition = "BINARY(36)", nullable = false)
+    @JoinColumn(name = "league_id", columnDefinition = "BINARY(16)", nullable = false)
     private League league;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)", nullable = false)
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)", nullable = false)
     private Member member;
 
     @Builder

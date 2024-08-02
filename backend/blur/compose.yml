@@ -5,13 +5,11 @@ services:
       - "6379:6379"
 
   mariadb:
-    image: 'mariadb:latest'
+    image: 'mysql:lts'
     environment:
-      - 'MARIADB_DATABASE=blur'
-      - 'MARIADB_PASSWORD=secret'
-      - 'MARIADB_ROOT_PASSWORD=blurr123'
-      - 'MARIADB_USER=blur'
+      - 'MYSQL_DATABASE=blur'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=blurr123'
+      - 'MYSQL_USER=blur'
     ports:
       - "3306:3306"
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

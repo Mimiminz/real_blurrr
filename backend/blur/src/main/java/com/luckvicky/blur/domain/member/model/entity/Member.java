@@ -66,4 +66,13 @@ public class Member extends BaseEntity {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+    public void updateIsAuth(boolean isAuth) {
+        this.isAuth = isAuth;
+    }
+
 }

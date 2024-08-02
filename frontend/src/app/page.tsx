@@ -15,8 +15,55 @@ import LeagueRanking from "@/components/main/aside/LeageRanking";
 import UserCarInfo from "@/components/main/user/UserCarInfo";
 import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
 
+import { useLeagueStore } from "@/store/leagueStore";
+import { useEffect, useState } from "react";
+import { fetchBrandLeagues } from "@/api/league";
+import { fetchHotArticles, fetchMyCars, fetchTodayCar } from "@/api/mainPage";
+import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+
 export default function Home() {
   const router = useRouter();
+  const { brandLeagueList, setBrandLeagueTab, initialized, setInitialized } =
+    useLeagueStore();
+
+  const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
+  const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
+  const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
+
+  useEffect(() => {
+    const fetchMainProps = async () => {
+      try {
+        const hot = await fetchHotArticles();
+        setHotBoards(hot);
+
+        // const today = await fetchTodayCar();
+        // setTodayCar(today);
+
+        // const car = await fetchMyCars();
+        // setMyCarBoards(car);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMainProps();
+  }, []);
+
+  useEffect(() => {
+    const initailizeTabs = async () => {
+      if (!initialized) {
+        try {
+          const leagues = await fetchBrandLeagues();
+          setBrandLeagueTab(leagues);
+          setInitialized(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    initailizeTabs();
+  }, [initialized, setBrandLeagueTab, setInitialized]);
   const handleMoreClickLeage = () => {
     router.push("/league");
   };
@@ -27,6 +74,11 @@ export default function Home() {
   const handleMoreClickBoast = () => {
     router.push("/channels/boast");
   };
+
+  if (!hotBoards) {
+    return <div>loading...</div>;
+  }
+
   return (
     <PageContainer>
       <GridContainer>
@@ -37,7 +89,7 @@ export default function Home() {
           </UserInfoContainer>
           <ArticleSection>
             <SectionTitle>Hot</SectionTitle>
-            <HotArticleList />
+            <HotArticleList hotBoards={hotBoards} />
           </ArticleSection>
           <ArticleSection>
             <SectionHeader>

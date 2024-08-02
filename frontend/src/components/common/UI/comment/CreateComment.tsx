@@ -1,7 +1,55 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import { fetchCommentCreate, fetchReplyCreate } from "@/api/comment";
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useRouter } from "next/navigation";
 
-const Container = styled.div`
+import { CreateCommentProps } from "@/types/commentTypes";
+
+export default function CreateComment({
+  boardId,
+  isReply,
+  commentId,
+  onCommentAdded,
+}: CreateCommentProps) {
+  const [comment, setComment] = useState("");
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // 폼의 기본 동작을 막음
+    if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
+
+    try {
+      if (isReply) {
+        await fetchReplyCreate(commentId, boardId, comment);
+      } else {
+        await fetchCommentCreate(boardId, comment);
+      }
+      setComment("");
+      onCommentAdded(); // 댓글 작성 후 콜백 호출
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
+  return (
+    <Container onSubmit={handleSubmit}>
+      <Avatar />
+      <Input
+        type="text"
+        placeholder="댓글 달기..."
+        value={comment}
+        onChange={handleChange}
+      />
+      <Button type="submit">작성</Button>
+    </Container>
+  );
+}
+
+const Container = styled.form`
   display: flex;
   align-items: center;
   border: 1px solid #e0e0e0;
@@ -35,32 +83,3 @@ const Button = styled.button`
   font-weight: bold;
   cursor: pointer;
 `;
-
-const CreateComment: React.FC = () => {
-   const [comment, setComment] = useState('');
-
-   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setComment(e.target.value);
-   };
-
-   const handleSubmit = () => {
-      // 댓글 작성 로직을 추가하세요.
-      console.log('Comment submitted:', comment);
-      setComment('');
-   };
-
-   return (
-      <Container>
-         <Avatar />
-         <Input
-            type="text"
-            placeholder="댓글 달기..."
-            value={comment}
-            onChange={handleChange}
-         />
-         <Button onClick={handleSubmit}>작성</Button>
-      </Container>
-   );
-};
-
-export default CreateComment;

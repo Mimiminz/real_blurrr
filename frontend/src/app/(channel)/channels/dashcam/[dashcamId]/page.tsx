@@ -1,15 +1,14 @@
 "use client";
 
-import React from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
-import CreateComment from '@/components/common/UI/comment/CreateComment';
-import Comment from '@/components/common/UI/comment/Comment';
-import Reply from '@/components/common/UI/comment/Reply';
 import Vote from '@/components/channel/dashcam/detail/Vote';
 import { LiaCommentDots } from "react-icons/lia";
 import { FaRegHeart, FaRegEye } from "react-icons/fa";
+import { fetchDashCamDetail } from '@/api/channel';
+import { DashCamDetail, CommentStatus } from '@/types/channelType';
 
 const Container = styled.div`
   padding-top: 20px;
@@ -43,11 +42,12 @@ const RightColumn = styled.div`
 `;
 
 const Section = styled.div`
-  background-color: #fff;
+  background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 30px 16px;
   box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const CommentsSection = styled(Section)`
@@ -56,7 +56,13 @@ const CommentsSection = styled(Section)`
   margin-bottom: 16px;
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 `;
-const VoteSection = styled(Section)``;
+const VoteSection = styled.div`
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
 
 const CommentContainer = styled.div`
   margin: 16px 10px;
@@ -92,61 +98,106 @@ const StatGroup = styled.div`
   }
 `;
 
+const StyleCreateComment = styled.div`
+  margin: 16px 0px;
+`;
+
+const CommentWrapper = styled.div`
+  width: 100%;
+`;
+
 const Page = () => {
    const pathname = usePathname();
-   const searchParams = useSearchParams();
-
    const dashcamId = pathname.split('/').pop();
+
+   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
+
+   const loadDetail = async () => {
+      try {
+         const data = await fetchDashCamDetail(dashcamId as string); // API 호출
+         setDashCamDetail(data);
+      } catch (error) {
+         console.error('Failed to load dash cam detail:', error);
+         // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
+      }
+   };
+   useEffect(() => {
+      loadDetail();
+   }, [dashcamId]);
+
+   if (!dashCamDetail) {
+      return <div>Loading...</div>;
+   }
 
    return (
       <Container>
          <ContentContainer>
             <InnerContentContainer>
                <LeftColumn>
-                  <DashCamContent />
+                  <DashCamContent
+                     id={dashCamDetail.id}
+                     member={dashCamDetail.member}
+                     title={dashCamDetail.title}
+                     createdAt={dashCamDetail.createdAt}
+                     videoUrl={dashCamDetail.videoUrl}
+                     content={dashCamDetail.content}
+                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
                </LeftColumn>
                <RightColumn>
                   <CommentsSection>
-                     <StatsContainer>
+                     {/* <StatsContainer>
                         <StatItem>
-                           <LiaCommentDots /> 34
+                           <LiaCommentDots /> {dashCamDetail.commentCount}
                         </StatItem>
                         <StatGroup>
                            <StatItem>
-                              <FaRegEye /> 1245
+                              <FaRegEye /> {dashCamDetail.viewCount}
                            </StatItem>
                            <StatItem>
-                              <FaRegHeart /> 34
+                              <FaRegHeart /> {dashCamDetail.likeCount}
                            </StatItem>
                         </StatGroup>
                      </StatsContainer>
-                     <CreateComment />
-                     <CommentContainer>
-                        <Comment
-                           avatarUrl="https://i.pravatar.cc/30"
-                           userName="돌판"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.dfawefawtfawerfawv eravwrwaerwaetferwavfwervawbawrnsrysebrtaeawegrawgawgrgedgawsrg."
-                           time="23h"
-                        />
-                        <Reply
-                           avatarUrl="https://i.pravatar.cc/30"
-                           userName="해결사요"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요."
-                           time="6h"
-                        />
-                        <Comment
-                           avatarUrl="https://i.pravatar.cc/300"
-                           userName="돌판"
-                           userDetail="BMW M8"
-                           text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.."
-                           time="23h"
-                        />
-                     </CommentContainer>
+                     <StyleCreateComment>
+                        <CreateComment boardId={dashCamDetail.id} isReply={false} commentId="" onCommentAdded={loadDetail} />
+                     </StyleCreateComment>
+                     {dashCamDetail.comments.map((comment) => (
+                        <React.Fragment key={comment.id}>
+                           {comment.status === CommentStatus.ACTIVE ? (
+                              <CommentWrapper>
+                                 <Comment
+                                    id={comment.id}
+                                    boardId={dashCamDetail.id}
+                                    avatarUrl={comment.member.profileUrl}
+                                    userName={comment.member.nickname}
+                                    userDetail={comment.member.carTitle}
+                                    text={comment.content}
+                                    time={comment.createdAt}
+                                    onCommentAdded={loadDetail}
+                                 />
+                              </CommentWrapper>
+                           ) : (
+                              "없는 댓글"
+                           )}
+                           {comment.replies.length > 0 && (
+                              comment.replies.map((reply) => (
+                                 <Reply
+                                    key={reply.id}
+                                    id={reply.id}
+                                    boardId={dashCamDetail.id}
+                                    avatarUrl={reply.member.profileUrl}
+                                    userName={reply.member.nickname}
+                                    userDetail={reply.member.carTitle}
+                                    text={reply.content}
+                                    time={reply.createdAt}
+                                 />
+                              ))
+                           )}
+                        </React.Fragment>
+                     ))} */}
                   </CommentsSection>
                   <VoteSection>
-                     <Vote />
+                     <Vote options={dashCamDetail.options} />
                   </VoteSection>
                </RightColumn>
             </InnerContentContainer>

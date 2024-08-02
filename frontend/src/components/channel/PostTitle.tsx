@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchBar from '@/components/common/UI/SearchBar';
 import { useRouter } from "next/navigation";
+import { useAuthStore } from '@/store/authStore';
+import { followChannel, unfollowChannel } from '@/api/channel';
+
 
 interface PostTitleProps {
   channel: string;
   title: string;
+  onSearch: (keyword: string) => void;
+  onSortChange: (sort: string) => void;
 }
 
 const Container = styled.div`
@@ -54,12 +59,42 @@ const FilterSection = styled.div`
   display: flex;
   align-items: center;
   margin-top: 30px;
+  position: relative; 
+`;
 
-  .sort-select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
+const DropdownButton = styled.button`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: white; 
+  cursor: pointer;
+  font-size: 14px;
+  color: #969696;
+  width: 110px; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  padding: 5px 0px;
+  top: 45px;
+  width: 110px;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+`;
+
+const DropdownItem = styled.div`
+  padding: 10px 15px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f1f1f1;
   }
 `;
 
@@ -70,13 +105,53 @@ const SideSection = styled.div`
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+
+  
 `;
 
-const PostTitle: React.FC<PostTitleProps> = ({ channel, title }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortChange }) => {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedSort, setSelectedSort] = useState('게시글 정렬');
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  useEffect(() => {
+    const accessToken = useAuthStore.getState().accessToken;
+    setIsLoggedIn(!!accessToken);
+
+    setIsFollowing(accessToken ? true : false);
+  }, []);
 
   const handleCreatePost = () => {
     router.push(`/channels/${channel}/write`);
+  };
+
+  const handleDropdownToggle = () => {
+    setDropdownVisible((prev) => !prev);
+  };
+
+  const handleFollowChannel = async () => {
+    try {
+      if (isFollowing) {
+        await unfollowChannel(channel);
+      } else {
+        await followChannel(channel);
+      }
+      setIsFollowing(!isFollowing); // 팔로우 상태 토글
+    } catch (error) {
+      console.error('Error updating follow status:', error);
+    }
+  }
+
+  const handleBlur = () => {
+    setTimeout(() => setDropdownVisible(false), 200); // 드롭다운 메뉴가 닫히기 전에 클릭 이벤트가 발생하도록 시간을 둠
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSelectedSort(sort);
+    setDropdownVisible(false);
+    onSortChange(sort);
   };
 
   return (
@@ -84,17 +159,38 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title }) => {
       <TitleSection>
         <h1>{title}</h1>
         <SideSection>
-          <button className="setButton">팔로우 +</button>
-          <SearchBar />
+          {isLoggedIn && (
+            <button className="setButton" onClick={handleFollowChannel}>
+              {isFollowing ? '언팔로우 -' : '팔로우 +'}
+            </button>
+          )}
+          <SearchBar onSearch={onSearch} />
         </SideSection>
         <FilterSection>
-          <select className="sort-select">
-            <option>게시물 정렬</option>
-          </select>
-          <button className="setPosition setButton" onClick={handleCreatePost}>글 작성 +</button>
+          <DropdownButton onClick={handleDropdownToggle} onBlur={handleBlur}>
+            {selectedSort}
+            <span>▼</span>
+          </DropdownButton>
+          {isDropdownVisible && (
+            <DropdownMenu>
+              {['최신순', '댓글수', '조회수', '좋아요'].map((sort, index) => (
+                <DropdownItem
+                  key={index}
+                  onClick={() => handleSortChange(sort)}
+                >
+                  {sort}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          )}
+          {isLoggedIn && (
+            <button className="setPosition setButton" onClick={handleCreatePost}>
+              글 작성 +
+            </button>
+          )}
         </FilterSection>
       </TitleSection>
-    </Container >
+    </Container>
   );
 };
 

@@ -16,4 +16,5 @@ public class ContextMember   {
         this.email = email;
         this.role = role;
     }
+
 }

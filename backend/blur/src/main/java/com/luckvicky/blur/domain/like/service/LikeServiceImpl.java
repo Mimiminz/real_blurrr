@@ -10,9 +10,11 @@ import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.infra.redisson.DistributedLock;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
 
+    private final ModelMapper mapper;
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
@@ -28,10 +31,9 @@ public class LikeServiceImpl implements LikeService {
     public Boolean createLike(UUID memberId, UUID boardId) {
 
         Member member = memberRepository.getOrThrow(memberId);
-        Board board = boardRepository.findByIdForUpdate(boardId)
-                .orElseThrow(NotExistBoardException::new);
+        Board board = boardRepository.getOrThrow(boardId);
 
-        board.increaseLikeCount();
+        increaseLikeCount(board);
 
         Like createdLike = likeRepository.save(
                 Like.builder()
@@ -50,7 +52,7 @@ public class LikeServiceImpl implements LikeService {
         Board board = boardRepository.findByIdForUpdate(boardId)
                 .orElseThrow(NotExistBoardException::new);
 
-        board.decreaseLikeCount();
+        decreaseLikeCount(board);
 
         Like findLike = likeRepository.findByMemberAndBoard(member, board)
                 .orElseThrow(NotExistLikeException::new);
@@ -60,6 +62,16 @@ public class LikeServiceImpl implements LikeService {
 
         return isDeleted(findLike);
 
+    }
+
+    @DistributedLock(value = "#boardId")
+    private static void increaseLikeCount(Board board) {
+        board.increaseLikeCount();
+    }
+
+    @DistributedLock(value = "#boardId")
+    private static void decreaseLikeCount(Board board) {
+        board.decreaseLikeCount();
     }
 
     private Boolean isCreated(Like createdLike) {

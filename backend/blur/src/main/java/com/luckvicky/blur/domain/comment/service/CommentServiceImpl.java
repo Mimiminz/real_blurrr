@@ -2,20 +2,31 @@ package com.luckvicky.blur.domain.comment.service;
 
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_COMMENT;
 
+import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
+import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
+import com.luckvicky.blur.domain.alarm.service.AlarmService;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.comment.exception.FailToCreateCommentException;
 import com.luckvicky.blur.domain.comment.exception.FailToDeleteCommentException;
 import com.luckvicky.blur.domain.comment.exception.NotExistCommentException;
+import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.dto.request.CommentCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.request.ReplyCreateRequest;
+import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
+import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
+import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
+import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,6 +41,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final LeagueMemberRepository leagueMemberRepository;
+    private final LeagueBoardRepository leagueBoardRepository;
+    private final AlarmFacade alarmService;
 
     @Override
     public Boolean createComment(UUID memberId, CommentCreateRequest request) {
@@ -42,6 +56,8 @@ public class CommentServiceImpl implements CommentService {
         Comment createdComment = commentRepository.save(
                 request.toEntity(member, board)
         );
+
+        alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
 
         return isCreated(createdComment);
 
@@ -59,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
         Comment createdComment = commentRepository.save(
                 request.toEntity(parentComment, member, board)
         );
+        alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
 
         return isCreated(createdComment);
 
@@ -77,6 +94,40 @@ public class CommentServiceImpl implements CommentService {
         comment.inactive();
 
         return isDeleted(comment);
+
+    }
+
+    @Transactional(readOnly = true)
+    public CommentListResponse findCommentsByLeagueBoard(UUID memberId, UUID boardId) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+        LeagueBoard board = leagueBoardRepository.getOrThrow(boardId);
+
+        leagueMemberRepository.existsByLeagueAndMember(board.getLeague(), member);
+
+        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
+
+        return CommentListResponse.of(
+                comments.stream()
+                        .map(comment -> mapper.map(comment, CommentDto.class))
+                        .collect(Collectors.toList()),
+                board.getCommentCount()
+        );
+
+    }
+
+    @Transactional(readOnly = true)
+    public CommentListResponse findCommentsByBoard(UUID boardId) {
+
+        Board board = boardRepository.getOrThrow(boardId);
+        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
+
+        return CommentListResponse.of(
+                comments.stream()
+                        .map(comment -> mapper.map(comment, CommentDto.class))
+                        .collect(Collectors.toList()),
+                board.getCommentCount()
+        );
 
     }
 

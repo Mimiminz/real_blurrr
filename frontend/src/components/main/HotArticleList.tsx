@@ -1,17 +1,22 @@
 import styled from "styled-components";
 import HotArticleListItem from "@/components/main/HotArticleListItem";
-import dummy from "@/db/mainPageData.json";
+import { HotBoardItem } from "@/types/mainPageTypes";
 
-const HotArticleList = () => {
+interface HotArticleListProps {
+  hotBoards: HotBoardItem[];
+}
+
+const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
   return (
     <ArticleList>
-      {dummy.HotArticles.map((article, index) => (
+      {hotBoards.map((board: HotBoardItem) => (
         <HotArticleListItem
-          key={index}
-          channel={article.channel}
-          title={article.title}
-          likes={article.likes}
-          comments={article.comments}
+          key={board.id}
+          id={board.id}
+          channel={board.channel}
+          title={board.title}
+          likeCount={board.likeCount}
+          commentCount={board.commentCount}
         />
       ))}
     </ArticleList>

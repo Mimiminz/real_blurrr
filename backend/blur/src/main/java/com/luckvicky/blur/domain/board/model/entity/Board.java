@@ -52,7 +52,7 @@ public class Board extends BaseEntity {
     private BoardType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)", nullable = false)
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)", nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -67,6 +67,15 @@ public class Board extends BaseEntity {
         this.type = type;
         this.member = member;
     }
+
+    public void increaseViewCount()  {
+        this.viewCount++;
+    }
+
+    public void decreaseViewCount()  {
+        this.viewCount--;
+    }
+
 
     public void increaseCommentCount()  {
         this.commentCount++;

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import javax.swing.text.html.HTML;
-
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ErrorCode {
@@ -30,16 +28,19 @@ public enum ErrorCode {
     MISSMATCH_PASSWROD(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다."),
     EXPIRED_EMAIL_CODE(HttpStatus.BAD_REQUEST, "인증 코드의 유효시간이 경과했습니다. 다시 시도해 주세요."),
-
+    ALREADY_VOTED(HttpStatus.BAD_REQUEST, "이미 투표한 사용자입니다."),
     /**
      * [401 UnAuthorized]
      * - 요청된 리소스에 대한 유효한 인증 자격 증명이 없음
      */
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
 
     /**
      * [403 Forbidden]
      * -  요청한 자원에 대해 권한 없음
      */
+    NOT_ALLOCATED_LEAGUE(HttpStatus.FORBIDDEN, "리그 사용 권한이 없습니다."),
+    UNAUTHORIZED_BOARD_DELETE(HttpStatus.FORBIDDEN, "게시글 삭제 권한이 없습니다."),
 
     /**
      * [404 Not Found]
@@ -53,6 +54,8 @@ public enum ErrorCode {
     NOT_EXIST_CHANNEL(HttpStatus.NOT_FOUND, "존재하지 않는 채널입니다."),
     NOT_EXIST_LIKE(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요입니다."),
     NOT_EXIST_FOLLOW(HttpStatus.NOT_FOUND, "존재하지 않는 팔로우입니다."),
+    NOT_EXIST_ALARM(HttpStatus.NOT_FOUND, "존재하지 않는 알림입니다."),
+    NOT_EXIST_OPTION(HttpStatus.NOT_FOUND, "존재하지 않는 옵션입니다."),
 
     /**
      * [500 INTERNAL_SERVER_ERROR]

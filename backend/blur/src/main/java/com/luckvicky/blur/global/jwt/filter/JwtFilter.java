@@ -1,5 +1,7 @@
 package com.luckvicky.blur.global.jwt.filter;
 
+import static com.luckvicky.blur.global.constant.StringFormat.BLANK;
+
 import com.luckvicky.blur.global.constant.StringFormat;
 import com.luckvicky.blur.global.jwt.service.CustomUserDetailService;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
@@ -69,7 +71,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(StringFormat.TOKEN_HEADER_NAME);
         // Token 정보 존재 여부 및 Bearer 토큰인지 확인
-        if (token != null && token.startsWith(StringFormat.TOKEN_PREFIX)) {
+        if (token != null && token.startsWith(StringFormat.TOKEN_PREFIX.concat(BLANK))) {
             return token.substring(7);
         }
 

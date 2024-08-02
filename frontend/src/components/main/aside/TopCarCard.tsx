@@ -2,12 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import dummy from "@/db/mainPageData.json";
 import { FaRegHeart } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 const topCar = dummy.topCar;
 
 const TopCarCard: React.FC = () => {
+  const router = useRouter();
+  const channelId = "aff4d655-9a8f-49c6-ab80-6e9270d5691a";
+
+  const handleClick = () => {
+    router.push(`/channels/${channelId}/${topCar.id}`);
+  };
+
   return (
-    <CardContainer>
+    <CardContainer onClick={handleClick}>
       <ImageContainer>
         <Image src={topCar.image} alt="Top Car" />
         <LikeContainer>
@@ -28,6 +36,7 @@ export default TopCarCard;
 const CardContainer = styled.div`
   border-radius: 12px;
   width: 100%;
+  cursor: pointer;
 `;
 
 const ImageContainer = styled.div`

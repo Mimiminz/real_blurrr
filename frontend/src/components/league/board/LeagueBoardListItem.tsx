@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
 import { MdAccessTime } from "react-icons/md";
-import { LeagueBoardListItemProps } from "@/types/league";
+import { LeagueBoardListItemProps } from "@/types/leagueTypes";
 
 function LeagueBoardListItem({
   title,
@@ -13,6 +13,20 @@ function LeagueBoardListItem({
   likeCount,
   commentCount,
 }: LeagueBoardListItemProps) {
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
   return (
     <ArticleDetail>
       <ArticleInfo>
@@ -27,7 +41,7 @@ function LeagueBoardListItem({
           <Icon>
             <MdAccessTime />
           </Icon>
-          {createdAt}
+          {formatPostDate(createdAt)}
         </LikeSection>
         <LikeSection>
           <Icon>
@@ -77,24 +91,6 @@ const UserTags = styled.div`
   font-weight: bold;
   font-size: 12px;
   color: #787878;
-`;
-
-const ChannelContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 5px;
-`;
-
-const Channel = styled.p`
-  background-color: #f9f9f9;
-  color: #000000;
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 0.3px solid #929292;
-  font-weight: bold;
-  margin: 0;
-  font-size: 9px;
 `;
 
 const Title = styled.p`

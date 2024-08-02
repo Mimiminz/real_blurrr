@@ -24,12 +24,11 @@ public interface LeagueRepository extends JpaRepository<League, UUID> {
     }
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT l FROM League l WHERE l.id = :id")
-    Optional<League> findByIdForUpdate(@Param("id") UUID id);
+    @Query("SELECT l FROM League l WHERE l.name = :name")
+    Optional<League> findByNameForUpdate(@Param("name") String name);
 
     List<League> findAllByType(LeagueType type);
 
     List<League> findAllByNameIn(List<String> names);
-
 
 }

@@ -1,5 +1,7 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
+import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
@@ -19,6 +21,11 @@ public interface MemberService {
     Boolean checkNickname(String nickname);
     MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
 
-    boolean authEmail(String email);
+    boolean modifyPassword(ChangePassword changePassword);
+    boolean createEmailAuthCode(String email);
     boolean validEmailAuth(EmailAuth emailAuth);
+    boolean createPasswordAuthCode(String email);
+    boolean validPasswordAuthCode(EmailAuth emailAuth);
+    boolean checkPassword(UUID memberId, CheckPassword checkPassword);
+    void logout(UUID memberId);
 }

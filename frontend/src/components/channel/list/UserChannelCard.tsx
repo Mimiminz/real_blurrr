@@ -3,8 +3,9 @@ import styled from 'styled-components';
 
 interface UserChannelCardProps {
   name: string;
-  followers: number;
-  img: string; // img prop 추가
+  followCount: number;
+  img: string;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const CardContainer = styled.div`
@@ -14,6 +15,7 @@ const CardContainer = styled.div`
   text-align: center;
   max-width: 200px;  
   margin: 0 auto;
+  cursor: pointer;
 `;
 
 const ImageContainer = styled.div<{ img: string }>`
@@ -34,12 +36,12 @@ const Followers = styled.p`
   color: #6b7280;
 `;
 
-const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followers, img }) => {
+const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, img, onClick }) => {
   return (
-    <CardContainer>
-      <ImageContainer img={img} />
+    <CardContainer onClick={onClick}>
+      <ImageContainer img={img == "" ? 'images/eg_img.png' : img} />
       <Title>{name}</Title>
-      <Followers>{followers} Followers</Followers>
+      <Followers>{followCount} Followers</Followers>
     </CardContainer>
   );
 };

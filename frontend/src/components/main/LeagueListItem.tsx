@@ -1,21 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 import { MdPeopleAlt } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 interface LeagueListItemProps {
+  id: string;
   name: string;
-  count: number;
+  peopleCount: number;
 }
 
-const LeagueListItem: React.FC<LeagueListItemProps> = ({ name, count }) => {
+const LeagueListItem: React.FC<LeagueListItemProps> = ({
+  id,
+  name,
+  peopleCount,
+}) => {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/league/${id}`);
+  };
   return (
-    <CardContainer>
+    <CardContainer onClick={handleClick}>
       <Title>{name}</Title>
       <CountContainer>
         <Icon>
           <MdPeopleAlt />
         </Icon>
-        <Count>{count}</Count>
+        <Count>{peopleCount}</Count>
       </CountContainer>
     </CardContainer>
   );
@@ -25,11 +35,17 @@ export default LeagueListItem;
 
 const CardContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.articleDivider};
+  width: 64px;
   border-radius: 8px;
   padding: 16px;
   text-align: center;
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  &:hover {
+    background: #ffedd5;
+  }
 `;
 
 const Title = styled.h3`

@@ -1,17 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 import { FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface CarPicture {
+  id: string;
   name: string;
   description: string;
   image: string;
   views: number;
 }
 
-function CarPictureCard({ name, description, image, views }: CarPicture) {
+function CarPictureCard({ id, name, description, image, views }: CarPicture) {
+  const router = useRouter();
+  const channelId = "0f0a73c8-2b8c-42dc-b380-9fa1f5e8c26b";
+
+  const handleClick = () => {
+    router.push(`channels/${channelId}/${id}`);
+  };
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <ImageContainer>
         <Image src={image} alt="Car" />
       </ImageContainer>
@@ -40,6 +48,11 @@ const Container = styled.div`
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ebebebc3;
+  }
 `;
 
 const ImageContainer = styled.div`

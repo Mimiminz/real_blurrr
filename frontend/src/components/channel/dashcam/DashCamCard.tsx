@@ -2,14 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { FiEye } from "react-icons/fi";
 import { FiHeart } from "react-icons/fi";
+import { DashCams } from '@/types/channelType';
 
 interface DashCamCardProps {
-  thumbnail: string;
-  tags: string[];
-  title: string;
-  viewer: number;
-  likes: number;
-  createdDate: string;
+  dashCamTitle: DashCams;
 }
 
 const Card = styled.div`
@@ -70,22 +66,38 @@ const Meta = styled.div`
   }
 `;
 
-const DashCamCard: React.FC<DashCamCardProps> = ({ thumbnail, tags, title, viewer, likes, createdDate }) => {
+const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
+  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
+
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
 
   return (
     <Card>
-      <Thumbnail src={thumbnail} alt={title} />
+      <Thumbnail src={videoUrl[0]} alt={title} />
       <Content>
         <Tags>
-          {tags.map((tag, index) => (
-            <span key={index}>@ {tag}</span>
+          {mentionedLeagues.map((league, index) => (
+            <span key={index}>@ {league.name}</span>
           ))}
         </Tags>
         <Title>{title}</Title>
         <Meta>
-          <span><FiEye /> {viewer}</span>
-          <span><FiHeart /> {likes}</span>
-          <span className="created">{createdDate}</span>
+          <span><FiEye /> {viewCount}</span>
+          <span><FiHeart /> {likeCount}</span>
+          <span className="created">{formatPostDate(createdAt)}</span>
         </Meta>
       </Content>
     </Card>

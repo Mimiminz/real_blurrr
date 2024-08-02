@@ -7,24 +7,20 @@ import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
+import { useAuthStore } from "@/store/authStore";
 
-import { LeagueList, Tab } from "@/types/league";
+import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/leagueTypes";
+
+import { useLeagueStore } from "@/store/leagueStore";
 
 // API
 import dummy from "@/db/mainPageData.json";
-import { fetchBrandLeagues } from "@/api/league";
-
-const tabs = dummy.leagueMembers.map((league) => ({
-  id: league.id,
-  name: league.name,
-  type: league.type,
-}));
-
-const mentionTabs = dummy.leagueMembers.map((league) => ({
-  id: `mention${league.id}`,
-  name: league.name,
-  type: league.type,
-}));
+import {
+  fetchBrandLeagues,
+  fetchBoardSearch,
+  fetchLeagueBoardList,
+  fetchUserLeagueList,
+} from "@/api/league";
 
 export default function LeaguePage({
   params,
@@ -34,42 +30,103 @@ export default function LeaguePage({
   const router = useRouter();
   const leagueId = params.leagueId;
 
-  // 더보기 안에 있는 요소들
-  const [moreTabs, setMoreTabs] = useState<Tab[]>([]);
+  const { isLoggedIn } = useAuthStore((state) => state);
+  const {
+    brandLeagueList,
+    setBrandLeagueTab,
+    userLeagueList,
+    setUserLeagueList,
+    mentionTabs,
+    setMentionTabs,
+    initialized,
+    setInitialized,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
+    activeTabName,
+    setActiveTabName,
+  } = useLeagueStore();
 
-  useEffect(() => {
-    const loadBrandLeagues = async () => {
-      try {
-        const leagues: LeagueList[] = await fetchBrandLeagues();
-        const formattedLeagues = leagues.map((league: LeagueList) => ({
-          id: league.id,
-          name: league.name,
-          type: league.type,
-        }));
-        setMoreTabs(formattedLeagues);
-      } catch (error) {
-        console.error("Failed to fetch brand leagues", error);
-      }
-    };
-
-    loadBrandLeagues();
-  }, []);
-
-  let activeTabName = `${
-    moreTabs.find((t) => t.id === leagueId)?.name ||
-    tabs.find((t) => t.id === leagueId)?.name
-  } 리그`;
-
-  console.log(leagueId.slice(7));
-
-  if (activeTabName == `${undefined} 리그`) {
-    activeTabName = `채널에서 ${
-      tabs.find((t) => t.id === leagueId.slice(7))?.name
-    }가 멘션된 글`;
-  }
+  const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
+
+  // 검색
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<LeagueBoardItem[]>([]);
+
+  useEffect(() => {
+    const loadLeagues = async () => {
+      try {
+        if (isLoggedIn && !isLoadUserLeagues) {
+          const userLeagues: UserLeague[] = await fetchUserLeagueList();
+          const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+            id: userLeague.league.id,
+            name: userLeague.league.name,
+            type: userLeague.league.type,
+            peopleCount: userLeague.league.peopleCount,
+          }));
+          setUserLeagueList(userTabs);
+          const userMentionTabs: LeagueList[] = userLeagues.map(
+            (userLeague) => ({
+              id: `mention${userLeague.league.id}`,
+              name: userLeague.league.name,
+              type: userLeague.league.type,
+              peopleCount: userLeague.league.peopleCount,
+            })
+          );
+          setMentionTabs(userMentionTabs);
+          setIsLoadUserLeagues(true);
+        }
+
+        if (!initialized) {
+          try {
+            const leagues = await fetchBrandLeagues();
+            setBrandLeagueTab(leagues);
+            setInitialized(true);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        // const leagues = await fetchBrandLeagues();
+        // setMoreTabs(leagues);
+
+        if (!leagueId.includes("mention")) {
+          const boardData = await fetchLeagueBoardList(leagueId, criteria);
+          setBoardList(boardData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch brand leagues or board data", error);
+      }
+    };
+
+    loadLeagues();
+  }, [
+    leagueId,
+    criteria,
+    isLoggedIn,
+    brandLeagueList,
+    setBrandLeagueTab,
+    initialized,
+    setInitialized,
+    setUserLeagueList,
+    setMentionTabs,
+    isLoadUserLeagues,
+    setIsLoadUserLeagues,
+  ]);
+
+  useEffect(() => {
+    let name = `${
+      brandLeagueList.find((t) => t.id === leagueId)?.name ||
+      userLeagueList.find((t) => t.id === leagueId)?.name
+    } 리그`;
+    if (name == `${undefined} 리그`) {
+      name = `채널에서 ${
+        userLeagueList.find((t) => t.id === leagueId.slice(7))?.name
+      }가 멘션된 글`;
+    }
+    setActiveTabName(name);
+  }, [brandLeagueList, userLeagueList, leagueId, setActiveTabName]);
 
   const handleCriteriaChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -77,39 +134,43 @@ export default function LeaguePage({
     setCriteria(event.target.value);
   };
 
-  // const handleWriteClick = () => {
-  //   const selectedLeague = moreTabs.find(
-  //     (league) => league.label === activeTabName
-  //   );
-  //   if (selectedLeague) {
-  //     const leagueId = selectedLeague.id;
-  //     router.push(
-  //       `/league/${leagueId}/write?leagueName=${encodeURIComponent(
-  //         activeTabName
-  //       )}`
-  //     );
-  //   }
-  // };
+  const handleWriteClick = () => {
+    router.push(`/league/${leagueId}/write`);
+  };
 
-  // const renderContent = (): JSX.Element => {
-  //   return (
-  //     <Title>
-  //       {activeTabName.startsWith("@")
-  //         ? `채널에서 ${activeTabName.slice(2)}가 멘션된 글`
-  //         : `${activeTabName} 리그`}
-  //     </Title>
-  //   );
-  // };
+  const isLeagueIdInTabs = userLeagueList.some((tab) => tab.id === leagueId);
+
+  const handleSearch = async (keyword: string) => {
+    if (!keyword.trim()) {
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
+    try {
+      const results = await fetchBoardSearch(leagueId, keyword);
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
 
   return (
     <Container>
       <TopComponent>
-        <UserTab activeTabId={leagueId} tabs={tabs} mentionTabs={mentionTabs} />
-        <SearchBar />
+        {isLoggedIn && userLeagueList.length > 0 ? (
+          <UserTab
+            activeTabId={leagueId}
+            tabs={userLeagueList}
+            mentionTabs={mentionTabs}
+          />
+        ) : (
+          <div />
+        )}
+        <SearchBar onSearch={handleSearch} />
       </TopComponent>
       <MoreBrandTab
         activeTabId={leagueId}
-        moreTabs={moreTabs}
+        moreTabs={brandLeagueList}
         activeTabName={activeTabName}
       />
       <FilterSection>
@@ -119,11 +180,18 @@ export default function LeaguePage({
           <option value="COMMENT">댓글 순</option>
           <option value="LIKE">좋아요 순</option>
         </StyledSelect>
+        {isLoggedIn && isLeagueIdInTabs && (
+          <StyledButton className="setPosition" onClick={handleWriteClick}>
+            글 작성 +
+          </StyledButton>
+        )}
       </FilterSection>
       {leagueId.includes("mention") ? (
         <h1>채널 게시글</h1>
+      ) : isSearching ? (
+        <LeagueBoardList leagueId={leagueId} boardList={searchResults} />
       ) : (
-        <LeagueBoardList leagueId={leagueId} criteria={criteria} />
+        <LeagueBoardList leagueId={leagueId} boardList={boardList} />
       )}
     </Container>
   );
@@ -181,8 +249,8 @@ const StyledSelect = styled.select`
 
 const StyledButton = styled.button`
   padding: 10px;
-  background-color: #f1f1f1;
-  border: none;
+  background: none;
+  border: 1px solid #e0e0e0;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
@@ -190,10 +258,10 @@ const StyledButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background-color: #ddd;
+    color: #f97316;
   }
+`;
 
-  &:active {
-    background-color: #ccc;
-  }
+const noTab = styled.div`
+  width: 100%;
 `;

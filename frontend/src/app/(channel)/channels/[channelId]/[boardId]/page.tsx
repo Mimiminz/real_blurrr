@@ -1,13 +1,12 @@
-'use client';
+"use client"
 
-import Comment from '@/components/common/UI/comment/Comment';
-import CreateComment from '@/components/common/UI/comment/CreateComment';
-import Reply from '@/components/common/UI/comment/Reply';
-import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
-import React, { useState } from 'react';
-import { LiaCommentDots } from 'react-icons/lia';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from "styled-components";
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { LiaCommentDots } from 'react-icons/lia';
+import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
+import { PostDetail, Comment as CommentProp, CommentStatus } from "@/types/channelType";
+import { fetchChannelPostDetail } from "@/api/channel";
 
 const Content = styled.div`
   font-size: 17px;
@@ -24,8 +23,26 @@ const CommentNumber = styled.div`
   }
 `;
 
-const StyleCreateComment = styled.div`
-  margin : 16px 0px;
+const CreateCommentContainer = styled.div`
+  margin: 16px 0px;
+`;
+
+const WriterContainer = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+const WriterButton = styled.button`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: white;
+  margin-right: 10px;
+  cursor: pointer;
+`;
+
+const CommentWrapper = styled.div`
+  width: 100%;
 `;
 
 const CommentContainer = styled.div`
@@ -50,63 +67,117 @@ const HeartButton = styled.button`
   }
 `;
 
-const BoardDetailPage: React.FC = () => {
+export default function ChannelBoardDetailPage({ params }: { params: { channelId: string; boardId: string } }) {
+   const channelId = params.channelId;
+   const boardId = params.boardId;
+
+   const [boardDetail, setBoardDetail] = useState<PostDetail | null>(null);
    const [isLiked, setIsLiked] = useState(false);
+   const [error, setError] = useState<string | null>(null);
 
    const toggleLike = () => {
-      setIsLiked(!isLiked);
+      setIsLiked((prevIsLiked) => !prevIsLiked);
    };
+
+   const formatPostDate = (createdAt: string) => {
+      const postDate = new Date(createdAt);
+      const today = new Date();
+
+      if (postDate.toDateString() === today.toDateString()) {
+         return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } else {
+         return postDate.toISOString().split('T')[0].replace(/-/g, '.');
+      }
+   };
+
+   const loadBoardDetail = useCallback(async () => {
+      try {
+         const details = await fetchChannelPostDetail(boardId, channelId);
+         setBoardDetail(details);
+      } catch (error) {
+         console.error(error);
+         setError("Failed to load post details. Please try again later.");
+      }
+   }, [boardId, channelId]);
+
+   useEffect(() => {
+      loadBoardDetail();
+   }, [boardId, channelId]);
+
+   if (!boardDetail) {
+      return <div>{error ? error : 'Loading...'}</div>;
+   }
 
    return (
       <>
          <BoardDetailTitle
-            title="오늘 현대 GV70 샀다 질문 받는다..."
-            date="2024.07.17"
-            views={1019}
-            likes={142}
-            username="전상현"
-            avatarUrl="https://i.pravatar.cc/30"
-            authorCarInfo="벤츠 GLS 600 4MATIC MANUFAKTUR 2024"
-            tags={["현대", "제네시스"]}
+            title={boardDetail.title}
+            createdAt={formatPostDate(boardDetail.createdAt)}
+            viewCount={boardDetail.viewCount}
+            likeCount={boardDetail.likeCount}
+            member={boardDetail.member}
+            tags={boardDetail.mentionedLeagues}
          />
          <Content>
-            지난주말에 장인어른이 당한 사고 내용입니다 접합 차량과 같은방향으로
-            진행중에 가해 차량이 후진을 해서 급브레이크로 경고 했지만 그대로
-            박았습니다. 블박영상에는 충격이 전해지지만는데, 원본영상에서는 흔들리는
-            영상이 있습니다(원본은 아직 못올렸네요) 장마철 사고이기도해서 그냥
-            넘어가려고 했는데 내리자마자 "안박았다 왜그러냐" 란 식이었습니다 사과하면
-            그냥 넘어가려고 했으나 이렇게 무시를 하니가 "그럼 미안한데 블박보죠"
-            했다는데요. 바쁨바쁜 우선 연락처만 받고 자리에 이동하였고 장인어른이
-            이런상황이면 어쩌할줄 재서 거세게 차주분과 제가 연락을 해보았는데
-            엄한무인이라고요
+            {boardDetail.content}
          </Content>
          <HeartButton onClick={toggleLike}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
          </HeartButton>
          <CommentContainer>
-            <CommentNumber>
-               <LiaCommentDots />8
+            <WriterContainer>
+               <WriterButton>수정</WriterButton>
+               <WriterButton>삭제</WriterButton>
+            </WriterContainer>
+            {/* <CommentNumber>
+               <LiaCommentDots />
+               {boardDetail.commentCount}
             </CommentNumber>
-            <StyleCreateComment>
-               <CreateComment />
-            </StyleCreateComment>
-            <Comment
-               avatarUrl="https://i.pravatar.cc/30"
-               userName="돌판"
-               userDetail="BMW M8"
-               text="무과실이 맞는데 아무래도 과실 몰릴것 같네요.dfawefawtfawerfawv eravwrwaerwaetferwavfwervawbawrnsrysebrtaeawegrawgawgrgedgawsrg."
-               time="23h"
-            />
-            <Reply
-               avatarUrl="https://i.pravatar.cc/30"
-               userName="해결사요"
-               userDetail="BMW M8"
-               text="무과실이 맞는데 아무래도 과실 몰릴것 같네요."
-               time="6h"
-            />
+            <CreateCommentContainer>
+               <CreateComment boardId={boardId} isReply={false} commentId="" onCommentAdded={loadBoardDetail} />
+            </CreateCommentContainer>
+            {boardDetail.comments.map((comment) => (
+               <React.Fragment key={comment.id}>
+                  {comment.status === CommentStatus.ACTIVE ? (
+                     <CommentWrapper>
+                        <Comment
+                           id={comment.id}
+                           boardId={boardId}
+                           avatarUrl={comment.member.profileUrl}
+                           userName={comment.member.nickname}
+                           userDetail={comment.member.carTitle}
+                           text={comment.content}
+                           time={comment.createdAt}
+                           onCommentAdded={loadBoardDetail}
+                        />
+                     </CommentWrapper>
+                  ) : (
+                     <div style={{ color: '#999', margin: '10px 0' }}>삭제된 댓글입니다.</div>
+                  )}
+                  {comment.replies.length > 0 && (
+                     comment.replies.map((reply) => (
+                        <Reply
+                           key={reply.id}
+                           id={reply.id}
+                           boardId={boardId}
+                           avatarUrl={reply.member.profileUrl}
+                           userName={reply.member.nickname}
+                           userDetail={reply.member.carTitle}
+                           text={reply.content}
+                           time={reply.createdAt}
+                           onCommentAdded={loadBoardDetail}
+                        />
+                     ))
+                  )}
+               </React.Fragment>
+            ))}
+            <CommentList
+          comments={commentList.comments}
+          commentCount={commentList.commentCount}
+          boardId={boardId}
+          onCommentAdded={loadCommentDetail}
+        /> */}
          </CommentContainer>
       </>
    );
 }
-
-export default BoardDetailPage;

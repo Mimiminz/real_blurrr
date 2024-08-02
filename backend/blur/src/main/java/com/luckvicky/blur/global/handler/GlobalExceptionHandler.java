@@ -4,6 +4,7 @@ import static com.luckvicky.blur.global.constant.StringFormat.PROBLEM_DETAIL_KEY
 import static com.luckvicky.blur.global.constant.StringFormat.VALIDATED_ERROR_RESULT;
 import static com.luckvicky.blur.global.constant.StringFormat.VALID_ERROR_RESULT;
 import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_VALIDATE;
+import static com.luckvicky.blur.global.enums.code.ErrorCode.UNAUTHORIZED_ACCESS;
 
 import com.luckvicky.blur.global.enums.code.ErrorCode;
 import com.luckvicky.blur.global.execption.BaseException;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,10 +51,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    protected ResponseEntity<Object> handleAuthorizationDenied(
+            AuthorizationDeniedException e, WebRequest request
+    ) {
+
+        ErrorCode errorCode = UNAUTHORIZED_ACCESS;
+        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
+
+        return ResponseEntity
+                .status(errorCode.getCode())
+                .body(ErrorResponse
+                        .builder(e, errorCode.getCode(), errorCode.getMessage())
+                        .title(e.getClass().getSimpleName())
+                        .instance(URI.create(servletWebRequest.getRequest().getRequestURI()))
+                        .build());
+
+    }
+
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleRuntimeException(
             RuntimeException e, WebRequest request
     ) {
+
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
 
         return ResponseEntity
