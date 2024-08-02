@@ -17,7 +17,9 @@ import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
+import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
 import com.luckvicky.blur.domain.league.model.entity.League;
+import com.luckvicky.blur.domain.league.model.entity.LeagueType;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
@@ -117,13 +119,34 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardDto> getLeagueBoards(UUID leagueId, UUID memberId, int pageNumber, String criteria) {
+    public List<BoardDto> getBrandLeagueBoards(UUID leagueId, int pageNumber, String criteria) {
 
-        Member member = memberRepository.getOrThrow(memberId);
         League league = leagueRepository.getOrThrow(leagueId);
 
-        if (!leagueMemberService.checkLeagueAllocationOfMember(league, member)) {
-            throw new NotAllocatedLeagueException();
+        if (LeagueType.MODEL.equals(league.getType())) {
+            throw new InvalidLeagueTypeException();
+        }
+
+        Pageable pageable = PageRequest.of(
+                pageNumber, LEAGUE_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
+        );
+
+        List<LeagueBoard> leagueBoards = leagueBoardRepository
+                .findAllByLeagueAndStatus(league, pageable, ActivateStatus.ACTIVE).getContent();
+
+        return leagueBoards.stream()
+                .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<BoardDto> getModelLeagueBoards(UUID leagueId, int pageNumber, String criteria) {
+        League league = leagueRepository.getOrThrow(leagueId);
+
+        if (LeagueType.BRAND.equals(league.getType())) {
+            throw new InvalidLeagueTypeException();
         }
 
         Pageable pageable = PageRequest.of(
