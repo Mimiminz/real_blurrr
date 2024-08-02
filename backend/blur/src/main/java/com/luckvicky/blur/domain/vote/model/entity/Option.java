@@ -34,12 +34,8 @@ public class Option extends BaseEntity {
         this.voteCount = 0L;
     }
 
-
-    public void setDashCam(DashCam dashCam) {
-        this.dashCam = dashCam;
-    }
-
     public void increaseVoteCount() {
         this.voteCount++;
     }
+
 }

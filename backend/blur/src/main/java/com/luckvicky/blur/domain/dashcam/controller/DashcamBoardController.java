@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.dashcam.controller;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
@@ -128,16 +129,17 @@ public class DashcamBoardController {
             )
     })
     @PostMapping
-    public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
+    public ResponseEntity<Result<DashcamBoardCreateResponse>> createDashcamBoard(
             @Valid
             @RequestBody DashcamBoardCreateRequest request,
             @AuthUser ContextMember contextMember) {
-        DashcamBoardDetailDto createdBoard = dashcamBoardService.createDashcamBoard(request, contextMember.getId());
+
         return ResponseUtil.created(
-                Result.<DashcamBoardResponse>builder()
-                        .data(DashcamBoardResponse.of(createdBoard))
+                Result.<DashcamBoardCreateResponse>builder()
+                        .data(dashcamBoardService.createDashcamBoard(request, contextMember.getId()))
                         .build()
         );
+
     }
 
 }

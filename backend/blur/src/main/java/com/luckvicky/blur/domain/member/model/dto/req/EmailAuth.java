@@ -5,11 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "이메일 인증 코드 확인")
 public record EmailAuth(
-        @Schema(description = "이메일")
+
+        @Schema(description = "이메일", example = "teamluckyvickyblurrr@gmail.com")
         @NotBlank
         String email,
+
         @Schema(description = "인증 코드값")
         @NotBlank
         String authCode
+
 ) {
 }

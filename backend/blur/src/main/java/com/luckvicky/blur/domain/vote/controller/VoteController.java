@@ -38,16 +38,17 @@ public class VoteController {
     @Parameter(name = "optionId", description = "옵션 고유 식별값", in = ParameterIn.PATH)
     @Parameter(name = "boardId", description = "게시물 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/{optionId}")
-    public ResponseEntity<Result> createVote(@AuthUser ContextMember contextMember, @PathVariable UUID boardId, @PathVariable UUID optionId)
-    {
+    public ResponseEntity<Result> createVote(
+            @AuthUser ContextMember contextMember,
+            @PathVariable("boardId") UUID boardId,
+            @PathVariable("optionId") UUID optionId
+    ) {
         return ResponseUtil.created(
                 Result.builder()
                         .data(voteService.createVote(contextMember.getId(), boardId, optionId))
                         .build()
         );
     }
-
-
 
     @Operation(
             summary = "투표 옵션 확인 API",
@@ -59,7 +60,10 @@ public class VoteController {
     })
     @Parameter(name = "boardId", description = "게시물 고유 식별값", in = ParameterIn.PATH)
     @GetMapping
-    public ResponseEntity<Result> getVote(@AuthUser ContextMember contextMember,@PathVariable UUID boardId){
+    public ResponseEntity<Result> getVote(
+            @AuthUser ContextMember contextMember,
+            @PathVariable("boardId") UUID boardId
+    ) {
         return ResponseUtil.ok(
                 Result.builder()
                         .data(voteService.getVoteResult(contextMember.getId(), boardId))
