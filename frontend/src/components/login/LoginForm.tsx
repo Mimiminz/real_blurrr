@@ -15,7 +15,11 @@ interface LoginFormValues {
 
 const LoginForm = () => {
   const router = useRouter();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { setAccessToken, setRefreshToken, setUser } = useAuthStore(state => ({
+    setAccessToken: state.setAccessToken,
+    setRefreshToken: state.setRefreshToken,
+    setUser: state.setUser,
+  }));
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -30,7 +34,15 @@ const LoginForm = () => {
 
       const { accessToken, refreshToken } = response;
       setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+
       sessionStorage.setItem('refreshToken', refreshToken);
+      sessionStorage.setItem('accessToken', accessToken);
+
+      const userResponse = await axios.get('/v1/members', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setUser(userResponse.data);
       
       router.push('/');
 

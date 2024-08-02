@@ -8,10 +8,11 @@ import Notifications from './Notifications';
 
 const NavBar = () => {
   const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn } = useAuthStore(state => ({
+  const { isLoggedIn, setIsLoggedIn, clearAuthState } = useAuthStore(state => ({
     isLoggedIn: state.isLoggedIn,
-    setIsLoggedIn: state.setIsLoggedIn
-  }))
+    setIsLoggedIn: state.setIsLoggedIn,
+    clearAuthState: state.clearAuthState,
+  }));
   const [showNotifications, setShowNotifications] = useState(false);
   const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(null);
 
@@ -28,10 +29,11 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    useAuthStore.getState().clearAccessToken();
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    clearAuthState();
     setIsLoggedIn(false);
     alert('로그아웃되었습니다.');
-
     router.push('/');
   };
 
