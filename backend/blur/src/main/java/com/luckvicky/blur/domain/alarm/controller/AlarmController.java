@@ -38,11 +38,11 @@ public class AlarmController {
         this.alarmService = alarmService;
     }
 
-    @GetMapping("/test")
-    public Boolean test() {
-        alarmService.sendAlarm(UUID.fromString("11ef49a0-9d0d-d86b-b2aa-87fcf861b88d"), AlarmType.ADD_COMMENT, "게시글 입니다");
-        return true;
-    }
+//    @GetMapping("/test")
+//    public Boolean test() {
+//        alarmService.sendAlarm(UUID.fromString("11ef49a0-9d0d-d86b-b2aa-87fcf861b88d"), AlarmType.ADD_COMMENT, "게시글 입니다");
+//        return true;
+//    }
 
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(
