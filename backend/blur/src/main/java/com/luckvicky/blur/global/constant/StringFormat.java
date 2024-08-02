@@ -41,8 +41,7 @@ public class StringFormat {
     public static final String[] PERMIT_ALL_URI = {
             "/h2-console/**",
             "/v1/auth/**",
-            "/health",
-            "/v1/alarm/**"
+            "/health"
     };
 
     // 일반 회원 허용 URI
@@ -54,7 +53,8 @@ public class StringFormat {
             "/v1/leagues/ranking",
             "/v1/leagues/brands",
             "/v1/leagues/brands/*/boards",
-            "/v1/leagues/*/boards/search"
+            "/v1/leagues/*/boards/search",
+            "/v1/alarm/**"
     };
 
     // 차량 미인증 허용 URI
