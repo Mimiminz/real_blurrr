@@ -11,6 +11,7 @@ import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.GeneralMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
+import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -25,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,6 +39,7 @@ import java.util.UUID;
 public class ChannelController {
 
     private final ChannelService channelService;
+    private final S3ImageService s3ImageService;
 
     @Operation(summary = "채널 생성 API")
     @ApiResponses({
@@ -242,5 +246,17 @@ public class ChannelController {
                         .data(ChannelListResponse.of(channels))
                         .build()
         );
+    }
+
+    @Operation(summary = "Presigned url 요청 API")
+    @GetMapping("/aws")
+    public ResponseEntity<Map<String, String>> getUrl(
+            @RequestParam(name = "fileName")
+            @Schema(description = "파일 이름 (확장자명 포함)") String fileName) throws MalformedURLException {
+                return ResponseUtil.ok(
+                        Result.builder()
+                                .data(s3ImageService.getPresignedUrl("images", fileName))
+                                .build()
+                );
     }
 }
