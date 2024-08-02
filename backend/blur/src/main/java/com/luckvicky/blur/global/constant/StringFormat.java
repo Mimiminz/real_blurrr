@@ -62,12 +62,12 @@ public class StringFormat {
             "/v1/channels/*",
             "/v1/channels/*/boards",
             "/v1/channels/*/boards/*",
-            "/v1/alarm/**"
+            "/v1/alarm/**",
+            "/v1/members/**"
     };
 
     // 차량 미인증 허용 URI
     public static final String[] BASIC_USER_URI = {
-            "/v1/members/**"
     };
 
     // 차량 인증 허용 URI
