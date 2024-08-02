@@ -88,7 +88,7 @@ const LoginForm = () => {
             <StyledErrorMessage name="password" component="div" />
             {/* <CheckboxLabel>
               <CheckboxField name="rememberMe" type="checkbox" />
-              자동 로그인
+              자동 로그인하기
             </CheckboxLabel> */}
             <Button type="submit" disabled={isSubmitting}>
               로그인
