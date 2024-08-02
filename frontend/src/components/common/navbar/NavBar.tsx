@@ -5,14 +5,18 @@ import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { useAuthStore } from "@/store/authStore";
 import Notifications from "./Notifications";
+import { useLeagueStore } from "@/store/leagueStore";
 
 const NavBar = () => {
   const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn, clearAuthState } = useAuthStore(state => ({
-    isLoggedIn: state.isLoggedIn,
-    setIsLoggedIn: state.setIsLoggedIn,
-    clearAuthState: state.clearAuthState,
-  }));
+  const { isLoggedIn, setIsLoggedIn, clearAuthState } = useAuthStore(
+    (state) => ({
+      isLoggedIn: state.isLoggedIn,
+      setIsLoggedIn: state.setIsLoggedIn,
+      clearAuthState: state.clearAuthState,
+    })
+  );
+  const { setInitialized } = useLeagueStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
     null
@@ -31,12 +35,13 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
     clearAuthState();
     setIsLoggedIn(false);
-    alert('로그아웃되었습니다.');
-    router.push('/');
+    setInitialized(false);
+    alert("로그아웃되었습니다.");
+    router.push("/");
   };
 
   return (

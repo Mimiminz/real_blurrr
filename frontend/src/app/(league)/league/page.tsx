@@ -15,7 +15,7 @@ import { useLeagueStore } from "@/store/leagueStore";
 import { fetchBrandLeagues, fetchUserLeagueList } from "@/api/league";
 
 export default function LeagueMainPage() {
-  const { isLoggedIn } = useAuthStore((state) => state);
+  const { isLoggedIn, user } = useAuthStore((state) => state);
   const {
     brandLeagueList,
     setBrandLeagueTab,
@@ -33,23 +33,31 @@ export default function LeagueMainPage() {
     const loadLeagues = async () => {
       try {
         if (isLoggedIn && !isLoadUserLeagues) {
-          const userLeagues: UserLeague[] = await fetchUserLeagueList();
-          const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
-            id: userLeague.league.id,
-            name: userLeague.league.name,
-            type: userLeague.league.type,
-            peopleCount: userLeague.league.peopleCount,
-          }));
-          setUserLeagueList(userTabs);
-          const userMentionTabs: LeagueList[] = userLeagues.map(
-            (userLeague) => ({
-              id: `mention${userLeague.league.id}`,
+          if (user?.isAuth) {
+            const userLeagues: UserLeague[] = await fetchUserLeagueList();
+            const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+              id: userLeague.league.id,
               name: userLeague.league.name,
               type: userLeague.league.type,
               peopleCount: userLeague.league.peopleCount,
-            })
-          );
-          setMentionTabs(userMentionTabs);
+            }));
+            setUserLeagueList(userTabs);
+            const userMentionTabs: LeagueList[] = userLeagues.map(
+              (userLeague) => ({
+                id: `mention${userLeague.league.id}`,
+                name: userLeague.league.name,
+                type: userLeague.league.type,
+                peopleCount: userLeague.league.peopleCount,
+              })
+            );
+            setMentionTabs(userMentionTabs);
+          } else {
+            const userTabs: LeagueList[] = [];
+            setUserLeagueList(userTabs);
+            const userMentionTabs: LeagueList[] = [];
+            setMentionTabs(userMentionTabs);
+          }
+
           setIsLoadUserLeagues(true);
         }
 
@@ -69,6 +77,7 @@ export default function LeagueMainPage() {
 
     loadLeagues();
   }, [
+    user,
     isLoggedIn,
     brandLeagueList,
     setBrandLeagueTab,
@@ -79,8 +88,6 @@ export default function LeagueMainPage() {
     isLoadUserLeagues,
     setIsLoadUserLeagues,
   ]);
-
-  console.log(userLeagueList);
 
   return (
     <>
