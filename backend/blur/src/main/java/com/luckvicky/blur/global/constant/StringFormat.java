@@ -57,6 +57,11 @@ public class StringFormat {
             "/v1/leagues/brands",
             "/v1/leagues/brands/*/boards",
             "/v1/leagues/*/boards/search",
+            "/v1/channels",
+            "/v1/channels/search",
+            "/v1/channels/*",
+            "/v1/channels/*/boards",
+            "/v1/channels/*/boards/*",
             "/v1/alarm/**"
     };
 
