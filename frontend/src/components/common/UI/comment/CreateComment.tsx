@@ -12,7 +12,15 @@ export default function CreateComment({
   onCommentAdded,
 }: CreateCommentProps) {
   const [comment, setComment] = useState("");
-  const router = useRouter();
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -21,6 +29,11 @@ export default function CreateComment({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 폼의 기본 동작을 막음
     if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
+
+    if (comment.length > 200) {
+      alert("댓글은 200자까지만 작성이 가능합니다.");
+      return;
+    }
 
     try {
       if (isReply) {
@@ -38,13 +51,20 @@ export default function CreateComment({
   return (
     <Container onSubmit={handleSubmit}>
       <Avatar />
-      <Input
-        type="text"
-        placeholder="댓글 달기..."
-        value={comment}
-        onChange={handleChange}
-      />
-      <Button type="submit">작성</Button>
+      <InputContainer>
+        <Input
+          type="text"
+          placeholder="댓글 달기..."
+          value={comment}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+        {isFocused && <CharCount>{comment.length}/200</CharCount>}
+      </InputContainer>
+      <Button type="submit" disabled={!comment.trim()}>
+        작성
+      </Button>
     </Container>
   );
 }
@@ -66,20 +86,33 @@ const Avatar = styled.div`
   margin-right: 8px;
 `;
 
-const Input = styled.input`
+const InputContainer = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+`;
+
+const Input = styled.input`
   border: none;
   outline: none;
   font-size: 14px;
   color: #666;
 `;
 
-const Button = styled.button`
-  background-color: #fbc02d;
+const CharCount = styled.div`
+  align-self: flex-end;
+  font-size: 12px;
+  color: #999;
+  margin-right: 8px;
+`;
+
+const Button = styled.button<{ disabled: boolean }>`
+  background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fbc02d")};
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   color: #fff;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
 `;

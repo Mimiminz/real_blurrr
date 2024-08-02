@@ -3,13 +3,14 @@ package com.luckvicky.blur.domain.alarm.controller;
 import static com.luckvicky.blur.global.constant.Number.ALARM_PAGE_SIZE;
 
 import com.luckvicky.blur.domain.alarm.model.dto.AlarmDto;
-import com.luckvicky.blur.domain.alarm.model.dto.AlarmEvent;
 import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
+import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
 import com.luckvicky.blur.domain.alarm.service.AlarmService;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.security.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
@@ -32,12 +33,18 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 public class AlarmController {
 
-    private final AlarmService alarmService;
+    private final AlarmFacade alarmService;
 
-    public AlarmController(AlarmService alarmService) {
+    public AlarmController(AlarmFacade alarmService) {
         this.alarmService = alarmService;
     }
 
+//    @GetMapping("/test")
+//    public Boolean test() {
+//        alarmService.sendAlarm(UUID.fromString("11ef49a0-9d0d-d86b-b2aa-87fcf861b88d"), AlarmType.ADD_COMMENT, "게시글 입니다");
+//        return true;
+//    }
+    @Operation(description = "SSE 연결 요청")
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(
 //            @AuthUser ContextMember member
@@ -52,14 +59,14 @@ public class AlarmController {
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo
     ) {
-        Pageable pageable = PageRequest.of(pageNo, ALARM_PAGE_SIZE,
-                Sort.by(Direction.DESC, SortingCriteria.valueOf("TIME").getCriteria()));
-        return ResponseEntity.ok(alarmService.findAlarms(member.getId(), pageable));
+        return ResponseEntity.ok(alarmService.findAlarms(member.getId(), pageNo));
     }
+
     @Operation(summary = "알림 읽음 처리")
     @PutMapping("/read/{id}")
     public ResponseEntity<Boolean> modifyReadStatus(
             @AuthUser ContextMember member,
+            @Schema(name = "알림 id")
             @PathVariable(name = "id") UUID alarmId) {
         return ResponseEntity.ok(alarmService.modifyReadStatus(member.getId(),alarmId));
     }

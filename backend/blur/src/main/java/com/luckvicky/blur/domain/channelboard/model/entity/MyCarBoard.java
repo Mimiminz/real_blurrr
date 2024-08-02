@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 public class MyCarBoard extends Board {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "channel_id", columnDefinition = "BINARY(16)")
     Channel channel;
 
     @Column(nullable = false, columnDefinition = "TEXT")

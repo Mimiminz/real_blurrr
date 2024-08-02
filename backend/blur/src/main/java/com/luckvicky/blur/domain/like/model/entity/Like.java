@@ -34,11 +34,11 @@ public class Like {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", columnDefinition = "BINARY(36)")
+    @JoinColumn(name = "board_id", columnDefinition = "")
     private Board board;
 
     @Builder

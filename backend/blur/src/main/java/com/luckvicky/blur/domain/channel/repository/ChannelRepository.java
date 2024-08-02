@@ -26,4 +26,6 @@ public interface ChannelRepository extends JpaRepository<Channel, UUID> {
     @Query("SELECT c.id FROM Channel c WHERE c.owner.id = :memberId")
     List<UUID> findChannelIdsByOwnerId(@Param("memberId") UUID memberId);
 
+    List<Channel> findByNameContainingIgnoreCase(String keyword);
+
 }

@@ -71,4 +71,8 @@ public class Member extends BaseEntity {
         this.role = role;
     }
 
+    public void updateIsAuth(boolean isAuth) {
+        this.isAuth = isAuth;
+    }
+
 }

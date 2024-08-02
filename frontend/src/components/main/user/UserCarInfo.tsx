@@ -1,15 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
-import dummy from "@/db/mainPageData.json";
+// import dummy from "@/db/mainPageData.json";
 import { GoArrowUpRight } from "react-icons/go";
+import { LeagueList } from "@/types/leagueTypes";
+import { useAuthStore } from "@/store/authStore";
 
-const userInfo = dummy.userInfo;
-const userLeague = dummy.leagueMembers;
+// const userInfo = dummy.userInfo;
+// const userLeague = dummy.leagueMembers;
 
-const UserCarInfo: React.FC = () => {
+interface UserCarProps {
+  userLeagueList: LeagueList[];
+}
+
+const UserCarInfo: React.FC<UserCarProps> = ({ userLeagueList }) => {
   const router = useRouter();
-
+  const { user } = useAuthStore();
   const handleUserLeagueClick = (tabId: string) => {
     router.push(`/league/${tabId}`);
   };
@@ -17,19 +23,23 @@ const UserCarInfo: React.FC = () => {
   return (
     <Container>
       <ProfileSection>
-        <ProfileImage src={userInfo.profileImage} alt="User Profile" />
+        <ProfileImage src={"/"} alt="User Profile" />
         <CarInfo>
-          <CarModel>“{userInfo.carModel}” 오너</CarModel>
-          <UserName>{userInfo.name}님! 어서오세요~</UserName>
+          {/* <CarModel>“{userInfo.carModel}” 오너</CarModel>
+          <UserName>{userInfo.name}님! 어서오세요~</UserName> */}
         </CarInfo>
       </ProfileSection>
       <ButtonSection>
-        <LeagueButton onClick={() => handleUserLeagueClick(userLeague[0].id)}>
-          {userLeague[0].name} <br />
+        <LeagueButton
+          onClick={() => handleUserLeagueClick(userLeagueList[0].id)}
+        >
+          {userLeagueList[0].name} <br />
           리그 <GoArrowUpRight />
         </LeagueButton>
-        <LeagueButton onClick={() => handleUserLeagueClick(userLeague[1].id)}>
-          {userLeague[1].name} <br />
+        <LeagueButton
+          onClick={() => handleUserLeagueClick(userLeagueList[1].id)}
+        >
+          {userLeagueList[1].name} <br />
           리그 <GoArrowUpRight />
         </LeagueButton>
       </ButtonSection>
@@ -132,6 +142,6 @@ const LeagueButton = styled.button`
 
   svg {
     margin-left: 5px;
-    color: orange;
+    color: ${({ theme }) => theme.colors.main};
   }
 `;

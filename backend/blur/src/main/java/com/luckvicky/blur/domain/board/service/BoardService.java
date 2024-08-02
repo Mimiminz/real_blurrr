@@ -16,18 +16,10 @@ public interface BoardService {
 
     BoardDetailDto getBoardDetail(UUID boardId, UUID id);
 
-    List<HotBoardDto> getHotBoard();
-
     Boolean deleteBoard(UUID boardId, UUID memberId);
 
     List<BoardDto> findLikeBoardsByMember(UUID id, int pageNumber, String criteria);
 
     List<BoardDto> findBoardsByMember(UUID id, int pageNumber, String criteria);
-
-    List<HotDashcamDto> getHotDashcamBoard();
-
-    List<MyCarDto> getHotMyCarBoard();
-
-    MyCarDto getTodayMyCarBoard();
 
 }

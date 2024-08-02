@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,6 +36,11 @@ public interface DashcamRepository extends JpaRepository<DashCam, UUID> {
             @Param("league") League league,
             @Param("status") ActivateStatus status,
             Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = "member")
+    Page<DashCam> findByStatusAndCreatedAtBetween(
+            Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
     );
 
 }

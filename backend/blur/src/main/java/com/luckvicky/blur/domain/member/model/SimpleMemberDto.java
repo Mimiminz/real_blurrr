@@ -16,10 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Schema(name = "사용자 간단 정보")
 public class SimpleMemberDto {
-
-    @Schema(description = "사용자 식별값")
-    private UUID id;
-
     @Schema(description = "사용자 프로필")
     private String profileUrl;
 
@@ -31,7 +27,6 @@ public class SimpleMemberDto {
 
     public static SimpleMemberDto of(Member member){
         return SimpleMemberDto.builder()
-                .id(member.getId())
                 .profileUrl(member.getProfileUrl())
                 .nickname(member.getNickname())
                 .carTitle(member.getCarTitle())

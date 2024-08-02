@@ -12,6 +12,7 @@ import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.GeneralMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,7 +67,7 @@ public class ChannelBoardController {
         );
     }
 
-
+    @GeneralMember
     @Operation(
             summary = "채널 게시글 목록 검색 조회 API",
             description = "채널에 대한 게시물 목록을 검색한다."
@@ -127,6 +128,7 @@ public class ChannelBoardController {
         );
     }
 
+    @GeneralMember
     @Operation(
             summary = "채널 게시글 상세 조회 API",
             description = "특정 게시글에 대한 본문, 조회수, 댓글을 조회한다."

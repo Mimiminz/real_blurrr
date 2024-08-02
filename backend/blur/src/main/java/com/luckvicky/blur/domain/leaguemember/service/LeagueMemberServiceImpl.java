@@ -37,10 +37,10 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
     public Boolean createLeagueMember(LeagueMemberCreateRequest request, UUID memberId) {
 
         Member member = memberRepository.getOrThrow(memberId);
-        List<LeagueMember> createdLeagueMembers = new ArrayList<>();
-        for (UUID leagueId : request.leagueIds()) {
 
-            League league =  leagueRepository.findByIdForUpdate(leagueId)
+        for (String name : request.leagues()) {
+
+            League league =  leagueRepository.findByNameForUpdate(name)
                     .orElseThrow(NotExistLeagueException::new);
 
            isCreated(
@@ -56,7 +56,9 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
 
         }
 
+        member.updateIsAuth(true);
         member.updateRole(Role.ROLE_AUTH_USER);
+
         return true;
 
     }

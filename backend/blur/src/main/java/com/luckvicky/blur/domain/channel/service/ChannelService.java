@@ -12,6 +12,8 @@ public interface ChannelService {
     List<ChannelDto> getFollowedChannels(UUID memberId);
     List<ChannelDto> getCreatedChannels(UUID memberId);
     List<ChannelDto> searchChannelsByTags(List<String> tagNames);
+    List<ChannelDto> searchChannelsByKeyword(String keyword);
+    ChannelDto getChannelById(UUID channelId);
     Boolean createFollow(UUID memberId, UUID channelId);
-    Boolean deleteFollow(UUID memberId, UUID chaanelId);
+    Boolean deleteFollow(UUID memberId, UUID channelId);
 }

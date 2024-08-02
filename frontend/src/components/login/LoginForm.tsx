@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuthStore } from '../../store/authStore'
 import { login as loginApi } from '@/api/authApi';
+import api from '../../api/index'
 
 interface LoginFormValues {
   email: string;
@@ -15,7 +16,11 @@ interface LoginFormValues {
 
 const LoginForm = () => {
   const router = useRouter();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { setAccessToken, setRefreshToken, setUser } = useAuthStore(state => ({
+    setAccessToken: state.setAccessToken,
+    setRefreshToken: state.setRefreshToken,
+    setUser: state.setUser,
+  }));
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -30,7 +35,15 @@ const LoginForm = () => {
 
       const { accessToken, refreshToken } = response;
       setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+
       sessionStorage.setItem('refreshToken', refreshToken);
+      sessionStorage.setItem('accessToken', accessToken);
+
+      const userResponse = await api.get('/v1/members', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setUser(userResponse.data);
       
       router.push('/');
 
@@ -75,7 +88,7 @@ const LoginForm = () => {
             <StyledErrorMessage name="password" component="div" />
             {/* <CheckboxLabel>
               <CheckboxField name="rememberMe" type="checkbox" />
-              자동 로그인
+              자동 로그인하기
             </CheckboxLabel> */}
             <Button type="submit" disabled={isSubmitting}>
               로그인

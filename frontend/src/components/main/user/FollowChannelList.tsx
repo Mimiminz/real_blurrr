@@ -8,6 +8,11 @@ import { Navigation, Pagination } from "swiper/modules";
 import FollowChannelCard from "./FollowChannelCard";
 import dummy from "@/db/mainPageData.json";
 import { FaArrowCircleLeft } from "react-icons/fa";
+import { Channels } from "@/types/channelType";
+
+interface ChannelsProp {
+  followChannels: Channels[];
+}
 
 const SwiperContainer = styled.div`
   position: relative;
@@ -24,7 +29,7 @@ const SwiperContainer = styled.div`
     border-radius: 100%;
     background-position: center;
   }
-  
+
   .swiper-button-next {
     background: url("/images/carousel_arrow_next.png") no-repeat;
     background-size: 70% auto;
@@ -56,7 +61,7 @@ const SwiperContainer = styled.div`
   }
 `;
 
-const FollowChannelList: React.FC = () => {
+const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
   const channels = dummy.ChannelFollowList;
 
   return (
@@ -75,11 +80,11 @@ const FollowChannelList: React.FC = () => {
           },
         }}
       >
-        {channels.map((channel, index) => (
+        {followChannels.map((channel, index) => (
           <SwiperSlide key={index}>
             <FollowChannelCard
               title={channel.name}
-              followers={channel.followers}
+              followers={channel.followCount}
               img={channel.img}
             />
           </SwiperSlide>

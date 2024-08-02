@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.dashcam.controller;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
@@ -13,6 +14,7 @@ import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,8 +25,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.luckvicky.blur.infra.aws.service.S3ImageService;
 
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -35,6 +40,7 @@ import java.util.UUID;
 public class DashcamBoardController {
 
     private final DashcamBoardService dashcamBoardService;
+    private final S3ImageService s3ImageService;
 
     @Operation(summary = "블랙박스 게시글 목록 조회 API")
     @ApiResponses({
@@ -127,15 +133,31 @@ public class DashcamBoardController {
             )
     })
     @PostMapping
-    public ResponseEntity<Result<DashcamBoardResponse>> createDashcamBoard(
+    public ResponseEntity<Result<DashcamBoardCreateResponse>> createDashcamBoard(
             @Valid
             @RequestBody DashcamBoardCreateRequest request,
             @AuthUser ContextMember contextMember) {
-        DashcamBoardDetailDto createdBoard = dashcamBoardService.createDashcamBoard(request, contextMember.getId());
+
         return ResponseUtil.created(
-                Result.<DashcamBoardResponse>builder()
-                        .data(DashcamBoardResponse.of(createdBoard))
+                Result.<DashcamBoardCreateResponse>builder()
+                        .data(dashcamBoardService.createDashcamBoard(request, contextMember.getId()))
+                        .build()
+        );
+
+    }
+
+
+
+    @Operation(summary = "비디오 presigned url 요청 API")
+    @GetMapping("/aws")
+    public ResponseEntity<Map<String, String>> getUrl(
+            @RequestParam(name = "fileName")
+            @Schema(description = "동영상파일 이름 (확장자명 포함)") String fileName) throws MalformedURLException {
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(s3ImageService.getPresignedUrl("videos", fileName))
                         .build()
         );
     }
+
 }
