@@ -9,6 +9,7 @@ import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -73,8 +74,10 @@ public class AuthController {
 //        return ResponseEntity.ok(s3ImageService.getPresignedUrl("images", fileName));
 //    }
 
-    @GeneralMember
+
     @Operation(summary = "이메일 인증번호 생성 API")
+    @Parameter(name = "email", example = "teamluckyvickyblurrr@gmail.com")
+    @GeneralMember
     @GetMapping("/email/{email}")
     public ResponseEntity<Boolean> createEmailAuth(@PathVariable("email") String email) {
         return ResponseEntity.ok(memberService.createEmailAuthCode(email));

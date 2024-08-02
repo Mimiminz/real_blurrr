@@ -1,7 +1,10 @@
 package com.luckvicky.blur.domain.dashcam.service;
 
 import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
@@ -14,6 +17,7 @@ import com.luckvicky.blur.domain.dashcam.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
 import com.luckvicky.blur.domain.vote.model.dto.request.OptionCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
@@ -23,8 +27,6 @@ import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.domain.vote.model.entity.Option;
-import com.luckvicky.blur.domain.vote.model.entity.Vote;
-import com.luckvicky.blur.domain.vote.repository.VoteRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import lombok.RequiredArgsConstructor;
@@ -50,38 +52,32 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-    private final ChannelRepository channelRepository;
     private final DashcamRepository dashcamRepository;
     private final DashcamBoardMapper dashcamBoardMapper;
     private final CommentRepository commentRepository;
     private final LeagueRepository leagueRepository;
     private final MentionRepository mentionRepository;
-    private final VoteRepository voteRepository;
+    private final ChannelRepository channelRepository;
 
     @Override
     @Transactional
-    public DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId) {
-
-//        Channel dashcamChannel = channelRepository.findByNameIs(BoardType.DASHCAM.getName())
-//                .orElseThrow(NotExistChannelException::new);
+    public DashcamBoardCreateResponse createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId) {
 
         Member member = memberRepository.getOrThrow(memberId);
-        DashCam dashcam = request.toEntity(member);
-//        DashCam dashcam = request.toEntity(dashcamChannel, member);
 
-        dashcam = dashcamRepository.save(dashcam);
+        Channel dashcamChannel = channelRepository
+                .findByNameIs(BoardType.DASHCAM.getName())
+                .orElseThrow(NotExistChannelException::new);
 
-        if(!request.options().isEmpty()){
-            for (OptionCreateRequest optionRequest : request.options()) {
-                Option option = Option.builder()
-                        .optionOrder(optionRequest.optionOrder())
-                        .content(optionRequest.content())
-                        .build();
-                dashcam.addOption(option);
-            }
+        DashCam dashcam = request.toEntity(dashcamChannel, member);
 
+        if (!request.options().isEmpty()) {
+            dashcam.setOption(createOption(request.options(), dashcam));
         }
 
+        if (!request.videos().isEmpty()) {
+            dashcam.setVideos(request.videos());
+        }
 
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
 
@@ -97,11 +93,28 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
             );
         }
 
-        List<CommentDto> comments = new ArrayList<>();
+        dashcamRepository.save(dashcam);
+        return DashcamBoardCreateResponse.of(dashcam.getId());
 
-        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam, comments);
     }
 
+    private List<Option> createOption(List<OptionCreateRequest> requests, DashCam dashCam) {
+
+        List<Option> options = new ArrayList<>();
+
+        for (OptionCreateRequest optionRequest : requests) {
+            options.add(
+                    Option.builder()
+                            .dashCam(dashCam)
+                            .optionOrder(optionRequest.optionOrder())
+                            .content(optionRequest.content())
+                            .build()
+            );
+        }
+
+        return options;
+
+    }
 
 
     @Override

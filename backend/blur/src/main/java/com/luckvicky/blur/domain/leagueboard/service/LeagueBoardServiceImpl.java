@@ -95,25 +95,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 Sort.by(Direction.DESC, sortingCriteria.getCriteria())
         );
 
-        List<ChannelBoard> mentionedChannelBoards = channelBoardRepository.findAllByMentionedLeague(
-                mentionedLeague, ActivateStatus.ACTIVE, pageable
-        );
+        List<ChannelBoard> mentionedChannelBoards = channelBoardRepository
+                .findAllByMentionedLeague(mentionedLeague, ActivateStatus.ACTIVE, pageable);
 
-        List<DashCam> mentionedDashCamBoards = dashcamRepository.findAllByMentionedLeague(
-                mentionedLeague, ActivateStatus.ACTIVE, pageable
-        );
-
-        List<ChannelBoardDto> mentionedBoards = mentionedChannelBoards.stream()
+        return mentionedChannelBoards.stream()
                 .map(board -> mapper.map(board, ChannelBoardDto.class))
                 .collect(Collectors.toList());
-
-        mentionedBoards.addAll(
-                mentionedDashCamBoards.stream()
-                        .map(board -> mapper.map(board, ChannelBoardDto.class))
-                        .collect(Collectors.toList())
-        );
-
-        return mentionedBoards;
 
     }
 

@@ -24,15 +24,15 @@ import java.util.List;
 public class Vote extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dashcam_id")
+    @JoinColumn(name = "dashcam_id", columnDefinition = "BINARY(16)")
     private DashCam dashCam;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", columnDefinition = "BINARY(16)")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id", nullable = false)
+    @JoinColumn(name = "option_id", columnDefinition = "BINARY(16)", nullable = false)
     private Option selectedOption;
 
     @Builder

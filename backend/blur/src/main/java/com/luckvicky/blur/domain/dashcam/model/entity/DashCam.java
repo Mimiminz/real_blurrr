@@ -29,28 +29,32 @@ public class DashCam extends Board {
     private List<Option> options = new ArrayList<>();
 
     @ElementCollection
-    @CollectionTable(name = "videos", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(
+            name = "videos",
+            joinColumns = @JoinColumn(name = "id", columnDefinition = "BINARY(16)")
+    )
     private List<Video> videos = new ArrayList<>();
 
     @Column(nullable = false)
     private Long totalVoteCount;
 
     public DashCam(
-            String title, String content, BoardType type, Member member, Channel channel, List<Video> videos
+            String title, String content, BoardType type, Member member, Channel channel
     ) {
         super(title, content, type, member);
         this.channel = channel;
-        this.videos = videos;
         this.totalVoteCount = 0L;
     }
 
-    public void addOption(Option option) {
-        this.options.add(option);
-        option.setDashCam(this);
+    public void setOption(List<Option> options) {
+        this.options = options;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
     }
 
     public void increaseVoteCount() {this.totalVoteCount++;}
-
 
 }
 

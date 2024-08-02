@@ -51,18 +51,6 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
 
     Optional<ChannelBoard> findByIdAndChannel(UUID id, Channel channel);
 
-//    @Query("SELECT b "
-//            + "FROM Board b "
-//            + "LEFT JOIN Mention mt ON mt.board.id = b.id AND mt.league = :league "
-//            + "LEFT JOIN FETCH b.member "
-//            + "WHERE b.status = :status AND b.type =: type")
-//    List<Board> findAllByTypeAndMentionedLeague(
-//            @Param("league") League league,
-//            @Param("type") BoardType type,
-//            @Param("status") ActivateStatus status,
-//            Pageable pageable
-//    );
-
     @Query("SELECT cb "
             + "FROM ChannelBoard cb "
             + "LEFT JOIN Mention m ON m.board = cb AND m.league = :league "

@@ -23,7 +23,7 @@ public class DashcamBoardMapper {
 
     public DashcamBoardListDto toDashcamBoardListDto(DashCam dashcam) {
         List<String> videoUrls = dashcam.getVideos().stream()
-                .map(Video::getVideoUrl)
+                .map(Video::getUrl)
                 .collect(Collectors.toList());
 
         List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(dashcam).stream()
@@ -51,7 +51,7 @@ public class DashcamBoardMapper {
 
     public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, List<CommentDto> comments) {
         List<String> videoUrls = dashcam.getVideos().stream()
-                .map(Video::getVideoUrl)
+                .map(Video::getUrl)
                 .collect(Collectors.toList());
 
         List<OptionDto> optionDtos = dashcam.getOptions().stream()
