@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from "styled-components";
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { LiaCommentDots } from 'react-icons/lia';
 import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
 import { PostDetail, Comment as CommentProp, CommentStatus } from "@/types/channelType";
 import { fetchChannelPostDetail } from "@/api/channel";
@@ -118,9 +117,7 @@ export default function ChannelBoardDetailPage({ params }: { params: { channelId
             member={boardDetail.member}
             tags={boardDetail.mentionedLeagues}
          />
-         <Content>
-            {boardDetail.content}
-         </Content>
+         <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
          <HeartButton onClick={toggleLike}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
          </HeartButton>

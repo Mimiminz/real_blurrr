@@ -1,5 +1,5 @@
 import api from '@/api/index'; 
-import { Channels, DashCams, DashCamDetail, PostData, PostDetail } from '@/types/channelType';
+import { Channels, DashCams, DashCamDetail, PostData, PostDetail, PostInfo } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
 export const fetchFollowingChannels = async (): Promise<Channels[]> => {
@@ -71,6 +71,17 @@ export const fetchSearchTags = async (tags: string[]): Promise<Channels[]> => {
   }
 };
 
+// 채널 정보 데이터 가져오는 함수
+export const fetchChannelInfo = async (channelId: string): Promise<PostInfo>  => {
+  try {
+    const response = await api.get(`/v1/channels/${channelId}`);
+    return response.data.data.channel;
+  } catch (error) {
+    console.error('Error following channel:', error);
+    throw error;
+  }
+};
+
 // 채널 게시글 목록 데이터를 가져오는 함수
 export const fetchPosts = async (channelId: string, keyword: string, pageNumber: number, criteria: string): Promise<PostData[]> => {
   try {
@@ -114,6 +125,26 @@ export const fetchChannelPostDetail = async (
     throw error;
   }
 };
+
+// 채널 게시글 생성 함수
+export const fetchPostWrite = async (
+  channelId: string,
+  title: string,
+  content: string
+) => {
+  try {
+    const response = await api.post(`/v1/channels/${channelId}/boards`, {
+      title: title,
+      content: content,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
 
 // 채널 팔로우 / 언팔로우 하는 함수
 export const followChannel = async (channelId: string) => {
