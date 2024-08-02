@@ -56,14 +56,5 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByTypeAndStatus(BoardType type, Pageable pageable, ActivateStatus status);
 
-    @EntityGraph(attributePaths = "member")
-    Board findByTypeAndStatusAndCreatedAtBetween(
-            BoardType type, Sort sort, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
-    );
-
-    @EntityGraph(attributePaths = "member")
-    Page<Board> findAllByTypeAndStatusAndCreatedAtBetween(
-            BoardType type, Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
-    );
 
 }

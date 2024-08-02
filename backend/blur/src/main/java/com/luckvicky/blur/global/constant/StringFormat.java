@@ -30,6 +30,7 @@ public class StringFormat {
     public static final String CRITERIA_COMMENT = "commentCount";
     public static final String CRITERIA_NAME = "name";
     public static final String CRITERIA_PEOPLE = "peopleCount";
+    public static final String CRITERIA_VOTE = "totalVoteCount";
 
     public static final String CONDITION_TITLE = "title";
     public static final String CONDITION_CONTENT = "comment";
@@ -48,10 +49,10 @@ public class StringFormat {
 
     // 일반 회원 허용 URI
     public static final String[] GENERAL_USER_URI = {
-            "/v1/boards/hot",
-            "/v1/boards/mycar",
-            "/v1/boards/today/mycar",
-            "/v1/boards/dashcam",
+            "/v1/channels/hot",
+            "/v1/channels/mycar",
+            "/v1/channels/today/mycar",
+            "/v1/channels/dashcam",
             "/v1/leagues/ranking",
             "/v1/leagues/brands",
             "/v1/leagues/brands/*/boards",
