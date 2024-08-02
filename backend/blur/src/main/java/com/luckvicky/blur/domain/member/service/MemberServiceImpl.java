@@ -8,6 +8,7 @@ import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
 import com.luckvicky.blur.domain.member.factory.EmailAuthStrategy;
 import com.luckvicky.blur.domain.member.factory.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
+import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
@@ -240,6 +241,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public boolean checkPassword(UUID memberId, CheckPassword checkPassword) {
+        Member member = memberRepository.getOrThrow(memberId);
+        return passwordEncoder.matches(member.getPassword(), checkPassword.password());
+    }
+
+    @Override
     public void logout(UUID memberId) {
         Member member = memberRepository.getOrThrow(memberId);
         redisRefreshTokenAdapter.delete(member.getId().toString());
@@ -253,4 +260,5 @@ public class MemberServiceImpl implements MemberService {
         }
         return true;
     }
+
 }
