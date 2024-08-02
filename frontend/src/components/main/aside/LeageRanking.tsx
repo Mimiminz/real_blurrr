@@ -2,16 +2,21 @@ import React from "react";
 import styled from "styled-components";
 import dummy from "@/db/mainPageData.json";
 import LeagueRankingItem from "./LeageRankingItem";
+import { LeagueList } from "@/types/leagueTypes";
 
-const LeagueRanking: React.FC = () => {
+interface LeagueRankingProps {
+  leaugeRanking: LeagueList[];
+}
+
+const LeagueRanking: React.FC<LeagueRankingProps> = ({ leaugeRanking }) => {
   return (
     <RankingContainer>
-      {dummy.rankings.map((item, index) => (
+      {leaugeRanking.map((league, index) => (
         <LeagueRankingItem
-          key={index}
+          key={league.id}
           rank={index + 1}
-          name={item.name}
-          count={item.count}
+          name={league.name}
+          count={league.peopleCount}
         />
       ))}
     </RankingContainer>

@@ -22,9 +22,11 @@ export default function RootLayout({
             <GlobalStyle />
             <Layout>
               <Header />
-              <PageTransition>
-                <Main>{children}</Main>
-              </PageTransition>
+              <ContentWrapper>
+                <PageTransition>
+                  <Main>{children}</Main>
+                </PageTransition>
+              </ContentWrapper>
               <Footer />
             </Layout>
           </ThemeProvider>
@@ -38,6 +40,12 @@ const Layout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Main = styled.main`
