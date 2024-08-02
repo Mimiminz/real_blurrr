@@ -6,13 +6,12 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
-import com.luckvicky.blur.domain.dashcam.model.entity.Option;
 import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
+import com.luckvicky.blur.domain.vote.model.dto.OptionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,8 +54,13 @@ public class DashcamBoardMapper {
                 .map(Video::getVideoUrl)
                 .collect(Collectors.toList());
 
-        List<Option> sortedOptions = dashcam.getOptions().stream()
-                .sorted(Comparator.comparingInt(Option::getNum))
+        List<OptionDto> optionDtos = dashcam.getOptions().stream()
+                .map(option -> OptionDto.builder()
+                        .id(option.getId())
+                        .optionOrder(option.getOptionOrder())
+                        .content(option.getContent())
+                        .voteCount(option.getVoteCount())
+                        .build())
                 .collect(Collectors.toList());
 
         List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(dashcam).stream()
@@ -72,9 +76,10 @@ public class DashcamBoardMapper {
                 .commentCount(dashcam.getCommentCount())
                 .likeCount(dashcam.getLikeCount())
                 .createdAt(dashcam.getCreatedAt())
+                .voteCount(dashcam.getTotalVoteCount())
                 .videoUrl(videoUrls)
                 .content(dashcam.getContent())
-                .options(sortedOptions)
+                .options(optionDtos)
                 .mentionedLeagues(mentionedLeagues)
                 .comments(comments)
                 .build();

@@ -1,11 +1,8 @@
 package com.luckvicky.blur.domain.dashcam.service;
 
 import com.luckvicky.blur.domain.board.model.entity.Board;
-import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
-import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
-import com.luckvicky.blur.domain.channelboard.exception.NotExistChannelException;
 import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
@@ -17,6 +14,7 @@ import com.luckvicky.blur.domain.dashcam.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.vote.model.dto.request.OptionCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
@@ -24,6 +22,9 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.domain.vote.model.entity.Option;
+import com.luckvicky.blur.domain.vote.model.entity.Vote;
+import com.luckvicky.blur.domain.vote.repository.VoteRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import lombok.RequiredArgsConstructor;
@@ -55,17 +56,32 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     private final CommentRepository commentRepository;
     private final LeagueRepository leagueRepository;
     private final MentionRepository mentionRepository;
+    private final VoteRepository voteRepository;
 
     @Override
     @Transactional
     public DashcamBoardDetailDto createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId) {
 
-        Channel dashcamChannel = channelRepository.findByNameIs(BoardType.DASHCAM.getName())
-                .orElseThrow(NotExistChannelException::new);
+//        Channel dashcamChannel = channelRepository.findByNameIs(BoardType.DASHCAM.getName())
+//                .orElseThrow(NotExistChannelException::new);
 
         Member member = memberRepository.getOrThrow(memberId);
-        DashCam dashcam = request.toEntity(dashcamChannel, member);
+        DashCam dashcam = request.toEntity(member);
+//        DashCam dashcam = request.toEntity(dashcamChannel, member);
+
         dashcam = dashcamRepository.save(dashcam);
+
+        if(!request.options().isEmpty()){
+            for (OptionCreateRequest optionRequest : request.options()) {
+                Option option = Option.builder()
+                        .optionOrder(optionRequest.optionOrder())
+                        .content(optionRequest.content())
+                        .build();
+                dashcam.addOption(option);
+            }
+
+        }
+
 
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
 
@@ -87,6 +103,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     }
 
 
+
     @Override
     @Transactional(readOnly = true)
     public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, String criteria) {
@@ -94,7 +111,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         Pageable pageable = PageRequest.of(
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
                 Sort.by(Sort.Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
-                );
+        );
 
         List<DashCam> dashCamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
 
