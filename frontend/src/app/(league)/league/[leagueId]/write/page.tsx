@@ -34,7 +34,6 @@ export default function WritePage({
       console.error("Error submitting comment:", error);
     }
   };
-  console.log(content);
 
   return (
     <Container>
