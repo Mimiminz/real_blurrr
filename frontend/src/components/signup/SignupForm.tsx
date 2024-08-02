@@ -301,6 +301,7 @@ const SignupForm = () => {
               className={buttonColor ? 'text-green-500' : 'text-slate-200'}
             >
               회원가입
+        
             </Button>
           </StyledForm>
         )}
