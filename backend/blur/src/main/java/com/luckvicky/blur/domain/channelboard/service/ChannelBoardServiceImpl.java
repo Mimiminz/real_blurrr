@@ -55,7 +55,6 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
     private final LeagueRepository leagueRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final DashcamRepository dashcamRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -96,7 +95,6 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         return channelBoardMapper.toChannelBoardListDtoList(channelBoards, mentionList);
 
     }
-
 
     @Override
     @Transactional(readOnly = true)

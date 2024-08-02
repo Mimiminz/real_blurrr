@@ -10,6 +10,7 @@ import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.security.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +44,7 @@ public class AlarmController {
 //        alarmService.sendAlarm(UUID.fromString("11ef49a0-9d0d-d86b-b2aa-87fcf861b88d"), AlarmType.ADD_COMMENT, "게시글 입니다");
 //        return true;
 //    }
-
+    @Operation(description = "SSE 연결 요청")
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(
 //            @AuthUser ContextMember member
@@ -65,6 +66,7 @@ public class AlarmController {
     @PutMapping("/read/{id}")
     public ResponseEntity<Boolean> modifyReadStatus(
             @AuthUser ContextMember member,
+            @Schema(name = "알림 id")
             @PathVariable(name = "id") UUID alarmId) {
         return ResponseEntity.ok(alarmService.modifyReadStatus(member.getId(),alarmId));
     }

@@ -25,16 +25,15 @@ public class DashCam extends Board {
     @JoinColumn(name = "channel_id", columnDefinition = "BINARY(16)")
     Channel channel;
 
-
     @OneToMany(mappedBy = "dashCam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
-
-    @Column(nullable = false)
-    private Long totalVoteCount;
 
     @ElementCollection
     @CollectionTable(name = "videos", joinColumns = @JoinColumn(name = "id"))
     private List<Video> videos = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Long totalVoteCount;
 
     public DashCam(
             String title, String content, BoardType type, Member member, Channel channel, List<Video> videos

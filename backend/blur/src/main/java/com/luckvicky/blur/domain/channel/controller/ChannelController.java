@@ -3,11 +3,13 @@ package com.luckvicky.blur.domain.channel.controller;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
+import com.luckvicky.blur.domain.channel.model.dto.response.ChannelResponse;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.GeneralMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -55,6 +57,7 @@ public class ChannelController {
     }
 
 
+    @GeneralMember
     @Operation(summary = "전체 채널 목록 조회 API")
     @ApiResponses({
             @ApiResponse(
@@ -136,6 +139,30 @@ public class ChannelController {
     }
 
 
+    @GeneralMember
+    @Operation(summary = "특정 채널 정보 조회 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 완료 응답",
+                    content = @Content(schema = @Schema(implementation = ChannelResponse.class))
+
+            )
+    })
+    @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
+    @GetMapping("/{channelId}")
+    public ResponseEntity getChannel(@PathVariable(name = "channelId") UUID channelId) {
+        ChannelDto channel = channelService.getChannelById(channelId);
+
+        return ResponseUtil.ok(
+                Result.builder()
+                        .data(ChannelResponse.of(channel))
+                        .build()
+        );
+    }
+
+
+
     @Operation(summary = "채널 팔로우 생성")
     @ApiResponses({
             @ApiResponse(
@@ -189,8 +216,8 @@ public class ChannelController {
     }
 
 
-
-    @Operation(summary = "태그 기반 채널 검색 API")
+    @GeneralMember
+    @Operation(summary = "채널 검색 API")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -199,10 +226,10 @@ public class ChannelController {
             )
     })
     @GetMapping("/search")
-    public ResponseEntity searchChannelsByTags(
-            @Parameter(description = "검색할 태그 목록", required = true)
-            @RequestParam List<String> tags) {
-        List<ChannelDto> channels = channelService.searchChannelsByTags(tags);
+    public ResponseEntity searchChannelsByKeyword(
+            @Parameter(description = "검색할 키워드", required = true)
+            @RequestParam String keyword) {
+        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword);
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(

@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 @Slf4j
 @Service
@@ -128,6 +125,54 @@ public class ChannelServiceImpl implements ChannelService{
                 .entrySet().stream()
                 .map(entry -> channelMapper.convertToDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ChannelDto> searchChannelsByKeyword(String keyword) {
+
+        // 1. 이름 중 키워드 포함하는 채널 검색
+        List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
+
+        // 2-1. 태그 중 키워드 포함하는 채널 검색
+        List<ChannelTag> channelTagsByKeyword = channelTagRepository.findByTagNameContainingIgnoreCase(keyword);
+
+        // 2-2. 채널 추출
+        List<Channel> channelsByTag = channelTagsByKeyword.stream()
+                .map(ChannelTag::getChannel)
+                .distinct()
+                .collect(Collectors.toList());
+
+
+        // 3. 채널 병합
+        Set<Channel> allChannels = new HashSet<>();
+        allChannels.addAll(channelsByName);
+        allChannels.addAll(channelsByTag);
+
+
+        // 4. 각 채널의 태그 매핑
+        Map<Channel, List<Tag>> channelTagsMap = allChannels.stream()
+                .collect(Collectors.toMap(
+                        channel -> channel,
+                        channel -> channelTagRepository.findByChannel(channel).stream()
+                                .map(ChannelTag::getTag)
+                                .collect(Collectors.toList())
+                ));
+
+        return allChannels.stream()
+                .map(channel -> channelMapper.convertToDto(channel, channelTagsMap.getOrDefault(channel, List.of())))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public ChannelDto getChannelById(UUID channelId) {
+        Channel channel = channelRepository.getOrThrow(channelId);
+        List<Tag> tags = channelTagRepository.findByChannelId(channelId)
+                .stream()
+                .map(ChannelTag::getTag)
+                .collect(Collectors.toList());
+
+        return channelMapper.convertToDto(channel, tags);
     }
 
     @Override

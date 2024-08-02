@@ -17,10 +17,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(name = "사용자 정보")
 public class MemberDto {
-
-    @Schema(description = "식별값")
-    private UUID id;
-
     @Schema(description = "이메일")
     private String email;
 
@@ -41,7 +37,6 @@ public class MemberDto {
 
     public static MemberDto of(Member member){
         return MemberDto.builder()
-                .id(member.getId())
                 .email(member.getEmail())
                 .profileUrl(member.getProfileUrl())
                 .nickname(member.getNickname())

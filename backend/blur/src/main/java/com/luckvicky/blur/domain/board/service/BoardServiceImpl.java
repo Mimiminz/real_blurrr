@@ -18,6 +18,7 @@ import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
@@ -50,8 +51,8 @@ public class BoardServiceImpl implements BoardService {
     private final ModelMapper mapper;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final ChannelBoardRepository channelBoardRepository;
 
     @Override
     public Boolean createBoard(BoardCreateRequest request) {
@@ -107,106 +108,6 @@ public class BoardServiceImpl implements BoardService {
                 .collect(Collectors.toList());
 
     }
-
-    @Override
-    public List<HotBoardDto> getHotBoard() {
-
-        Pageable pageable = PageRequest.of(
-                ZERO,
-                HOT_BOARD_PAGE_SIZE,
-                Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria())
-        );
-
-        LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<Board> boards = boardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.CHANNEL, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
-
-        return boards.stream()
-                .map(board -> mapper.map(board, HotBoardDto.class))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public List<HotDashcamDto> getHotDashcamBoard() {
-
-        Pageable pageable = PageRequest.of(
-                ZERO,
-                HOT_DASHCAM_BOARD_PAGE_SIZE
-        );
-
-        LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<Board> boards = boardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.DASHCAM, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
-
-        return boards.stream()
-                .map(board -> mapper.map(board, HotDashcamDto.class))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public MyCarDto getTodayMyCarBoard() {
-
-        LocalDateTime now = ClockUtil.getLocalDateTime();
-
-        Board board = boardRepository
-                .findByTypeAndStatusAndCreatedAtBetween(
-                        BoardType.MYCAR,
-                        Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria()),
-                        ActivateStatus.ACTIVE,
-                        now.minusDays(1), now
-                );
-
-        if (Objects.isNull(board)) {
-            return null;
-        }
-
-        return mapper.map(board, MyCarDto.class);
-
-    }
-
-    @Override
-    public List<MyCarDto> getHotMyCarBoard() {
-
-        Pageable pageable = PageRequest.of(
-                ZERO,
-                HOT_MYCAR_BOARD_PAGE_SIZE,
-                Sort.by(Direction.DESC, SortingCriteria.VIEW.getCriteria())
-        );
-
-        LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<Board> boards = boardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.MYCAR, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
-
-        return boards.stream()
-                .map(board -> mapper.map(board, MyCarDto.class))
-                .collect(Collectors.toList());
-
-    }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<BoardDto> findBoardsByType(String type, int pageNumber, String criteria) {
-//
-//        BoardType boardType = BoardType.convertToEnum(type);
-//        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
-//
-//        Pageable pageable = PageRequest.of(
-//                pageNumber, LEAGUE_BOARD_PAGE_SIZE,
-//                Sort.by(Direction.DESC, sortingCriteria.getCriteria())
-//        );
-//
-//        List<Board> boards = boardRepository
-//                .findAllByTypeAndStatus(boardType, pageable, ActivateStatus.ACTIVE).getContent();
-//
-//        return boards.stream()
-//                .map(board -> mapper.map(board, BoardDto.class))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     @Transactional(readOnly = true)

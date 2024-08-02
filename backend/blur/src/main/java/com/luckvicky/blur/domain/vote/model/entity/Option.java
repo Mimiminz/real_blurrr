@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Option extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dashcam_id", nullable = false)
+    @JoinColumn(name = "dashcam_id", columnDefinition = "BINARY(16)", nullable = false)
     private DashCam dashCam;
 
     private int optionOrder;
