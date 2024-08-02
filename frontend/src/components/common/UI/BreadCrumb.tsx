@@ -6,7 +6,7 @@ interface BreadcrumbProps {
   channel: string;
   subChannel: string;
   channelUrl: string;
-  subChannelUrl: string; // subChannelUrl 추가
+  subChannelUrl?: string; // subChannelUrl 추가
 }
 
 const BreadcrumbContainer = styled.nav`
@@ -44,9 +44,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ channel, subChannel, channelUrl
       <Link href={channelUrl} legacyBehavior>
         <a>{channel}</a>
       </Link>
-      <Link href={subChannelUrl} legacyBehavior>
+      {channel === '리그' || !subChannelUrl ? (
         <a className="breadcrumb-link">{subChannel}</a>
-      </Link>
+      ) : (
+        <Link href={subChannelUrl} legacyBehavior>
+          <a className="breadcrumb-link">{subChannel}</a>
+        </Link>
+      )}
     </BreadcrumbContainer>
   );
 };
