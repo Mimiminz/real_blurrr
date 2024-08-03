@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+
     /**
      * 인가 실패 관련 403 핸들링
      */

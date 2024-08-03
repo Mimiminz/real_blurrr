@@ -6,41 +6,22 @@ import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.HotDashcamResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.HotMyCarResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.TodayMyCarResponse;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
-import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardDetailResponse;
-import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardRetrieveService;
-import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
-import com.luckvicky.blur.global.security.AuthUser;
-import com.luckvicky.blur.global.security.GeneralMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "채널 게시글 API")
@@ -66,7 +47,6 @@ public class ChannelBoardRetrieveController {
                     description = "조회 완료 (단, 데이터 없음)"
             )
     })
-    @GeneralMember
     @GetMapping("/hot")
     public ResponseEntity getHotBoard() {
 
@@ -102,7 +82,6 @@ public class ChannelBoardRetrieveController {
                     description = "조회 완료 (단, 데이터 없음)"
             )
     })
-    @GeneralMember
     @GetMapping("/dashcam")
     public ResponseEntity getHotDashcamBoard() {
 
@@ -138,7 +117,6 @@ public class ChannelBoardRetrieveController {
                     description = "조회 완료 (단, 데이터 없음)"
             )
     })
-    @GeneralMember
     @GetMapping("/mycar")
     public ResponseEntity getHotMyCarBoard() {
 
@@ -174,7 +152,6 @@ public class ChannelBoardRetrieveController {
                     description = "조회 완료 (단, 데이터 없음)"
             )
     })
-    @GeneralMember
     @GetMapping("/today/mycar")
     public ResponseEntity geTodayMyCarBoard() {
 

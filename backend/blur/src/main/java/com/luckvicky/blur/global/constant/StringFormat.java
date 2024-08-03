@@ -4,8 +4,6 @@ public class StringFormat {
 
     public static final String BLANK = " ";
     public static final String JWT = "JWT";
-    public static final String AUTH = "Auth";
-    public static final String NO_AUTH = "No Auth";
 
     public static final String VALID_ERROR_RESULT = "{message: '%s'}, {field: '%s'}, {input: '%s'}";
     public static final String VALIDATED_ERROR_RESULT = "{message: '%s'}, {input: '%s'}";
@@ -40,55 +38,61 @@ public class StringFormat {
 
     public static final String REDISSON_ADDRESS = "redis://localhost:6379";
 
-    // 허용 URI
-    public static final String[] PERMIT_ALL_URI = {
-            "/h2-console/**",
-            "/v1/auth/**",
-            "/health"
-    };
+    public static final String LEAGUE_TYPE_MODEL = "MODEL";
+    public static final String LEAGUE_TYPE_BRAND = "BRAND";
 
-    // 일반 회원 허용 URI
-    public static final String[] GENERAL_USER_URI = {
-            "/v1/channels/hot",
-            "/v1/channels/mycar",
-            "/v1/channels/today/mycar",
-            "/v1/channels/dashcam",
-            "/v1/leagues/ranking",
-            "/v1/leagues/brands",
-            "/v1/leagues/brands/*/boards",
-            "/v1/leagues/*/boards/search",
-            "/v1/channels",
-            "/v1/channels/search",
-            "/v1/channels/*",
-            "/v1/channels/*/boards",
-            "/v1/channels/*/boards/*",
-            "/v1/alarm/**",
-            "/v1/members/**"
-    };
+    public static final String AUTH_USER = "ROLE_AUTH_USER";
+    public static final String BASIC_USER = "ROLE_BASIC_USER";
+    public static final String ADMIN = "ROLE_ADMIN";
 
-    // 차량 미인증 허용 URI
-    public static final String[] BASIC_USER_URI = {
-    };
-
-    // 차량 인증 허용 URI
-    public static final String[] AUTH_USER_URI = {
-
-    };
-
-    // Swagger 관련 URI
-    public static final String[] SWAGGER_URI = {
+    // Utility 관련 URI
+    public static final String[] UTILITY_URI = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.index.html",
             "/webjars/**",
-            "/swagger-resources/**"
+            "/swagger-resources/**",
+            "/h2-console/**",
+            "/health"
     };
 
-    // Swagger 관련 URI
-    public static final String[] SWAGGER_EXCLUDE_METHOD_NAME = {
-            "createLeagueBoard",
-            "createLeague",
-            "createBoard",
+    // 회원가입 관련 URI
+    public static final String SIGN_UP_URI = "/v1/auth/**";
+
+    // 공용 URI
+    public static final String[] GUEST_URI = {
+            "/v1/leagues/ranking",
+            "/v1/channels/hot",
+            "/v1/channels/mycar",
+            "/v1/channels/today/mycar",
+            "/v1/channels/dashcam",
+            "/v1/channels",
+            "/v1/channels/*",
+            "/v1/channels/search",
+            "/v1/channels/*/boards",
+            "/v1/channels/*/boards/*"
     };
+
+    // 리그 URI
+    public static final String[] GUEST_URI_OF_LEAGUE = {
+            "/v1/leagues",
+            "/v1/leagues/*/boards",
+            "/v1/leagues/*/boards/search"
+    };
+
+    // 차량 미인증 허용 URI (회원가입 O)
+    public static final String[] BASIC_USER_URI = {
+            "/v1/alarm/**",
+            "/v1/members/**"
+    };
+
+    // 차량 인증 허용 URI (회원가입 O)
+    public static final String[] AUTH_USER_URI = {
+            "/v1/leagues/boards/*",
+            "/v1/leagues/boards/*/comments",
+            "/v1/leagues/*/mentions",
+    };
+
+
 }
 

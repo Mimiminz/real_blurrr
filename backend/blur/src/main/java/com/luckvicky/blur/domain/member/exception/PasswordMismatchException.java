@@ -5,6 +5,6 @@ import com.luckvicky.blur.global.execption.BaseException;
 
 public class PasswordMismatchException extends BaseException {
     public PasswordMismatchException() {
-        super(ErrorCode.MISSMATCH_PASSWROD);
+        super(ErrorCode.MISSMATCH_PASSWORD);
     }
 }
