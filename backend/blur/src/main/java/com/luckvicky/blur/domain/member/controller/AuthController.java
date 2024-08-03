@@ -7,7 +7,6 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
-import com.luckvicky.blur.global.security.GeneralMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +33,6 @@ public class AuthController {
         this.memberService = memberService;
     }
 
-    @GeneralMember
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
@@ -42,21 +40,18 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
-    @GeneralMember
     @Operation(summary = "로그인")
     @PostMapping("/signin")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody SignInDto signInDto) {
         return ResponseEntity.ok(memberService.login(signInDto));
     }
 
-    @GeneralMember
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<JwtDto> tokenReissue(@Valid @RequestBody ReissueDto reissue) {
         return ResponseEntity.ok(memberService.reissueToken(reissue));
     }
 
-    @GeneralMember
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/check/nickname/{nickname}")
     public ResponseEntity<Boolean> checkNickName(
@@ -77,34 +72,29 @@ public class AuthController {
 
     @Operation(summary = "이메일 인증번호 생성 API")
     @Parameter(name = "email", example = "teamluckyvickyblurrr@gmail.com")
-    @GeneralMember
     @GetMapping("/email/{email}")
     public ResponseEntity<Boolean> createEmailAuth(@PathVariable("email") String email) {
         return ResponseEntity.ok(memberService.createEmailAuthCode(email));
     }
 
-    @GeneralMember
     @Operation(summary = "이메일 인증번호 확인")
     @PostMapping("/email")
     public ResponseEntity<Boolean> validEmailAuth(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
     }
 
-    @GeneralMember
     @Operation(summary = "비밀번호 찾기 이메일 인증 요청")
     @GetMapping("/passwrod/email/{email}")
     public ResponseEntity<Boolean> createPaaswordChangeAuthcode(@PathVariable String email){
         return ResponseEntity.ok(memberService.createPasswordAuthCode(email));
     }
 
-    @GeneralMember
     @Operation(summary = "비밀번호 찾기 이메일 인증 코드 확인")
     @PostMapping("/password/email")
     public ResponseEntity<Boolean> validPasswordAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
         return ResponseEntity.ok(memberService.validPasswordAuthCode(emailAuth));
     }
 
-    @GeneralMember
     @Operation(summary = "비밀번호 변경")
     @PutMapping("/password")
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangePassword changePassword) {

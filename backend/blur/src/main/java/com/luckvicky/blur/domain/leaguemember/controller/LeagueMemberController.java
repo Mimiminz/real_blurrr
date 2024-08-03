@@ -4,6 +4,7 @@ import com.luckvicky.blur.domain.leaguemember.model.dto.request.LeagueMemberCrea
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
 import com.luckvicky.blur.domain.leaguemember.service.LeagueMemberService;
+import com.luckvicky.blur.global.constant.ErrorMessage;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
@@ -44,7 +45,7 @@ public class LeagueMemberController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "실패"
+                    description = ErrorMessage.NOT_EXIST_MEMBER_MESSAGE + "or" + ErrorMessage.NOT_EXIST_LEAGUE_MESSAGE
             )
     })
     @PostMapping("/members")
@@ -76,8 +77,16 @@ public class LeagueMemberController {
                     description = "성공 (단, 데이터 없음)"
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "토큰에 대한 문제가 있음"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE
+            ),
+            @ApiResponse(
                     responseCode = "404",
-                    description = "존재하지 않는 사용자"
+                    description = ErrorMessage.NOT_EXIST_MEMBER_MESSAGE
             )
     })
     @CertificationMember

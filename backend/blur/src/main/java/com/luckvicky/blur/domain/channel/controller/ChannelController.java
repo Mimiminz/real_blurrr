@@ -4,17 +4,14 @@ import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelResponse;
-import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
-import com.luckvicky.blur.global.security.GeneralMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,8 +57,6 @@ public class ChannelController {
         );
     }
 
-
-    @GeneralMember
     @Operation(summary = "전체 채널 목록 조회 API")
     @ApiResponses({
             @ApiResponse(
@@ -143,7 +138,6 @@ public class ChannelController {
     }
 
 
-    @GeneralMember
     @Operation(summary = "특정 채널 정보 조회 API")
     @ApiResponses({
             @ApiResponse(
@@ -219,8 +213,6 @@ public class ChannelController {
         );
     }
 
-
-    @GeneralMember
     @Operation(summary = "채널 검색 API")
     @ApiResponses({
             @ApiResponse(

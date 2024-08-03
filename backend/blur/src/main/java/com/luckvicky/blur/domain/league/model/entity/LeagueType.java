@@ -1,7 +1,10 @@
 package com.luckvicky.blur.domain.league.model.entity;
 
+import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_BRAND;
+import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_MODEL;
+
 import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
-import java.util.Set;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum LeagueType {
 
-    BRAND, MODEL;
+    BRAND(LEAGUE_TYPE_BRAND), MODEL(LEAGUE_TYPE_MODEL);
+
+    private final String value;
 
     public static LeagueType convertToEnum(String type) {
 

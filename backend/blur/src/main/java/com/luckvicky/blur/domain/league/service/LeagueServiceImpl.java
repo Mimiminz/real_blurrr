@@ -31,17 +31,9 @@ public class LeagueServiceImpl implements LeagueService {
     private final LeagueRepository leagueRepository;
 
     @Override
-    public List<LeagueDto> getModelLeagues() {
-        List<League> leagues = leagueRepository.findAllByType(LeagueType.MODEL);
+    public List<LeagueDto> getLeagues(String leagueType) {
 
-        return leagues.stream()
-                .map(league -> mapper.map(league, LeagueDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<LeagueDto> getBrandLeagues() {
-        List<League> leagues = leagueRepository.findAllByType(LeagueType.BRAND);
+        List<League> leagues = leagueRepository.findAllByType(LeagueType.convertToEnum(leagueType));
 
         return leagues.stream()
                 .map(league -> mapper.map(league, LeagueDto.class))

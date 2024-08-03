@@ -8,9 +8,7 @@ public interface LeagueService {
 
     Boolean createLeague(LeagueCreateRequest request);
 
-    List<LeagueDto> getModelLeagues();
-
-    List<LeagueDto> getBrandLeagues();
+    List<LeagueDto> getLeagues(String leagueType);
 
     List<LeagueDto> getLeagueRanking();
 

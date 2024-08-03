@@ -1,10 +1,13 @@
 package com.luckvicky.blur.global.config;
 
+import static com.luckvicky.blur.domain.member.model.entity.Role.ROLE_AUTH_USER;
+import static com.luckvicky.blur.domain.member.model.entity.Role.ROLE_BASIC_USER;
 import static com.luckvicky.blur.global.constant.StringFormat.AUTH_USER_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.BASIC_USER_URI;
-import static com.luckvicky.blur.global.constant.StringFormat.GENERAL_USER_URI;
-import static com.luckvicky.blur.global.constant.StringFormat.PERMIT_ALL_URI;
-import static com.luckvicky.blur.global.constant.StringFormat.SWAGGER_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI_OF_LEAGUE;
+import static com.luckvicky.blur.global.constant.StringFormat.SIGN_UP_URI;
+import static com.luckvicky.blur.global.constant.StringFormat.UTILITY_URI;
 
 import com.luckvicky.blur.global.jwt.filter.JwtFilter;
 import com.luckvicky.blur.global.jwt.handler.JwtAccessDeniedHandler;
@@ -13,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,24 +59,37 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(requestConfigurer -> requestConfigurer
 
-                        // 허용 URI
-                        .requestMatchers(PERMIT_ALL_URI).permitAll()
-
-                        // SWAGGER URI
-                        .requestMatchers(SWAGGER_URI).permitAll()
-
-                        // 일반 유저 URI (GET METHOD만 허용)
-                        .requestMatchers(HttpMethod.GET, GENERAL_USER_URI).permitAll()
-
-                        // 미인증 유저 URI
-                        .requestMatchers(BASIC_USER_URI).hasAnyRole("BASIC_USER", "AUTH_USER")
-
-                        // 인증 유저 URI
-                        .requestMatchers(AUTH_USER_URI).hasAnyRole("AUTH_USER")
-
+                        // 프리플라이트 관련 설정
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
-                        .anyRequest().authenticated())
+                        // todo: 추후에 삭제
+                        .requestMatchers(HttpMethod.POST, "/v1/leagues/members").permitAll()
+
+                        // Utility URI
+                        .requestMatchers(UTILITY_URI).permitAll()
+
+                        // 회원가입 관련 URI
+                        .requestMatchers(HttpMethod.GET ,SIGN_UP_URI).permitAll()
+                        .requestMatchers(HttpMethod.POST ,SIGN_UP_URI).permitAll()
+                        .requestMatchers(HttpMethod.PUT ,SIGN_UP_URI).permitAll()
+
+                        // GEUST URI
+                        .requestMatchers(HttpMethod.GET, GUEST_URI).permitAll()
+                        .requestMatchers(HttpMethod.POST, GUEST_URI).hasAnyAuthority(ROLE_BASIC_USER.getValue(), ROLE_AUTH_USER.getValue())
+
+                        // 리그 URI
+                        .requestMatchers(HttpMethod.GET, GUEST_URI_OF_LEAGUE).permitAll()
+                        .requestMatchers(HttpMethod.POST, GUEST_URI_OF_LEAGUE).hasAuthority(ROLE_AUTH_USER.getValue())
+
+                        // 자동차 미인증 유저 URI
+                        .requestMatchers(BASIC_USER_URI).hasAnyAuthority(ROLE_BASIC_USER.getValue(), ROLE_AUTH_USER.getValue())
+
+                        // 자동차 인증 유저 URI
+                        .requestMatchers(HttpMethod.GET, "/v1/leagues/members").hasAuthority(ROLE_AUTH_USER.getValue())
+                        .requestMatchers(AUTH_USER_URI).hasAuthority(ROLE_AUTH_USER.getValue())
+
+                        .anyRequest().authenticated()
+                )
 
                 //JwtFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

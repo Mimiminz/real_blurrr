@@ -2,6 +2,8 @@ package com.luckvicky.blur.domain.like.controller;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.response.HotBoardResponse;
+import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.like.model.response.LikeBoardListResponse;
 import com.luckvicky.blur.domain.like.service.LikeService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeController {
 
     private final LikeService likeService;
+    private final BoardService boardService;
 
     @Operation(
             summary = "좋아요 생성",
@@ -47,6 +50,10 @@ public class LikeController {
             @ApiResponse(
                     responseCode = "201",
                     description = "좋아요 생성 완료"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "토큰 필요"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -82,6 +89,10 @@ public class LikeController {
                     description = "좋아요 삭제 완료"
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "토큰 필요"
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "존재하지 않는 사용자, 게시글, 좋아요"
             ),
@@ -104,6 +115,5 @@ public class LikeController {
         );
 
     }
-
 
 }
