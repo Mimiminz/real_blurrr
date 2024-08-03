@@ -88,6 +88,8 @@ public class StringFormat {
 
     // 차량 인증 허용 URI (회원가입 O)
     public static final String[] AUTH_USER_URI = {
+            "/v1/leagues/*/boards/*/comments",
+            "/v1/leagues/*/boards/*/comments/*",
             "/v1/leagues/boards/*",
             "/v1/leagues/boards/*/comments",
             "/v1/leagues/*/mentions",

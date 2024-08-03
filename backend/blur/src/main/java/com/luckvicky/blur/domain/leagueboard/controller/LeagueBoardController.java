@@ -7,13 +7,13 @@ import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_MODEL;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
-import com.luckvicky.blur.domain.comment.service.CommentService;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.MentionLeagueListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
+import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
 import com.luckvicky.blur.global.constant.ErrorMessage;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -43,14 +43,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "리그 API")
+@Tag(name = "리그 게시글 API")
 @RestController
 @RequestMapping("/v1/leagues")
 @RequiredArgsConstructor
 public class LeagueBoardController {
 
     private final LeagueBoardService leagueBoardService;
-    private final CommentService commentService;
+    private final LeagueCommentService leagueCommentService;
 
     @Operation(summary = "리그 게시글 생성 API")
     @ApiResponses({
@@ -59,18 +59,9 @@ public class LeagueBoardController {
                     description = "게시글 생성 성공",
                     content = @Content(schema = @Schema(implementation = LeagueBoardCreateResponse.class))
             ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "접근 권한이 없는 리그"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "접근 권한 또는 토큰 문제"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = ErrorMessage.FAIL_TO_CREATE_BOARD_MESSAGE
-            )
+            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
+            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
+            @ApiResponse(responseCode = "404", description = ErrorMessage.FAIL_TO_CREATE_BOARD_MESSAGE)
     })
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
@@ -296,14 +287,15 @@ public class LeagueBoardController {
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember
-    @GetMapping("/boards/{boardId}/comments")
+    @GetMapping("/{leagueId}/boards/{boardId}/comments")
     public ResponseEntity getLeagueBoardComments(
             @AuthUser ContextMember member,
+            @PathVariable(name = "leagueId") UUID leagueId,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         CommentListResponse commentsByLeagueBoard =
-                commentService.findCommentsByLeagueBoard(member.getId(), boardId);
+                leagueCommentService.findCommentsByLeagueBoard(member.getId(), leagueId, boardId);
 
         if (commentsByLeagueBoard.comments().isEmpty()
                 || commentsByLeagueBoard.commentCount() == ZERO) {
