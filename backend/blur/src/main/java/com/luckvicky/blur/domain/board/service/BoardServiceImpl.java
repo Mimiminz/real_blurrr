@@ -1,37 +1,23 @@
 package com.luckvicky.blur.domain.board.service;
 
 import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
-import static com.luckvicky.blur.global.constant.Number.HOT_BOARD_PAGE_SIZE;
-import static com.luckvicky.blur.global.constant.Number.HOT_DASHCAM_BOARD_PAGE_SIZE;
-import static com.luckvicky.blur.global.constant.Number.HOT_MYCAR_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
-import static com.luckvicky.blur.global.constant.Number.ZERO;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.exception.UnauthorizedBoardDeleteException;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
-import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import com.luckvicky.blur.domain.comment.model.entity.Comment;
-import com.luckvicky.blur.domain.comment.model.entity.CommentType;
-import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import com.luckvicky.blur.global.util.ClockUtil;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -112,15 +98,9 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional(readOnly = true)
     public BoardDetailDto getBoardDetail(UUID memberId, UUID boardId) {
-
         Member member = memberRepository.getOrThrow(memberId);
         Board board = boardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
-
-        List<CommentDto> comments = board.getComments().stream()
-                .filter(comment -> comment.getType().equals(CommentType.COMMENT))
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
 
         return BoardDetailDto.of(
                 board, isLike(member, board)
@@ -151,4 +131,10 @@ public class BoardServiceImpl implements BoardService {
         return true;
     }
 
+    @Override
+    public void increaseViewCount(UUID boardId) {
+        var board = boardRepository.getOrThrow(boardId);
+        board.increaseViewCount();
+        boardRepository.save(board);
+    }
 }

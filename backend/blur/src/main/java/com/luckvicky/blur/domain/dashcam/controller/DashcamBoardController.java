@@ -82,7 +82,8 @@ public class DashcamBoardController {
     }
 
 
-    @Operation(summary = "블랙박스 게시글 상세 조회 API")
+    @Operation(summary = "블랙박스 게시글 상세 조회 API",
+            description = "특정 게시글에 대한 본문, 투표, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용")
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
             @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId) {
@@ -103,10 +104,7 @@ public class DashcamBoardController {
                         .data(dashcamBoardService.createDashcamBoard(request, contextMember.getId()))
                         .build()
         );
-
     }
-
-
 
     @Operation(summary = "비디오 presigned url 요청 API")
     @GetMapping("/aws")

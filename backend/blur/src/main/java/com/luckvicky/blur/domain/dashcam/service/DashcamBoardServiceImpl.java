@@ -136,12 +136,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         DashCam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
 
-        List<CommentDto> comments = commentRepository.findAllByBoardAndType(dashcam, CommentType.COMMENT)
-                .stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam,comments);
+        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam);
     }
 
     @Override
