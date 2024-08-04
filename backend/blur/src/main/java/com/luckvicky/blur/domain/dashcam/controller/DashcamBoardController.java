@@ -7,6 +7,7 @@ import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateRe
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
@@ -54,13 +55,14 @@ public class DashcamBoardController {
                             @ExampleObject(name = "좋아요", value = "LIKE"),
                             @ExampleObject(name = "조회수", value = "VIEW"),
                             @ExampleObject(name = "댓글", value = "COMMENT"),
-                    }
+                    },
+                    schema = @Schema(implementation = SortingCriteria.class)
             ),
     })
     @GetMapping
     public ResponseEntity<Result<DashcamBoardListResponse>> getDashcamBoards(
-            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+            @RequestParam int pageNumber,
+            @RequestParam SortingCriteria criteria
     ){
         List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards(
                 pageNumber,
@@ -83,8 +85,8 @@ public class DashcamBoardController {
     @Operation(summary = "블랙박스 게시글 상세 조회 API")
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id) {
-        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(id);
+            @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId) {
+        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(boardId);
         return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
 

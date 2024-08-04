@@ -6,11 +6,9 @@ import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.vote.model.dto.request.OptionCreateRequest;
-import com.luckvicky.blur.domain.vote.model.entity.Option;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +20,7 @@ public record DashcamBoardCreateRequest(
                 example = "사고 영상 공유합니다.",
                 maxLength = 20
         )
+        @Size(max = 20)
         String title,
 
         @Schema(

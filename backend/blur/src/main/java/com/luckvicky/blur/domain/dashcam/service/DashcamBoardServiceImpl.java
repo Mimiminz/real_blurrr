@@ -119,11 +119,11 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, String criteria) {
+    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, SortingCriteria criteria) {
 
         Pageable pageable = PageRequest.of(
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
+                Sort.by(Sort.Direction.DESC, criteria.getCriteria())
         );
 
         List<DashCam> dashCamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
