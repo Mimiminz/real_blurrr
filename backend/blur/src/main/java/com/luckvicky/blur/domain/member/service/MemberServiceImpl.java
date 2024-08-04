@@ -243,7 +243,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean checkPassword(UUID memberId, CheckPassword checkPassword) {
         Member member = memberRepository.getOrThrow(memberId);
-        return passwordEncoder.matches(member.getPassword(), checkPassword.password());
+        return passwordEncoder.matches(checkPassword.password(), member.getPassword());
     }
 
     @Override
