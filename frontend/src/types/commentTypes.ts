@@ -17,12 +17,16 @@ export interface fetchComment {
 export interface CommentListProps {
   comments: Comment[];
   boardId: string;
-  onCommentAdded: () => void;
+  leagueId: string;
+  isLeague: boolean;
   commentCount: number;
+  onCommentAdded: () => void;
 }
 
 export interface CreateCommentProps {
   boardId: string;
+  leagueId: string;
+  isLeague: boolean;
   isReply: boolean;
   commentId: string;
   onCommentAdded: () => void;
@@ -37,6 +41,8 @@ export interface CommentListItemProps {
   text: string;
   time: string;
   onCommentAdded: () => void;
+  isLeague: boolean;
+  leagueId: string;
 }
 
 export interface NoCommentProps {

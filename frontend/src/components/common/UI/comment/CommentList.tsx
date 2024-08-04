@@ -12,6 +12,8 @@ import Reply from "./Reply";
 export default function CommentList({
   comments,
   boardId,
+  leagueId,
+  isLeague,
   onCommentAdded,
   commentCount,
 }: CommentListProps) {
@@ -25,6 +27,8 @@ export default function CommentList({
         boardId={boardId}
         isReply={false}
         commentId=""
+        leagueId={leagueId}
+        isLeague={isLeague}
         onCommentAdded={onCommentAdded}
       />
       {commentCount > 0 &&
@@ -41,6 +45,8 @@ export default function CommentList({
                   text={comment.content}
                   time={comment.createdAt}
                   onCommentAdded={onCommentAdded}
+                  isLeague={isLeague}
+                  leagueId={leagueId}
                 />
               ) : (
                 <NoComment isReply={false} />
@@ -59,6 +65,8 @@ export default function CommentList({
                       text={reply.content}
                       time={reply.createdAt}
                       onCommentAdded={onCommentAdded}
+                      isLeague={isLeague}
+                      leagueId={leagueId}
                     />
                   ) : (
                     <NoComment isReply={true} />
