@@ -7,30 +7,31 @@ import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
-import { useAuthStore } from "@/store/authStore";
 
 import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
+import { useAuthStore } from "@/store/authStore";
 
 // API
-import dummy from "@/db/mainPageData.json";
 import {
   fetchBrandLeagues,
   fetchBoardSearch,
   fetchLeagueBoardList,
   fetchUserLeagueList,
+  fetchMentionBoardList
 } from "@/api/league";
 
 export default function LeaguePage({
   params,
 }: {
-  params: { leagueId: string };
+  params: { leagueName: string };
 }) {
   const router = useRouter();
-  const leagueId = params.leagueId;
+  const encodedLeagueName = params.leagueName;
+  const leagueName = decodeURIComponent(encodedLeagueName);
 
-  const { isLoggedIn } = useAuthStore((state) => state);
+  const { isLoggedIn, user } = useAuthStore((state) => state);
   const {
     brandLeagueList,
     setBrandLeagueTab,
@@ -42,11 +43,12 @@ export default function LeaguePage({
     setInitialized,
     isLoadUserLeagues,
     setIsLoadUserLeagues,
-    activeTabName,
-    setActiveTabName,
+    activeTab,
+    setActiveTab,
   } = useLeagueStore();
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -67,23 +69,30 @@ export default function LeaguePage({
     const loadLeagues = async () => {
       try {
         if (isLoggedIn && !isLoadUserLeagues) {
-          const userLeagues: UserLeague[] = await fetchUserLeagueList();
-          const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
-            id: userLeague.league.id,
-            name: userLeague.league.name,
-            type: userLeague.league.type,
-            peopleCount: userLeague.league.peopleCount,
-          }));
-          setUserLeagueList(userTabs);
-          const userMentionTabs: LeagueList[] = userLeagues.map(
-            (userLeague) => ({
-              id: `mention${userLeague.league.id}`,
+          if (user?.isAuth) {
+            const userLeagues: UserLeague[] = await fetchUserLeagueList();
+            const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+              id: userLeague.league.id,
               name: userLeague.league.name,
               type: userLeague.league.type,
               peopleCount: userLeague.league.peopleCount,
-            })
-          );
-          setMentionTabs(userMentionTabs);
+            }));
+            setUserLeagueList(userTabs);
+            const userMentionTabs: LeagueList[] = userLeagues.map(
+              (userLeague) => ({
+                id: `mention${userLeague.league.id}`,
+                name: userLeague.league.name,
+                type: userLeague.league.type,
+                peopleCount: userLeague.league.peopleCount,
+              })
+            );
+            setMentionTabs(userMentionTabs);
+          } else {
+            const userTabs: LeagueList[] = [];
+            setUserLeagueList(userTabs);
+            const userMentionTabs: LeagueList[] = [];
+            setMentionTabs(userMentionTabs);
+          }
           setIsLoadUserLeagues(true);
         }
 
@@ -98,11 +107,6 @@ export default function LeaguePage({
         }
         // const leagues = await fetchBrandLeagues();
         // setMoreTabs(leagues);
-
-        if (!leagueId.includes("mention")) {
-          const boardData = await fetchLeagueBoardList(leagueId, criteria);
-          setBoardList(boardData);
-        }
       } catch (error) {
         console.error("Failed to fetch brand leagues or board data", error);
       }
@@ -110,7 +114,7 @@ export default function LeaguePage({
 
     loadLeagues();
   }, [
-    leagueId,
+    leagueName,
     criteria,
     isLoggedIn,
     brandLeagueList,
@@ -124,17 +128,34 @@ export default function LeaguePage({
   ]);
 
   useEffect(() => {
-    let name = `${
-      brandLeagueList.find((t) => t.id === leagueId)?.name ||
-      userLeagueList.find((t) => t.id === leagueId)?.name
-    } 리그`;
-    if (name == `${undefined} 리그`) {
-      name = `채널에서 ${
-        userLeagueList.find((t) => t.id === leagueId.slice(7))?.name
-      }가 멘션된 글`;
-    }
-    setActiveTabName(name);
-  }, [brandLeagueList, userLeagueList, leagueId, setActiveTabName]);
+    const loadBoardData = async () => {
+      const findActiveTab =
+        brandLeagueList.find((t) => t.name === leagueName) ||
+        userLeagueList.find((t) => t.name === leagueName);
+
+      if (findActiveTab) {
+        setActiveTab(findActiveTab);
+        const boardData = await fetchLeagueBoardList(
+          findActiveTab.id,
+          criteria,
+          findActiveTab.type
+        );
+        setBoardList(boardData);
+        setLoading(false);
+      } else {
+        const findActiveTab = userLeagueList.find((t) => t.name === leagueName.split('mention')[1])
+        if (findActiveTab) {
+          const boardData = await fetchMentionBoardList(
+          findActiveTab.id,
+          criteria,
+        )
+        setBoardList(boardData);
+        setLoading(false);}
+      }
+    };
+
+    loadBoardData();
+  }, [brandLeagueList, userLeagueList, leagueName, criteria, setActiveTab]);
 
   const handleCriteriaChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -143,10 +164,12 @@ export default function LeaguePage({
   };
 
   const handleWriteClick = () => {
-    router.push(`/league/${leagueId}/write`);
+    router.push(`/league/${leagueName}/write`);
   };
 
-  const isLeagueIdInTabs = userLeagueList.some((tab) => tab.id === leagueId);
+  const isLeagueIdInTabs = userLeagueList.some(
+    (tab) => tab.name === leagueName
+  );
 
   const handleSearch = async (keyword: string) => {
     if (!keyword.trim()) {
@@ -155,19 +178,23 @@ export default function LeaguePage({
     }
     setIsSearching(true);
     try {
-      const results = await fetchBoardSearch(leagueId, keyword);
+      const results = await fetchBoardSearch(activeTab.id, keyword);
       setSearchResults(results);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Container>
       <TopComponent>
         {isLoggedIn && userLeagueList.length > 0 ? (
           <UserTab
-            activeTabId={leagueId}
+            activeTabName={leagueName}
             tabs={userLeagueList}
             mentionTabs={mentionTabs}
           />
@@ -177,9 +204,9 @@ export default function LeaguePage({
         <SearchBar onSearch={handleSearch} />
       </TopComponent>
       <MoreBrandTab
-        activeTabId={leagueId}
+        activeTab={activeTab}
         moreTabs={brandLeagueList}
-        activeTabName={activeTabName}
+        activeTabName={leagueName}
       />
       <FilterSection>
         <StyledSelect value={criteria} onChange={handleCriteriaChange}>
@@ -194,12 +221,12 @@ export default function LeaguePage({
           </StyledButton>
         )}
       </FilterSection>
-      {leagueId.includes("mention") ? (
-        <h1>채널 게시글</h1>
+      {leagueName.includes("mention") ? (
+        <LeagueBoardList leagueName={leagueName.split('mention')[1]} boardList={boardList} />
       ) : isSearching ? (
-        <LeagueBoardList leagueId={leagueId} boardList={searchResults} />
+        <LeagueBoardList leagueName={leagueName} boardList={searchResults} />
       ) : (
-        <LeagueBoardList leagueId={leagueId} boardList={boardList} />
+        <LeagueBoardList leagueName={leagueName} boardList={boardList} />
       )}
     </Container>
   );

@@ -8,13 +8,13 @@ interface LeagueState {
   mentionTabs: LeagueList[];
   initialized: boolean;
   isLoadUserLeagues: boolean;
-  activeTabName: string;
+  activeTab: LeagueList;
   setBrandLeagueTab: (brandLeagues: LeagueList[]) => void;
   setUserLeagueList: (userLeagues: LeagueList[]) => void;
   setMentionTabs: (mentionTabs: LeagueList[]) => void;
   setInitialized: (value: boolean) => void;
   setIsLoadUserLeagues: (value: boolean) => void;
-  setActiveTabName: (name: string) => void;
+  setActiveTab: (league: LeagueList) => void;
 }
 
 export const useLeagueStore = create<LeagueState>()(
@@ -26,14 +26,19 @@ export const useLeagueStore = create<LeagueState>()(
       mentionTabs: [],
       initialized: false,
       isLoadUserLeagues: false,
-      activeTabName: "",
+      activeTab: {
+        id: "",
+        name: "",
+        type: "",
+        peopleCount: 0,
+      },
       setBrandLeagueTab: (brandLeagues) =>
         set({ brandLeagueList: brandLeagues }),
       setUserLeagueList: (userLeagues) => set({ userLeagueList: userLeagues }),
       setMentionTabs: (mentionTabs) => set({ mentionTabs: mentionTabs }),
       setInitialized: (value) => set({ initialized: value }),
       setIsLoadUserLeagues: (value) => set({ isLoadUserLeagues: value }),
-      setActiveTabName: (name) => set({ activeTabName: name }),
+      setActiveTab: (league) => set({ activeTab: league }),
     })
     // ),
     //   {

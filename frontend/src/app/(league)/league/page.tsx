@@ -45,7 +45,7 @@ export default function LeagueMainPage() {
             const userMentionTabs: LeagueList[] = userLeagues.map(
               (userLeague) => ({
                 id: `mention${userLeague.league.id}`,
-                name: userLeague.league.name,
+                name:userLeague.league.name,
                 type: userLeague.league.type,
                 peopleCount: userLeague.league.peopleCount,
               })
@@ -94,7 +94,7 @@ export default function LeagueMainPage() {
       <TopComponent>
         {isLoggedIn && userLeagueList.length > 0 ? (
           <UserTab
-            activeTabId=""
+            activeTabName=""
             tabs={userLeagueList}
             mentionTabs={mentionTabs}
           />

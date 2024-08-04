@@ -11,22 +11,25 @@ import { useLeagueStore } from "@/store/leagueStore";
 export default function WritePage({
   params,
 }: {
-  params: { leagueId: string };
+  params: { leagueName: string };
 }) {
-  const leagueId = params.leagueId;
+  const encodedLeagueName = params.leagueName;
+  const leagueName = decodeURIComponent(encodedLeagueName);
   const router = useRouter();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { userLeagueList, activeTabName } = useLeagueStore();
+  const { userLeagueList, activeTab } = useLeagueStore();
 
   useEffect(() => {
-    const hasAccess = userLeagueList.some((league) => league.id === leagueId);
+    const hasAccess = userLeagueList.some(
+      (league) => league.name === leagueName
+    );
     if (!hasAccess) {
       alert("허용되지 않은 리그입니다.");
       router.back();
     }
-  }, []);
+  }, [leagueName]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -36,8 +39,8 @@ export default function WritePage({
     if (!title.trim() || !content.trim()) return; // 빈 댓글은 제출하지 않음
 
     try {
-      await fetchBoardWrite(leagueId, title, content);
-      router.push(`/league/${leagueId}`);
+      await fetchBoardWrite(activeTab.id, title, content);
+      router.push(`/league/${leagueName}`);
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
@@ -48,8 +51,8 @@ export default function WritePage({
       <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
-          subChannel={activeTabName}
-          channelUrl={`/league/${leagueId}`}
+          subChannel={leagueName}
+          channelUrl={`/league/${leagueName}`}
         />
       </BreadcrumbContainer>
       <Title>게시글 작성</Title>

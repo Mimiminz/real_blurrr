@@ -6,31 +6,36 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 
-import { BoardDetail } from "@/types/leagueTypes";
+import { BoardDetail, LeagueList, UserLeague } from "@/types/leagueTypes";
 import { fetchLeagueDetail, fetchBoardDelete } from "@/api/league";
 
 import { fetchComment } from "@/types/commentTypes";
 
 import { useRouter } from "next/navigation";
 import { useLeagueStore } from "@/store/leagueStore";
+import { useAuthStore } from "@/store/authStore";
 import { fetchLeagueCommentList } from "@/api/comment";
+import { fetchUserLeagueList } from "@/api/league";
 import CommentList from "@/components/common/UI/comment/CommentList";
 
 export default function BoardDetailPage({
   params,
 }: {
-  params: { leagueId: string; boardId: string };
+  params: { leagueName: string; boardId: string };
 }) {
   const router = useRouter();
 
-  const leagueId = params.leagueId;
+  const encodedLeagueName = params.leagueName;
+  const leagueName = decodeURIComponent(encodedLeagueName);
   const boardId = params.boardId;
 
-  const { activeTabName, brandLeagueList, userLeagueList, setActiveTabName } =
+  const { activeTab, brandLeagueList, userLeagueList, setActiveTab } =
     useLeagueStore();
+  const { isLoggedIn, user } = useAuthStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
   const [commentList, setCommentList] = useState<fetchComment | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -52,6 +57,11 @@ export default function BoardDetailPage({
     }
   };
 
+  const unauthenticated = () => {
+    alert("인증받지 못한 리그입니다");
+    router.back();
+  };
+
   const loadBoardDetail = async () => {
     try {
       const details = await fetchLeagueDetail(boardId);
@@ -61,9 +71,9 @@ export default function BoardDetailPage({
     }
   };
 
-  const loadCommentDetail = async () => {
+  const loadCommentDetail = async (leagueId: string) => {
     try {
-      const fetchcommentsList = await fetchLeagueCommentList(leagueId ,boardId);
+      const fetchcommentsList = await fetchLeagueCommentList(leagueId, boardId);
       setCommentList(fetchcommentsList);
     } catch (error) {
       console.log(error);
@@ -72,24 +82,49 @@ export default function BoardDetailPage({
 
   useEffect(() => {
     loadBoardDetail();
-    loadCommentDetail();
   }, [boardId]);
 
   useEffect(() => {
-    if (!activeTabName || activeTabName === `${undefined} 리그`) {
-      const name = `${
-        brandLeagueList.find((t) => t.id === leagueId)?.name ||
-        userLeagueList.find((t) => t.id === leagueId)?.name
-      } 리그`;
-      setActiveTabName(name);
+    const loadBoardData = async () => {
+      if (isLoggedIn && user?.isAuth) {
+        const userLeagues: UserLeague[] = await fetchUserLeagueList();
+        const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+          id: userLeague.league.id,
+          name: userLeague.league.name,
+          type: userLeague.league.type,
+          peopleCount: userLeague.league.peopleCount,
+        }));
+        const findActiveTab = userTabs.find((t) => t.name === leagueName);
+
+        if (findActiveTab) {
+          setActiveTab(findActiveTab);
+          await loadCommentDetail(findActiveTab.id);
+          setLoading(false);
+        } else {
+          alert("인증받지 못한 리그입니다");
+          router.back();
+          return;
+        }
+      } else {
+        alert("인증받지 못한 리그입니다");
+        router.back();
+        return;
+      }
+    };
+
+    if (!activeTab.id) {
+      loadBoardData();
+    } else {
+      loadCommentDetail(activeTab.id);
+      setLoading(false);
     }
-  }, [
-    activeTabName,
-    brandLeagueList,
-    userLeagueList,
-    leagueId,
-    setActiveTabName,
-  ]);
+  }, [activeTab, boardId, leagueName, setActiveTab]);
+
+  const handleCommentAdded = async () => {
+    if (activeTab && activeTab.id) {
+      await loadCommentDetail(activeTab.id);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -98,13 +133,13 @@ export default function BoardDetailPage({
       if (!isDelete) {
         return;
       }
-      router.push(`/league/${leagueId}`);
+      router.push(`/league/${leagueName}`);
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (!boardDetail || !commentList) {
+  if (loading || !boardDetail || !commentList) {
     return <div>Loading...</div>;
   }
 
@@ -113,8 +148,8 @@ export default function BoardDetailPage({
       <BreadcrumbContainer>
         <Breadcrumb
           channel="리그"
-          subChannel={activeTabName}
-          channelUrl={`/league/${leagueId}`}
+          subChannel={leagueName}
+          channelUrl={`/league/${leagueName}`}
         />
       </BreadcrumbContainer>
       <LeagueDetailTitle
@@ -132,15 +167,16 @@ export default function BoardDetailPage({
           <HeartButton onClick={toggleLike}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
           </HeartButton>
+
           <WriterButton onClick={handleDelete}>삭제</WriterButton>
         </WriterContainer>
         <CommentList
           comments={commentList.comments}
           commentCount={commentList.commentCount}
           boardId={boardId}
-          leagueId={leagueId}
+          leagueId={activeTab.id}
           isLeague={true}
-          onCommentAdded={loadCommentDetail}
+          onCommentAdded={handleCommentAdded}
         />
       </CommentContainer>
     </>

@@ -17,7 +17,7 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/league/${id}`);
+    router.push(`/league/${name}`);
   };
   return (
     <CardContainer onClick={handleClick}>

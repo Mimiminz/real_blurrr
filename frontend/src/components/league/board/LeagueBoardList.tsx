@@ -7,17 +7,19 @@ import { useEffect, useState } from "react";
 import { boardListProp, LeagueBoardItem } from "@/types/leagueTypes";
 import { useLeagueStore } from "@/store/leagueStore";
 
-const LeagueBoardList = ({ leagueId, boardList }: boardListProp) => {
+const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
   const router = useRouter();
   const { userLeagueList } = useLeagueStore();
 
   const handleCardClick = (id: string) => {
-    const hasAccess = userLeagueList.some((league) => league.id === leagueId);
+    const hasAccess = userLeagueList.some(
+      (league) => league.name === leagueName
+    );
     if (!hasAccess) {
       alert("허용되지 않은 리그입니다.");
       return;
     }
-    router.push(`${leagueId}/${id}`);
+    router.push(`${leagueName}/${id}`);
   };
 
   return (

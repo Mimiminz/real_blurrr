@@ -11,6 +11,7 @@ import {
 export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
   try {
     const response = await api.get(`/v1/leagues/members`);
+    console.log(response.data);
     if (!response.data.data) {
       return [];
     }
@@ -29,10 +30,12 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
   }
 };
 
-// 리그 목록을 가져오는 함수
+// 브랜드 리그 목록을 가져오는 함수
 export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
   try {
-    const response = await api.get(`/v1/leagues/brands`);
+    const response = await api.get(`/v1/leagues`, {
+      params: { leagueType: "BRAND" },
+    });
     return response.data.data.leagues;
   } catch (error) {
     console.error("Failed to fetch league list", error);
@@ -43,11 +46,13 @@ export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
 // 리그 보드 목록을 가져오는 함수
 export const fetchLeagueBoardList = async (
   leagueId: string,
-  criteria: string
+  criteria: string,
+  leagueType: string
 ): Promise<LeagueBoardItem[]> => {
   try {
-    const response = await api.get(`/v1/leagues/brands/${leagueId}/boards`, {
-      params: { criteria },
+    console.log(leagueType);
+    const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
+      params: { leagueType, criteria },
     });
     if (response.status === 204) {
       return [];
@@ -60,7 +65,21 @@ export const fetchLeagueBoardList = async (
 };
 
 // 채널에서 멘션된 글을 가져오는 함수
-// export const fetchMentionBoardList = async()
+export const fetchMentionBoardList = async(leagueId: string, criteria: string): Promise<LeagueBoardItem[]> => {
+  try {
+    const response = await api.get(`/v1/leagues/${leagueId}/mentions`, {
+      params: { criteria },
+    });
+    if (response.status === 204) {
+      return [];
+    }
+    console.log(response.data.data)
+    return response.data.data.channelBoards;
+  } catch (error) {
+    console.error("Failed to fetch league board list", error);
+    throw error;
+  }
+};
 
 // 리그 게시글 상세 정보를 가져오는 함수
 export const fetchLeagueDetail = async (
@@ -100,6 +119,7 @@ export const fetchBoardWrite = async (
       title: title,
       content: content,
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);

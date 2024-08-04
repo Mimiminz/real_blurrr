@@ -10,6 +10,7 @@ export interface LeagueList {
   name: string;
   type: string;
   peopleCount: number;
+  isMention?: boolean;
 }
 
 export interface LeagueBoardItem {
@@ -31,12 +32,12 @@ export interface LeagueBoardListItemProps {
 }
 
 export interface boardListProp {
-  leagueId: string;
+  leagueName: string;
   boardList: LeagueBoardItem[];
 }
 
 export interface moreTabProps {
-  activeTabId: string;
+  activeTab: LeagueList;
   moreTabs: LeagueList[];
   activeTabName?: string;
 }
@@ -46,7 +47,7 @@ export interface TabButtonProps {
 }
 
 export interface UserTabProps {
-  activeTabId: string;
+  activeTabName: string;
   tabs: LeagueList[];
   mentionTabs: LeagueList[];
 }
