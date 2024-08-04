@@ -18,7 +18,7 @@ try {
 
 export const getMyHeartList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyHeartItem[]> => {
     try {
-        const response = await api.get(`/v1/boards/likes`, {
+        const response = await api.get(`/v1/members/likes/boards`, {
             params: { pageNumber, criteria },
             headers: {
                 'Authorization': `Bearer ${accessToken}`

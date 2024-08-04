@@ -53,7 +53,7 @@ const CarCertificationForm = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImageSrc(e.target?.result as string);
+        setImageSrc(e.target?.result as string);g
       };
       reader.readAsDataURL(file);
     }
