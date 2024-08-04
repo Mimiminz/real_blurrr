@@ -98,7 +98,7 @@ public class SwaggerConfig {
 
         return GroupedOpenApi.builder()
                 .group(Board.class.getSimpleName())
-                .pathsToMatch("/v1/boards/**", "/v1/comments/**")
+                .pathsToMatch("/v1/boards/**", "/v1/comments/**", "/v1/likes/**")
                 .addOpenApiCustomizer(openApi
                                 -> openApi.addSecurityItem(
                                 new SecurityRequirement().addList(TOKEN_PREFIX)

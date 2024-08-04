@@ -55,8 +55,7 @@ public class LeagueBoardController {
     @Operation(summary = "리그 게시글 생성 API")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "201",
-                    description = "게시글 생성 성공",
+                    responseCode = "201", description = "게시글 생성 성공",
                     content = @Content(schema = @Schema(implementation = LeagueBoardCreateResponse.class))
             ),
             @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
@@ -66,8 +65,7 @@ public class LeagueBoardController {
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(
-                    name = "leagueType",
-                    description = "리그 유형",
+                    name = "leagueType", description = "리그 유형",
                     examples = {
                             @ExampleObject(name = "브랜드", value = LEAGUE_TYPE_BRAND),
                             @ExampleObject(name = "모델", value = LEAGUE_TYPE_MODEL)
@@ -105,8 +103,7 @@ public class LeagueBoardController {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 목록 조회 성공",
+                    responseCode = "200", description = "게시글 목록 조회 성공",
                     content = @Content(schema = @Schema(implementation = LeagueBoardListResponse.class))
             ),
             @ApiResponse(responseCode = "201", description = "게시글 목록 조회 성공 (단, 게시글 없음)"),
@@ -117,8 +114,7 @@ public class LeagueBoardController {
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(
-                    name = "leagueType",
-                    description = "리그 유형",
+                    name = "leagueType", description = "리그 유형",
                     examples = {
                             @ExampleObject(name = "브랜드", value = LEAGUE_TYPE_BRAND),
                             @ExampleObject(name = "모델", value = LEAGUE_TYPE_MODEL)
@@ -126,8 +122,7 @@ public class LeagueBoardController {
             ),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
-                    name = "criteria",
-                    description = "정렬 기준",
+                    name = "criteria", description = "정렬 기준",
                     examples = {
                             @ExampleObject(name = "최신", value = "TIME"),
                             @ExampleObject(name = "좋아요", value = "LIKE"),
@@ -181,17 +176,13 @@ public class LeagueBoardController {
             ),
             @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
             @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 목록 조회 실패"
-            )
+            @ApiResponse(responseCode = "404", description = "게시글 목록 조회 실패")
     })
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
-                    name = "criteria",
-                    description = "정렬 기준",
+                    name = "criteria", description = "정렬 기준",
                     examples = {
                             @ExampleObject(name = "최신", value = "TIME"),
                             @ExampleObject(name = "좋아요", value = "LIKE"),
@@ -236,8 +227,7 @@ public class LeagueBoardController {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 조회 성공",
+                    responseCode = "200", description = "게시글 조회 성공",
                     content = @Content(schema = @Schema(implementation = LeagueBoardDetailResponse.class))
             ),
             @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
@@ -254,11 +244,7 @@ public class LeagueBoardController {
 
         return ResponseUtil.ok(
                 Result.builder()
-                        .data(
-                                LeagueBoardDetailResponse.of(
-                                        leagueBoardService.getLeagueBoardDetail(member.getId(), boardId)
-                                )
-                        )
+                        .data(leagueBoardService.getLeagueBoardDetail(member.getId(), boardId))
                         .build()
         );
 
@@ -270,20 +256,13 @@ public class LeagueBoardController {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "댓글 목록 조회 성공",
+                    responseCode = "200", description = "댓글 목록 조회 성공",
                     content = @Content(schema = @Schema(implementation = CommentListResponse.class))
             ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "댓글 목록 조회 성공 (단, 데이터 없음)"
-            ),
+            @ApiResponse(responseCode = "204", description = "댓글 목록 조회 성공 (단, 데이터 없음)"),
             @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
             @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 게시글"
-            )
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글")
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember
@@ -297,8 +276,7 @@ public class LeagueBoardController {
         CommentListResponse commentsByLeagueBoard =
                 leagueCommentService.findCommentsByLeagueBoard(member.getId(), leagueId, boardId);
 
-        if (commentsByLeagueBoard.comments().isEmpty()
-                || commentsByLeagueBoard.commentCount() == ZERO) {
+        if (commentsByLeagueBoard.comments().isEmpty() || commentsByLeagueBoard.commentCount() == ZERO) {
             return ResponseUtil.noContent(
                     Result.builder().build()
             );
