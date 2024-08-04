@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
-import { refreshAccessToken } from './authApi';
+import { refreshAccessToken } from './auth';
 
 const api = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_API_URL,

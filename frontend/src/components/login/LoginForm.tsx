@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuthStore } from "../../store/authStore";
-import { login as loginApi } from "@/api/authApi";
+import { login as loginApi } from "@/api/auth";
 import api from "../../api/index";
 import { useLeagueStore } from "@/store/leagueStore";
 
