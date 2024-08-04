@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { fetchCommentDelete } from "@/api/comment";
+import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
 import CreateComment from "@/components/common/UI/comment/CreateComment";
 
@@ -15,12 +15,18 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
   text,
   time,
   onCommentAdded,
+  isLeague,
+  leagueId,
 }) => {
   const [showReply, setShowReply] = useState(false);
 
   const handleDelete = async () => {
     try {
-      await fetchCommentDelete(boardId, id);
+      if (isLeague) {
+        await fetchLeagueCommentDelete(boardId, id, leagueId);
+      } else {
+        await fetchCommentDelete(boardId, id);
+      }
       console.error("Delete Complete");
       onCommentAdded();
     } catch (error) {
@@ -70,6 +76,8 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
           <ReplyCreate>
             <CreateComment
               boardId={boardId}
+              leagueId={leagueId}
+              isLeague={isLeague}
               isReply={true}
               commentId={id}
               onCommentAdded={onCommentAdded}

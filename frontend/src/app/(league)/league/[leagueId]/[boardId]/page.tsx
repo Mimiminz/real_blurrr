@@ -63,7 +63,7 @@ export default function BoardDetailPage({
 
   const loadCommentDetail = async () => {
     try {
-      const fetchcommentsList = await fetchLeagueCommentList(boardId);
+      const fetchcommentsList = await fetchLeagueCommentList(leagueId ,boardId);
       setCommentList(fetchcommentsList);
     } catch (error) {
       console.log(error);
@@ -138,6 +138,8 @@ export default function BoardDetailPage({
           comments={commentList.comments}
           commentCount={commentList.commentCount}
           boardId={boardId}
+          leagueId={leagueId}
+          isLeague={true}
           onCommentAdded={loadCommentDetail}
         />
       </CommentContainer>

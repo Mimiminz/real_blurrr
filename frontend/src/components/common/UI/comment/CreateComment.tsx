@@ -1,4 +1,9 @@
-import { fetchCommentCreate, fetchReplyCreate } from "@/api/comment";
+import {
+  fetchCommentCreate,
+  fetchLeagueCommentCreate,
+  fetchLeagueReplyCreate,
+  fetchReplyCreate,
+} from "@/api/comment";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
@@ -7,6 +12,8 @@ import { CreateCommentProps } from "@/types/commentTypes";
 
 export default function CreateComment({
   boardId,
+  leagueId,
+  isLeague,
   isReply,
   commentId,
   onCommentAdded,
@@ -37,9 +44,17 @@ export default function CreateComment({
 
     try {
       if (isReply) {
-        await fetchReplyCreate(commentId, boardId, comment);
+        if (isLeague) {
+          await fetchLeagueReplyCreate(commentId, boardId, comment, leagueId);
+        } else {
+          await fetchReplyCreate(commentId, boardId, comment);
+        }
       } else {
-        await fetchCommentCreate(boardId, comment);
+        if (isLeague) {
+          await fetchLeagueCommentCreate(leagueId, boardId, comment);
+        } else {
+          await fetchCommentCreate(boardId, comment);
+        }
       }
       setComment("");
       onCommentAdded(); // 댓글 작성 후 콜백 호출

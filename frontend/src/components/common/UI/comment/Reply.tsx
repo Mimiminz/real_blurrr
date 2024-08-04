@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { fetchCommentDelete } from "@/api/comment";
+import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
 import { CommentListItemProps } from "@/types/commentTypes";
 
@@ -86,6 +86,8 @@ const Reply: React.FC<CommentListItemProps> = ({
   text,
   time,
   onCommentAdded,
+  isLeague,
+  leagueId,
 }) => {
   const formatPostDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
@@ -104,7 +106,11 @@ const Reply: React.FC<CommentListItemProps> = ({
 
   const handleDelete = async () => {
     try {
-      await fetchCommentDelete(boardId, id);
+      if (isLeague) {
+        await fetchLeagueCommentDelete(boardId, id, leagueId);
+      } else {
+        await fetchCommentDelete(boardId, id);
+      }
       console.error("Delete Complete");
       onCommentAdded();
     } catch (error) {
