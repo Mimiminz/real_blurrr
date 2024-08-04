@@ -4,7 +4,6 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_COMM
 
 import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
 import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
-import com.luckvicky.blur.domain.alarm.service.AlarmService;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -118,7 +117,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     public CommentListResponse findCommentsByBoard(UUID boardId) {
-
+        // TODO: 리그 type 일 경우 exception 던지기 필요
         Board board = boardRepository.getOrThrow(boardId);
         List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
 

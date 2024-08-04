@@ -44,10 +44,8 @@ public class ChannelBoardDetailDto {
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;
 
-    @Schema(description = "댓글 목록")
-    List<CommentDto> comments;
 
-    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<MentionDto> mentionedLeagues, List<CommentDto> comments){
+    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<MentionDto> mentionedLeagues){
         return ChannelBoardDetailDto.builder()
                 .id(channelBoard.getId())
                 .member(SimpleMemberDto.of(channelBoard.getMember()))
@@ -58,7 +56,6 @@ public class ChannelBoardDetailDto {
                 .createdAt(channelBoard.getCreatedAt())
                 .content(channelBoard.getContent())
                 .mentionedLeagues(mentionedLeagues)
-                .comments(comments)
                 .build();
     }
 

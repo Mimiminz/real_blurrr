@@ -16,10 +16,14 @@ public class Result<T> {
     private T data;
 
     @Builder
-    public Result(T data) {
+    private Result(T data) {
         this.timestamp = ClockUtil.getLocalDateTimeToString();
         this.trackingId = UUID.randomUUID();
         this.data = data;
+    }
+
+    public static <T> Result<T> of(T data) {
+        return new Result<>(data);
     }
 
 }

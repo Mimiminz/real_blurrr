@@ -38,19 +38,9 @@ public class ChannelBoardController {
     private final ChannelBoardService channelBoardService;
 
     @Operation(summary = "채널 게시글 생성 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "게시글 생성 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 생성 실패"
-            )
-    })
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
     @PostMapping
-    public ResponseEntity createChannelBoard(
+    public ResponseEntity<Result<ChannelBoardDetailDto>> createChannelBoard(
             @PathVariable(name = "channelId") UUID channelId,
             @Valid @RequestBody ChannelBoardCreateRequest request,
             @AuthUser ContextMember contextMember
@@ -125,35 +115,18 @@ public class ChannelBoardController {
 
     @Operation(
             summary = "채널 게시글 상세 조회 API",
-            description = "특정 게시글에 대한 본문, 조회수, 댓글을 조회한다."
+            description = "특정 게시글에 대한 본문, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 완료",
-                    content = @Content(schema = @Schema(implementation = ChannelBoardDetailResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "조회 완료 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 게시글"
-            )
-    })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{boardId}")
-    public ResponseEntity getBoardDetail(
+    public ResponseEntity<Result<ChannelBoardDetailResponse>> getBoardDetail(
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId);
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(ChannelBoardDetailResponse.of(boardDetail))
-                        .build()
+                Result.of(ChannelBoardDetailResponse.of(boardDetail))
         );
 
     }

@@ -62,7 +62,7 @@ public class VoteServiceImpl implements VoteService{
     }
 
     @Override
-    public Object getVoteResult(UUID memberId, UUID boardId) {
+    public VoteResultDto getVoteResult(UUID memberId, UUID boardId) {
 
         DashCam dashCam = dashcamRepository.findById(boardId)
                 .orElseThrow(NotFoundDashcamException::new);

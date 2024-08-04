@@ -6,22 +6,22 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseUtil {
 
-    public static ResponseEntity ok(Result result) {
-        return new ResponseEntity(
+    public static <T> ResponseEntity<Result<T>> ok(Result<T> result) {
+        return new ResponseEntity<>(
                 result,
                 HttpStatus.OK
         );
     }
 
-    public static ResponseEntity noContent(Result result) {
-        return new ResponseEntity(
+    public static <T> ResponseEntity<Result<T>> noContent(Result<T> result) {
+        return new ResponseEntity<>(
                 result,
                 HttpStatus.NO_CONTENT
         );
     }
 
-    public static ResponseEntity created(Result result) {
-        return new ResponseEntity(
+    public static <T> ResponseEntity<Result<T>> created(Result<T> result) {
+        return new ResponseEntity<>(
                 result,
                 HttpStatus.CREATED
         );

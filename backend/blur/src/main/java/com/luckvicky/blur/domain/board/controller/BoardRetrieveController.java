@@ -91,14 +91,13 @@ public class BoardRetrieveController {
     })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{boardId}/comments")
-    public ResponseEntity getComments(
+
+    public ResponseEntity<Result<CommentListResponse>> getComments(
             @PathVariable(name = "boardId") UUID boardId
     ) {
-
+        // FIXME: 리그 코멘트는 해당 API 사용 불가, 리그 게시글에 대해 댓글 조회시, 리그 멤버인지 검증 안함
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(commentService.findCommentsByBoard(boardId))
-                        .build()
+                Result.of(commentService.findCommentsByBoard(boardId))
         );
 
     }

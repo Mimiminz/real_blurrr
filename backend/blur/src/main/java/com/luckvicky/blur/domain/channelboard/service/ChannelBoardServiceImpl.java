@@ -107,13 +107,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
 
 
-        List<CommentDto> comments = board.getComments().stream()
-                .filter(comment -> comment.getType().equals(CommentType.COMMENT))
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-
-        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), comments);
+        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues));
 
 
     }
