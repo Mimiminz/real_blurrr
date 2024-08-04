@@ -5,39 +5,7 @@ stages:
   - build
   - deploy
 
-test:
-  stage: test
-  before_script:
-    # 자바 17 설치
-    - apt-get update
-    - echo "install java"
-    - apt-get install openjdk-17-jdk -y
-    - java -version
-
-    # JAVA_HOME 환경 변수 설정
-    - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-    - export PATH="$JAVA_HOME/bin:$PATH"
-    
-    # JAVA_HOME과 PATH 확인
-    - echo "JAVA_HOME is set to $JAVA_HOME"
-    - echo "PATH is set to $PATH"
- 
-  script:
-    - echo 'test'
-    - cd backend/blur
-    - chmod +x ./gradlew
-    - ./gradlew test
-
-  # only:
-  #   -dev
-
-  tags:
-    - blurrr-deploy
-
-
-build:
-  stage: build
-  before_script:
+before_script:
 
   # 자바 17 설치
   - apt-get update
@@ -53,16 +21,35 @@ build:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-  # YML 파일 가져오기
-  - ls -al backend/blur/src/main/resources
-  - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
-  - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
-  - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
-  - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
-  - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
-  - ls -al backend/blur/src/main/resources
+test:
+  stage: test
+  script:
+    - echo 'test'
+    - cd backend/blur
+    - chmod +x ./gradlew
+    - ./gradlew test
+
+  only:
+    - merge_requests
+    - dev
+
+  tags:
+    - blurrr-deploy
+
+
+build:
+  stage: build
 
   script:
+    # YML 파일 가져오기
+    - ls -al backend/blur/src/main/resources
+    - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
+    - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
+    - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
+    - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
+    - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
+    - ls -al backend/blur/src/main/resources
+
     - echo 'build'
     - cd backend/blur
     - chmod +x ./gradlew
@@ -85,11 +72,11 @@ deploy:
   variables:
     DEPLOY_PATH: "/home/ubuntu/app"
     SPRING_PROFILE: "dev"
-
-  before_script:
     
+  script:
     - apt-get update
     - apt-get install openssh-client -y
+
 
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
@@ -97,7 +84,6 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
-  script:
     - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
     - echo "Complete"
@@ -108,5 +94,7 @@ deploy:
   only:
     - dev
   
+  when: on_success
+
   tags:
     - blurrr-deploy
