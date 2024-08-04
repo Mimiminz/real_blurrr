@@ -31,7 +31,7 @@ export default function CommentList({
         isLeague={isLeague}
         onCommentAdded={onCommentAdded}
       />
-      {commentCount > 0 &&
+      {commentCount >= 0 &&
         comments.map((comment) => (
           <React.Fragment key={comment.id}>
             <CommentWrapper>
