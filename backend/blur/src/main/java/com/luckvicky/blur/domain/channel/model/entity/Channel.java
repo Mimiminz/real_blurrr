@@ -2,13 +2,20 @@ package com.luckvicky.blur.domain.channel.model.entity;
 
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Getter
 @Entity
@@ -31,6 +38,12 @@ public class Channel extends BaseEntity {
 
     @Column(nullable = false)
     private Long followCount;
+    
+    @ManyToMany
+    @JoinTable(name = "channel_tag",
+            joinColumns = @JoinColumn(name = "channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags = new ArrayList<>();
 
 
     @Builder

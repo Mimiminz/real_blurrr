@@ -18,7 +18,6 @@ public class Tag extends BaseEntity {
     @Column(unique = true,nullable = false, length = 20)
     private String name;
 
-
     @Builder
     public Tag(String name) {
         this.name = name;

@@ -1,7 +1,5 @@
 package com.luckvicky.blur.domain.channel.service;
 
-import com.luckvicky.blur.domain.channel.exception.FailToCreateFollowException;
-import com.luckvicky.blur.domain.channel.exception.FailToDeleteFollowException;
 import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
@@ -11,18 +9,22 @@ import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelMemberFollowRepository;
-import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
+import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,6 @@ public class ChannelServiceImpl implements ChannelService{
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
     private final ChannelMemberFollowRepository channelMemberFollowRepository;
-    private final ChannelMapper channelMapper;
 
     @Override
     @Transactional
@@ -62,13 +63,7 @@ public class ChannelServiceImpl implements ChannelService{
             channelTagRepository.save(channelTag);
         }
 
-        // 저장된 태그들을 다시 조회
-        List<Tag> savedTags = channelTagRepository.findByChannelId(channel.getId())
-                .stream()
-                .map(ChannelTag::getTag)
-                .collect(Collectors.toList());
-
-        return channelMapper.convertToDto(channel, savedTags);
+        return ChannelMapper.convertToDto(channel);
     }
 
 
@@ -98,34 +93,26 @@ public class ChannelServiceImpl implements ChannelService{
         }
 
         List<Channel> channels = channelRepository.findAllById(channelIds);
-        List<ChannelTag> channelTags = channelTagRepository.findByChannelIdIn(channelIds);
-
-        Map<UUID, List<Tag>> channelTagsMap = channelTags.stream()
-                .collect(Collectors.groupingBy(
-                        ct -> ct.getChannel().getId(),
-                        Collectors.mapping(ChannelTag::getTag, Collectors.toList())
-                ));
 
         return channels.stream()
-                .map(channel -> channelMapper.convertToDto(channel,
-                        channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
+                .map(ChannelMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
 
-    @Override
-    public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
-        List<ChannelTag> channelTags = channelTagRepository.findByTagNameIn(tagNames);
-
-        return channelTags.stream()
-                .collect(Collectors.groupingBy(
-                        ChannelTag::getChannel,
-                        Collectors.mapping(ChannelTag::getTag, Collectors.toList())
-                ))
-                .entrySet().stream()
-                .map(entry -> channelMapper.convertToDto(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
+//        List<ChannelTag> channelTags = channelTagRepository.findByTagNameIn(tagNames);
+//
+//        return channelTags.stream()
+//                .collect(Collectors.groupingBy(
+//                        ChannelTag::getChannel,
+//                        Collectors.mapping(ChannelTag::getTag, Collectors.toList())
+//                ))
+//                .entrySet().stream()
+//                .map(entry -> ChannelMapper.convertToDto(entry.getKey(), entry.getValue()))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public List<ChannelDto> searchChannelsByKeyword(String keyword) {
@@ -140,7 +127,7 @@ public class ChannelServiceImpl implements ChannelService{
         List<Channel> channelsByTag = channelTagsByKeyword.stream()
                 .map(ChannelTag::getChannel)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
 
         // 3. 채널 병합
@@ -149,17 +136,8 @@ public class ChannelServiceImpl implements ChannelService{
         allChannels.addAll(channelsByTag);
 
 
-        // 4. 각 채널의 태그 매핑
-        Map<Channel, List<Tag>> channelTagsMap = allChannels.stream()
-                .collect(Collectors.toMap(
-                        channel -> channel,
-                        channel -> channelTagRepository.findByChannel(channel).stream()
-                                .map(ChannelTag::getTag)
-                                .collect(Collectors.toList())
-                ));
-
         return allChannels.stream()
-                .map(channel -> channelMapper.convertToDto(channel, channelTagsMap.getOrDefault(channel, List.of())))
+                .map(ChannelMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -167,12 +145,8 @@ public class ChannelServiceImpl implements ChannelService{
     @Override
     public ChannelDto getChannelById(UUID channelId) {
         Channel channel = channelRepository.getOrThrow(channelId);
-        List<Tag> tags = channelTagRepository.findByChannelId(channelId)
-                .stream()
-                .map(ChannelTag::getTag)
-                .collect(Collectors.toList());
 
-        return channelMapper.convertToDto(channel, tags);
+        return ChannelMapper.convertToDto(channel);
     }
 
     @Override

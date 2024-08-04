@@ -1,16 +1,12 @@
 package com.luckvicky.blur.domain.channel.model.dto;
 
-import com.luckvicky.blur.domain.channel.model.entity.Channel;
-import com.luckvicky.blur.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.NoArgsConstructor;
 
 @Getter
@@ -41,16 +37,7 @@ public class ChannelDto {
         @Schema(description = "채널 태그")
         List<TagDto> tags;
 
-        public static ChannelDto of(Channel channel) {
-                return ChannelDto.builder()
-                        .id(channel.getId())
-                        .name(channel.getName())
-                        .imgUrl(channel.getImgUrl())
-                        .info(channel.getInfo())
-                        .owner(channel.getOwner().getId().toString())
-                        .followCount(channel.getFollowCount())
-                        .tags(new ArrayList<>())
-                        .build();
-        }
+        @Schema(description = "팔로우 여부 (null: 비 로그인)" )
+        Boolean isFollowed;
 
 }
