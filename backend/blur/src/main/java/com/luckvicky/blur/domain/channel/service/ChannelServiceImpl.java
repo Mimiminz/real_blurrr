@@ -14,12 +14,12 @@ import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -72,14 +72,14 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public List<ChannelDto> getAllChannels(Optional<UUID> optionalMemberId) {
+    public List<ChannelDto> getAllChannels(ContextMember nullableMember) {
         List<UUID> channelIds = channelRepository.findAllChannelIds();
         List<ChannelDto> channelDtos;
 
-        if (optionalMemberId.isEmpty()) {
+        if (Objects.isNull(nullableMember)) {
             channelDtos = getChannelDtos(channelIds);
         } else {
-            channelDtos = getChannelDtosWithFollowInfo(optionalMemberId.get(), channelIds);
+            channelDtos = getChannelDtosWithFollowInfo(nullableMember.getId(), channelIds);
         }
         return channelDtos;
     }
@@ -98,7 +98,7 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public List<ChannelDto> searchChannelsByKeyword(String keyword, Optional<UUID> optionalMemberId) {
+    public List<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember) {
 
         // 1. 이름 중 키워드 포함하는 채널 검색
         List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
@@ -117,8 +117,12 @@ public class ChannelServiceImpl implements ChannelService {
         allChannels.addAll(channelsByName);
         allChannels.addAll(channelsByTag);
 
-        Member member = optionalMemberId.map(memberRepository::getOrThrow)
-                .orElse(null);
+        Member member;
+        if(Objects.nonNull(nullableMember)) {
+           member = memberRepository.getOrThrow(nullableMember.getId());
+        } else {
+            member = null;
+        }
 
         return allChannels.stream()
                 .map(channel -> {
@@ -135,11 +139,11 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public ChannelDto getChannelById(UUID channelId, Optional<UUID> optionalMemberId) {
+    public ChannelDto getChannelById(UUID channelId, ContextMember nullableMember) {
         Channel channel = channelRepository.getOrThrow(channelId);
         ChannelDto dto = ChannelMapper.convertToDto(channel);
-        if (optionalMemberId.isPresent()) {
-            Member member = memberRepository.getOrThrow(optionalMemberId.get());
+        if (Objects.nonNull(nullableMember)) {
+            Member member = memberRepository.getOrThrow(nullableMember.getId());
             dto.setIsFollowed(member.getFollowingChannels().contains(channel));
         }
         return dto;

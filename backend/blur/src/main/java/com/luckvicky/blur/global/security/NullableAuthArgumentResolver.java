@@ -1,7 +1,6 @@
 package com.luckvicky.blur.global.security;
 
 import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -12,11 +11,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Slf4j
-public class OptionalAuthArgumentResolver implements HandlerMethodArgumentResolver {
+public class NullableAuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(OptionalAuthUser.class);
+        return parameter.hasParameterAnnotation(NullableAuthUser.class);
     }
 
     @Override
@@ -24,14 +23,14 @@ public class OptionalAuthArgumentResolver implements HandlerMethodArgumentResolv
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return Optional.empty();
+            return null;
         }
 
         Object principal = authentication.getPrincipal();
         if (!(principal instanceof CustomUserDetails userDetails)) {
-            return Optional.empty();
+            return null;
         }
 
-        return Optional.of(userDetails.getMember());
+        return userDetails.getMember();
     }
 }

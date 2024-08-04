@@ -8,7 +8,7 @@ import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
-import com.luckvicky.blur.global.security.OptionalAuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -58,8 +57,8 @@ public class ChannelController {
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping
-    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@OptionalAuthUser Optional<ContextMember> optionalMember) {
-        List<ChannelDto> channels = channelService.getAllChannels(optionalMember.map(ContextMember::getId));
+    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@NullableAuthUser ContextMember nullableMember) {
+        List<ChannelDto> channels = channelService.getAllChannels(nullableMember);
 
         if (ObjectUtils.isEmpty(channels)) {
             return ResponseUtil.noContent(
@@ -111,9 +110,9 @@ public class ChannelController {
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{channelId}")
     public ResponseEntity<Result<ChannelResponse>> getChannel(@PathVariable(name = "channelId") UUID channelId,
-                                                              @OptionalAuthUser Optional<ContextMember> optionalMember) {
+                                                              @NullableAuthUser ContextMember nullableMember) {
         return ResponseUtil.ok(
-                Result.of(ChannelResponse.of(channelService.getChannelById(channelId, optionalMember.map(ContextMember::getId))))
+                Result.of(ChannelResponse.of(channelService.getChannelById(channelId, nullableMember)))
         );
     }
 
@@ -143,8 +142,8 @@ public class ChannelController {
     public ResponseEntity<Result<ChannelListResponse>> searchChannelsByKeyword(
             @Parameter(description = "검색할 키워드", required = true)
             @RequestParam String keyword,
-            Optional<ContextMember> optionalMember) {
-        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword, optionalMember.map(ContextMember::getId));
+            @NullableAuthUser ContextMember nullableMember) {
+        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword, nullableMember);
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(

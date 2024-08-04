@@ -4,7 +4,7 @@ import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI_OF_LEAGU
 
 import com.luckvicky.blur.global.interceptor.LeagueInterceptor;
 import com.luckvicky.blur.global.security.AuthArgumentResolver;
-import com.luckvicky.blur.global.security.OptionalAuthArgumentResolver;
+import com.luckvicky.blur.global.security.NullableAuthArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -18,7 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new AuthArgumentResolver());
-        argumentResolvers.add(new OptionalAuthArgumentResolver());
+        argumentResolvers.add(new NullableAuthArgumentResolver());
     }
 
     @Override
