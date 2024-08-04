@@ -8,26 +8,32 @@ import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.OptionalAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "채널 API")
 @RestController
@@ -52,10 +58,10 @@ public class ChannelController {
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping
-    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@AuthUser ContextMember contextMember) {
-        List<ChannelDto> channels = channelService.getAllChannels(contextMember.getId());
+    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@OptionalAuthUser Optional<ContextMember> optionalMember) {
+        List<ChannelDto> channels = channelService.getAllChannels(optionalMember.map(ContextMember::getId));
 
-        if (Objects.isNull(channels) || channels.isEmpty()) {
+        if (ObjectUtils.isEmpty(channels)) {
             return ResponseUtil.noContent(
                     Result.of(null)
             );
@@ -105,9 +111,9 @@ public class ChannelController {
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{channelId}")
     public ResponseEntity<Result<ChannelResponse>> getChannel(@PathVariable(name = "channelId") UUID channelId,
-                                                              @AuthUser ContextMember contextMember) {
+                                                              @OptionalAuthUser Optional<ContextMember> optionalMember) {
         return ResponseUtil.ok(
-                Result.of(ChannelResponse.of(channelService.getChannelById(channelId, contextMember.getId())))
+                Result.of(ChannelResponse.of(channelService.getChannelById(channelId, optionalMember.map(ContextMember::getId))))
         );
     }
 
@@ -136,8 +142,9 @@ public class ChannelController {
     @GetMapping("/search")
     public ResponseEntity<Result<ChannelListResponse>> searchChannelsByKeyword(
             @Parameter(description = "검색할 키워드", required = true)
-            @RequestParam String keyword) {
-        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword);
+            @RequestParam String keyword,
+            Optional<ContextMember> optionalMember) {
+        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword, optionalMember.map(ContextMember::getId));
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(

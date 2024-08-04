@@ -21,7 +21,6 @@ public class ChannelMapper {
                         .collect(Collectors.toList()))
                 .followCount(channel.getFollowCount())
                 .isFollowed(null)
-                // TODO:
                 .build();
     }
 
