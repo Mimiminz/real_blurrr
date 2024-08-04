@@ -1,10 +1,6 @@
-import { MyHeartListResponse } from '@/types/myHeartTypes';
+import { MyHeartItem } from '@/types/myHeartTypes';
 import api from '../api/index'
 import axios from 'axios';
-
-interface CheckPasswordResponse {
-    isCorrect: boolean;
-  }
   
 export const checkPassword = async (password: string, accessToken: string): Promise<boolean> => {
 try {
@@ -20,23 +16,16 @@ try {
 }
 };
 
-
-export const getMyHeartList = async (accessToken: string | null): Promise<MyHeartListResponse> => {
-if (!accessToken) {
-    throw new Error('Accesstoken이 필요합니다.');
-}
-
-try {
-    const response = await api.get<MyHeartListResponse>(`/v1/boards/likes`, {
-    headers: {
-        'Authorization': `Bearer ${accessToken}`,
-    },
-    });
-    return response.data;
-} catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-    throw new Error(error.response.data.detail || 'Failed to fetch data');
+export const getMyHeartList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyHeartItem[]> => {
+    try {
+        const response = await api.get(`/v1/boards/likes`, {
+            params: { pageNumber, criteria },
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        return response.data.boards;
+    } catch (error) {
+        throw new Error('Failed to fetch heart boards');
     }
-    throw new Error('An unknown error occurred');
-}
 };

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MyHeartListItem from './MyHeartListItem';
-import { MyHeartItem, MyHeartListResponse } from '@/types/myHeartTypes';
+import { MyHeartItem } from '@/types/myHeartTypes';
 import { useAuthStore } from '@/store/authStore';
 import { getMyHeartList } from '@/api/mypage';
 
-interface MyHeartListProps {
-}
-
-const MyHeartList = ({}: MyHeartListProps) => {
+const MyHeartList = () => {
   const [heartBoards, setHeartBoards] = useState<MyHeartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,12 +13,17 @@ const MyHeartList = ({}: MyHeartListProps) => {
 
   useEffect(() => {
     const fetchHeartBoards = async () => {
+      if (!accessToken) {
+        setError('로그인이 필요합니다.');
+        setLoading(false);
+        return;
+      }
+      
       try {
-        const response: MyHeartListResponse = await getMyHeartList(accessToken);
-        setHeartBoards(response.boards);
-      } catch (err: any) {
-        setError('데이터를 불러오는 데 실패했습니다.');
-        console.error(err);
+        const data = await getMyHeartList(accessToken);
+        setHeartBoards(data);
+      } catch (err) {
+        setError('좋아요 목록을 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -30,26 +32,36 @@ const MyHeartList = ({}: MyHeartListProps) => {
     fetchHeartBoards();
   }, [accessToken]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Container>
       <Title>내 좋아요 목록 ({heartBoards.length})</Title>
-      {heartBoards.map(item => (
-        <MyHeartListItem
-          key={item.id}
-          title={item.title}
-          writer={item.member.nickname}
-          writerCar={item.member.carTitle}
-          createdAt={item.createdAt}
-          likeCount={item.likeCount}
-          commentCount={item.commentCount}
-        />
-      ))}
+      {heartBoards.length > 0 ? (
+        heartBoards.map((item) => (
+          <MyHeartListItem
+            key={item.id}
+            title={item.title}
+            writer={item.member.nickname}
+            writerCar={item.member.carTitle}
+            createdAt={item.createdAt}
+            likeCount={item.likeCount}
+            commentCount={item.commentCount}
+          />
+        ))
+      ) : (
+        <div>좋아요 목록이 없습니다.</div>
+      )}
     </Container>
   );
 };
+
 export default MyHeartList
 
 const Container = styled.div`
