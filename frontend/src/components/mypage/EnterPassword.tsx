@@ -3,13 +3,47 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Profile from './Profile';
 import styled from 'styled-components';
+import { checkPassword } from '@/api/mypage';
+import { useAuthStore } from '@/store/authStore' 
 
 interface EnterPasswordProps {
   onPasswordEntered: () => void;
 }
 
 const EnterPassword = ({ onPasswordEntered }: EnterPasswordProps): JSX.Element => {
-  const [isPasswordCorrect, setIsPasswordCorrect] = useState<boolean>(false);
+const [isPasswordCorrect, setIsPasswordCorrect] = useState<boolean>(false);
+const accessToken = useAuthStore(state => state.accessToken);
+  
+const handlePasswordCheck = async (password: string) => {
+  if (!accessToken) {
+    console.error('Access token is not available.');
+    alert('로그인 상태가 아닙니다. 다시 로그인 해주세요.');
+    return;
+  }
+
+  try {
+    const isCorrect = await checkPassword(password, accessToken);
+    if (typeof isCorrect === 'boolean') {
+      if (isCorrect) {
+        setIsPasswordCorrect(true);
+        onPasswordEntered();
+      } else {
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    } else {
+      console.error('Unexpected response format:', isCorrect);
+      alert('서버 응답 형식이 올바르지 않습니다.');
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('비밀번호 확인 중 오류가 발생했습니다.', error.message);
+      alert('오류가 발생했습니다. 다시 시도해주세요.');
+    } else {
+      console.error('비밀번호 확인 중 예상치 못한 오류가 발생했습니다.');
+      alert('예상치 못한 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  }
+};
 
   if (isPasswordCorrect) {
     return <Profile />;
@@ -23,12 +57,10 @@ const EnterPassword = ({ onPasswordEntered }: EnterPasswordProps): JSX.Element =
         validationSchema={Yup.object({
           password: Yup.string()
             .required('비밀번호를 입력해주세요.')
-            .oneOf(['123'], '비밀번호가 올바르지 않습니다.'),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          setIsPasswordCorrect(true);
+          handlePasswordCheck(values.password);
           setSubmitting(false);
-          onPasswordEntered();
         }}
       >
         {({ isSubmitting }) => (
