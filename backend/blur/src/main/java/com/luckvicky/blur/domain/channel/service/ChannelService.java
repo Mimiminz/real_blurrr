@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface ChannelService {
     ChannelDto createChannel(ChannelCreateRequest request, UUID memberId);
-    List<ChannelDto> getAllChannels();
+    List<ChannelDto> getAllChannels(UUID memberId);
     List<ChannelDto> getFollowedChannels(UUID memberId);
     List<ChannelDto> getCreatedChannels(UUID memberId);
     List<ChannelDto> searchChannelsByKeyword(String keyword);
-    ChannelDto getChannelById(UUID channelId);
+    ChannelDto getChannelById(UUID channelId, UUID memberId);
     Boolean createFollow(UUID memberId, UUID channelId);
     Boolean deleteFollow(UUID memberId, UUID channelId);
 }

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(name = "채널 정보")
 public class ChannelDto {
-        
+
         @Schema(description = "채널 고유 식별값")
         UUID id;
 
@@ -38,6 +39,7 @@ public class ChannelDto {
         List<TagDto> tags;
 
         @Schema(description = "팔로우 여부 (null: 비 로그인)" )
+        @Setter
         Boolean isFollowed;
 
 }

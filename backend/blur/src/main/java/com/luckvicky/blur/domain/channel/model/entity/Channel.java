@@ -38,8 +38,8 @@ public class Channel extends BaseEntity {
 
     @Column(nullable = false)
     private Long followCount;
-    
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "channel_tag",
             joinColumns = @JoinColumn(name = "channel_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))

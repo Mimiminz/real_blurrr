@@ -52,8 +52,8 @@ public class ChannelController {
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping
-    public ResponseEntity<Result<ChannelListResponse>> getAllChannels() {
-        List<ChannelDto> channels = channelService.getAllChannels();
+    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@AuthUser ContextMember contextMember) {
+        List<ChannelDto> channels = channelService.getAllChannels(contextMember.getId());
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(
@@ -104,9 +104,10 @@ public class ChannelController {
     @Operation(summary = "특정 채널 정보 조회 API")
     @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{channelId}")
-    public ResponseEntity<Result<ChannelResponse>> getChannel(@PathVariable(name = "channelId") UUID channelId) {
+    public ResponseEntity<Result<ChannelResponse>> getChannel(@PathVariable(name = "channelId") UUID channelId,
+                                                              @AuthUser ContextMember contextMember) {
         return ResponseUtil.ok(
-                Result.of(ChannelResponse.of(channelService.getChannelById(channelId)))
+                Result.of(ChannelResponse.of(channelService.getChannelById(channelId, contextMember.getId())))
         );
     }
 
