@@ -114,10 +114,10 @@ jacocoTestReport {
 
     reports {
 
+        xml.required = false
         csv.required = false
 
         html.outputLocation = layout.buildDirectory.dir("jacoco/html")
-        xml.outputLocation  = layout.buildDirectory.dir("jacoco/testReport.xml")
 
     }
 
