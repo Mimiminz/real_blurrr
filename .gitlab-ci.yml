@@ -1,8 +1,39 @@
 image: ubuntu:22.04
 
 stages:
+  - test
   - build
   - deploy
+
+test:
+  stage: test
+  before_script:
+    # 자바 17 설치
+    - apt-get update
+    - echo "install java"
+    - apt-get install openjdk-17-jdk -y
+    - java -version
+
+    # JAVA_HOME 환경 변수 설정
+    - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+    - export PATH="$JAVA_HOME/bin:$PATH"
+    
+    # JAVA_HOME과 PATH 확인
+    - echo "JAVA_HOME is set to $JAVA_HOME"
+    - echo "PATH is set to $PATH"
+ 
+  script:
+    - echo 'test'
+    - cd backend/blur
+    - chmod +x ./gradlew
+    - ./gradlew test
+
+  # only:
+  #   -dev
+
+  tags:
+    - blurrr-deploy
+
 
 build:
   stage: build
@@ -44,6 +75,7 @@ build:
     
   tags:
     - blurrr-deploy
+
   only:
     - dev
 
