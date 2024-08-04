@@ -1,11 +1,18 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import BoardDetailTitle from '@/components/channel/board/BoardDetailTitle';
-import { PostDetail, Comment as CommentProp, CommentStatus } from "@/types/channelType";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
+import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
+import {
+  PostDetail,
+  Comment as CommentProp,
+  CommentStatus,
+} from "@/types/channelType";
+import { fetchComment } from "@/types/commentTypes";
 import { fetchChannelPostDetail } from "@/api/channel";
+import CommentList from "@/components/common/UI/comment/CommentList";
+import { fetchCommentList } from "@/api/comment";
 
 const Content = styled.div`
   font-size: 17px;
@@ -66,67 +73,92 @@ const HeartButton = styled.button`
   }
 `;
 
-export default function ChannelBoardDetailPage({ params }: { params: { channelId: string; boardId: string } }) {
-   const channelId = params.channelId;
-   const boardId = params.boardId;
+export default function ChannelBoardDetailPage({
+  params,
+}: {
+  params: { channelId: string; boardId: string };
+}) {
+  const channelId = params.channelId;
+  const boardId = params.boardId;
 
-   const [boardDetail, setBoardDetail] = useState<PostDetail | null>(null);
-   const [isLiked, setIsLiked] = useState(false);
-   const [error, setError] = useState<string | null>(null);
+  const [boardDetail, setBoardDetail] = useState<PostDetail | null>(null);
+  const [commentList, setCommentList] = useState<fetchComment | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-   const toggleLike = () => {
-      setIsLiked((prevIsLiked) => !prevIsLiked);
-   };
+  const toggleLike = () => {
+    setIsLiked((prevIsLiked) => !prevIsLiked);
+  };
 
-   const formatPostDate = (createdAt: string) => {
-      const postDate = new Date(createdAt);
-      const today = new Date();
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
 
-      if (postDate.toDateString() === today.toDateString()) {
-         return postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      } else {
-         return postDate.toISOString().split('T')[0].replace(/-/g, '.');
-      }
-   };
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
 
-   const loadBoardDetail = useCallback(async () => {
-      try {
-         const details = await fetchChannelPostDetail(boardId, channelId);
-         setBoardDetail(details);
-      } catch (error) {
-         console.error(error);
-         setError("Failed to load post details. Please try again later.");
-      }
-   }, [boardId, channelId]);
+  const loadBoardDetail = useCallback(async () => {
+    try {
+      const details = await fetchChannelPostDetail(boardId, channelId);
+      setBoardDetail(details);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to load post details. Please try again later.");
+    }
+  }, [boardId, channelId]);
 
-   useEffect(() => {
-      loadBoardDetail();
-   }, [boardId, channelId]);
+  const loadCommentDetail = async () => {
+    try {
+      const fetchcommentsList = await fetchCommentList(boardId);
+      setCommentList(fetchcommentsList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-   if (!boardDetail) {
-      return <div>{error ? error : 'Loading...'}</div>;
-   }
+  useEffect(() => {
+    loadBoardDetail();
+    loadCommentDetail();
+  }, [boardId, channelId]);
 
-   return (
-      <>
-         <BoardDetailTitle
-            title={boardDetail.title}
-            createdAt={formatPostDate(boardDetail.createdAt)}
-            viewCount={boardDetail.viewCount}
-            likeCount={boardDetail.likeCount}
-            member={boardDetail.member}
-            tags={boardDetail.mentionedLeagues}
-         />
-         <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-         <HeartButton onClick={toggleLike}>
-            {isLiked ? <FaHeart /> : <FaRegHeart />}
-         </HeartButton>
-         <CommentContainer>
-            <WriterContainer>
-               <WriterButton>수정</WriterButton>
-               <WriterButton>삭제</WriterButton>
-            </WriterContainer>
-            {/* <CommentNumber>
+  if (!boardDetail || !commentList) {
+    return <div>{error ? error : "Loading..."}</div>;
+  }
+
+  return (
+    <>
+      <BoardDetailTitle
+        title={boardDetail.title}
+        createdAt={formatPostDate(boardDetail.createdAt)}
+        viewCount={boardDetail.viewCount}
+        likeCount={boardDetail.likeCount}
+        member={boardDetail.member}
+        tags={boardDetail.mentionedLeagues}
+      />
+      <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
+      <HeartButton onClick={toggleLike}>
+        {isLiked ? <FaHeart /> : <FaRegHeart />}
+      </HeartButton>
+      <CommentContainer>
+        <WriterContainer>
+          <WriterButton>삭제</WriterButton>
+        </WriterContainer>
+        <CommentList
+          comments={commentList.comments}
+          commentCount={commentList.commentCount}
+          boardId={boardId}
+          leagueId=""
+          isLeague={false}
+          onCommentAdded={loadCommentDetail}
+        />
+        {/* <CommentNumber>
                <LiaCommentDots />
                {boardDetail.commentCount}
             </CommentNumber>
@@ -174,7 +206,7 @@ export default function ChannelBoardDetailPage({ params }: { params: { channelId
           boardId={boardId}
           onCommentAdded={loadCommentDetail}
         /> */}
-         </CommentContainer>
-      </>
-   );
+      </CommentContainer>
+    </>
+  );
 }

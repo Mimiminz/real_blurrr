@@ -7,7 +7,26 @@ export const fetchLeagueCommentList = async (
   boardId: string
 ): Promise<fetchComment> => {
   try {
-    const response = await api.get(`/v1/leagues/${leagueId}/boards/${boardId}/comments`);
+    const response = await api.get(
+      `/v1/leagues/${leagueId}/boards/${boardId}/comments`
+    );
+    console.log(response.data);
+    if (response.status === 204) {
+      return { comments: [], commentCount: 0 };
+    }
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// 채널 댓글 목록 조회
+export const fetchCommentList = async (
+  boardId: string
+): Promise<fetchComment> => {
+  try {
+    const response = await api.get(`/v1/boards/${boardId}/comments`);
     console.log(response.data);
     if (response.status === 204) {
       return { comments: [], commentCount: 0 };
@@ -40,7 +59,7 @@ export const fetchLeagueCommentCreate = async (
   }
 };
 
-// 댓글 작성
+// 채널 댓글 작성
 export const fetchCommentCreate = async (boardId: string, content: string) => {
   try {
     const response = await api.post("/v1/comments", {
@@ -72,7 +91,7 @@ export const fetchLeagueCommentDelete = async (
   }
 };
 
-// 댓글 삭제
+// 채널 댓글 삭제
 export const fetchCommentDelete = async (
   boardId: string,
   commentId: string
@@ -109,7 +128,7 @@ export const fetchLeagueReplyCreate = async (
   }
 };
 
-// 대댓글 작성
+// 채널 대댓글 작성
 export const fetchReplyCreate = async (
   commentId: string,
   boardId: string,
