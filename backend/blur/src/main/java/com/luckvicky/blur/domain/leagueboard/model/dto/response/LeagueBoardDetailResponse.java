@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.leagueboard.model.dto.response;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
+import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDetailDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -9,11 +10,11 @@ import lombok.Builder;
 public record LeagueBoardDetailResponse(
         
         @Schema(description = "게시물 정보")
-        BoardDetailDto boardDetail
+        LeagueBoardDetailDto boardDetail
         
 ){
 
-    public static LeagueBoardDetailResponse of(BoardDetailDto boardDetail) {
+    public static LeagueBoardDetailResponse of(LeagueBoardDetailDto boardDetail) {
         return LeagueBoardDetailResponse.builder()
                 .boardDetail(boardDetail)
                 .build();

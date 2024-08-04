@@ -8,7 +8,6 @@ import static com.luckvicky.blur.global.constant.StringFormat.CONDITION_TITLE;
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InValidSearchConditionException;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
-import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -19,7 +18,9 @@ import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDetailDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
 import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueException;
@@ -108,7 +109,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     }
 
     @Override
-    public BoardDetailDto getLeagueBoardDetail(UUID memberId, UUID boardId) {
+    public LeagueBoardDetailResponse getLeagueBoardDetail(UUID memberId, UUID boardId) {
 
         Member member = memberRepository.getOrThrow(memberId);
         LeagueBoard board = leagueBoardRepository.findByIdForUpdate(boardId, ActivateStatus.ACTIVE)
@@ -120,7 +121,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         board.increaseViewCount();
 
-        return BoardDetailDto.of(board, isLike(member, board));
+        return LeagueBoardDetailResponse.of(mapper.map(board, LeagueBoardDetailDto.class));
 
     }
 

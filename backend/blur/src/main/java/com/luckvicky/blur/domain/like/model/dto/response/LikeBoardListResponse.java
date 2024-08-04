@@ -1,4 +1,4 @@
-package com.luckvicky.blur.domain.like.model.response;
+package com.luckvicky.blur.domain.like.model.dto.response;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import io.swagger.v3.oas.annotations.media.Schema;
