@@ -17,7 +17,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,29 +56,6 @@ public class LikeController {
                         .build()
         );
 
-    }
-
-    @Operation(
-            summary = "좋아요 상태 조회",
-            description = "사용자, 게시글 고유 식별값을 받아 좋아요 상태를 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "좋아요 여부 조회 완료"),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "404", description = NOT_EXIST_MEMBER_MESSAGE + "or" + NOT_EXIST_BOARD_MESSAGE),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_LIKE_MESSAGE)
-    })
-    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/boards/{boardId}")
-    public ResponseEntity getLikeStatusByBoard(
-            @AuthUser ContextMember member,
-            @PathVariable(name = "boardId") UUID boardId
-    ) {
-        return ResponseUtil.created(
-                Result.builder()
-                        .data(likeService.getLikeStatusByBoard(member.getId(), boardId))
-                        .build()
-        );
     }
 
     @Operation(

@@ -3,12 +3,11 @@ package com.luckvicky.blur.domain.like.service;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
-import com.luckvicky.blur.domain.like.exception.FailToCreateLikeException;
 import com.luckvicky.blur.domain.like.exception.FailToDeleteLikeException;
 import com.luckvicky.blur.domain.like.exception.NotExistLikeException;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
-import com.luckvicky.blur.domain.like.model.dto.response.LikeStatusResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -25,12 +24,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
 
-    private final ModelMapper mapper;
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
     @Override
+    @DistributedLock(value = "#boardId")
     public LikeCreateResponse createLike(UUID memberId, UUID boardId) {
 
         Member member = memberRepository.getOrThrow(memberId);
@@ -48,22 +47,13 @@ public class LikeServiceImpl implements LikeService {
             throw new FailToDeleteLikeException();
         }
 
-        increaseLikeCount(board);
+        board.increaseLikeCount();
         return LikeCreateResponse.of(board.getLikeCount(), isLike(member, board));
 
     }
 
     @Override
-    public LikeStatusResponse getLikeStatusByBoard(UUID memberId, UUID boardId) {
-
-        Member member = memberRepository.getOrThrow(memberId);
-        Board board = boardRepository.getOrThrow(boardId);
-
-        return LikeStatusResponse.of(board.getLikeCount(), isLike(member, board));
-
-    }
-
-    @Override
+    @DistributedLock(value = "#boardId")
     public LikeDeleteResponse deleteLike(UUID memberId, UUID boardId) {
 
         Member member = memberRepository.getOrThrow(memberId);
@@ -80,24 +70,13 @@ public class LikeServiceImpl implements LikeService {
             throw new FailToDeleteLikeException();
         }
 
-        decreaseLikeCount(board);
+        board.decreaseLikeCount();
         return LikeDeleteResponse.of(board.getLikeCount(), isLike);
 
-    }
-
-    @DistributedLock(value = "#boardId")
-    private static void increaseLikeCount(Board board) {
-        board.increaseLikeCount();
-    }
-
-    @DistributedLock(value = "#boardId")
-    private static void decreaseLikeCount(Board board) {
-        board.decreaseLikeCount();
     }
 
     private Boolean isLike(Member member, Board board) {
         return likeRepository.existsByMemberAndBoard(member, board);
     }
-
 
 }

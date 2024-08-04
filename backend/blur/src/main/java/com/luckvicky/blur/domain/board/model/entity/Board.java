@@ -74,6 +74,9 @@ public class Board extends BaseEntity {
 
     public void decreaseViewCount()  {
         this.viewCount--;
+        if (this.viewCount == Long.valueOf(-1)) {
+            this.viewCount = Long.valueOf(0);
+        }
     }
 
 
@@ -83,6 +86,9 @@ public class Board extends BaseEntity {
 
     public void decreaseCommentCount()  {
         this.commentCount--;
+        if (this.commentCount == Long.valueOf(-1)) {
+            this.commentCount = Long.valueOf(0);
+        }
     }
 
     public void increaseLikeCount()  {
@@ -91,6 +97,9 @@ public class Board extends BaseEntity {
 
     public void decreaseLikeCount()  {
         this.likeCount--;
+        if (this.likeCount == Long.valueOf(-1)) {
+            this.likeCount = Long.valueOf(0);
+        }
     }
 
 }

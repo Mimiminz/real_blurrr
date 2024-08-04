@@ -25,6 +25,7 @@ import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
 import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueException;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -115,13 +116,24 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         LeagueBoard board = leagueBoardRepository.findByIdForUpdate(boardId, ActivateStatus.ACTIVE)
                 .orElseThrow(NotExistBoardException::new);
 
-        if (!leagueMemberRepository.existsByLeagueAndMember(board.getLeague(), member)) {
-            throw new NotAllocatedLeagueException();
-        }
+        isAllocatedLeague(board.getLeague(), member);
 
         board.increaseViewCount();
 
         return LeagueBoardDetailResponse.of(mapper.map(board, LeagueBoardDetailDto.class));
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LeagueBoardLikeResponse getBoardLike(UUID memberId, UUID boardId) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+        LeagueBoard board = leagueBoardRepository.getOrThrow(boardId);
+
+        isAllocatedLeague(board.getLeague(), member);
+
+        return LeagueBoardLikeResponse.of(board.getLikeCount(), isLike(member, board));
 
     }
 
@@ -134,9 +146,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         League mentionedLeague = leagueRepository.getOrThrow(leagueId);
         Member member = memberRepository.getOrThrow(memberId);
 
-        if (!leagueMemberRepository.existsByLeagueAndMember(mentionedLeague, member)) {
-            throw new NotAllocatedLeagueException();
-        }
+        isAllocatedLeague(mentionedLeague, member);
 
         SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
         Pageable pageable = PageRequest.of(
@@ -220,6 +230,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 memberRepository.getOrThrow(userDetails.getMember().getId())
         );
 
+    }
+
+    private void isAllocatedLeague(League league, Member member) {
+        if (!leagueMemberRepository.existsByLeagueAndMember(league, member)) {
+            throw new NotAllocatedLeagueException();
+        }
     }
 
     private Boolean isLike(Member member, Board board) {
