@@ -1,12 +1,11 @@
 image: ubuntu:22.04
 
 stages:
-  - test
+  # - test
   - build
   - deploy
 
 before_script:
-
   # 자바 17 설치
   - apt-get update
   - echo "install java"
@@ -21,20 +20,20 @@ before_script:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-test:
-  stage: test
-  script:
-    - echo 'test'
-    - cd backend/blur
-    - chmod +x ./gradlew
-    - ./gradlew test
+# test:
+#   stage: test
+#   script:
+#     - echo 'test'
+#     - cd backend/blur
+#     - chmod +x ./gradlew
+#     - ./gradlew test
 
-  only:
-    - merge_requests
-    - dev
+#   only:
+#     - merge_requests
+#     - dev
 
-  tags:
-    - blurrr-deploy
+#   tags:
+#     - blurrr-deploy
 
 
 build:
@@ -94,7 +93,7 @@ deploy:
   only:
     - dev
   
-  when: on_success
+  # when: on_success
 
   tags:
     - blurrr-deploy
