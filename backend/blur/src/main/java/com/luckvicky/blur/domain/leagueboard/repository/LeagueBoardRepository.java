@@ -19,8 +19,11 @@ import org.springframework.data.repository.query.Param;
 public interface LeagueBoardRepository extends JpaRepository<LeagueBoard, UUID> {
 
     default LeagueBoard getOrThrow(UUID id) {
-        return findById(id).orElseThrow(NotExistBoardException::new);
+        return findByIdAndStatus(id, ActivateStatus.ACTIVE).orElseThrow(NotExistBoardException::new);
     }
+
+    @EntityGraph(attributePaths = {"member", "league"})
+    Optional<LeagueBoard> findByIdAndStatus(UUID id, ActivateStatus status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT lb "

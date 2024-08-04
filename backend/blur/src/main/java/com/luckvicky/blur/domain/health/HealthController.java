@@ -1,4 +1,4 @@
-package com.luckvicky.blur.domain.test;
+package com.luckvicky.blur.domain.health;
 
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Health API")
 @RestController
-public class TestController {
+public class HealthController {
 
     @GetMapping("/health")
     public ResponseEntity healthCheck() {

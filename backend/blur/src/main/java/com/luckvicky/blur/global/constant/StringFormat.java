@@ -93,6 +93,7 @@ public class StringFormat {
             "/v1/leagues/*/boards/*/comments/*",
             "/v1/leagues/boards/*",
             "/v1/leagues/boards/*/comments",
+            "/v1/leagues/boards/*/likes",
             "/v1/leagues/*/mentions",
     };
 
