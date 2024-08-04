@@ -7,7 +7,7 @@ import Link from "next/link";
 import { moreTabProps, TabButtonProps } from "@/types/leagueTypes";
 
 export default function MoreBrandTab({
-  activeTabId,
+  activeTab,
   moreTabs,
   activeTabName,
 }: moreTabProps) {
@@ -17,8 +17,6 @@ export default function MoreBrandTab({
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
   };
-
-  const activeTabType = moreTabs.find((t) => t.id === activeTabId)?.type;
 
   return (
     <>
@@ -31,7 +29,7 @@ export default function MoreBrandTab({
               없습니다.
             </Subtitle>
           </TitleContainer>
-          {activeTabType === "BRAND" && (
+          {activeTab.type === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>
               더보기 {showMoreTabs ? "▲" : "▼"}
             </MoreTabsButton>
@@ -41,8 +39,8 @@ export default function MoreBrandTab({
           {moreTabs.map((tab) => (
             <MoreTabButton
               key={tab.id}
-              href={`/league/${tab.id}`}
-              $isActive={activeTabId === tab.id}
+              href={`/league/${tab.name}`}
+              $isActive={activeTab.id === tab.id}
             >
               {tab.name}
             </MoreTabButton>

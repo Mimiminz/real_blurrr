@@ -82,7 +82,7 @@ export const fetchLeagueCommentDelete = async (
 ) => {
   try {
     const response = await api.put(
-      `/v1/leagues/${leagueId}comments/${commentId}/boards/${boardId}`
+      `/v1/leagues/${leagueId}/comments/${commentId}/boards/${boardId}`
     );
 
     return response.data;

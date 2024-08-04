@@ -10,7 +10,7 @@ import { FaCar } from "react-icons/fa";
 import { MdFactory } from "react-icons/md";
 
 export default function UserTab({
-  activeTabId,
+  activeTabName,
   tabs,
   mentionTabs,
 }: UserTabProps) {
@@ -20,10 +20,10 @@ export default function UserTab({
         {tabs.map((tab) => (
           <TabButton
             key={tab.id}
-            href={`/league/${tab.id}`}
-            $isActive={activeTabId === tab.id}
+            href={`/league/${tab.name}`}
+            $isActive={activeTabName === tab.name}
           >
-            {activeTabId === tab.id &&
+            {activeTabName === tab.name &&
               (tab.type === "BRAND" ? <MdFactory /> : <FaCar />)}
             {tab.name}
           </TabButton>
@@ -31,8 +31,8 @@ export default function UserTab({
         {mentionTabs.map((tab) => (
           <TabButton
             key={tab.id}
-            href={`/league/${tab.id}`}
-            $isActive={activeTabId === tab.id}
+            href={`/league/mention${tab.name}`}
+            $isActive={activeTabName === `mention${tab.name}`}
           >
             @{tab.name}
           </TabButton>

@@ -16,8 +16,8 @@ interface UserCarProps {
 const UserCarInfo: React.FC<UserCarProps> = ({ userLeagueList }) => {
   const router = useRouter();
   const { user } = useAuthStore();
-  const handleUserLeagueClick = (tabId: string) => {
-    router.push(`/league/${tabId}`);
+  const handleUserLeagueClick = (tabName: string) => {
+    router.push(`/league/${tabName}`);
   };
 
   return (
@@ -31,13 +31,13 @@ const UserCarInfo: React.FC<UserCarProps> = ({ userLeagueList }) => {
       </ProfileSection>
       <ButtonSection>
         <LeagueButton
-          onClick={() => handleUserLeagueClick(userLeagueList[0].id)}
+          onClick={() => handleUserLeagueClick(userLeagueList[0].name)}
         >
           {userLeagueList[0].name} <br />
           리그 <GoArrowUpRight />
         </LeagueButton>
         <LeagueButton
-          onClick={() => handleUserLeagueClick(userLeagueList[1].id)}
+          onClick={() => handleUserLeagueClick(userLeagueList[1].name)}
         >
           {userLeagueList[1].name} <br />
           리그 <GoArrowUpRight />
