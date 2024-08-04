@@ -4,7 +4,6 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.FAIL_TO_CREATE_COMM
 
 import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
 import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
-import com.luckvicky.blur.domain.alarm.service.AlarmService;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -24,6 +23,7 @@ import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import com.luckvicky.blur.infra.redisson.DistributedLock;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,12 +52,12 @@ public class CommentServiceImpl implements CommentService {
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);
 
-        board.increaseCommentCount();
         Comment createdComment = commentRepository.save(
                 request.toEntity(member, board)
         );
 
         alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
+        increaseCommentCount(board);
 
         return isCreated(createdComment);
 
@@ -71,11 +71,12 @@ public class CommentServiceImpl implements CommentService {
         Board board = boardRepository.findByIdForUpdate(request.boardId())
                 .orElseThrow(NotExistBoardException::new);
 
-        board.increaseCommentCount();
         Comment createdComment = commentRepository.save(
                 request.toEntity(parentComment, member, board)
         );
+
         alarmService.sendAlarm(memberId, AlarmType.ADD_COMMENT, board.getTitle());
+        increaseCommentCount(board);
 
         return isCreated(createdComment);
 
@@ -90,8 +91,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findByIdAndBoard(commentId, board)
                 .orElseThrow(NotExistCommentException::new);
 
-        board.decreaseCommentCount();
         comment.inactive();
+        decreaseCommentCount(board);
 
         return isDeleted(comment);
 
@@ -129,6 +130,16 @@ public class CommentServiceImpl implements CommentService {
                 board.getCommentCount()
         );
 
+    }
+
+    @DistributedLock(value = "#boardId")
+    private static void increaseCommentCount(Board board) {
+        board.increaseCommentCount();
+    }
+
+    @DistributedLock(value = "#boardId")
+    private static void decreaseCommentCount(Board board) {
+        board.decreaseCommentCount();
     }
 
     private Boolean isCreated(Comment comment) {
