@@ -44,8 +44,11 @@ public class ChannelBoardDetailDto {
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;
 
+    @Schema(description = "좋아요 여부")
+    private boolean isLiked;
 
-    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<MentionDto> mentionedLeagues){
+
+    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<MentionDto> mentionedLeagues, boolean isLiked){
         return ChannelBoardDetailDto.builder()
                 .id(channelBoard.getId())
                 .member(SimpleMemberDto.of(channelBoard.getMember()))
@@ -56,6 +59,7 @@ public class ChannelBoardDetailDto {
                 .createdAt(channelBoard.getCreatedAt())
                 .content(channelBoard.getContent())
                 .mentionedLeagues(mentionedLeagues)
+                .isLiked(isLiked)
                 .build();
     }
 

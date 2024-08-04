@@ -12,7 +12,7 @@ public interface ChannelBoardService {
 
     List<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria);
 
-    ChannelBoardDetailDto getBoardDetail(UUID boardId);
+    ChannelBoardDetailDto getBoardDetail(UUID boardId, UUID memberId);
 
     List<CommentDto> getComments(UUID boardId);
 

@@ -120,10 +120,11 @@ public class ChannelBoardController {
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/{boardId}")
     public ResponseEntity<Result<ChannelBoardDetailResponse>> getBoardDetail(
-            @PathVariable(name = "boardId") UUID boardId
+            @PathVariable(name = "boardId") UUID boardId,
+            @AuthUser ContextMember contextMember
     ) {
 
-        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId);
+        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId, contextMember.getId());
 
         return ResponseUtil.ok(
                 Result.of(ChannelBoardDetailResponse.of(boardDetail))
