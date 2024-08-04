@@ -27,18 +27,11 @@ public enum SortingCriteria {
     private final String criteria;
 
     public static SortingCriteria convertToEnum(String criteria) {
-
-        SortingCriteria sortingCriteria;
-
         try {
-            sortingCriteria = SortingCriteria.valueOf(criteria);
+            return SortingCriteria.valueOf(criteria);
         } catch (IllegalArgumentException e) {
             throw new InvalidSortingCriteriaException();
         }
-
-        return sortingCriteria;
-
     }
-
 
 }

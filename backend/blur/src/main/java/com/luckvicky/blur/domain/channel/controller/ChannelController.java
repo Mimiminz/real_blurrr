@@ -63,7 +63,7 @@ public class ChannelController {
 
         if (ObjectUtils.isEmpty(channels)) {
             return ResponseUtil.noContent(
-                    Result.of(null)
+                    Result.empty()
             );
         }
 
@@ -80,7 +80,7 @@ public class ChannelController {
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.of(null)
+                    Result.empty()
             );
         }
 
@@ -97,7 +97,7 @@ public class ChannelController {
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.of(null)
+                    Result.empty()
             );
         }
 
@@ -148,7 +148,7 @@ public class ChannelController {
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.of(null)
+                    Result.empty()
             );
         }
 
