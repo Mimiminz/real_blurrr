@@ -132,9 +132,12 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     }
 
     @Override
+    @Transactional
     public DashcamBoardDetailDto getDashcamBoardById(UUID id) {
         DashCam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
+
+        dashcam.increaseViewCount();
 
         return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam);
     }
