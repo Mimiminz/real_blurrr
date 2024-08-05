@@ -22,6 +22,14 @@ export interface LeagueBoardItem {
   likeCount: number;
 }
 
+export interface LeagueBoardList {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: LeagueBoardItem[];
+}
+
 export interface LeagueBoardListItemProps {
   title: string;
   writer: string;
@@ -37,7 +45,7 @@ export interface MentionedChannel {
   name: string;
 }
 
-export interface MentionChannelList {
+export interface MentionChannelBoardList {
   channel: MentionedChannel;
   id: string;
   createdAt: string;
@@ -47,8 +55,16 @@ export interface MentionChannelList {
   commentCount: number;
 }
 
+export interface MentionChannelList {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: MentionChannelBoardList[];
+}
+
 export interface LeagueMentionListProps {
-  boardList: MentionChannelList[];
+  boardList: MentionChannelBoardList[];
 }
 
 export interface LeagueMentionListItemProps {

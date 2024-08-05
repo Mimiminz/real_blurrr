@@ -13,6 +13,7 @@ import {
   UserLeague,
   LeagueList,
   MentionChannelList,
+  MentionChannelBoardList,
 } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
@@ -57,13 +58,14 @@ export default function LeaguePage({
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
   const [mentionBoardList, setMentionBoardList] = useState<
-    MentionChannelList[]
+    MentionChannelBoardList[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(2);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchTotalPages, setSearchTotalPages] = useState<number>(1);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -151,7 +153,8 @@ export default function LeaguePage({
           findActiveTab.type,
           currentPage - 1
         );
-        setBoardList(boardData);
+        setBoardList(boardData.content);
+        setTotalPages(boardData.totalPages);
         setLoading(false);
       } else {
         const findActiveTab = userLeagueList.find(
@@ -164,7 +167,9 @@ export default function LeaguePage({
             criteria,
             currentPage - 1
           );
-          setMentionBoardList(boardData);
+          setMentionBoardList(boardData.content);
+          setTotalPages(boardData.totalPages);
+
           setLoading(false);
         } else {
           alert("인증받지 못한 리그입니다. 자동차 인증을 해 주세요.");
@@ -230,8 +235,13 @@ export default function LeaguePage({
     }
     setIsSearching(true);
     try {
-      const results = await fetchBoardSearch(activeTab.id, keyword);
-      setSearchResults(results);
+      const results = await fetchBoardSearch(
+        activeTab.id,
+        keyword,
+        currentPage - 1
+      );
+      setSearchResults(results.content);
+      setSearchTotalPages(results.totalPages);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
@@ -287,11 +297,21 @@ export default function LeaguePage({
       ) : (
         <LeagueBoardList leagueName={leagueName} boardList={boardList} />
       )}
-      <PaginationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {isSearching
+        ? searchTotalPages > 0 && (
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={searchTotalPages}
+              onPageChange={handlePageChange}
+            />
+          )
+        : totalPages > 0 && (
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
     </Container>
   );
 }

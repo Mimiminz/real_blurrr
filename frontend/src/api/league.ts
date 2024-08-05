@@ -6,6 +6,7 @@ import {
   BoardDetail,
   UserLeague,
   MentionChannelList,
+  LeagueBoardList,
 } from "@/types/leagueTypes";
 
 // 사용자 참여 리그 가져오는 함수
@@ -50,16 +51,22 @@ export const fetchLeagueBoardList = async (
   criteria: string,
   leagueType: string,
   pageNumber: number
-): Promise<LeagueBoardItem[]> => {
+): Promise<LeagueBoardList> => {
   try {
     console.log(leagueType);
     const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
       params: { leagueType, criteria, pageNumber },
     });
     if (response.status === 204) {
-      return [];
+      return {
+        totalPages: 0,
+        totalElements: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        content: [],
+      };
     }
-    return response.data.data.boards;
+    return response.data.data;
   } catch (error) {
     console.error("Failed to fetch league board list", error);
     throw error;
@@ -71,16 +78,22 @@ export const fetchMentionBoardList = async (
   leagueId: string,
   criteria: string,
   pageNumber: number
-): Promise<MentionChannelList[]> => {
+): Promise<MentionChannelList> => {
   try {
     const response = await api.get(`/v1/leagues/${leagueId}/mentions`, {
       params: { criteria, pageNumber },
     });
     if (response.status === 204) {
-      return [];
+      return {
+        totalPages: 0,
+        totalElements: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        content: [],
+      };
     }
     console.log(response.data.data);
-    return response.data.data.channelBoards;
+    return response.data.data;
   } catch (error) {
     console.error("Failed to fetch league board list", error);
     throw error;
@@ -101,14 +114,27 @@ export const fetchLeagueDetail = async (
 };
 
 // 리그 게시글 검색 함수
-export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
+export const fetchBoardSearch = async (
+  leagueId: string,
+  keyword: string,
+  pageNumber: number
+): Promise<LeagueBoardList> => {
   try {
     const response = await api.get(`/v1/leagues/${leagueId}/boards/search`, {
-      params: { keyword },
+      params: { keyword, pageNumber },
     });
+    if (response.status === 204) {
+      return {
+        totalPages: 0,
+        totalElements: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        content: [],
+      };
+    }
 
-    console.log(response.data.data);
-    return response.data.data.boards;
+    console.log(response);
+    return response.data.data;
   } catch (error) {
     throw error;
   }
