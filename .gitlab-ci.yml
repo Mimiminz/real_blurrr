@@ -49,7 +49,7 @@ frontend_build:
   tags:
     - blurrr-deploy
   only:
-    - dev
+    - fe-cicd
 
 # backend_build:
 #   stage: backend_build
@@ -94,7 +94,7 @@ deploy_frontend:
   tags:
     - blurrr-deploy
   only:
-    - dev
+    - fe-cicd
 
     # deploy_backend:
     #   stage: deploy
