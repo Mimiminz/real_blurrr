@@ -6,13 +6,11 @@ import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import jakarta.persistence.LockModeType;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -35,14 +33,13 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByMember(Member member, Pageable pageable);
 
-    @Query(
-            "SELECT b "
-                    + "FROM Board b "
-                    + "LEFT JOIN Member m ON m = :member AND b.member = m "
-                    + "LEFT JOIN Like l ON b = l.board "
-                    + "WHERE b.status = :status"
+    @Query("SELECT b "
+            + "FROM Board b "
+            + "INNER JOIN Like l ON b = l.board "
+            + "INNER JOIN Member m ON m = :member "
+            + "WHERE b.status = :status"
     )
-    List<Board> findByMember(
+    List<Board> findLikeBoardListByMember(
             @Param("member") Member member,
             @Param("status") ActivateStatus status,
             Pageable pageable
