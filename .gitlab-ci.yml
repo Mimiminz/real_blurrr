@@ -51,6 +51,8 @@ frontend_build:
   artifacts:
     paths:
       - frontend/.next/standalone
+      - frontend/.next/static
+      - frontend/public
     expire_in: 1 week
 
   tags:
@@ -101,6 +103,7 @@ deploy_frontend:
     - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
 
     - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
+    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
     - echo "complete file send"
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd /home/ubuntu/blurrr/frontend && ./deploy.sh"
 
