@@ -8,6 +8,7 @@ import CreateComment from "./CreateComment";
 import CommentListItem from "./CommentListItem";
 import NoComment from "./NoComment";
 import Reply from "./Reply";
+import { useAuthStore } from "@/store/authStore";
 
 export default function CommentList({
   comments,
@@ -17,20 +18,23 @@ export default function CommentList({
   onCommentAdded,
   commentCount,
 }: CommentListProps) {
+  const { isLoggedIn, user } = useAuthStore();
   return (
     <CommentContainer>
       <CommentNumber>
         <LiaCommentDots />
         {commentCount}
       </CommentNumber>
-      <CreateComment
-        boardId={boardId}
-        isReply={false}
-        commentId=""
-        leagueId={leagueId}
-        isLeague={isLeague}
-        onCommentAdded={onCommentAdded}
-      />
+      {isLoggedIn && (
+        <CreateComment
+          boardId={boardId}
+          isReply={false}
+          commentId=""
+          leagueId={leagueId}
+          isLeague={isLeague}
+          onCommentAdded={onCommentAdded}
+        />
+      )}
       {commentCount >= 0 &&
         comments.map((comment) => (
           <React.Fragment key={comment.id}>

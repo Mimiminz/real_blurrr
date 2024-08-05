@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { useRouter } from "next/navigation";
 
 import { CreateCommentProps } from "@/types/commentTypes";
+import { useAuthStore } from "@/store/authStore";
 
 export default function CreateComment({
   boardId,
@@ -18,6 +19,7 @@ export default function CreateComment({
   commentId,
   onCommentAdded,
 }: CreateCommentProps) {
+  const { user } = useAuthStore();
   const [comment, setComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
@@ -65,7 +67,7 @@ export default function CreateComment({
 
   return (
     <Container onSubmit={handleSubmit}>
-      <Avatar />
+      <Avatar src={user?.profileUrl} alt={`${user?.nickname}'s avatar`} />
       <InputContainer>
         <Input
           type="text"
@@ -93,11 +95,12 @@ const Container = styled.form`
   background-color: #fff;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background-color: #c4c4c4;
+  margin-top: 3px;
   margin-right: 8px;
 `;
 
