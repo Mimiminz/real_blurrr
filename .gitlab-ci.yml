@@ -40,6 +40,7 @@ frontend_build:
     - export NEXT_PUBLIC_CLOUD_FRONT_URL=$NEXT_PUBLIC_CLOUD_FRONT_URL
     - export NEXT_PUBLIC_DASHCAM_ID=$NEXT_PUBLIC_DASHCAM_ID
     - export NEXT_PUBLIC_BOAST_ID=$NEXT_PUBLIC_BOAST_ID
+    - npm run build
     - ls -al .next # 빌드된 결과물 확인
   artifacts:
     paths:
