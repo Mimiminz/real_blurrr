@@ -41,10 +41,6 @@ public class StringFormat {
     public static final String LEAGUE_TYPE_MODEL = "MODEL";
     public static final String LEAGUE_TYPE_BRAND = "BRAND";
 
-    public static final String AUTH_USER = "ROLE_AUTH_USER";
-    public static final String BASIC_USER = "ROLE_BASIC_USER";
-    public static final String ADMIN = "ROLE_ADMIN";
-
     // Utility 관련 URI
     public static final String[] UTILITY_URI = {
             "/v3/api-docs/**",
@@ -89,6 +85,7 @@ public class StringFormat {
 
     // 차량 인증 허용 URI (회원가입 O)
     public static final String[] AUTH_USER_URI = {
+            "/v1/leagues/members",
             "/v1/leagues/likes/**",
             "/v1/leagues/*/boards/*/comments",
             "/v1/leagues/*/boards/*/comments/*",
