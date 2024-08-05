@@ -47,7 +47,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, boolean isLiked) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getUrl)
                 .collect(Collectors.toList());
@@ -70,6 +70,7 @@ public class DashcamBoardMapper {
                 .videoUrl(videoUrls)
                 .content(dashcam.getContent())
                 .mentionedLeagues(mentionedLeagues)
+                .isLiked(isLiked)
                 .build();
     }
 

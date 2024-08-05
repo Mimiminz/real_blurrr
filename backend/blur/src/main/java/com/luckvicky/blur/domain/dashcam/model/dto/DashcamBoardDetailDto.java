@@ -48,4 +48,7 @@ public class DashcamBoardDetailDto {
 
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;
+
+    @Schema(description = "좋아요 여부")
+    private boolean isLiked;
 }
