@@ -4,7 +4,7 @@ import {
   fetchLeagueReplyCreate,
   fetchReplyCreate,
 } from "@/api/comment";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 
@@ -18,10 +18,17 @@ export default function CreateComment({
   isReply,
   commentId,
   onCommentAdded,
-}: CreateCommentProps) {
+  inputRef,
+}: CreateCommentProps & { inputRef?: React.RefObject<HTMLInputElement> }) {
   const { user } = useAuthStore();
   const [comment, setComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (inputRef && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -76,6 +83,7 @@ export default function CreateComment({
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          ref={inputRef}
         />
         {isFocused && <CharCount>{comment.length}/200</CharCount>}
       </InputContainer>

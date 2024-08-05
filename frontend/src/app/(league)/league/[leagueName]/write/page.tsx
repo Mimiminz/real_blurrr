@@ -39,8 +39,13 @@ export default function WritePage({
     if (!title.trim() || !content.trim()) return; // 빈 댓글은 제출하지 않음
 
     try {
-      await fetchBoardWrite(activeTab.id, title, content);
-      router.push(`/league/${leagueName}`);
+      const write = await fetchBoardWrite(
+        activeTab.id,
+        activeTab.type,
+        title,
+        content
+      );
+      router.push(`/league/${leagueName}/${write.id}`);
     } catch (error) {
       console.error("Error submitting comment:", error);
     }

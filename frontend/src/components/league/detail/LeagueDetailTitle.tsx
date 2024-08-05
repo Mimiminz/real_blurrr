@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
 import { BoardDetailProps } from "@/types/leagueTypes";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   title,
@@ -17,7 +18,7 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
       <Title>{title}</Title>
       <InfoRow>
         <Infoleft>
-          <Date>{createdAt.slice(0, 10)}</Date>
+          <Date>{formatPostDate(createdAt)}</Date>
           <Icons>
             <FaEye />
             <Views>{viewCount}</Views>

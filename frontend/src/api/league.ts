@@ -115,16 +115,20 @@ export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
 // 리그 게시글 작성
 export const fetchBoardWrite = async (
   leagueId: string,
+  leagueType: string,
   title: string,
   content: string
 ) => {
   try {
-    const response = await api.post(`/v1/leagues/${leagueId}/boards`, {
-      title: title,
-      content: content,
-    });
+    const response = await api.post(
+      `/v1/leagues/${leagueId}/boards`,
+      { title, content }, // 요청 본문
+      {
+        params: { leagueType }, // 쿼리 매개변수
+      }
+    );
     console.log(response.data);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;

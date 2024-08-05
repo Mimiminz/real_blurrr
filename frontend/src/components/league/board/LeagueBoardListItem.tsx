@@ -4,6 +4,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
 import { MdAccessTime } from "react-icons/md";
 import { LeagueBoardListItemProps } from "@/types/leagueTypes";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 function LeagueBoardListItem({
   title,
@@ -13,20 +14,6 @@ function LeagueBoardListItem({
   likeCount,
   commentCount,
 }: LeagueBoardListItemProps) {
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
   return (
     <ArticleDetail>
       <ArticleInfo>
