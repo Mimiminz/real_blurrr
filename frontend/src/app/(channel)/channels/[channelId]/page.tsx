@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ChannelBoardList from '@/components/channel/board/ChannelBoardList';
 import PostTitle from '@/components/channel/PostTitle';
@@ -24,20 +24,16 @@ const ChannelBoardPage: React.FC<PageProps> = ({ params }) => {
    const setChannelName = useChannelStore((state) => state.setChannelName);
    const setChannelId = useChannelStore((state) => state.setChannelId);
 
-   useEffect(() => {
-      const getChannelInfo = async () => {
-         try {
-            const info = await fetchChannelInfo(channelId);
-            setChannelInfo(info);
-            setChannelName(info.name);
-            setChannelId(channelId);
-         } catch (error) {
-            console.error('Error fetching channel info:', error);
-         }
-      };
-
-      getChannelInfo();
-   }, [channelId, setChannelName]);
+   const getChannelInfo = useCallback(async () => {
+      try {
+         const info = await fetchChannelInfo(channelId);
+         setChannelInfo(info);
+         setChannelName(info.name);
+         setChannelId(channelId);
+      } catch (error) {
+         console.error('Error fetching channel info:', error);
+      }
+   }, [channelId, setChannelName, setChannelId]);
 
    const handleSortChange = (newSort: string) => {
       // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환

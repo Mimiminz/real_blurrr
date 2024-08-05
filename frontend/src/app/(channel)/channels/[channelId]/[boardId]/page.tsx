@@ -114,19 +114,19 @@ export default function ChannelBoardDetailPage({
     }
   }, [boardId, channelId]);
 
-  const loadCommentDetail = async () => {
+  const loadCommentDetail = useCallback(async () => {
     try {
       const fetchcommentsList = await fetchCommentList(boardId);
       setCommentList(fetchcommentsList);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [boardId]);
 
   useEffect(() => {
     loadBoardDetail();
     loadCommentDetail();
-  }, [boardId, channelId]);
+  }, [loadBoardDetail, loadCommentDetail]);
 
   if (!boardDetail || !commentList) {
     return <div>{error ? error : "Loading..."}</div>;
