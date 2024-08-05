@@ -58,7 +58,7 @@ export interface LeagueMentionListItemProps {
   createdAt: string;
   likeCount: number;
   commentCount: number;
-  channel: MentionedChannel;
+  channelName: string;
 }
 
 export interface boardListProp {
