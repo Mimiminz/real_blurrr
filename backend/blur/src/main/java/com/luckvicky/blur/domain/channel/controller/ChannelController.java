@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channel.controller;
 
+import com.luckvicky.blur.domain.channel.exception.KeywordLimitExceededException;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
@@ -167,9 +168,15 @@ public class ChannelController {
     @GetMapping("/search")
     public ResponseEntity<Result<ChannelListResponse>> searchChannelsByKeyword(
             @Parameter(description = "검색할 키워드", required = true)
-            @RequestParam String keyword,
+            @RequestParam List<String> keywords,
             @NullableAuthUser ContextMember nullableMember) {
-        List<ChannelDto> channels = channelService.searchChannelsByKeyword(keyword, nullableMember);
+
+        if(keywords.size()>5) {
+            throw new KeywordLimitExceededException();
+        }
+
+
+        List<ChannelDto> channels = channelService.searchChannelsByKeywords(keywords, nullableMember);
 
         if (Objects.isNull(channels) || channels.isEmpty()) {
             return ResponseUtil.noContent(
