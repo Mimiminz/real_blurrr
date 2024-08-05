@@ -89,7 +89,13 @@ deploy_frontend:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && npm install && nohup npm start > frontend.log 2>&1 &"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "
+      curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&
+      sudo apt-get install -y nodejs &&
+      export PATH=\$PATH:/usr/bin/nodejs &&
+      cd /home/ubuntu/app/frontend &&
+      npm install &&
+      nohup npm start > frontend.log 2>&1 &"
   needs: ["frontend_build"]
   tags:
     - blurrr-deploy
