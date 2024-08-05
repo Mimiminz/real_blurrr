@@ -8,6 +8,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardDet
 import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.NullableAuthUser;
@@ -74,27 +75,27 @@ public class ChannelBoardController {
             ),
     })
     @GetMapping
-    public ResponseEntity<Result<ChannelBoardListResponse>> getChannelBoards(
+    public ResponseEntity<Result<PaginatedResponse<ChannelBoardListDto>>> getChannelBoards(
             @PathVariable(name = "channelId")UUID channelId,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ){
-        List<ChannelBoardListDto> channelBoardListDtos = channelBoardService.getChannelBoards(
+        PaginatedResponse<ChannelBoardListDto> response = channelBoardService.getChannelBoards(
                 channelId,
                 keyword,
                 pageNumber,
                 criteria
         );
 
-        if (Objects.isNull(channelBoardListDtos) || channelBoardListDtos.isEmpty()) {
+        if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.of(ChannelBoardListResponse.of(channelBoardListDtos))
+                Result.of(response)
         );
     }
 

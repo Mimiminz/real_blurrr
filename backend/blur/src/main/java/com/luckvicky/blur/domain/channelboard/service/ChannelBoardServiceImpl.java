@@ -27,6 +27,7 @@ import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -62,10 +63,10 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria) {
+    public PaginatedResponse<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria) {
         Channel channel = channelRepository.getOrThrow(channelId);
-        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
 
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
         Pageable pageable = PageRequest.of(
                 pageNumber, CHANNEL_BOARD_PAGE_SIZE,
                 Sort.by(Sort.Direction.DESC, sortingCriteria.getCriteria())
@@ -96,7 +97,15 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
                 .map(mentionRepository::findAllByBoard)
                 .collect(Collectors.toList());
 
-        return channelBoardMapper.toChannelBoardListDtoList(channelBoards, mentionList);
+        List<ChannelBoardListDto> channelBoardListDtos = channelBoardMapper.toChannelBoardListDtoList(channelBoards, mentionList);
+
+        return PaginatedResponse.of(
+                channelBoardListDtos,
+                channelBoardPage.getNumber(),
+                channelBoardPage.getSize(),
+                channelBoardPage.getTotalElements(),
+                channelBoardPage.getTotalPages()
+        );
 
     }
 
