@@ -67,13 +67,13 @@ deploy_frontend:
 
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+    - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
 
-    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
+    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
     - echo "complete file send"
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && ./deploy.sh"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd /home/ubuntu/blurrr/frontend && ./deploy.sh"
 
   needs: ["frontend_build"]
 
