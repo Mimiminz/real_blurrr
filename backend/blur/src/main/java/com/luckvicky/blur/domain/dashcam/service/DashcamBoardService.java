@@ -19,6 +19,5 @@ public interface DashcamBoardService {
 
     DashcamBoardCreateResponse createDashcamBoard(DashcamBoardCreateRequest request, UUID memberId);
 
-    List<CommentDto> getComments(UUID boardId);
 
 }

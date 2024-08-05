@@ -142,17 +142,5 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getComments(UUID boardId) {
-
-        Board board = boardRepository.getOrThrow(boardId);
-        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
-
-        return  comments.stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-    }
 
 }

@@ -83,7 +83,7 @@ public class DashcamBoardController {
 
 
     @Operation(summary = "블랙박스 게시글 상세 조회 API",
-            description = "특정 게시글에 대한 본문, 투표, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용")
+            description = "특정 게시글에 대한 본문, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용. \n 투표 조회는 '/v1/channels/board/{boardId}/votes' 활용")
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
             @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId) {
