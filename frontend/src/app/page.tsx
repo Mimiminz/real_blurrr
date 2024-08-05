@@ -9,7 +9,7 @@ import CarPictureList from "@/components/main/CarPictureList";
 
 import LeagueList from "@/components/main/LeagueList";
 import TopCarCard from "@/components/main/aside/TopCarCard";
-``;
+
 import { LuTrophy } from "react-icons/lu";
 import { IoArrowForward } from "react-icons/io5";
 import { FaCarTunnel } from "react-icons/fa6";
@@ -217,7 +217,9 @@ export default function Home() {
   );
 }
 
-const PageContainer = styled.div``;
+const PageContainer = styled.div`
+  padding-top: 20px;
+`;
 
 const GridContainer = styled.div`
   display: grid;
