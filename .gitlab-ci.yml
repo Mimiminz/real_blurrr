@@ -1,8 +1,8 @@
 image: ubuntu:22.04
 
 stages:
-  # - frontend_build
-  - backend_build
+  - frontend_build
+  # - backend_build
   - deploy
 
 before_script:
