@@ -11,7 +11,8 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
   const router = useRouter();
   const { userLeagueList } = useLeagueStore();
 
-  const handleCardClick = (id: string) => {
+  console.log(boardList);
+  const handleCardClick = (id: string, channelId?: string) => {
     const hasAccess = userLeagueList.some(
       (league) => league.name === leagueName
     );

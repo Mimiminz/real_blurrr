@@ -126,13 +126,14 @@ const SubmitButton = styled.button`
   width: 10%;
   max-width: 800px;
   padding: 12px;
-  background: none;
-  border: 1px solid #e0e0e0;
+  background-color: #ffa600; /* 녹색 배경으로 변경 */
+  color: white; /* 흰색 글씨 */
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.main};
+    background-color: #ff900d; /* hover 상태 */
   }
 `;
