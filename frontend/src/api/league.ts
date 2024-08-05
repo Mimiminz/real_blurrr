@@ -5,6 +5,7 @@ import {
   LeagueBoardItem,
   BoardDetail,
   UserLeague,
+  MentionChannelList,
 } from "@/types/leagueTypes";
 
 // 사용자 참여 리그 가져오는 함수
@@ -65,7 +66,10 @@ export const fetchLeagueBoardList = async (
 };
 
 // 채널에서 멘션된 글을 가져오는 함수
-export const fetchMentionBoardList = async(leagueId: string, criteria: string): Promise<LeagueBoardItem[]> => {
+export const fetchMentionBoardList = async (
+  leagueId: string,
+  criteria: string
+): Promise<MentionChannelList[]> => {
   try {
     const response = await api.get(`/v1/leagues/${leagueId}/mentions`, {
       params: { criteria },
@@ -73,7 +77,7 @@ export const fetchMentionBoardList = async(leagueId: string, criteria: string): 
     if (response.status === 204) {
       return [];
     }
-    console.log(response.data.data)
+    console.log(response.data.data);
     return response.data.data.channelBoards;
   } catch (error) {
     console.error("Failed to fetch league board list", error);

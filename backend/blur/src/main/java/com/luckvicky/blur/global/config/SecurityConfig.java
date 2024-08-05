@@ -8,12 +8,16 @@ import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI_OF_LEAGUE;
 import static com.luckvicky.blur.global.constant.StringFormat.SIGN_UP_URI;
 import static com.luckvicky.blur.global.constant.StringFormat.UTILITY_URI;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
 import com.luckvicky.blur.global.jwt.filter.JwtFilter;
 import com.luckvicky.blur.global.jwt.handler.JwtAccessDeniedHandler;
 import com.luckvicky.blur.global.jwt.handler.JwtAuthenticationEntryPoint;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpStatus;
+import org.apache.http.protocol.HTTP;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -66,7 +70,7 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                         // todo: 추후에 삭제
-                        .requestMatchers(HttpMethod.POST, "/v1/leagues/members").permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/v1/leagues/members")).permitAll()
 
                         // Utility URI
                         .requestMatchers(UTILITY_URI).permitAll()
@@ -78,18 +82,22 @@ public class SecurityConfig {
 
                         // GEUST URI
                         .requestMatchers(HttpMethod.GET, GUEST_URI).permitAll()
-                        .requestMatchers(HttpMethod.POST, GUEST_URI).hasAnyAuthority(ROLE_BASIC_USER.getValue(), ROLE_AUTH_USER.getValue())
+                        .requestMatchers(HttpMethod.POST, GUEST_URI).hasAnyRole(ROLE_BASIC_USER.getRole(), ROLE_AUTH_USER.getRole())
 
-                        // 리그 URI
+                        // 리그 URI (만약, leagueType=MODEL이 포함될 경우 권한 확인)
+                        .requestMatchers(regexMatcher(".*/leagues.*[?&]leagueType=MODEL(&.*)?$")).hasRole(ROLE_AUTH_USER.getRole())
                         .requestMatchers(HttpMethod.GET, GUEST_URI_OF_LEAGUE).permitAll()
-                        .requestMatchers(HttpMethod.POST, GUEST_URI_OF_LEAGUE).hasAuthority(ROLE_AUTH_USER.getValue())
+                        .requestMatchers(HttpMethod.POST, GUEST_URI_OF_LEAGUE).hasRole(ROLE_AUTH_USER.getRole())
+
+                        .requestMatchers(HttpMethod.POST, GUEST_URI_OF_LEAGUE).hasRole(ROLE_AUTH_USER.getRole())
 
                         // 자동차 미인증 유저 URI
-                        .requestMatchers(BASIC_USER_URI).hasAnyAuthority(ROLE_BASIC_USER.getValue(), ROLE_AUTH_USER.getValue())
+                        .requestMatchers(BASIC_USER_URI).hasAnyRole(ROLE_BASIC_USER.getRole(), ROLE_AUTH_USER.getRole())
 
                         // 자동차 인증 유저 URI
-                        .requestMatchers(HttpMethod.GET, "/v1/leagues/members").hasAuthority(ROLE_AUTH_USER.getValue())
-                        .requestMatchers(AUTH_USER_URI).hasAuthority(ROLE_AUTH_USER.getValue())
+                        .requestMatchers(HttpMethod.GET, "/v1/leagues/members").hasRole(ROLE_AUTH_USER.getRole())
+                        .requestMatchers(AUTH_USER_URI).hasRole(ROLE_AUTH_USER.getRole())
+
 
                         .anyRequest().authenticated()
                 )
