@@ -20,7 +20,10 @@ import com.luckvicky.blur.domain.league.model.entity.LeagueType;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDetailDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.MentionLeagueListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
 import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueException;
@@ -33,8 +36,10 @@ import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SearchCondition;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -63,37 +68,37 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private final LeagueMemberRepository leagueMemberRepository;
 
     @Override
-    public UUID createLeagueBoard(UUID memberId, UUID leagueId, String leagueType,
-            LeagueBoardCreateRequest request) {
+    public LeagueBoardCreateResponse createLeagueBoard(UUID memberId, UUID leagueId, String leagueType,
+                                                       LeagueBoardCreateRequest request) {
 
         Member member = memberRepository.getOrThrow(memberId);
         League league = leagueRepository.getOrThrow(leagueId);
 
         isEqualLeagueType(LeagueType.convertToEnum(leagueType), league.getType());
 
-        if (!leagueMemberRepository.existsByLeagueAndMember(league, member)) {
-            throw new NotAllocatedLeagueException();
-        }
+        isAllocatedLeague(league, member);
 
         Board createdLeagueBoard = boardRepository.save(
                 request.toEntity(league, member)
         );
 
-        return isCreated(createdLeagueBoard);
+        return LeagueBoardCreateResponse.of(isCreated(createdLeagueBoard));
 
     }
 
     @Override
-    public List<BoardDto> getLeagueBoards(UUID leagueId, String leagueType, int pageNumber,
-            String criteria) {
+    public LeagueBoardListResponse getLeagueBoards(
+            ContextMember contextMember, UUID leagueId, String leagueType, int pageNumber, String criteria
+    ) {
 
         League league = leagueRepository.getOrThrow(leagueId);
 
-        isEqualLeagueType(LeagueType.convertToEnum(leagueType), league.getType());
-
-        if (league.getType().equals(LeagueType.MODEL) && !isAllocatedOfModelTypeLeague(league)) {
-            throw new NotAllocatedLeagueException();
+        if (leagueType.equals(LeagueType.MODEL.getValue()) && Objects.nonNull(contextMember)) {
+            Member member = memberRepository.getOrThrow(contextMember.getId());
+            isAllocatedLeague(league, member);
         }
+
+        isEqualLeagueType(LeagueType.convertToEnum(leagueType), league.getType());
 
         Pageable pageable = PageRequest.of(
                 pageNumber, LEAGUE_BOARD_PAGE_SIZE,
@@ -103,9 +108,11 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         List<LeagueBoard> leagueBoards = leagueBoardRepository
                 .findAllByLeagueAndStatus(league, pageable, ActivateStatus.ACTIVE).getContent();
 
-        return leagueBoards.stream()
-                .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
-                .collect(Collectors.toList());
+        return LeagueBoardListResponse.of(
+                leagueBoards.stream()
+                        .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
+                        .collect(Collectors.toList())
+        );
 
     }
 
@@ -139,7 +146,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChannelBoardDto> getMentionLeagueBoards(
+    public MentionLeagueListResponse getMentionLeagueBoards(
             UUID leagueId, UUID memberId, int pageNumber, String criteria
     ) {
 
@@ -158,14 +165,16 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         List<ChannelBoard> mentionedChannelBoards = channelBoardRepository
                 .findAllByMentionedLeague(mentionedLeague, ActivateStatus.ACTIVE, pageable);
 
-        return mentionedChannelBoards.stream()
-                .map(board -> mapper.map(board, ChannelBoardDto.class))
-                .collect(Collectors.toList());
+        return MentionLeagueListResponse.of(
+                mentionedChannelBoards.stream()
+                        .map(board -> mapper.map(board, ChannelBoardDto.class))
+                        .collect(Collectors.toList())
+        );
 
     }
 
     @Override
-    public List<BoardDto> search(UUID leagueId, String leagueType, String keyword, String condition,
+    public LeagueBoardListResponse search(UUID leagueId, String leagueType, String keyword, String condition,
             int pageNumber,
             String criteria) {
 
@@ -199,9 +208,11 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         }
 
-        return leagueBoards.stream()
-                .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
-                .collect(Collectors.toList());
+        return LeagueBoardListResponse.of(
+                leagueBoards.stream()
+                        .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
+                        .collect(Collectors.toList())
+        );
 
     }
 
@@ -209,27 +220,6 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         if (!reqeustType.equals(findLeagueType)) {
             throw new InvalidLeagueTypeException();
         }
-    }
-
-    private Boolean isAllocatedOfModelTypeLeague(League league) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null) {
-            throw new NotExistMemberException();
-        }
-
-        Object principal = authentication.getPrincipal();
-
-        if (!(principal instanceof CustomUserDetails userDetails)) {
-            throw new NotExistMemberException();
-        }
-
-        return leagueMemberRepository.existsByLeagueAndMember(
-                league,
-                memberRepository.getOrThrow(userDetails.getMember().getId())
-        );
-
     }
 
     private void isAllocatedLeague(League league, Member member) {

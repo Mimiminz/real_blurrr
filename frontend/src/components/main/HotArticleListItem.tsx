@@ -14,7 +14,7 @@ function HotArticleListItem({
   const router = useRouter();
 
   const handleClick = () => {
-    if (channel.name === "블랙박스") {
+    if (channel.id === process.env.NEXT_PUBLIC_DASHCAM_ID) {
       router.push(`/channels/dashcam/${id}`);
     } else {
       router.push(`/channels/${channel.id}/${id}`);

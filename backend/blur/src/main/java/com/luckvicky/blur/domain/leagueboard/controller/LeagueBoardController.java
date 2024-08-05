@@ -6,8 +6,6 @@ import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_EXIST_BOARD_ME
 import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_EXIST_MEMBER_MESSAGE;
 import static com.luckvicky.blur.global.constant.ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
-import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_BRAND;
-import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_MODEL;
 
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
@@ -25,6 +23,7 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.CertificationMember;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,71 +58,41 @@ public class LeagueBoardController {
     private final LeagueCommentService leagueCommentService;
 
     @Operation(summary = "리그 게시글 생성 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201", description = "게시글 생성 성공",
-                    content = @Content(schema = @Schema(implementation = LeagueBoardCreateResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = ErrorMessage.FAIL_TO_CREATE_BOARD_MESSAGE)
-    })
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(
                     name = "leagueType", description = "리그 유형",
                     examples = {
-                            @ExampleObject(name = "브랜드", value = LEAGUE_TYPE_BRAND),
-                            @ExampleObject(name = "모델", value = LEAGUE_TYPE_MODEL)
+                            @ExampleObject(name = "브랜드", value = "BRAND"),
+                            @ExampleObject(name = "모델", value = "MODEL")
                     }
             )
     })
     @CertificationMember
     @PostMapping("/{leagueId}/boards")
-    public ResponseEntity createLeagueBoard(
+    public ResponseEntity<Result<LeagueBoardCreateResponse>> createLeagueBoard(
             @AuthUser ContextMember member,
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
             @RequestBody LeagueBoardCreateRequest request
     ) {
+
         return ResponseUtil.created(
-                Result.builder()
-                        .data(
-                                LeagueBoardCreateResponse.of(
-                                        leagueBoardService.createLeagueBoard(
-                                                member.getId(),
-                                                leagueId,
-                                                leagueType,
-                                                request
-                                        )
-                                )
-                        )
-                        .build()
+                Result.of(
+                        leagueBoardService.createLeagueBoard(member.getId(), leagueId, leagueType, request)
+                )
         );
 
     }
 
-    @Operation(
-            summary = "리그 게시글 목록 조회 API",
-            description = "리그에 대한 게시글 목록을 가져온다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "게시글 목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = LeagueBoardListResponse.class))
-            ),
-            @ApiResponse(responseCode = "201", description = "게시글 목록 조회 성공 (단, 게시글 없음)"),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = ErrorMessage.NOT_EXIST_LEAGUE_MESSAGE)
-    })
+    @Operation(summary = "리그 게시글 목록 조회 API", description = "리그에 대한 게시글 목록을 가져온다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(
                     name = "leagueType", description = "리그 유형",
                     examples = {
-                            @ExampleObject(name = "브랜드", value = LEAGUE_TYPE_BRAND),
-                            @ExampleObject(name = "모델", value = LEAGUE_TYPE_MODEL)
+                            @ExampleObject(name = "브랜드", value = "BRAND"),
+                            @ExampleObject(name = "모델", value = "MODEL")
                     }
             ),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
@@ -138,52 +107,31 @@ public class LeagueBoardController {
             ),
     })
     @GetMapping("/{leagueId}/boards")
-    public ResponseEntity getLeagueBoards(
+    public ResponseEntity<Result<LeagueBoardListResponse>> getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
+            @NullableAuthUser ContextMember contextMember,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        List<BoardDto> boardDtos = leagueBoardService.getLeagueBoards(
+        LeagueBoardListResponse response = leagueBoardService.getLeagueBoards(
+                contextMember,
                 leagueId,
                 leagueType,
                 pageNumber,
                 criteria
         );
 
-        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder().build()
-            );
+        if (Objects.isNull(response.boards()) || response.boards().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(LeagueBoardListResponse.of(boardDtos))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 
-    @Operation(
-            summary = "멘션 리그 게시글 목록 조회 API",
-            description = "리그가 멘션된 채널 게시글 목록을 가져온다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = MentionLeagueListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "게시글 목록 조회 성공 (단, 게시글 없음)"
-            ),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = "게시글 목록 조회 실패")
-    })
+    @Operation(summary = "멘션 리그 게시글 목록 조회 API", description = "리그가 멘션된 채널 게시글 목록을 가져온다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
@@ -199,157 +147,84 @@ public class LeagueBoardController {
     })
     @CertificationMember
     @GetMapping("/{leagueId}/mentions")
-    public ResponseEntity getModelLeagueBoards(
+    public ResponseEntity<Result<MentionLeagueListResponse>> getModelLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        List<ChannelBoardDto> channelBoards = leagueBoardService.getMentionLeagueBoards(
+        MentionLeagueListResponse response = leagueBoardService.getMentionLeagueBoards(
                 leagueId,
                 member.getId(),
                 pageNumber,
                 criteria
         );
 
-        if (Objects.isNull(channelBoards) || channelBoards.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder().build()
-            );
+        if (Objects.isNull(response.channelBoards()) || response.channelBoards().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(MentionLeagueListResponse.of(channelBoards))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 
-    @Operation(
-            summary = "리그 게시글 상세 조회 API",
-            description = "리그 게시물에 대한 정보를 가져온다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "게시글 조회 성공",
-                    content = @Content(schema = @Schema(implementation = LeagueBoardDetailResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = ErrorMessage.NOT_EXIST_BOARD_MESSAGE)
-    })
+    @Operation(summary = "리그 게시글 상세 조회 API", description = "리그 게시물에 대한 정보를 가져온다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity getLeagueBoardDetail(
+    public ResponseEntity<Result<LeagueBoardDetailResponse>> getLeagueBoardDetail(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(leagueBoardService.getLeagueBoardDetail(member.getId(), boardId))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(leagueBoardService.getLeagueBoardDetail(member.getId(), boardId)));
 
     }
 
-    @Operation(
-            summary = "게시글 좋아요 상태 조회",
-            description = "사용자, 게시글 고유 식별값을 받아 좋아요 상태를 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "좋아요 여부 조회 완료",
-                    content = @Content(schema = @Schema(implementation = LeagueBoardLikeResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = NOT_EXIST_MEMBER_MESSAGE + "or" + NOT_EXIST_BOARD_MESSAGE),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_LIKE_MESSAGE)
-    })
+    @Operation(summary = "게시글 좋아요 상태 조회", description = "사용자, 게시글 고유 식별값을 받아 좋아요 상태를 조회한다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/boards/{boardId}/likes")
-    public ResponseEntity getLikeStatusByBoard(
+    public ResponseEntity<Result<LeagueBoardLikeResponse>> getLikeStatusByBoard(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
-        return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueBoardService.getBoardLike(member.getId(), boardId))
-                        .build()
-        );
+        
+        return ResponseUtil.created(Result.of(leagueBoardService.getBoardLike(member.getId(), boardId)));
+        
     }
 
-    @Operation(
-            summary = "리그 게시글 댓글 목록 조회 API",
-            description = "리그 게시물의 댓글 목록을 가져온다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "댓글 목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = CommentListResponse.class))
-            ),
-            @ApiResponse(responseCode = "204", description = "댓글 목록 조회 성공 (단, 데이터 없음)"),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글")
-    })
+    @Operation(summary = "리그 게시글 댓글 목록 조회 API", description = "리그 게시물의 댓글 목록을 가져온다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember
     @GetMapping("/{leagueId}/boards/{boardId}/comments")
-    public ResponseEntity getLeagueBoardComments(
+    public ResponseEntity<Result<CommentListResponse>> getLeagueBoardComments(
             @AuthUser ContextMember member,
             @PathVariable(name = "leagueId") UUID leagueId,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        CommentListResponse commentsByLeagueBoard =
+        CommentListResponse response =
                 leagueCommentService.findCommentsByLeagueBoard(member.getId(), leagueId, boardId);
 
-        if (commentsByLeagueBoard.comments().isEmpty() || commentsByLeagueBoard.commentCount() == ZERO) {
+        if (response.comments().isEmpty() || response.commentCount() == ZERO) {
             return ResponseUtil.noContent(
-                    Result.builder().build()
+                    Result.empty()
             );
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(commentsByLeagueBoard)
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 
-    @Operation(
-            summary = "리그 게시글 검색 API",
-            description = "리그에 대한 게시물에 대하여 검색한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 검색 성공",
-                    content = @Content(schema = @Schema(implementation = LeagueBoardListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "게시글 검색 (단, 데이터 없음)"
-            ),
-            @ApiResponse(responseCode = "400", description = ErrorMessage.INVALID_SEARCH_CONDITION_MESSAGE),
-            @ApiResponse(responseCode = "401", description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = ErrorMessage.NOT_EXIST_LEAGUE_MESSAGE)
-    })
+    @Operation(summary = "리그 게시글 검색 API", description = "리그에 대한 게시물에 대하여 검색한다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(
-                    name = "leagueType",
-                    description = "리그 유형",
+                    name = "leagueType", description = "리그 유형",
                     examples = {
-                            @ExampleObject(name = "브랜드", value = LEAGUE_TYPE_BRAND),
-                            @ExampleObject(name = "모델", value = LEAGUE_TYPE_MODEL)
+                            @ExampleObject(name = "브랜드", value = "BRAND"),
+                            @ExampleObject(name = "모델", value = "MODEL")
                     }
             ),
             @Parameter(
@@ -373,7 +248,7 @@ public class LeagueBoardController {
             ),
     })
     @GetMapping("/{leagueId}/boards/search")
-    public ResponseEntity search(
+    public ResponseEntity<Result<LeagueBoardListResponse>> search(
             @PathVariable("leagueId") UUID leagueId,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
             @RequestParam(value = "keyword") String keyword,
@@ -382,21 +257,15 @@ public class LeagueBoardController {
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        List<BoardDto> boardDtos = leagueBoardService.search(
+        LeagueBoardListResponse response = leagueBoardService.search(
                 leagueId, leagueType, keyword, condition, pageNumber, criteria
         );
 
-        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder().build()
-            );
+        if (Objects.isNull(response.boards()) || response.boards().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(LeagueBoardListResponse.of(boardDtos))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 

@@ -34,80 +34,32 @@ public class LeagueMemberController {
 
     private final LeagueMemberService leagueMemberService;
 
-    @Operation(
-            summary = "사용자 리그 할당 API",
-            description = "사용자에게 리그를 할당한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "성공"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = ErrorMessage.NOT_EXIST_MEMBER_MESSAGE + "or" + ErrorMessage.NOT_EXIST_LEAGUE_MESSAGE
-            )
-    })
+    @Operation(summary = "사용자 리그 할당 API", description = "사용자에게 리그를 할당한다.")
     @PostMapping("/members")
-    public ResponseEntity createLeagueMember(
-            @RequestBody LeagueMemberCreateRequest request,
-            @AuthUser ContextMember member
+    public ResponseEntity<Result<Boolean>> createLeagueMember(
+            @AuthUser ContextMember member, @RequestBody LeagueMemberCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueMemberService.createLeagueMember(request, member.getId()))
-                        .build()
+                Result.of(leagueMemberService.createLeagueMember(request, member.getId()))
         );
 
     }
 
-    @Operation(
-            summary = "사용자 참여 리그 조회 API",
-            description = "사용자가 참여한 리그 목록을 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(schema = @Schema(implementation = LeagueMemberListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "성공 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "토큰에 대한 문제가 있음"
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = ErrorMessage.NOT_EXIST_MEMBER_MESSAGE
-            )
-    })
+    @Operation(summary = "사용자 참여 리그 조회 API", description = "사용자가 참여한 리그 목록을 조회한다.")
     @CertificationMember
     @GetMapping("/members")
-    public ResponseEntity getLeague(
+    public ResponseEntity<Result<LeagueMemberListResponse>> getLeague(
             @AuthUser ContextMember member
     ) {
 
-        List<LeagueMemberDto> leagues = leagueMemberService.findLeagueMemberByMember(member.getId());
+        LeagueMemberListResponse response = leagueMemberService.findLeagueMemberByMember(member.getId());
 
-        if (Objects.isNull(leagues) || leagues.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder().build()
-            );
+        if (Objects.isNull(response.leagueMembers()) || response.leagueMembers().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(LeagueMemberListResponse.of(leagues))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 

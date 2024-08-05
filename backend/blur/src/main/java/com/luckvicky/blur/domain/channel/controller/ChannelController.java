@@ -1,9 +1,11 @@
 package com.luckvicky.blur.domain.channel.controller;
 
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelResponse;
+import com.luckvicky.blur.domain.channel.model.dto.response.TagListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -25,6 +27,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +57,29 @@ public class ChannelController {
                         .build()
         );
     }
+
+
+
+    @Operation(summary = "채널 생성 시 태그 검색 API")
+    @GetMapping("/check/tags/{keyword}")
+    public ResponseEntity<Result<TagListResponse>> checkTags(
+            @Schema(description = "태그")
+            @PathVariable(name = "keyword")
+            String keyword) {
+
+        List<TagDto> tags = channelService.searchTagsByKeyword(keyword);
+
+
+        if (Objects.isNull(tags) || tags.isEmpty()) {
+            return ResponseUtil.noContent(
+                    Result.empty()
+            );
+        }
+
+        return ResponseUtil.ok(
+                Result.of(TagListResponse.of(tags)));
+    }
+
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping

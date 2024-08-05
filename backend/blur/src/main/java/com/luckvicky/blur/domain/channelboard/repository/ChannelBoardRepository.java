@@ -53,7 +53,7 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
 
     @Query("SELECT cb "
             + "FROM ChannelBoard cb "
-            + "LEFT JOIN Mention m ON m.board = cb AND m.league = :league "
+            + "INNER JOIN Mention m ON cb = m.board AND m.league = :league "
             + "LEFT JOIN FETCH cb.channel "
             + "WHERE cb.status = :status ")
     List<ChannelBoard> findAllByMentionedLeague(

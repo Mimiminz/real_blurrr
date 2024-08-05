@@ -4,6 +4,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
 import { MdAccessTime } from "react-icons/md";
 import { LeagueBoardListItemProps } from "@/types/leagueTypes";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 function LeagueBoardListItem({
   title,
@@ -13,27 +14,13 @@ function LeagueBoardListItem({
   likeCount,
   commentCount,
 }: LeagueBoardListItemProps) {
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
   return (
     <ArticleDetail>
       <ArticleInfo>
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>{writerCar}</UserTags>
+          <UserTags>GV70</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -66,6 +53,11 @@ const ArticleDetail = styled.div`
   align-items: center;
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ebebeb3d;
+  }
 `;
 
 const ArticleInfo = styled.div`
@@ -75,20 +67,18 @@ const ArticleInfo = styled.div`
 
 const UserContainer = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 6px;
 `;
 
 const UserName = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
 `;
 
 const UserTags = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
   color: #787878;
 `;

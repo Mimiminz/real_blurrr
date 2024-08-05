@@ -46,9 +46,9 @@ public class DashcamBoardDetailDto {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Schema(description = "게시물 투표 목록")
-    private List<OptionDto> options;
-
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;
+
+    @Schema(description = "좋아요 여부")
+    private boolean isLiked;
 }

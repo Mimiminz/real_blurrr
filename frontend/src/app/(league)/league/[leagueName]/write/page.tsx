@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import QuillEditor from "@/components/channel/board/QuillEditor";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
-import { fetchBoardWrite } from "@/api/league";
+import { fetchBoardWrite, fetchUserLeagueList } from "@/api/league";
 import { useLeagueStore } from "@/store/leagueStore";
+import { useAuthStore } from "@/store/authStore";
+
+import { BoardDetail, LeagueList, UserLeague } from "@/types/leagueTypes";
 
 export default function WritePage({
   params,
@@ -19,15 +22,40 @@ export default function WritePage({
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { userLeagueList, activeTab } = useLeagueStore();
+  const { userLeagueList, activeTab, setActiveTab } = useLeagueStore();
+  const { isLoggedIn, user } = useAuthStore();
 
   useEffect(() => {
+    const findUserAuthority = async () => {
+      if (isLoggedIn && user?.isAuth) {
+        const userLeagues: UserLeague[] = await fetchUserLeagueList();
+        const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+          id: userLeague.league.id,
+          name: userLeague.league.name,
+          type: userLeague.league.type,
+          peopleCount: userLeague.league.peopleCount,
+        }));
+        const findActiveTab = userTabs.find((t) => t.name === leagueName);
+
+        if (findActiveTab) {
+          setActiveTab(findActiveTab);
+        } else {
+          alert("허용되지 않은 리그입니다.");
+          router.back();
+        }
+      }
+    };
     const hasAccess = userLeagueList.some(
       (league) => league.name === leagueName
     );
-    if (!hasAccess) {
-      alert("허용되지 않은 리그입니다.");
-      router.back();
+
+    if (!activeTab.id) {
+      findUserAuthority();
+    } else {
+      if (!hasAccess) {
+        alert("허용되지 않은 리그입니다.");
+        router.back();
+      }
     }
   }, [leagueName]);
 
@@ -39,8 +67,13 @@ export default function WritePage({
     if (!title.trim() || !content.trim()) return; // 빈 댓글은 제출하지 않음
 
     try {
-      await fetchBoardWrite(activeTab.id, title, content);
-      router.push(`/league/${leagueName}`);
+      const write = await fetchBoardWrite(
+        activeTab.id,
+        activeTab.type,
+        title,
+        content
+      );
+      router.push(`/league/${leagueName}/${write.id}`);
     } catch (error) {
       console.error("Error submitting comment:", error);
     }

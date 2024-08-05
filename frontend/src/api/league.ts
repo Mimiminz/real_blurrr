@@ -48,12 +48,13 @@ export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
 export const fetchLeagueBoardList = async (
   leagueId: string,
   criteria: string,
-  leagueType: string
+  leagueType: string,
+  pageNumber: number
 ): Promise<LeagueBoardItem[]> => {
   try {
     console.log(leagueType);
     const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
-      params: { leagueType, criteria },
+      params: { leagueType, criteria, pageNumber },
     });
     if (response.status === 204) {
       return [];
@@ -68,11 +69,12 @@ export const fetchLeagueBoardList = async (
 // 채널에서 멘션된 글을 가져오는 함수
 export const fetchMentionBoardList = async (
   leagueId: string,
-  criteria: string
+  criteria: string,
+  pageNumber: number
 ): Promise<MentionChannelList[]> => {
   try {
     const response = await api.get(`/v1/leagues/${leagueId}/mentions`, {
-      params: { criteria },
+      params: { criteria, pageNumber },
     });
     if (response.status === 204) {
       return [];
@@ -115,16 +117,20 @@ export const fetchBoardSearch = async (leagueId: string, keyword: string) => {
 // 리그 게시글 작성
 export const fetchBoardWrite = async (
   leagueId: string,
+  leagueType: string,
   title: string,
   content: string
 ) => {
   try {
-    const response = await api.post(`/v1/leagues/${leagueId}/boards`, {
-      title: title,
-      content: content,
-    });
+    const response = await api.post(
+      `/v1/leagues/${leagueId}/boards`,
+      { title, content }, // 요청 본문
+      {
+        params: { leagueType }, // 쿼리 매개변수
+      }
+    );
     console.log(response.data);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;

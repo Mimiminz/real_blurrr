@@ -18,6 +18,7 @@ import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
+import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.vote.model.dto.request.OptionCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
@@ -29,6 +30,8 @@ import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.domain.vote.model.entity.Option;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -58,6 +61,8 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     private final LeagueRepository leagueRepository;
     private final MentionRepository mentionRepository;
     private final ChannelRepository channelRepository;
+    private final LikeRepository likeRepository;
+
 
     @Override
     @Transactional
@@ -132,24 +137,25 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     }
 
     @Override
-    public DashcamBoardDetailDto getDashcamBoardById(UUID id) {
+    @Transactional
+    public DashcamBoardDetailDto getDashcamBoardById(UUID id, ContextMember nullableMember) {
         DashCam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
 
-        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam);
+        dashcam.increaseViewCount();
+
+        boolean isLiked = false;
+        if(Objects.nonNull(nullableMember)){
+            isLiked = isLike(nullableMember.getId(),dashcam);
+        }
+
+        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam, isLiked);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getComments(UUID boardId) {
-
-        Board board = boardRepository.getOrThrow(boardId);
-        List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
-
-        return  comments.stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
+    private boolean isLike(UUID memberId, Board board) {
+        var member = memberRepository.getOrThrow(memberId);
+        return likeRepository.existsByMemberAndBoard(member, board);
     }
+
 
 }

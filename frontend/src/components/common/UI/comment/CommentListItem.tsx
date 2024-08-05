@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
@@ -21,6 +21,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
 }) => {
   const [showReply, setShowReply] = useState(false);
   const { isLoggedIn, user } = useAuthStore();
+  const replyInputRef = useRef<HTMLInputElement>(null);
 
   const handleDelete = async () => {
     try {
@@ -55,6 +56,12 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
     setShowReply(!showReply);
   };
 
+  useEffect(() => {
+    if (showReply && replyInputRef.current) {
+      replyInputRef.current.focus();
+    }
+  }, [showReply]);
+
   return (
     <Container>
       <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
@@ -87,6 +94,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
               isReply={true}
               commentId={id}
               onCommentAdded={onCommentAdded}
+              inputRef={replyInputRef}
             />
           </ReplyCreate>
         )}

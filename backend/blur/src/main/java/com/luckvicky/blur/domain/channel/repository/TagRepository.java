@@ -10,4 +10,6 @@ import java.util.UUID;
 
 public interface TagRepository extends JpaRepository<Tag, UUID> {
     List<Tag> findAllByNameIn(Collection<String> names);
+
+    List<Tag> findAllByNameContainingIgnoreCase(String keyword);
 }

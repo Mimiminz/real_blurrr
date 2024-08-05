@@ -5,6 +5,7 @@ import com.luckvicky.blur.domain.vote.service.VoteService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -62,11 +63,11 @@ public class VoteController {
     @Parameter(name = "boardId", description = "게시물 고유 식별값", in = ParameterIn.PATH)
     @GetMapping
     public ResponseEntity<Result<VoteResultDto>> getVote(
-            @AuthUser ContextMember contextMember,
+            @NullableAuthUser ContextMember contextMember,
             @PathVariable("boardId") UUID boardId
     ) {
         return ResponseUtil.ok(
-                Result.of(voteService.getVoteResult(contextMember.getId(), boardId))
+                Result.of(voteService.getVoteResult(boardId, contextMember))
         );
     }
 }

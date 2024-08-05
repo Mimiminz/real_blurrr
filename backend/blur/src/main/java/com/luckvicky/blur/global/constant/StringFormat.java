@@ -38,9 +38,6 @@ public class StringFormat {
 
     public static final String REDISSON_ADDRESS = "redis://localhost:6379";
 
-    public static final String LEAGUE_TYPE_MODEL = "MODEL";
-    public static final String LEAGUE_TYPE_BRAND = "BRAND";
-
     // Utility 관련 URI
     public static final String[] UTILITY_URI = {
             "/v3/api-docs/**",
@@ -66,7 +63,8 @@ public class StringFormat {
             "/v1/channels/*",
             "/v1/channels/search",
             "/v1/channels/*/boards",
-            "/v1/channels/*/boards/*"
+            "/v1/channels/*/boards/*",
+            "/v1/channels/board/*/votes"
     };
 
     // 리그 URI
@@ -80,7 +78,8 @@ public class StringFormat {
     public static final String[] BASIC_USER_URI = {
             "/v1/alarm/**",
             "/v1/members/**",
-            "/v1/boards/*/comments"
+            "/v1/boards/*/comments",
+            "/v1/channels/check/tags/*"
     };
 
     // 차량 인증 허용 URI (회원가입 O)
