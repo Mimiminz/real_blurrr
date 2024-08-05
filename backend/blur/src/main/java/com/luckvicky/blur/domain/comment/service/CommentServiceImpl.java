@@ -119,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     public CommentListResponse findCommentsByBoard(UUID boardId) {
-
+        // TODO: 리그 type 일 경우 exception 던지기 필요
         Board board = boardRepository.getOrThrow(boardId);
         List<Comment> comments = commentRepository.findAllByBoardAndType(board, CommentType.COMMENT);
 

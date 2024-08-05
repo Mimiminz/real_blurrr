@@ -18,10 +18,10 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
-import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
@@ -55,6 +55,8 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
     private final LeagueRepository leagueRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -98,7 +100,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public ChannelBoardDetailDto getBoardDetail(UUID boardId) {
+    public ChannelBoardDetailDto getBoardDetail(UUID boardId, UUID memberId) {
 
 
         ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
@@ -107,13 +109,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
 
 
-        List<CommentDto> comments = board.getComments().stream()
-                .filter(comment -> comment.getType().equals(CommentType.COMMENT))
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-
-        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), comments);
+        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), isLike(memberId, board));
 
 
     }
@@ -154,6 +150,15 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         }
 
         return channelBoardMapper.toChannelBoardDto(channelBoard);
+    }
+
+    private boolean isLike(Member member, Board board) {
+        return likeRepository.existsByMemberAndBoard(member, board);
+    }
+
+    private boolean isLike(UUID memberId, Board board) {
+        var member = memberRepository.getOrThrow(memberId);
+        return likeRepository.existsByMemberAndBoard(member, board);
     }
 
 }

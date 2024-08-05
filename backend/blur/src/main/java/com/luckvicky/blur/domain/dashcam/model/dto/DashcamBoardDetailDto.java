@@ -1,17 +1,15 @@
 package com.luckvicky.blur.domain.dashcam.model.dto;
 
 import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import com.luckvicky.blur.domain.vote.model.dto.OptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -53,8 +51,4 @@ public class DashcamBoardDetailDto {
 
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;
-
-    @Schema(description = "댓글 목록")
-    List<CommentDto> comments;
-
 }

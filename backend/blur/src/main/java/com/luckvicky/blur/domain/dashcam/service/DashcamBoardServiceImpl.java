@@ -119,11 +119,11 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, String criteria) {
+    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, SortingCriteria criteria) {
 
         Pageable pageable = PageRequest.of(
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
+                Sort.by(Sort.Direction.DESC, criteria.getCriteria())
         );
 
         List<DashCam> dashCamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
@@ -136,12 +136,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         DashCam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
 
-        List<CommentDto> comments = commentRepository.findAllByBoardAndType(dashcam, CommentType.COMMENT)
-                .stream()
-                .map(comment -> mapper.map(comment, CommentDto.class))
-                .collect(Collectors.toList());
-
-        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam,comments);
+        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.vote.controller;
 
+import com.luckvicky.blur.domain.vote.model.dto.VoteResultDto;
 import com.luckvicky.blur.domain.vote.service.VoteService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -11,12 +12,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "투표 API")
 @RestController
@@ -38,15 +41,13 @@ public class VoteController {
     @Parameter(name = "optionId", description = "옵션 고유 식별값", in = ParameterIn.PATH)
     @Parameter(name = "boardId", description = "게시물 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/{optionId}")
-    public ResponseEntity<Result> createVote(
+    public ResponseEntity<Result<Boolean>> createVote(
             @AuthUser ContextMember contextMember,
             @PathVariable("boardId") UUID boardId,
             @PathVariable("optionId") UUID optionId
     ) {
         return ResponseUtil.created(
-                Result.builder()
-                        .data(voteService.createVote(contextMember.getId(), boardId, optionId))
-                        .build()
+                Result.of(voteService.createVote(contextMember.getId(), boardId, optionId))
         );
     }
 
@@ -60,14 +61,12 @@ public class VoteController {
     })
     @Parameter(name = "boardId", description = "게시물 고유 식별값", in = ParameterIn.PATH)
     @GetMapping
-    public ResponseEntity<Result> getVote(
+    public ResponseEntity<Result<VoteResultDto>> getVote(
             @AuthUser ContextMember contextMember,
             @PathVariable("boardId") UUID boardId
     ) {
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(voteService.getVoteResult(contextMember.getId(), boardId))
-                        .build()
+                Result.of(voteService.getVoteResult(contextMember.getId(), boardId))
         );
     }
 }

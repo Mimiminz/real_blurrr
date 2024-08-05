@@ -7,31 +7,33 @@ import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateRe
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
+import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.luckvicky.blur.infra.aws.service.S3ImageService;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "블랙박스 게시글 API")
 @RestController
@@ -43,21 +45,6 @@ public class DashcamBoardController {
     private final S3ImageService s3ImageService;
 
     @Operation(summary = "블랙박스 게시글 목록 조회 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = DashcamBoardListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "게시글 없음"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 목록 조회 실패"
-            )
-    })
     @Parameters({
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
@@ -68,13 +55,14 @@ public class DashcamBoardController {
                             @ExampleObject(name = "좋아요", value = "LIKE"),
                             @ExampleObject(name = "조회수", value = "VIEW"),
                             @ExampleObject(name = "댓글", value = "COMMENT"),
-                    }
+                    },
+                    schema = @Schema(implementation = SortingCriteria.class)
             ),
     })
     @GetMapping
-    public ResponseEntity getDashcamBoards(
-            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+    public ResponseEntity<Result<DashcamBoardListResponse>> getDashcamBoards(
+            @RequestParam int pageNumber,
+            @RequestParam SortingCriteria criteria
     ){
         List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards(
                 pageNumber,
@@ -83,55 +71,28 @@ public class DashcamBoardController {
 
         if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.builder().build()
+                    Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(DashcamBoardListResponse.of(boardDtos))
-                        .build()
+                Result.of(DashcamBoardListResponse.of(boardDtos))
         );
 
     }
 
 
-    @Operation(summary = "블랙박스 게시글 상세 조회 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "게시글 상세 조회 성공",
-                    content = @Content(schema = @Schema(implementation = DashcamBoardResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시글 없음"
-            )
-    })
+    @Operation(summary = "블랙박스 게시글 상세 조회 API",
+            description = "특정 게시글에 대한 본문, 투표, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용")
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable("boardId") UUID id) {
-        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(id);
+            @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId) {
+        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(boardId);
         return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
 
 
     @Operation(summary = "블랙박스 게시글 생성 API")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "게시글 생성 성공",
-                    content = @Content(schema = @Schema(implementation = DashcamBoardResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 요청"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "사용자 또는 리그를 찾을 수 없음"
-            )
-    })
     @PostMapping
     public ResponseEntity<Result<DashcamBoardCreateResponse>> createDashcamBoard(
             @Valid
@@ -143,20 +104,15 @@ public class DashcamBoardController {
                         .data(dashcamBoardService.createDashcamBoard(request, contextMember.getId()))
                         .build()
         );
-
     }
-
-
 
     @Operation(summary = "비디오 presigned url 요청 API")
     @GetMapping("/aws")
-    public ResponseEntity<Map<String, String>> getUrl(
+    public ResponseEntity<Result<Map<String, String>>> getUrl(
             @RequestParam(name = "fileName")
             @Schema(description = "동영상파일 이름 (확장자명 포함)") String fileName) throws MalformedURLException {
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(s3ImageService.getPresignedUrl("videos", fileName))
-                        .build()
+                Result.of(s3ImageService.getPresignedUrl("videos", fileName))
         );
     }
 

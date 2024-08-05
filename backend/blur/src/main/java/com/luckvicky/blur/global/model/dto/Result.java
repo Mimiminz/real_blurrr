@@ -15,11 +15,19 @@ public class Result<T> {
     private UUID trackingId;
     private T data;
 
-    @Builder
-    public Result(T data) {
+    @Builder //TODO: builder를 굳이 쓸 필요가 있을까? 가독성, 제네릭이슈
+    private Result(T data) {
         this.timestamp = ClockUtil.getLocalDateTimeToString();
         this.trackingId = UUID.randomUUID();
         this.data = data;
+    }
+
+    public static <T> Result<T> of(T data) {
+        return new Result<>(data);
+    }
+
+    public static <T> Result<T> empty() {
+        return new Result<>(null);
     }
 
 }

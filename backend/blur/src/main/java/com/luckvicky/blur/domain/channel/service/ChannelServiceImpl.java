@@ -1,7 +1,5 @@
 package com.luckvicky.blur.domain.channel.service;
 
-import com.luckvicky.blur.domain.channel.exception.FailToCreateFollowException;
-import com.luckvicky.blur.domain.channel.exception.FailToDeleteFollowException;
 import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
@@ -11,29 +9,36 @@ import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channel.repository.ChannelMemberFollowRepository;
-import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
+import com.luckvicky.blur.domain.channel.repository.ChannelTagRepository;
 import com.luckvicky.blur.domain.channel.repository.TagRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import jakarta.transaction.Transactional;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChannelServiceImpl implements ChannelService{
+@Transactional(readOnly = true)
+public class ChannelServiceImpl implements ChannelService {
 
     private final ChannelRepository channelRepository;
     private final ChannelTagRepository channelTagRepository;
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
     private final ChannelMemberFollowRepository channelMemberFollowRepository;
-    private final ChannelMapper channelMapper;
 
     @Override
     @Transactional
@@ -62,73 +67,38 @@ public class ChannelServiceImpl implements ChannelService{
             channelTagRepository.save(channelTag);
         }
 
-        // 저장된 태그들을 다시 조회
-        List<Tag> savedTags = channelTagRepository.findByChannelId(channel.getId())
-                .stream()
-                .map(ChannelTag::getTag)
-                .collect(Collectors.toList());
-
-        return channelMapper.convertToDto(channel, savedTags);
+        return ChannelMapper.convertToDto(channel);
     }
 
 
-
     @Override
-    public List<ChannelDto> getAllChannels() {
+    public List<ChannelDto> getAllChannels(ContextMember nullableMember) {
         List<UUID> channelIds = channelRepository.findAllChannelIds();
-        return getChannelDtos(channelIds);
+        List<ChannelDto> channelDtos;
+
+        if (Objects.isNull(nullableMember)) {
+            channelDtos = getChannelDtos(channelIds);
+        } else {
+            channelDtos = getChannelDtosWithFollowInfo(nullableMember.getId(), channelIds);
+        }
+        return channelDtos;
     }
 
     @Override
     public List<ChannelDto> getFollowedChannels(UUID memberId) {
         List<UUID> channelIds = channelMemberFollowRepository.findChannelIdsByMemberId(memberId);
-        return getChannelDtos(channelIds);
+        return getChannelDtosWithFollowInfo(memberId, channelIds);
     }
 
     @Override
     public List<ChannelDto> getCreatedChannels(UUID memberId) {
         List<UUID> channelIds = channelRepository.findChannelIdsByOwnerId(memberId);
-        return getChannelDtos(channelIds);
-    }
-
-
-    private List<ChannelDto> getChannelDtos(List<UUID> channelIds) {
-        if (channelIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Channel> channels = channelRepository.findAllById(channelIds);
-        List<ChannelTag> channelTags = channelTagRepository.findByChannelIdIn(channelIds);
-
-        Map<UUID, List<Tag>> channelTagsMap = channelTags.stream()
-                .collect(Collectors.groupingBy(
-                        ct -> ct.getChannel().getId(),
-                        Collectors.mapping(ChannelTag::getTag, Collectors.toList())
-                ));
-
-        return channels.stream()
-                .map(channel -> channelMapper.convertToDto(channel,
-                        channelTagsMap.getOrDefault(channel.getId(), Collections.emptyList())))
-                .collect(Collectors.toList());
+        return getChannelDtosWithFollowInfo(memberId, channelIds);
     }
 
 
     @Override
-    public List<ChannelDto> searchChannelsByTags(List<String> tagNames) {
-        List<ChannelTag> channelTags = channelTagRepository.findByTagNameIn(tagNames);
-
-        return channelTags.stream()
-                .collect(Collectors.groupingBy(
-                        ChannelTag::getChannel,
-                        Collectors.mapping(ChannelTag::getTag, Collectors.toList())
-                ))
-                .entrySet().stream()
-                .map(entry -> channelMapper.convertToDto(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ChannelDto> searchChannelsByKeyword(String keyword) {
+    public List<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember) {
 
         // 1. 이름 중 키워드 포함하는 채널 검색
         List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
@@ -140,50 +110,57 @@ public class ChannelServiceImpl implements ChannelService{
         List<Channel> channelsByTag = channelTagsByKeyword.stream()
                 .map(ChannelTag::getChannel)
                 .distinct()
-                .collect(Collectors.toList());
-
+                .toList();
 
         // 3. 채널 병합
         Set<Channel> allChannels = new HashSet<>();
         allChannels.addAll(channelsByName);
         allChannels.addAll(channelsByTag);
 
-
-        // 4. 각 채널의 태그 매핑
-        Map<Channel, List<Tag>> channelTagsMap = allChannels.stream()
-                .collect(Collectors.toMap(
-                        channel -> channel,
-                        channel -> channelTagRepository.findByChannel(channel).stream()
-                                .map(ChannelTag::getTag)
-                                .collect(Collectors.toList())
-                ));
+        Member member;
+        if(Objects.nonNull(nullableMember)) {
+           member = memberRepository.getOrThrow(nullableMember.getId());
+        } else {
+            member = null;
+        }
 
         return allChannels.stream()
-                .map(channel -> channelMapper.convertToDto(channel, channelTagsMap.getOrDefault(channel, List.of())))
-                .collect(Collectors.toList());
+                .map(channel -> {
+                    if(Objects.nonNull(member)) {
+                        var dto = ChannelMapper.convertToDto(channel);
+                        dto.setIsFollowed(member.getFollowingChannels().contains(channel));
+                        return dto;
+                    } else {
+                        return ChannelMapper.convertToDto(channel);
+                    }
+                })
+                .toList();
     }
 
 
     @Override
-    public ChannelDto getChannelById(UUID channelId) {
+    public ChannelDto getChannelById(UUID channelId, ContextMember nullableMember) {
         Channel channel = channelRepository.getOrThrow(channelId);
-        List<Tag> tags = channelTagRepository.findByChannelId(channelId)
-                .stream()
-                .map(ChannelTag::getTag)
-                .collect(Collectors.toList());
-
-        return channelMapper.convertToDto(channel, tags);
+        ChannelDto dto = ChannelMapper.convertToDto(channel);
+        if (Objects.nonNull(nullableMember)) {
+            Member member = memberRepository.getOrThrow(nullableMember.getId());
+            dto.setIsFollowed(member.getFollowingChannels().contains(channel));
+        }
+        return dto;
     }
 
     @Override
     @Transactional
-    public Boolean createFollow(UUID memberId, UUID channelId) {
+    public boolean createFollow(UUID memberId, UUID channelId) {
         Member member = memberRepository.getOrThrow(memberId);
         Channel channel = channelRepository.getOrThrow(channelId);
 
+        if(member.getFollowingChannels().contains(channel)) {
+            return false;
+        }
         channel.increaseFollowCount();
 
-        ChannelMemberFollow createdFollow = channelMemberFollowRepository.save(
+        channelMemberFollowRepository.save(
                 ChannelMemberFollow.builder()
                         .member(member)
                         .channel(channel)
@@ -194,11 +171,10 @@ public class ChannelServiceImpl implements ChannelService{
 
     @Override
     @Transactional
-    public Boolean deleteFollow(UUID memberId, UUID channelId) {
+    public boolean deleteFollow(UUID memberId, UUID channelId) {
 
         Member member = memberRepository.getOrThrow(memberId);
         Channel channel = channelRepository.getOrThrow(channelId);
-
 
         ChannelMemberFollow findFollow = channelMemberFollowRepository.findByMemberAndChannel(member, channel)
                 .orElseThrow(NotExistFollowException::new);
@@ -207,6 +183,30 @@ public class ChannelServiceImpl implements ChannelService{
         channelMemberFollowRepository.deleteById(findFollow.getId());
 
         return true;
+    }
+
+
+    private List<ChannelDto> getChannelDtos(List<UUID> channelIds) {
+        if (channelIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Channel> channels = channelRepository.findAllById(channelIds);
+
+        return channels.stream()
+                .map(ChannelMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<ChannelDto> getChannelDtosWithFollowInfo(UUID memberId, List<UUID> channelIds) {
+        var member = memberRepository.getOrThrow(memberId);
+        Set<UUID> followingChannelIds = member.getFollowingChannels()
+                .stream()
+                .map(Channel::getId)
+                .collect(Collectors.toSet());
+        List<ChannelDto> channelDtos = getChannelDtos(channelIds);
+        channelDtos.forEach(it -> it.setIsFollowed(followingChannelIds.contains(it.getId())));
+        return channelDtos;
     }
 
 }

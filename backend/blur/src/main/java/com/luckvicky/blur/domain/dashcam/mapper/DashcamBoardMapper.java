@@ -2,18 +2,16 @@ package com.luckvicky.blur.domain.dashcam.mapper;
 
 import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import com.luckvicky.blur.domain.vote.model.dto.OptionDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -49,7 +47,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, List<CommentDto> comments) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getUrl)
                 .collect(Collectors.toList());
@@ -81,7 +79,6 @@ public class DashcamBoardMapper {
                 .content(dashcam.getContent())
                 .options(optionDtos)
                 .mentionedLeagues(mentionedLeagues)
-                .comments(comments)
                 .build();
     }
 
