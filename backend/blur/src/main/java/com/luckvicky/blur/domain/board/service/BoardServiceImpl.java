@@ -67,7 +67,7 @@ public class BoardServiceImpl implements BoardService {
         );
 
         Member member = memberRepository.getOrThrow(id);
-        List<Board> likeBoards = boardRepository.findByMember(member, ActivateStatus.ACTIVE, pageable);
+        List<Board> likeBoards = boardRepository.findLikeBoardListByMember(member, ActivateStatus.ACTIVE, pageable);
 
         return likeBoards.stream()
                 .map(likeBoard -> mapper.map(likeBoard, BoardDto.class))
