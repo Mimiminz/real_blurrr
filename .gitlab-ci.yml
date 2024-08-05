@@ -1,11 +1,13 @@
 image: ubuntu:22.04
 
 stages:
-  - frontend_build
-  - backend_build
-  - deploy
+  - frontend-build
+  - frontend-deploy
+  - backend-build
+  - backend-deploy
 
 before_script:
+
   - apt-get update || { echo "apt-get update failed"; exit 1; }
   - apt-get install -y curl
 
@@ -28,8 +30,8 @@ before_script:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-frontend_build:
-  stage: frontend_build
+frontend-build:
+  stage: frontend-build
 
   script:
     - echo 'Install dependencies for frontend'
@@ -59,10 +61,36 @@ frontend_build:
     - blurrr-deploy
 
   only:
-    - dev
+    - deploy/frontend
 
-backend_build:
-  stage: backend_build
+frontend-deploy:
+  stage: frontend-deploy
+
+  script:
+    - echo "Deploying frontend..."
+    - apt-get install openssh-client -y
+
+    - echo "Setting up SSH key..."
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
+    - chmod 400 ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
+
+    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
+    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
+    - echo "complete file send"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd /home/ubuntu/blurrr/frontend && ./deploy.sh"
+
+  needs: ["frontend-build"]
+
+  tags:
+    - blurrr-deploy
+
+  only:
+    - deploy/frontend
+
+backend-build:
+  stage: backend-build
   script:
     # YML 파일 가져오기
     - ls -al backend/blur/src/main/resources
@@ -87,36 +115,10 @@ backend_build:
     - blurrr-deploy
 
   only:
-    - dev
+    - deploy/backend
 
-deploy_frontend:
-  stage: deploy
-
-  script:
-    - echo "Deploying frontend..."
-    - apt-get install openssh-client -y
-
-    - echo "Setting up SSH key..."
-    - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
-    - chmod 400 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
-
-    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
-    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
-    - echo "complete file send"
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd /home/ubuntu/blurrr/frontend && ./deploy.sh"
-
-  needs: ["frontend_build"]
-
-  tags:
-    - blurrr-deploy
-
-  only:
-    - dev
-
-deploy_backend:
-  stage: deploy
+backend-deploy:
+  stage: backend-deploy
 
   variables:
     DEPLOY_PATH: "/home/ubuntu/app"
@@ -124,7 +126,6 @@ deploy_backend:
 
   script:
     - echo "Deploying backend..."
-    - apt-get update
     - apt-get install openssh-client -y
 
     - echo "Setting up SSH key..."
@@ -136,10 +137,10 @@ deploy_backend:
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
     - echo "Complete"
 
-  needs: ["backend_build"]
+  needs: ["backend-build"]
 
   tags:
     - blurrr-deploy
 
   only:
-    - dev
+    - deploy/backend
