@@ -27,54 +27,54 @@ before_script:
   - node -v
   - npm -v
 
-# frontend_build:
-#   stage: frontend_build
-#   script:
-#     - echo 'Install dependencies for frontend'
-#     - cd frontend
-#     - npm install
-#     - echo 'Build frontend'
-#     - export NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-#     - export NEXT_PUBLIC_ACCESS_KEY=$NEXT_PUBLIC_ACCESS_KEY
-#     - export NEXT_PUBLIC_SECRET_ACCESS_KEY=$NEXT_PUBLIC_SECRET_ACCESS_KEY
-#     - export NEXT_PUBLIC_CLOUD_FRONT_URL=$NEXT_PUBLIC_CLOUD_FRONT_URL
-#     - export NEXT_PUBLIC_DASHCAM_ID=$NEXT_PUBLIC_DASHCAM_ID
-#     - export NEXT_PUBLIC_BOAST_ID=$NEXT_PUBLIC_BOAST_ID
-#     - npm run build
-#     - ls -al .next # 빌드된 결과물 확인
-#   artifacts:
-#     paths:
-#       - frontend/.next
-#     expire_in: 1 week
-#   tags:
-#     - blurrr-deploy
-#   only:
-#     - dev
-
-backend_build:
-  stage: backend_build
+frontend_build:
+  stage: frontend_build
   script:
-    # YML 파일 가져오기
-    - ls -al backend/blur/src/main/resources
-    - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
-    - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
-    - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
-    - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
-    - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
-    - ls -al backend/blur/src/main/resources
-
-    - echo 'Build backend'
-    - cd backend/blur
-    - chmod +x ./gradlew
-    - ./gradlew clean build --refresh-dependencies --stacktrace --info -x test
+    - echo 'Install dependencies for frontend'
+    - cd frontend
+    - npm install
+    - echo 'Build frontend'
+    - export NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+    - export NEXT_PUBLIC_ACCESS_KEY=$NEXT_PUBLIC_ACCESS_KEY
+    - export NEXT_PUBLIC_SECRET_ACCESS_KEY=$NEXT_PUBLIC_SECRET_ACCESS_KEY
+    - export NEXT_PUBLIC_CLOUD_FRONT_URL=$NEXT_PUBLIC_CLOUD_FRONT_URL
+    - export NEXT_PUBLIC_DASHCAM_ID=$NEXT_PUBLIC_DASHCAM_ID
+    - export NEXT_PUBLIC_BOAST_ID=$NEXT_PUBLIC_BOAST_ID
+    - npm run build
+    - ls -al .next # 빌드된 결과물 확인
   artifacts:
     paths:
-      - backend/blur/build/libs/*.jar
+      - frontend/.next
     expire_in: 1 week
   tags:
     - blurrr-deploy
   only:
     - dev
+
+# backend_build:
+#   stage: backend_build
+#   script:
+#     # YML 파일 가져오기
+#     - ls -al backend/blur/src/main/resources
+#     - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
+#     - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
+#     - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
+#     - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
+#     - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
+#     - ls -al backend/blur/src/main/resources
+
+#     - echo 'Build backend'
+#     - cd backend/blur
+#     - chmod +x ./gradlew
+#     - ./gradlew clean build --refresh-dependencies --stacktrace --info -x test
+#   artifacts:
+#     paths:
+#       - backend/blur/build/libs/*.jar
+#     expire_in: 1 week
+#   tags:
+#     - blurrr-deploy
+#   only:
+#     - dev
 
 deploy_frontend:
   stage: deploy
@@ -96,26 +96,26 @@ deploy_frontend:
   only:
     - dev
 
-deploy_backend:
-  stage: deploy
-  variables:
-    DEPLOY_PATH: "/home/ubuntu/app"
-    SPRING_PROFILE: "dev"
-  script:
-    - echo "Deploying backend..."
-    - apt-get update
-    - apt-get install openssh-client -y
+    # deploy_backend:
+    #   stage: deploy
+    #   variables:
+    #     DEPLOY_PATH: "/home/ubuntu/app"
+    #     SPRING_PROFILE: "dev"
+    #   script:
+    #     - echo "Deploying backend..."
+    #     - apt-get update
+    #     - apt-get install openssh-client -y
 
-    - echo "Setting up SSH key..."
-    - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-    - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
-    - echo "Complete"
-  needs: ["backend_build"]
-  tags:
-    - blurrr-deploy
-  only:
+    #     - echo "Setting up SSH key..."
+    #     - mkdir -p ~/.ssh
+    #     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+    #     - chmod 600 ~/.ssh/id_rsa
+    #     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    #     - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
+    #     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+    #     - echo "Complete"
+    #   needs: ["backend_build"]
+    #   tags:
+    #     - blurrr-deploy
+    #   only:
     - dev
