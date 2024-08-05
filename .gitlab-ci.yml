@@ -50,7 +50,7 @@ frontend_build:
 
   artifacts:
     paths:
-      - frontend/.next/static
+      - frontend/.next/standalone
     expire_in: 1 week
 
   tags:
