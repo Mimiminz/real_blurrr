@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
@@ -112,7 +112,7 @@ const Page = () => {
 
    const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
 
-   const loadDetail = async () => {
+   const loadDetail = useCallback(async () => {
       try {
          const data = await fetchDashCamDetail(dashcamId as string); // API 호출
          setDashCamDetail(data);
@@ -120,10 +120,11 @@ const Page = () => {
          console.error('Failed to load dash cam detail:', error);
          // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
       }
-   };
+   }, [dashcamId]); // dashcamId를 의존성 배열에 포함
+
    useEffect(() => {
       loadDetail();
-   }, [dashcamId]);
+   }, [loadDetail]);
 
    if (!dashCamDetail) {
       return <div>Loading...</div>;
@@ -197,7 +198,7 @@ const Page = () => {
                      ))} */}
                   </CommentsSection>
                   <VoteSection>
-                     <Vote options={dashCamDetail.options} />
+                     <Vote />
                   </VoteSection>
                </RightColumn>
             </InnerContentContainer>
