@@ -8,7 +8,7 @@ before_script:
   # PPA 문제 해결
   - sudo rm /etc/apt/sources.list.d/certbot-ubuntu-certbot-focal.list || true
   # 자바 17 설치
-  - apt-get update
+  - apt-get update || { echo "apt-get update failed"; exit 1; }
   - apt-get install -y curl
   - echo "install java"
   - apt-get install openjdk-17-jdk -y
@@ -23,7 +23,7 @@ before_script:
   - echo "PATH is set to $PATH"
 
   # Node.js와 npm 설치 추가 (Node.js 18.x)
-  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Node.js setup failed"; exit 1; }
   - apt-get install -y nodejs
   - node -v
   - npm -v
@@ -56,19 +56,18 @@ deploy_frontend:
   stage: deploy
   script:
     - echo "Deploying frontend..."
-    - apt-get update
-    - apt-get install -y openssh-client curl
-    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-    - apt-get install -y nodejs
+    - apt-get install openssh-client -y
+
+    - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+
     - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "
       curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&
-      sudo apt-get install -y nodejs npm &&
-      export PATH=\$PATH:/usr/bin/nodejs &&
+      sudo apt-get install -y nodejs &&
       cd /home/ubuntu/app/frontend &&
       npm install &&
       nohup npm start > frontend.log 2>&1 &"
