@@ -31,6 +31,7 @@ before_script:
 
 frontend_build:
   stage: frontend_build
+
   script:
     - echo 'Install dependencies for frontend'
     - cd frontend
@@ -61,6 +62,7 @@ frontend_build:
 
 deploy_frontend:
   stage: deploy
+
   script:
     - echo "Deploying frontend..."
     - apt-get install openssh-client -y
@@ -73,9 +75,12 @@ deploy_frontend:
 
     - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
     - echo "complete file send"
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && nohup ./deploy.sh > frontend.log 2>&1 &"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && ./deploy.sh"
+
   needs: ["frontend_build"]
+
   tags:
     - blurrr-deploy
+
   only:
     - fe-cicd
