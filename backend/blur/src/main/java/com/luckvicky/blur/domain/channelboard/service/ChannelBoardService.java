@@ -5,6 +5,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public interface ChannelBoardService {
 
     List<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria);
 
-    ChannelBoardDetailDto getBoardDetail(UUID boardId, UUID memberId);
+    ChannelBoardDetailDto getBoardDetail(UUID boardId, ContextMember nullableMember);
 
     List<CommentDto> getComments(UUID boardId);
 
