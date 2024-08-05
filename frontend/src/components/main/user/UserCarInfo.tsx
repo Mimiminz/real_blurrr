@@ -20,13 +20,20 @@ const UserCarInfo: React.FC<UserCarProps> = ({ userLeagueList }) => {
     router.push(`/league/${tabName}`);
   };
 
+  const userCarType = userLeagueList.find((t) => t.type === "MODEL");
+  console.log(userCarType);
+
+  if (!userCarType) {
+    return <div>loading...</div>;
+  }
+
   return (
     <Container>
       <ProfileSection>
         <ProfileImage src={"/"} alt="User Profile" />
         <CarInfo>
-          {/* <CarModel>“{userInfo.carModel}” 오너</CarModel>
-          <UserName>{userInfo.name}님! 어서오세요~</UserName> */}
+          <CarModel>“{userCarType.name}” 오너</CarModel>
+          <UserName>{user?.nickname}님! 어서오세요~</UserName>
         </CarInfo>
       </ProfileSection>
       <ButtonSection>
