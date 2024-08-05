@@ -93,7 +93,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         League league = leagueRepository.getOrThrow(leagueId);
 
-        if (Objects.nonNull(contextMember)) {
+        if (leagueType.equals(LeagueType.MODEL.getValue()) && Objects.nonNull(contextMember)) {
             Member member = memberRepository.getOrThrow(contextMember.getId());
             isAllocatedLeague(league, member);
         }
