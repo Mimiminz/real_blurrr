@@ -76,9 +76,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         isEqualLeagueType(LeagueType.convertToEnum(leagueType), league.getType());
 
-        if (!leagueMemberRepository.existsByLeagueAndMember(league, member)) {
-            throw new NotAllocatedLeagueException();
-        }
+        isAllocatedLeague(league, member);
 
         Board createdLeagueBoard = boardRepository.save(
                 request.toEntity(league, member)
@@ -222,27 +220,6 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         if (!reqeustType.equals(findLeagueType)) {
             throw new InvalidLeagueTypeException();
         }
-    }
-
-    private Boolean isAllocatedOfModelTypeLeague(League league) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null) {
-            throw new NotExistMemberException();
-        }
-
-        Object principal = authentication.getPrincipal();
-
-        if (!(principal instanceof CustomUserDetails userDetails)) {
-            throw new NotExistMemberException();
-        }
-
-        return leagueMemberRepository.existsByLeagueAndMember(
-                league,
-                memberRepository.getOrThrow(userDetails.getMember().getId())
-        );
-
     }
 
     private void isAllocatedLeague(League league, Member member) {
