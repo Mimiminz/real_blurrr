@@ -4,6 +4,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { LiaCommentDots } from "react-icons/lia";
 import { MdAccessTime } from "react-icons/md";
 import { LeagueBoardListItemProps } from "@/types/leagueTypes";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 function MyHeartListItem({
   title,
@@ -27,7 +28,7 @@ function MyHeartListItem({
           <Icon>
             <MdAccessTime />
           </Icon>
-          {createdAt}
+          {formatPostDate(createdAt)}
         </LikeSection>
         <LikeSection>
           <Icon>

@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { MdAddPhotoAlternate } from "react-icons/md";
+import axios from "axios";
+import { submitImageForOCR } from '@/api/carcertification'
 
 const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [ocrResults, setOcrResults] = useState<any[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
 
@@ -59,6 +62,22 @@ const CarCertificationForm = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!imageSrc) return;
+
+    try {
+        const result = await submitImageForOCR(imageSrc);
+        if (result && result.extracted_texts) {
+            const fourteenthText = result.extracted_texts[14] || null;
+            setOcrResults(fourteenthText ? [fourteenthText] : []);
+        } else {
+            console.error("OCR 결과가 없습니다:", result);
+        }
+    } catch (error) {
+        console.error("Error submitting image:", error);
+    }
+};
+
   return (
     <Container>
       <Head>
@@ -90,11 +109,23 @@ const CarCertificationForm = () => {
         style={{ display: "none" }}
         onChange={handleImageUpload}
       />
-      <Button>제출</Button>
+       <Button onClick={handleSubmit}>제출</Button>
+       {ocrResults.length > 0 && (
+        <ResultsContainer>
+          <ul>
+            {ocrResults.map((result, index) => (
+              <div key={index}>
+                <strong>차명 : </strong> {result.text} <br />
+              </div>
+            ))}
+          </ul>
+        </ResultsContainer>
+      )}
       <ButtonContainer>
         <Button onClick={() => router.push("/")}>다음에 할게요.</Button>
         <Button onClick={() => router.push("/")}>완료</Button>
       </ButtonContainer>
+      
     </Container>
   );
 };
@@ -188,4 +219,9 @@ const ButtonContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   padding: 10px;
+`;
+
+const ResultsContainer = styled.div`
+  margin-top: 20px;
+  text-align: left;
 `;
