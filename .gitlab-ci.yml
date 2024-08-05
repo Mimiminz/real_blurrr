@@ -81,7 +81,9 @@ deploy_frontend:
   script:
     - echo "Deploying frontend..."
     - apt-get update
-    - apt-get install openssh-client -y
+    - apt-get install -y openssh-client curl
+    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    - apt-get install -y nodejs
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
