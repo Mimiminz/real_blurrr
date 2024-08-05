@@ -50,7 +50,7 @@ export const fetchChannels = async (): Promise<Channels[]> => {
 };
 
 // 채널 태그 검색
-export const fetchSearchTags = async (tags: string[]): Promise<Channels[]> => {
+export const fetchSearchKeywords = async (tags: string[]): Promise<Channels[]> => {
   try {
     const params = new URLSearchParams();
     tags.forEach(tag => params.append('tags', tag));
