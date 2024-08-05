@@ -12,6 +12,8 @@ import com.luckvicky.blur.domain.vote.model.dto.VoteResultDto;
 import com.luckvicky.blur.domain.vote.model.entity.Option;
 import com.luckvicky.blur.domain.vote.model.entity.Vote;
 import com.luckvicky.blur.domain.vote.repository.VoteRepository;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +64,7 @@ public class VoteServiceImpl implements VoteService{
     }
 
     @Override
-    public VoteResultDto getVoteResult(UUID memberId, UUID boardId) {
+    public VoteResultDto getVoteResult(UUID boardId, ContextMember nullableMember) {
 
         DashCam dashCam = dashcamRepository.findById(boardId)
                 .orElseThrow(NotFoundDashcamException::new);
@@ -71,20 +73,24 @@ public class VoteServiceImpl implements VoteService{
                 .map(OptionDto::of)
                 .collect(Collectors.toList());
 
-        Optional<Vote> vote = voteRepository.findByMemberIdAndDashCamId(memberId, boardId);
+        boolean hasVoted = false;
+        UUID selectedOptionId = null;
 
-        if (vote.isPresent()) {
-            return VoteResultDto.builder()
-                    .hasVoted(true)
-                    .selectedOptionId(vote.get().getSelectedOption().getId())
-                    .options(optionDtos)
-                    .build();
-        } else {
-            return VoteResultDto.builder()
-                    .hasVoted(false)
-                    .options(optionDtos)
-                    .build();
+        if(Objects.nonNull(nullableMember)){
+            Optional<Vote> vote = voteRepository.findByMemberIdAndDashCamId(nullableMember.getId(), boardId);
+            if (vote.isPresent()) {
+                hasVoted = true;
+                selectedOptionId = vote.get().getSelectedOption().getId();
+            }
         }
+
+
+        return VoteResultDto.builder()
+                .hasVoted(hasVoted)
+                .selectedOptionId(selectedOptionId)
+                .options(optionDtos)
+                .build();
+
     }
 
 }
