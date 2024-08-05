@@ -24,7 +24,7 @@ export const getMyHeartList = async (accessToken: string, pageNumber = 0, criter
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        return response.data.boards;
+        return response.data.data.boards;
     } catch (error) {
         console.error('API 호출 오류:', error);
         throw new Error('Failed to fetch heart boards');
