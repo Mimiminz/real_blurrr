@@ -17,6 +17,11 @@ import { useAuthStore } from "@/store/authStore";
 import { fetchLeagueCommentList } from "@/api/comment";
 import { fetchUserLeagueList } from "@/api/league";
 import CommentList from "@/components/common/UI/comment/CommentList";
+import {
+  fetchLeagueLike,
+  fetchLeagueLikeDelete,
+  fetchLeaugueLikeState,
+} from "@/api/board";
 
 export default function BoardDetailPage({
   params,
@@ -37,10 +42,7 @@ export default function BoardDetailPage({
   const [commentList, setCommentList] = useState<fetchComment | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false);
-
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
-  };
+  const [likeCount, setLikeCount] = useState(0);
 
   const formatPostDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
@@ -55,11 +57,6 @@ export default function BoardDetailPage({
     } else {
       return postDate.toISOString().split("T")[0].replace(/-/g, ".");
     }
-  };
-
-  const unauthenticated = () => {
-    alert("인증받지 못한 리그입니다");
-    router.back();
   };
 
   const loadBoardDetail = async () => {
@@ -80,8 +77,28 @@ export default function BoardDetailPage({
     }
   };
 
+  const loadLike = async () => {
+    try {
+      const fetchLikeState = await fetchLeaugueLikeState(boardId);
+      setIsLiked(fetchLikeState.isLike);
+      setLikeCount(fetchLikeState.likeCount);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleLike = async () => {
+    if (isLiked) {
+      await fetchLeagueLikeDelete(boardId);
+    } else {
+      await fetchLeagueLike(boardId);
+    }
+    loadLike();
+  };
+
   useEffect(() => {
     loadBoardDetail();
+    loadLike();
   }, [boardId]);
 
   useEffect(() => {
@@ -156,7 +173,7 @@ export default function BoardDetailPage({
         title={boardDetail.title}
         createdAt={formatPostDate(boardDetail.createdAt)}
         viewCount={boardDetail.viewCount}
-        likeCount={boardDetail.likeCount}
+        likeCount={likeCount}
         username={boardDetail.member.nickname}
         authorprofileUrl={boardDetail.member.profileUrl}
         authorCarTitle={boardDetail.member.carTitle}
