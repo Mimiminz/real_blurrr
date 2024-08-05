@@ -7,6 +7,7 @@ stages:
 before_script:
   # PPA 문제 해결
   - sudo rm /etc/apt/sources.list.d/certbot-ubuntu-certbot-focal.list || true
+
   # 자바 17 설치
   - apt-get update || { echo "apt-get update failed"; exit 1; }
   - apt-get install -y curl
@@ -34,6 +35,7 @@ frontend_build:
     - echo 'Install dependencies for frontend'
     - cd frontend
     - npm install
+
     - echo 'Build frontend'
     - export NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
     - export NEXT_PUBLIC_ACCESS_KEY=$NEXT_PUBLIC_ACCESS_KEY
@@ -42,13 +44,18 @@ frontend_build:
     - export NEXT_PUBLIC_DASHCAM_ID=$NEXT_PUBLIC_DASHCAM_ID
     - export NEXT_PUBLIC_BOAST_ID=$NEXT_PUBLIC_BOAST_ID
     - npm run build
-    - ls -al .next # 빌드된 결과물 확인
+
+    # 빌드된 결과물 확인
+    - ls -al
+
   artifacts:
     paths:
       - frontend/.next
     expire_in: 1 week
+
   tags:
     - blurrr-deploy
+
   only:
     - fe-cicd
 
@@ -65,12 +72,8 @@ deploy_frontend:
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
     - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "
-      curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&
-      sudo apt-get install -y nodejs &&
-      cd /home/ubuntu/app/frontend &&
-      npm install &&
-      nohup npm start > frontend.log 2>&1 &"
+    - echo "complete file send"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "nohup npm start > frontend.log 2>&1 &"
   needs: ["frontend_build"]
   tags:
     - blurrr-deploy
