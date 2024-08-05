@@ -167,8 +167,9 @@ export default function BoardDetailPage({
           <HeartButton onClick={toggleLike}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
           </HeartButton>
-
-          <WriterButton onClick={handleDelete}>삭제</WriterButton>
+          {user?.nickname === boardDetail.member.nickname && (
+            <WriterButton onClick={handleDelete}>삭제</WriterButton>
+          )}
         </WriterContainer>
         <CommentList
           comments={commentList.comments}

@@ -14,6 +14,10 @@ export default function MoreBrandTab({
   // 더보기 눌렀는지 여부 확인
   const [showMoreTabs, setShowMoreTabs] = useState(false);
 
+  const title = activeTabName?.includes("mention")
+    ? `채널에서 ${activeTabName.split("mention")[1]}이 멘션된 글`
+    : `${activeTabName} 리그`;
+
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
   };
@@ -23,7 +27,7 @@ export default function MoreBrandTab({
       <TabContent>
         <HeaderContainer>
           <TitleContainer>
-            <Title>{activeTabName}</Title>
+            <Title>{title}</Title>
             <Subtitle>
               해당 브랜드의 차량을 소유하지 않은 사용자는 게시글을 볼 수
               없습니다.

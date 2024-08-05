@@ -8,7 +8,12 @@ import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 
-import { LeagueBoardItem, UserLeague, LeagueList } from "@/types/leagueTypes";
+import {
+  LeagueBoardItem,
+  UserLeague,
+  LeagueList,
+  MentionChannelList,
+} from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
 import { useAuthStore } from "@/store/authStore";
@@ -19,8 +24,9 @@ import {
   fetchBoardSearch,
   fetchLeagueBoardList,
   fetchUserLeagueList,
-  fetchMentionBoardList
+  fetchMentionBoardList,
 } from "@/api/league";
+import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
 
 export default function LeaguePage({
   params,
@@ -48,22 +54,19 @@ export default function LeaguePage({
   } = useLeagueStore();
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
+  const [mentionBoardList, setMentionBoardList] = useState<
+    MentionChannelList[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedSort, setSelectedSort] = useState("게시글 정렬");
 
   // 검색
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<LeagueBoardItem[]>([]);
-
-  // useEffect(() => {
-  //   const hasAccess = userLeagueList.some((league) => league.id === leagueId);
-  //   if (!hasAccess) {
-  //     alert("허용되지 않은 리그입니다.");
-  //     router.back();
-  //   }
-  // }, []);
 
   useEffect(() => {
     const loadLeagues = async () => {
@@ -105,8 +108,6 @@ export default function LeaguePage({
             console.log(error);
           }
         }
-        // const leagues = await fetchBrandLeagues();
-        // setMoreTabs(leagues);
       } catch (error) {
         console.error("Failed to fetch brand leagues or board data", error);
       }
@@ -143,14 +144,18 @@ export default function LeaguePage({
         setBoardList(boardData);
         setLoading(false);
       } else {
-        const findActiveTab = userLeagueList.find((t) => t.name === leagueName.split('mention')[1])
+        const findActiveTab = userLeagueList.find(
+          (t) => t.name === leagueName.split("mention")[1]
+        );
+        console.log(findActiveTab);
         if (findActiveTab) {
           const boardData = await fetchMentionBoardList(
-          findActiveTab.id,
-          criteria,
-        )
-        setBoardList(boardData);
-        setLoading(false);}
+            findActiveTab.id,
+            criteria
+          );
+          setMentionBoardList(boardData);
+          setLoading(false);
+        }
       }
     };
 
@@ -170,6 +175,33 @@ export default function LeaguePage({
   const isLeagueIdInTabs = userLeagueList.some(
     (tab) => tab.name === leagueName
   );
+
+  const onSortChange = (newSort: string) => {
+    // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환
+    const criteriaMap: { [key: string]: string } = {
+      최신순: "TIME",
+      댓글수: "COMMENT",
+      조회수: "VIEW",
+      좋아요: "LIKE",
+    };
+
+    const newCriteria = criteriaMap[newSort] || "TIME"; // 매핑되지 않는 경우 기본값 설정
+    setCriteria(newCriteria);
+  };
+
+  const handleDropdownToggle = () => {
+    setDropdownVisible((prev) => !prev);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => setDropdownVisible(false), 200); // 드롭다운 메뉴가 닫히기 전에 클릭 이벤트가 발생하도록 시간을 둠
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSelectedSort(sort);
+    setDropdownVisible(false);
+    onSortChange(sort);
+  };
 
   const handleSearch = async (keyword: string) => {
     if (!keyword.trim()) {
@@ -209,12 +241,19 @@ export default function LeaguePage({
         activeTabName={leagueName}
       />
       <FilterSection>
-        <StyledSelect value={criteria} onChange={handleCriteriaChange}>
-          <option value="TIME">최신순</option>
-          <option value="VIEW">조회수 순</option>
-          <option value="COMMENT">댓글 순</option>
-          <option value="LIKE">좋아요 순</option>
-        </StyledSelect>
+        <DropdownButton onClick={handleDropdownToggle} onBlur={handleBlur}>
+          {selectedSort}
+          <span>▼</span>
+        </DropdownButton>
+        {isDropdownVisible && (
+          <DropdownMenu>
+            {["최신순", "댓글수", "조회수", "좋아요"].map((sort, index) => (
+              <DropdownItem key={index} onClick={() => handleSortChange(sort)}>
+                {sort}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        )}
         {isLoggedIn && isLeagueIdInTabs && (
           <StyledButton className="setPosition" onClick={handleWriteClick}>
             글 작성 +
@@ -222,7 +261,7 @@ export default function LeaguePage({
         )}
       </FilterSection>
       {leagueName.includes("mention") ? (
-        <LeagueBoardList leagueName={leagueName.split('mention')[1]} boardList={boardList} />
+        <LeagueMentionBoardList boardList={mentionBoardList} />
       ) : isSearching ? (
         <LeagueBoardList leagueName={leagueName} boardList={searchResults} />
       ) : (
@@ -241,45 +280,52 @@ const TopComponent = styled.div`
   margin-top: 30px;
 `;
 
-const TabContent = styled.div`
-  padding: 20px 0;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-  margin: 5px 0;
-  margin-bottom: 20px;
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const FilterSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  margin-top: 30px;
+  margin: 30px 0 20px 0;
+  position: relative;
+
+  .setPosition {
+    display: flex;
+    margin-left: auto;
+  }
 `;
 
-const StyledSelect = styled.select`
-  padding: 5px;
+const DropdownButton = styled.button`
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  margin-right: 10px;
-  background-color: #fff;
+  background-color: white;
+  cursor: pointer;
   font-size: 14px;
-  color: #333;
-  outline: none;
+  color: #969696;
+  width: 110px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  padding: 5px 0px;
+  top: 45px;
+  width: 110px;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+`;
+
+const DropdownItem = styled.div`
+  padding: 10px 15px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -295,8 +341,4 @@ const StyledButton = styled.button`
   &:hover {
     color: #f97316;
   }
-`;
-
-const noTab = styled.div`
-  width: 100%;
 `;
