@@ -66,7 +66,7 @@ backend_build:
     - echo 'Build backend'
     - cd backend/blur
     - chmod +x ./gradlew
-    - ./gradlew clean build -x test
+    - ./gradlew clean build --refresh-dependencies --stacktrace --info -x test
   artifacts:
     paths:
       - backend/blur/build/libs/*.jar
