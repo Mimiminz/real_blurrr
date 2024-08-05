@@ -63,7 +63,8 @@ public class StringFormat {
             "/v1/channels/*",
             "/v1/channels/search",
             "/v1/channels/*/boards",
-            "/v1/channels/*/boards/*"
+            "/v1/channels/*/boards/*",
+            "/v1/channels/board/*/votes"
     };
 
     // 리그 URI
