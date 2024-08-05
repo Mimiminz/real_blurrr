@@ -23,6 +23,7 @@ import {
   fetchLeaugueLikeState,
 } from "@/api/board";
 import { formatPostDate } from "@/utils/formatPostDate";
+import Loading from "@/components/common/UI/Loading";
 
 export default function BoardDetailPage({
   params,
@@ -143,7 +144,7 @@ export default function BoardDetailPage({
   };
 
   if (loading || !boardDetail || !commentList) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   console.log(boardDetail.createdAt);

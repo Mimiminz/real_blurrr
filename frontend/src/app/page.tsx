@@ -30,6 +30,7 @@ import { fetchFollowingChannels } from "@/api/channel";
 import { Channels } from "@/types/channelType";
 import { UserLeague, LeagueList as LeagueListType } from "@/types/leagueTypes";
 import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+import Loading from "@/components/common/UI/Loading";
 
 export default function Home() {
   const router = useRouter();
@@ -130,7 +131,7 @@ export default function Home() {
   };
 
   if (!hotBoards) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   return (

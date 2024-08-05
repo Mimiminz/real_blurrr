@@ -28,6 +28,7 @@ import {
 } from "@/api/league";
 import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
 import PaginationComponent from "@/components/common/UI/Pagination";
+import Loading from "@/components/common/UI/Loading";
 
 export default function LeaguePage({
   params,
@@ -237,7 +238,7 @@ export default function LeaguePage({
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
