@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
-import LeagueMentionListItem from "./LeagueMEntionListItem";
+import LeagueMentionListItem from "./LeagueMentionListItem";
 
 import { LeagueMentionListProps } from "@/types/leagueTypes";
 import { useLeagueStore } from "@/store/leagueStore";
