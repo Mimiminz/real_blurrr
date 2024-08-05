@@ -6,6 +6,7 @@ stages:
   - deploy
 
 before_script:
+  - sudo rm /etc/apt/sources.list.d/certbot-ubuntu-certbot-focal.list || true
   # 자바 17 설치
   - apt-get update
   - apt-get install -y curl
@@ -91,7 +92,7 @@ deploy_frontend:
     - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "
       curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&
-      sudo apt-get install -y nodejs &&
+      sudo apt-get install -y nodejs npm &&
       export PATH=\$PATH:/usr/bin/nodejs &&
       cd /home/ubuntu/app/frontend &&
       npm install &&
