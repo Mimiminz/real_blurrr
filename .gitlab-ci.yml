@@ -5,8 +5,6 @@ stages:
   - deploy
 
 before_script:
-  # PPA 문제 해결
-  - sudo rm /etc/apt/sources.list.d/certbot-ubuntu-certbot-focal.list || true
   - apt-get update || { echo "apt-get update failed"; exit 1; }
   - apt-get install -y curl
 
