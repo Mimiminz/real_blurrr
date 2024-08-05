@@ -27,6 +27,7 @@ import {
   fetchMentionBoardList,
 } from "@/api/league";
 import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
+import PaginationComponent from "@/components/common/UI/Pagination";
 
 export default function LeaguePage({
   params,
@@ -58,6 +59,10 @@ export default function LeaguePage({
     MentionChannelList[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(2);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -142,7 +147,8 @@ export default function LeaguePage({
         const boardData = await fetchLeagueBoardList(
           findActiveTab.id,
           criteria,
-          findActiveTab.type
+          findActiveTab.type,
+          currentPage - 1
         );
         setBoardList(boardData);
         setLoading(false);
@@ -154,7 +160,8 @@ export default function LeaguePage({
         if (findActiveTab) {
           const boardData = await fetchMentionBoardList(
             findActiveTab.id,
-            criteria
+            criteria,
+            currentPage - 1
           );
           setMentionBoardList(boardData);
           setLoading(false);
@@ -167,12 +174,17 @@ export default function LeaguePage({
     };
 
     loadBoardData();
-  }, [brandLeagueList, userLeagueList, leagueName, criteria, setActiveTab]);
+  }, [
+    brandLeagueList,
+    userLeagueList,
+    leagueName,
+    criteria,
+    setActiveTab,
+    currentPage,
+  ]);
 
-  const handleCriteriaChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setCriteria(event.target.value);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleWriteClick = () => {
@@ -274,6 +286,11 @@ export default function LeaguePage({
       ) : (
         <LeagueBoardList leagueName={leagueName} boardList={boardList} />
       )}
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </Container>
   );
 }

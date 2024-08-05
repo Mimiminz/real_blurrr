@@ -15,7 +15,7 @@ export default function MoreBrandTab({
   const [showMoreTabs, setShowMoreTabs] = useState(false);
 
   const title = activeTabName?.includes("mention")
-    ? `채널에서 ${activeTabName.split("mention")[1]}이 멘션된 글`
+    ? `채널에서 ${activeTabName.split("mention")[1]} 리그가 멘션된 글`
     : `${activeTabName} 리그`;
 
   const handleToggleMoreTabs = () => {

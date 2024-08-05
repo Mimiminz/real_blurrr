@@ -48,12 +48,13 @@ export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
 export const fetchLeagueBoardList = async (
   leagueId: string,
   criteria: string,
-  leagueType: string
+  leagueType: string,
+  pageNumber: number
 ): Promise<LeagueBoardItem[]> => {
   try {
     console.log(leagueType);
     const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
-      params: { leagueType, criteria },
+      params: { leagueType, criteria, pageNumber },
     });
     if (response.status === 204) {
       return [];
@@ -68,11 +69,12 @@ export const fetchLeagueBoardList = async (
 // 채널에서 멘션된 글을 가져오는 함수
 export const fetchMentionBoardList = async (
   leagueId: string,
-  criteria: string
+  criteria: string,
+  pageNumber: number
 ): Promise<MentionChannelList[]> => {
   try {
     const response = await api.get(`/v1/leagues/${leagueId}/mentions`, {
-      params: { criteria },
+      params: { criteria, pageNumber },
     });
     if (response.status === 204) {
       return [];
