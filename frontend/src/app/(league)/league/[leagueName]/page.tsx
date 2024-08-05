@@ -130,6 +130,9 @@ export default function LeaguePage({
 
   useEffect(() => {
     const loadBoardData = async () => {
+      if (!initialized) {
+        return;
+      }
       const findActiveTab =
         brandLeagueList.find((t) => t.name === leagueName) ||
         userLeagueList.find((t) => t.name === leagueName);
@@ -155,6 +158,10 @@ export default function LeaguePage({
           );
           setMentionBoardList(boardData);
           setLoading(false);
+        } else {
+          alert("인증받지 못한 리그입니다. 자동차 인증을 해 주세요.");
+          router.back();
+          return;
         }
       }
     };
