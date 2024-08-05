@@ -5,6 +5,7 @@ import { WiTime4 } from "react-icons/wi";
 import CreateComment from "@/components/common/UI/comment/CreateComment";
 
 import { CommentListItemProps } from "@/types/commentTypes";
+import { useAuthStore } from "@/store/authStore";
 
 const CommentListItem: React.FC<CommentListItemProps> = ({
   id,
@@ -19,6 +20,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
   leagueId,
 }) => {
   const [showReply, setShowReply] = useState(false);
+  const { isLoggedIn, user } = useAuthStore();
 
   const handleDelete = async () => {
     try {
@@ -63,10 +65,14 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>
-          <Reply onClick={handleReplyToggle}>
-            {showReply ? "닫기" : "답글"}
-          </Reply>
-          <Delete onClick={handleDelete}>삭제</Delete>
+          {isLoggedIn && (
+            <Reply onClick={handleReplyToggle}>
+              {showReply ? "닫기" : "답글"}
+            </Reply>
+          )}
+          {userName === user?.nickname && (
+            <Delete onClick={handleDelete}>삭제</Delete>
+          )}
           <Time>
             <WiTime4 style={{ marginRight: "4px", verticalAlign: "middle" }} />
             {formatPostDate(time)}
