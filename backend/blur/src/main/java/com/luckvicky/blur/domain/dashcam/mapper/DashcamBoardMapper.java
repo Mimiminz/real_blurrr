@@ -47,19 +47,11 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, boolean isLiked) {
         List<String> videoUrls = dashcam.getVideos().stream()
                 .map(Video::getUrl)
                 .collect(Collectors.toList());
 
-        List<OptionDto> optionDtos = dashcam.getOptions().stream()
-                .map(option -> OptionDto.builder()
-                        .id(option.getId())
-                        .optionOrder(option.getOptionOrder())
-                        .content(option.getContent())
-                        .voteCount(option.getVoteCount())
-                        .build())
-                .collect(Collectors.toList());
 
         List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(dashcam).stream()
                 .map(MentionDto::of)
@@ -77,8 +69,8 @@ public class DashcamBoardMapper {
                 .voteCount(dashcam.getTotalVoteCount())
                 .videoUrl(videoUrls)
                 .content(dashcam.getContent())
-                .options(optionDtos)
                 .mentionedLeagues(mentionedLeagues)
+                .isLiked(isLiked)
                 .build();
     }
 

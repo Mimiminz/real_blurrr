@@ -11,6 +11,7 @@ import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,11 +84,12 @@ public class DashcamBoardController {
 
 
     @Operation(summary = "블랙박스 게시글 상세 조회 API",
-            description = "특정 게시글에 대한 본문, 투표, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용")
+            description = "특정 게시글에 대한 본문, 조회수를 조회한다. \n 댓글 조회는 '/v1/boards/{boardId}/comments' 활용. \n 투표 조회는 '/v1/channels/board/{boardId}/votes' 활용")
     @GetMapping("/{boardId}")
     public ResponseEntity<DashcamBoardResponse> getDashcamBoard(
-            @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId) {
-        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(boardId);
+            @Parameter(description = "게시글 ID", required = true) @PathVariable UUID boardId,
+            @NullableAuthUser ContextMember nullableMember) {
+        DashcamBoardDetailDto boardDto = dashcamBoardService.getDashcamBoardById(boardId, nullableMember);
         return ResponseEntity.ok(DashcamBoardResponse.of(boardDto));
     }
 
