@@ -99,7 +99,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ChannelBoardDetailDto getBoardDetail(UUID boardId, UUID memberId) {
 
 
@@ -108,6 +108,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
 
+        board.increaseViewCount();
 
         return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), isLike(memberId, board));
 
