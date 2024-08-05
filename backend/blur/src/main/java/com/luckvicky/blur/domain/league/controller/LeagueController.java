@@ -1,9 +1,5 @@
 package com.luckvicky.blur.domain.league.controller;
 
-import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_BRAND;
-import static com.luckvicky.blur.global.constant.StringFormat.LEAGUE_TYPE_MODEL;
-
-import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
 import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;
@@ -12,13 +8,8 @@ import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,110 +28,50 @@ public class LeagueController {
 
     private final LeagueService leagueService;
 
-    @Operation(
-            summary = "리그 생성 API",
-            description = "리그 이름, 유형을 받아 생성한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "리그 생성 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "리그 생성 실패"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "토큰 관련 문제"
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "접근 권한 없음"
-            )
-    })
+    @Operation(summary = "리그 생성 API", description = "리그 이름, 유형을 받아 생성한다.")
     @PostMapping
-    public ResponseEntity createLeague(
+    public ResponseEntity<Result<Boolean>> createLeague(
             @RequestBody LeagueCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueService.createLeague(request))
-                        .build()
+                Result.of(leagueService.createLeague(request))
         );
 
     }
 
-    @Operation(
-            summary = "리그 조회 API",
-            description = "리그 목록을 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 완료 응답",
-                    content = @Content(schema = @Schema(implementation = LeagueListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "조회 완료 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "토큰 관련 문제"
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "접근 권한 없음"
-            )
-    })
+    @Operation(summary = "리그 조회 API", description = "리그 목록을 조회한다.")
     @Parameter(
-            name = "leagueType",
-            description = "조회할 리그 유형",
+            name = "leagueType", description = "조회할 리그 유형",
             examples = {
-                    @ExampleObject(name = "brand", value = LEAGUE_TYPE_BRAND, description = "브랜드"),
-                    @ExampleObject(name = "model", value = LEAGUE_TYPE_MODEL, description = "모델 ")
+                    @ExampleObject(name = "brand", value = "BRAND", description = "브랜드"),
+                    @ExampleObject(name = "model", value ="MODEL", description = "모델 ")
             }
     )
     @GetMapping
-    public ResponseEntity getLeagues(
+    public ResponseEntity<Result<LeagueListResponse>> getLeagues(
             @RequestParam(name = "leagueType") String leagueType
     ) {
 
-        List<LeagueDto> leagues = leagueService.getLeagues(leagueType);
+        LeagueListResponse response = leagueService.getLeagues(leagueType);
 
-        if (Objects.isNull(leagues) || leagues.isEmpty()) {
+        if (Objects.isNull(response.leagues()) || response.leagues().isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.builder().build()
+                    Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(LeagueListResponse.of(leagues))
-                        .build()
+                Result.of(response)
         );
 
     }
 
-    @Operation(
-            summary = "리그 랭킹 조회 API",
-            description = "리그 인원수를 기준으로 내림차순 조회한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 완료 응답",
-                    content = @Content(schema = @Schema(implementation = LeagueRankingResponse.class))
-            )
-    })
+    @Operation(summary = "리그 랭킹 조회 API", description = "리그 인원수를 기준으로 내림차순 조회한다.")
     @GetMapping("/ranking")
-    public ResponseEntity getLeagueRanking() {
+    public ResponseEntity<Result<LeagueRankingResponse>> getLeagueRanking() {
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(LeagueRankingResponse.of(leagueService.getLeagueRanking()))
-                        .build()
+                Result.of(leagueService.getLeagueRanking())
         );
     }
 

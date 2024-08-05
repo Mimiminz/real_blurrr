@@ -7,6 +7,8 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
 import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
 import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
+import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
+import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
@@ -31,17 +33,20 @@ public class LeagueServiceImpl implements LeagueService {
     private final LeagueRepository leagueRepository;
 
     @Override
-    public List<LeagueDto> getLeagues(String leagueType) {
+    public LeagueListResponse getLeagues(String leagueType) {
 
         List<League> leagues = leagueRepository.findAllByType(LeagueType.convertToEnum(leagueType));
 
-        return leagues.stream()
-                .map(league -> mapper.map(league, LeagueDto.class))
-                .collect(Collectors.toList());
+        return LeagueListResponse.of(
+                leagues.stream()
+                        .map(league -> mapper.map(league, LeagueDto.class))
+                        .collect(Collectors.toList())
+        );
+
     }
 
     @Override
-    public List<LeagueDto> getLeagueRanking() {
+    public LeagueRankingResponse getLeagueRanking() {
 
         Pageable pageable = PageRequest.of(
                 ZERO,
@@ -49,11 +54,11 @@ public class LeagueServiceImpl implements LeagueService {
                 Sort.by(Direction.DESC, SortingCriteria.PEOPLE.getCriteria())
         );
 
-        return leagueRepository.findAll(pageable)
-                .getContent()
-                .stream()
-                .map(league -> mapper.map(league, LeagueDto.class))
-                .collect(Collectors.toList());
+        return LeagueRankingResponse.of(
+                leagueRepository.findAll(pageable).getContent().stream()
+                        .map(league -> mapper.map(league, LeagueDto.class))
+                        .collect(Collectors.toList())
+        );
 
     }
 

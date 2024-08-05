@@ -38,105 +38,46 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @Operation(
-            summary = "댓글 작성 API",
-            description = "사용자와 게시글 고유 식별자를 받아 댓글을 생성한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "생성 완료"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 사용자, 게시글에 의해 생성 실패"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "DB 저장 실패"
-            )
-    })
+    @Operation(summary = "댓글 작성 API", description = "사용자와 게시글 고유 식별자를 받아 댓글을 생성한다.")
     @PostMapping
-    public ResponseEntity createComment(
+    public ResponseEntity<Result<Boolean>> createComment(
             @AuthUser ContextMember member,
             @RequestBody CommentCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(commentService.createComment(member.getId(), request))
-                        .build()
+                Result.of(commentService.createComment(member.getId(), request))
         );
 
     }
 
-    @Operation(
-            summary = "대댓글 작성 API",
-            description = "댓글, 사용자, 게시글 고유 식별자를 받아 대댓글을 생성한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "생성 완료"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 사용자, 게시글, 댓글에 의해 생성 실패"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "DB 저장 실패"
-            )
-    })
+    @Operation(summary = "대댓글 작성 API", description = "댓글, 사용자, 게시글 고유 식별자를 받아 대댓글을 생성한다.")
     @Parameter(name = "commentId", description = "댓글 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/{commentId}")
-    public ResponseEntity createReply(
+    public ResponseEntity<Result<Boolean>> createReply(
             @AuthUser ContextMember member,
             @PathVariable(name = "commentId") UUID commentId,
             @RequestBody ReplyCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(commentService.createReply(member.getId(), commentId, request))
-                        .build()
+                Result.of(commentService.createReply(member.getId(), commentId, request))
         );
 
     }
 
-    @Operation(
-            summary = "댓글 삭제 API",
-            description = "댓글, 게시글 고유 식별값을 받아 일치하는 댓글을 삭제한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "삭제 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 댓글, 게시글"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "DB 삭제 실패"
-            ),
-    })
+    @Operation(summary = "댓글 삭제 API", description = "댓글, 게시글 고유 식별값을 받아 일치하는 댓글을 삭제한다.")
     @Parameters({
             @Parameter(name = "commentId", description = "댓글 고유 식별값"),
             @Parameter(name = "boardId", description = "게시글 고유 식별값")
     })
     @PutMapping("/{commentId}/boards/{boardId}")
-    public ResponseEntity deleteComment(
+    public ResponseEntity<Result<Boolean>> deleteComment(
             @PathVariable(name = "commentId") UUID commentId,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(commentService.deleteComment(commentId, boardId))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(commentService.deleteComment(commentId, boardId)));
 
     }
 
