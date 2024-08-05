@@ -9,6 +9,7 @@ import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -121,10 +122,10 @@ public class ChannelBoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<Result<ChannelBoardDetailResponse>> getBoardDetail(
             @PathVariable(name = "boardId") UUID boardId,
-            @AuthUser ContextMember contextMember
+            @NullableAuthUser ContextMember nullableMember
     ) {
 
-        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId, contextMember.getId());
+        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId, nullableMember);
 
         return ResponseUtil.ok(
                 Result.of(ChannelBoardDetailResponse.of(boardDetail))
