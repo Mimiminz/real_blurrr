@@ -41,58 +41,29 @@ public class LeagueLikeController {
     private final LeagueLikeService leagueLikeService;
 
     @Operation(summary = "좋아요 생성", description = "사용자, 게시글 고유 식별값을 받아 좋아요 생성")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201", description = "좋아요 생성 완료",
-                    content = @Content(schema = @Schema(implementation = LikeCreateResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(responseCode = "404", description = NOT_EXIST_MEMBER_MESSAGE + "or" + NOT_EXIST_BOARD_MESSAGE),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_LIKE_MESSAGE)
-    })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/boards/{boardId}")
-    public ResponseEntity createLike(
+    public ResponseEntity<Result<LikeCreateResponse>> createLike(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueLikeService.createLike(member.getId(), boardId))
-                        .build()
+                Result.of(leagueLikeService.createLike(member.getId(), boardId))
         );
 
     }
 
     @Operation(summary = "좋아요 삭제", description = "사용자, 게시글 고유 식별값을 받아 좋아요 삭제")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "좋아요 삭제 완료",
-                    content = @Content(schema = @Schema(implementation = LikeDeleteResponse.class))
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = NOT_EXIST_MEMBER_MESSAGE + "or"
-                            + NOT_EXIST_BOARD_MESSAGE + "or"
-                            + NOT_EXIST_LIKE_MESSAGE
-            ),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_DELETE_LIKE_MESSAGE)
-    })
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @DeleteMapping("/boards/{boardId}")
-    public ResponseEntity deleteLike(
+    public ResponseEntity<Result<LikeDeleteResponse>> deleteLike(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(leagueLikeService.deleteLike(member.getId(), boardId))
-                        .build()
+                Result.of(leagueLikeService.deleteLike(member.getId(), boardId))
         );
 
     }

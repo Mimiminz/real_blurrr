@@ -8,6 +8,7 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
 import com.luckvicky.blur.domain.leaguemember.model.dto.request.LeagueMemberCreateRequest;
+import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -71,14 +72,16 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<LeagueMemberDto> findLeagueMemberByMember(UUID memberId) {
+    public LeagueMemberListResponse findLeagueMemberByMember(UUID memberId) {
 
         Member member = memberRepository.getOrThrow(memberId);
         List<LeagueMember> leagueMembers = leagueMemberRepository.findAllByMember(member);
 
-        return leagueMembers.stream()
-                .map(league -> mapper.map(league, LeagueMemberDto.class))
-                .collect(Collectors.toList());
+        return LeagueMemberListResponse.of(
+                leagueMembers.stream()
+                        .map(league -> mapper.map(league, LeagueMemberDto.class))
+                        .collect(Collectors.toList())
+        );
 
     }
 

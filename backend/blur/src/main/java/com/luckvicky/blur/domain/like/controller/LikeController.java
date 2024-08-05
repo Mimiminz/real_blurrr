@@ -2,6 +2,8 @@ package com.luckvicky.blur.domain.like.controller;
 
 import static com.luckvicky.blur.global.constant.ErrorMessage.*;
 
+import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
+import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
 import com.luckvicky.blur.domain.like.service.LikeService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,64 +33,27 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @Operation(
-            summary = "좋아요 생성",
-            description = "사용자, 게시글 고유 식별값을 받아 좋아요 생성"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "좋아요 생성 완료"
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "404", description = NOT_EXIST_MEMBER_MESSAGE + "or" + NOT_EXIST_BOARD_MESSAGE),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_LIKE_MESSAGE)
-    })
+    @Operation(summary = "좋아요 생성", description = "사용자, 게시글 고유 식별값을 받아 좋아요 생성")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @PostMapping("/boards/{boardId}")
-    public ResponseEntity createLike(
+    public ResponseEntity<Result<LikeCreateResponse>> createLike(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        return ResponseUtil.created(
-                Result.builder()
-                        .data(likeService.createLike(member.getId(), boardId))
-                        .build()
-        );
+        return ResponseUtil.created(Result.of(likeService.createLike(member.getId(), boardId)));
 
     }
 
-    @Operation(
-            summary = "좋아요 삭제",
-            description = "사용자, 게시글 고유 식별값을 받아 좋아요 삭제"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "좋아요 삭제 완료"
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = NOT_EXIST_MEMBER_MESSAGE + "or"
-                            + NOT_EXIST_BOARD_MESSAGE + "or"
-                            + NOT_EXIST_LIKE_MESSAGE
-            ),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_DELETE_LIKE_MESSAGE)
-    })
+    @Operation(summary = "좋아요 삭제", description = "사용자, 게시글 고유 식별값을 받아 좋아요 삭제")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @DeleteMapping("/boards/{boardId}")
-    public ResponseEntity deleteLike(
+    public ResponseEntity<Result<LikeDeleteResponse>> deleteLike(
             @AuthUser ContextMember member,
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(likeService.deleteLike(member.getId(), boardId))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(likeService.deleteLike(member.getId(), boardId)));
 
     }
 

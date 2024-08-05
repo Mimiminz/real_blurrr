@@ -38,9 +38,6 @@ public class StringFormat {
 
     public static final String REDISSON_ADDRESS = "redis://localhost:6379";
 
-    public static final String LEAGUE_TYPE_MODEL = "MODEL";
-    public static final String LEAGUE_TYPE_BRAND = "BRAND";
-
     // Utility 관련 URI
     public static final String[] UTILITY_URI = {
             "/v3/api-docs/**",
