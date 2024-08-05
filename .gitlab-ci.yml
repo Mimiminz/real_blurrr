@@ -21,11 +21,11 @@ before_script:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-  # Node.js와 npm 설치 추가 (Node.js 18.x)
-  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-  - apt-get install -y nodejs
-  - node -v
-  - npm -v
+  # # Node.js와 npm 설치 추가 (Node.js 18.x)
+  # - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+  # - apt-get install -y nodejs
+  # - node -v
+  # - npm -v
 
 # frontend_build:
 #   stage: frontend_build
@@ -76,25 +76,25 @@ backend_build:
   only:
     - dev
 
-deploy_frontend:
-  stage: deploy
-  script:
-    - echo "Deploying frontend..."
-    - apt-get update
-    - apt-get install -y openssh-client curl
-    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-    - apt-get install -y nodejs
-    - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-    - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && npm install && nohup npm start > frontend.log 2>&1 &"
-  needs: ["frontend_build"]
-  tags:
-    - blurrr-deploy
-  only:
-    - dev
+# deploy_frontend:
+#   stage: deploy
+#   script:
+#     - echo "Deploying frontend..."
+#     - apt-get update
+#     - apt-get install -y openssh-client curl
+#     - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+#     - apt-get install -y nodejs
+#     - mkdir -p ~/.ssh
+#     - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+#     - scp -r -i ~/.ssh/id_rsa frontend/.next ubuntu@$SSH_HOST:/home/ubuntu/app/frontend
+#     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd /home/ubuntu/app/frontend && npm install && nohup npm start > frontend.log 2>&1 &"
+#   needs: ["frontend_build"]
+#   tags:
+#     - blurrr-deploy
+#   only:
+#     - dev
 
 deploy_backend:
   stage: deploy
