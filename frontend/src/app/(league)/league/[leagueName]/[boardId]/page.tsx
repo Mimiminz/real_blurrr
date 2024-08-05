@@ -22,6 +22,7 @@ import {
   fetchLeagueLikeDelete,
   fetchLeaugueLikeState,
 } from "@/api/board";
+// import { formatPostDate } from "@/utils/formatPostDate";
 
 export default function BoardDetailPage({
   params,
@@ -159,6 +160,8 @@ export default function BoardDetailPage({
   if (loading || !boardDetail || !commentList) {
     return <div>Loading...</div>;
   }
+
+  console.log(boardDetail.createdAt);
 
   return (
     <>
