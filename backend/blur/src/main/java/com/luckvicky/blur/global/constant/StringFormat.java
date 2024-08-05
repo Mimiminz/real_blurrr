@@ -78,7 +78,8 @@ public class StringFormat {
     public static final String[] BASIC_USER_URI = {
             "/v1/alarm/**",
             "/v1/members/**",
-            "/v1/boards/*/comments"
+            "/v1/boards/*/comments",
+            "/v1/channels/check/tags/*"
     };
 
     // 차량 인증 허용 URI (회원가입 O)

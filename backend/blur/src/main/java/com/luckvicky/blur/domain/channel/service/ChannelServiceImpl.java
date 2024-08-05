@@ -1,8 +1,10 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import com.amazonaws.services.ec2.model.TagDescription;
 import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
@@ -183,6 +185,17 @@ public class ChannelServiceImpl implements ChannelService {
         channelMemberFollowRepository.deleteById(findFollow.getId());
 
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TagDto> searchTagsByKeyword(String keyword) {
+        List<Tag> tags = tagRepository.findAllByNameContainingIgnoreCase(keyword);
+
+        return tags.stream()
+                .limit(5)
+                .map(TagDto::of)
+                .collect(Collectors.toList());
     }
 
 

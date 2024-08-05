@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.channel.service;
 
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ChannelService {
     ChannelDto getChannelById(UUID channelId, ContextMember nullableMember);
     boolean createFollow(UUID memberId, UUID channelId);
     boolean deleteFollow(UUID memberId, UUID channelId);
+
+    List<TagDto> searchTagsByKeyword(String keyword);
 }
