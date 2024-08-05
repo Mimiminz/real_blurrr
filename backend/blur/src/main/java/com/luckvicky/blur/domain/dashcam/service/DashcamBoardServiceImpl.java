@@ -31,9 +31,11 @@ import com.luckvicky.blur.domain.vote.model.entity.Option;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -124,16 +126,37 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<DashcamBoardListDto> getDashcamBoards(int pageNumber, SortingCriteria criteria) {
+    public PaginatedResponse<DashcamBoardListDto> getDashcamBoards(String keyword, int pageNumber, String criteria) {
 
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
         Pageable pageable = PageRequest.of(
                 pageNumber, DASHCAM_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, criteria.getCriteria())
+                Sort.by(Sort.Direction.DESC, sortingCriteria.getCriteria())
         );
 
-        List<DashCam> dashCamBoards = dashcamRepository.findAllByStatus(pageable, ActivateStatus.ACTIVE).getContent();
+        Page<DashCam> dashCamBoardPage;
 
-        return dashcamBoardMapper.toDashcamBoardListDtos(dashCamBoards);
+        if(keyword==null || keyword.trim().isEmpty()){
+            dashCamBoardPage = dashcamRepository.findAllByStatus(ActivateStatus.ACTIVE, pageable);
+        } else {
+            dashCamBoardPage = dashcamRepository.findAllByStatusAndTitleContainingOrContentContaining(
+                    ActivateStatus.ACTIVE,
+                    keyword,
+                    keyword,
+                    pageable
+            );
+        }
+
+        List<DashCam> dashCamBoards = dashCamBoardPage.getContent();
+        List<DashcamBoardListDto> dashcamBoardListDtos = dashcamBoardMapper.toDashcamBoardListDtos(dashCamBoards);
+
+        return PaginatedResponse.of(
+                dashcamBoardListDtos,
+                dashCamBoardPage.getNumber(),
+                dashCamBoardPage.getSize(),
+                dashCamBoardPage.getTotalElements(),
+                dashCamBoardPage.getTotalPages()
+        );
     }
 
     @Override
