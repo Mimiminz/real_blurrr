@@ -21,8 +21,8 @@ before_script:
   - echo "JAVA_HOME is set to $JAVA_HOME"
   - echo "PATH is set to $PATH"
 
-  # Node.js와 npm 설치 추가
-  - curl -sL https://deb.nodesource.com/setup_16.x | bash -
+  # Node.js와 npm 설치 추가 (Node.js 18.x)
+  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
   - apt-get install -y nodejs
   - node -v
   - npm -v
