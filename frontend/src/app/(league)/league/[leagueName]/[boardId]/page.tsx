@@ -22,7 +22,7 @@ import {
   fetchLeagueLikeDelete,
   fetchLeaugueLikeState,
 } from "@/api/board";
-// import { formatPostDate } from "@/utils/formatPostDate";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 export default function BoardDetailPage({
   params,
@@ -44,21 +44,6 @@ export default function BoardDetailPage({
   const [loading, setLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
 
   const loadBoardDetail = async () => {
     try {
