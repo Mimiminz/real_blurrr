@@ -7,6 +7,9 @@ import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
 import UserTab from "@/components/league/tab/UserTab";
 import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
+import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
+import PaginationComponent from "@/components/common/UI/Pagination";
+import Loading from "@/components/common/UI/Loading";
 
 import {
   LeagueBoardItem,
@@ -27,9 +30,6 @@ import {
   fetchUserLeagueList,
   fetchMentionBoardList,
 } from "@/api/league";
-import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
-import PaginationComponent from "@/components/common/UI/Pagination";
-import Loading from "@/components/common/UI/Loading";
 
 export default function LeaguePage({
   params,
