@@ -75,11 +75,10 @@ const NavBar = () => {
           <Spinner />
         ) : clientIsLoggedIn ? (
           <>
+            <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem>
+            <MenuItem><CgProfile onClick={() => router.push("/mypage")} /></MenuItem>
             <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
-            <IconWrapper>
-              <IoMdNotifications onClick={handleNotificationsClick} />
-              <CgProfile onClick={() => router.push("/mypage")} />
-            </IconWrapper>
+    
           </>
         ) : (
           <>
@@ -134,9 +133,12 @@ const MenuToggleBtn = styled.div`
 `;
 
 const Menu = styled.div`
+  display: flex;
+  flex-direction: column;
   font-size: 1rem;
   font-weight: bold;
-  display: flex;
+  justify-content: center;
+  text-align: center;
   align-items: center;
   gap: 20px;
 
@@ -150,7 +152,7 @@ const Menu = styled.div`
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
     padding: 20px 0;
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -161,21 +163,28 @@ const Menu = styled.div`
     max-height: 300px;
     opacity: 1;
     visibility: visible;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
   }
 
 `;
 
 const MenuItem = styled.div`
   cursor: pointer;
-  font-size: 15px;
-  margin: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  margin: 0 40px;
+  font-weight: 400;
+  text-align: left;
   a {
     color: black;
     text-decoration: none;
-  }
-
-  &:hover {
-    text-decoration: underline;
   }
 `;
 
@@ -205,11 +214,6 @@ const IconWrapper = styled.div`
   gap: 10px;
   align-items: center;
   cursor: pointer;
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
 `;
 
 const Spinner = styled.div`
