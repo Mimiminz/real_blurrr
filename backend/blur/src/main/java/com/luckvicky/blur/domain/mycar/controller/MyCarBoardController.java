@@ -41,7 +41,7 @@ public class MyCarBoardController {
         this.myCarBoardService = myCarBoardService;
     }
 
-    @Operation(description = "내 차 자랑 게시글 생성")
+    @Operation(summary = "내 차 자랑 게시글 생성")
     @PostMapping
     public ResponseEntity<Boolean> addMyCarBoard(
             @AuthUser ContextMember contextMember,
@@ -49,7 +49,7 @@ public class MyCarBoardController {
         return ResponseEntity.ok(myCarBoardService.createMyCarBoard(myCarCreateRequest, contextMember.getId()));
     }
 
-    @Operation(description = "내 차 자랑 리스트 조회")
+    @Operation(summary = "내 차 자랑 리스트 조회")
     @GetMapping
     public ResponseEntity findMyCars(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10,
@@ -57,7 +57,7 @@ public class MyCarBoardController {
         return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable)));
     }
 
-    @Operation(description = "차 자랑 상세 조회")
+    @Operation(summary = "차 자랑 상세 조회")
     @GetMapping("/{id}")
     public ResponseEntity findMyCarDetail(
             @PathVariable(name = "id") UUID id,
