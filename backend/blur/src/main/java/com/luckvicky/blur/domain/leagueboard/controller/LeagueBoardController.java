@@ -10,7 +10,6 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreat
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -170,6 +169,8 @@ public class LeagueBoardController {
 
     }
 
+<<<<<<< backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/controller/LeagueBoardController.java
+=======
     @Operation(summary = "게시글 좋아요 상태 조회", description = "사용자, 게시글 고유 식별값을 받아 좋아요 상태를 조회한다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @GetMapping("/boards/{boardId}/likes")
@@ -182,6 +183,7 @@ public class LeagueBoardController {
         
     }
 
+>>>>>>> backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/controller/LeagueBoardController.java
     @Operation(summary = "리그 게시글 댓글 목록 조회 API", description = "리그 게시물의 댓글 목록을 가져온다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember

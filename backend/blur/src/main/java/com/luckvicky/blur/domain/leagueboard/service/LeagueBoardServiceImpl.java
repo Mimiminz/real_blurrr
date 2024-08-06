@@ -28,7 +28,6 @@ import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
 import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueException;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -128,20 +127,9 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         board.increaseViewCount();
 
-        return LeagueBoardDetailResponse.of(mapper.map(board, LeagueBoardDetailDto.class));
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public LeagueBoardLikeResponse getBoardLike(UUID memberId, UUID boardId) {
-
-        Member member = memberRepository.getOrThrow(memberId);
-        LeagueBoard board = leagueBoardRepository.getOrThrow(boardId);
-
-        isAllocatedLeague(board.getLeague(), member);
-
-        return LeagueBoardLikeResponse.of(board.getLikeCount(), isLike(member, board));
+        return LeagueBoardDetailResponse.of(
+                LeagueBoardDetailDto.of(board, isLike(member,  board))
+        );
 
     }
 
