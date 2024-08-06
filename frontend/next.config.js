@@ -1,9 +1,9 @@
 module.exports = {
-<<<<<<< HEAD
   // reactStrictMode: false,
   compiler: {
     styledComponents: true,
   },
+  output: "standalone",
   async headers() {
     return [
       {
@@ -18,10 +18,4 @@ module.exports = {
       },
     ];
   },
-=======
-  compiler: {
-    styledComponents: true,
-  },
-  output: "standalone",
->>>>>>> dev
 };
