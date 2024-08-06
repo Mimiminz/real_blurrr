@@ -4,6 +4,76 @@ import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { DashCamContentData } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
 
+const DashCamContent: React.FC<DashCamContentData> = ({
+   id, member, title, createdAt, videoUrl, content, mentionedLeagues
+}) => {
+   const [isLiked, setIsLiked] = useState(false);
+
+   const toggleLike = () => {
+      setIsLiked(!isLiked);
+   };
+
+   const formatPostDate = (createdAt: string) => {
+      const postDate = new Date(createdAt);
+      const today = new Date();
+
+      if (postDate.toDateString() === today.toDateString()) {
+         return postDate.toLocaleTimeString([], {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+         });
+      } else {
+         return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+      }
+   };
+
+   return (
+      <Container>
+         <Title>
+            <h3>{title}</h3>
+         </Title>
+         <Header>
+            <User>
+               <Avatar src={member.profileUrl} alt={`${member.nickname}'s avatar`} />
+               <UserInfo>
+                  <Username>{member.nickname}</Username>
+                  <CarInfo>{!member.carTitle ? "뚜벅이" : member.carTitle}</CarInfo>
+               </UserInfo>
+            </User>
+            <TimeSection>
+               <Icon>
+                  <MdAccessTime />
+               </Icon>
+               <FormatDate>{formatPostDate(createdAt)}</FormatDate>
+            </TimeSection>
+         </Header>
+         <Body>
+            <Tags>
+               {mentionedLeagues.map((league, index) => (
+                  <Tag key={index}>@ {league.name}</Tag>
+               ))}
+            </Tags>
+            <VideoContainer>
+               {videoUrl.map((url, index) => (
+                  <VideoWrapper key={index}>
+                     <video controls autoPlay loop>
+                        <source src={url} type="video/mp4" />
+                     </video>
+                  </VideoWrapper>
+               ))}
+            </VideoContainer>
+            <Content>
+               {content}
+            </Content>
+            <HeartButton onClick={toggleLike}>
+               {isLiked ? <FaHeart /> : <FaRegHeart />}
+            </HeartButton>
+         </Body>
+      </Container>
+   );
+};
+
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
@@ -37,12 +107,13 @@ const User = styled.div`
   align-items: center;
 `;
 
-const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
+const Avatar = styled.img`
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   background-color: #c4c4c4;
   margin-right: 8px;
+  object-fit: cover;
 `;
 
 const UserInfo = styled.div`
@@ -56,7 +127,7 @@ const Username = styled.div`
 
 const CarInfo = styled.div`
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 4px;
 `;
 
@@ -79,6 +150,13 @@ const Tag = styled.span`
 
 const VideoContainer = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const VideoWrapper = styled.div`
+  width: 100%;
 
   video {
     width: 100%;
@@ -92,6 +170,7 @@ const Content = styled.div`
   color: #333;
   border-top: 1px solid #e0e0e0;
   padding-top: 15px;
+  margin-top: 15px;
 `;
 
 const Icon = styled.span`
@@ -104,7 +183,7 @@ const Icon = styled.span`
 `;
 
 const HeartButton = styled.button`
-  margin: 5px 1px 5px auto;
+  margin: 30px 1px 0px auto;
   background: none;
   border: none;
   cursor: pointer;
@@ -127,71 +206,5 @@ const TimeSection = styled.span`
   color: ${({ theme }) => theme.colors.subDiscription};
   font-size: 14px;
 `;
-
-const DashCamContent: React.FC<DashCamContentData> = ({
-   id, member, title, createdAt, videoUrl, content, mentionedLeagues
-}) => {
-   const [isLiked, setIsLiked] = useState(false);
-
-   const toggleLike = () => {
-      setIsLiked(!isLiked);
-   };
-
-   const formatPostDate = (createdAt: string) => {
-      const postDate = new Date(createdAt);
-      const today = new Date();
-
-      if (postDate.toDateString() === today.toDateString()) {
-         return postDate.toLocaleTimeString([], {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-         });
-      } else {
-         return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-      }
-   };
-
-   return (
-      <Container>
-         <Title>
-            <h2>{title}</h2>
-         </Title>
-         <Header>
-            <User>
-               <Avatar />
-               <UserInfo>
-                  <Username>{member.nickname}</Username>
-                  <CarInfo>{member.carTitle}</CarInfo>
-               </UserInfo>
-            </User>
-            <TimeSection>
-               <Icon>
-                  <MdAccessTime />
-               </Icon>
-               <FormatDate>{formatPostDate(createdAt)}</FormatDate>
-            </TimeSection>
-         </Header>
-         <Body>
-            <Tags>
-               {mentionedLeagues.map((league, index) => (
-                  <Tag key={index}>@ {league.name}</Tag>
-               ))}
-            </Tags>
-            <VideoContainer>
-               <video controls autoPlay loop>
-                  <source src={videoUrl[0]} type="video/mp4" />
-               </video>
-            </VideoContainer>
-            <HeartButton onClick={toggleLike}>
-               {isLiked ? <FaHeart /> : <FaRegHeart />}
-            </HeartButton>
-            <Content>
-               {content}
-            </Content>
-         </Body>
-      </Container>
-   );
-};
 
 export default DashCamContent;

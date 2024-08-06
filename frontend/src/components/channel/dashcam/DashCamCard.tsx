@@ -1,12 +1,69 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FiEye } from "react-icons/fi";
 import { FiHeart } from "react-icons/fi";
-import { DashCams } from '@/types/channelType';
+import { DashCam } from '@/types/channelType';
 
 interface DashCamCardProps {
-  dashCamTitle: DashCams;
+  dashCamTitle: DashCam;
 }
+
+const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
+  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [isOverflow, setIsOverflow] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // 클라이언트 측에서만 실행되도록 설정
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && titleRef.current) {
+      const isOverflowing = titleRef.current.scrollWidth > titleRef.current.clientWidth;
+      setIsOverflow(isOverflowing);
+    }
+  }, [title, isClient]);
+
+  const formatPostDate = (createdAt: string) => {
+    const postDate = new Date(createdAt);
+    const today = new Date();
+
+    if (postDate.toDateString() === today.toDateString()) {
+      return postDate.toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+    }
+  };
+
+  return (
+    <Card>
+      <ThumbnailContainer>
+        <Thumbnail src={videoUrl[0]} alt={title} onError={(e) => (e.currentTarget.style.display = 'none')} />
+      </ThumbnailContainer>
+      <Content>
+        <Tags>
+          {mentionedLeagues.map((league, index) => (
+            <span key={index}>@ {league.name}</span>
+          ))}
+        </Tags>
+        <TitleContainer suppressHydrationWarning={true}>
+          <Title ref={titleRef} className={isOverflow ? 'scroll' : ''}>{title}</Title>
+        </TitleContainer>
+        <Meta>
+          <span><FiEye /> {viewCount}</span>
+          <span><FiHeart /> {likeCount}</span>
+          <span className="created">{formatPostDate(createdAt)}</span>
+        </Meta>
+      </Content>
+    </Card>
+  );
+};
 
 const Card = styled.div`
   width: 100%;
@@ -16,9 +73,18 @@ const Card = styled.div`
   box-shadow: 0 4px 6px rgba(141, 141, 141, 0.1);
 `;
 
+const ThumbnailContainer = styled.div`
+  width: 100%;
+  height: 200px; /* 고정된 높이 설정 */
+  background-color: #f1f1f1; /* 이미지가 없을 때 배경색 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Thumbnail = styled.img`
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
 `;
 
@@ -40,9 +106,35 @@ const Tags = styled.div`
   }
 `;
 
+const TitleContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  display: flex;
+`;
+
 const Title = styled.h2`
   font-size: 18px;
   margin: 0 0 8px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+
+  &.scroll {
+    animation: scroll 10s linear infinite;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
 `;
 
 const Meta = styled.div`
@@ -61,47 +153,9 @@ const Meta = styled.div`
     margin-right: 4px;
   }
 
-  .created{
+  .created {
     margin-left: auto;
   }
 `;
-
-const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
-  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
-
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
-
-  return (
-    <Card>
-      <Thumbnail src={videoUrl[0]} alt={title} />
-      <Content>
-        <Tags>
-          {mentionedLeagues.map((league, index) => (
-            <span key={index}>@ {league.name}</span>
-          ))}
-        </Tags>
-        <Title>{title}</Title>
-        <Meta>
-          <span><FiEye /> {viewCount}</span>
-          <span><FiHeart /> {likeCount}</span>
-          <span className="created">{formatPostDate(createdAt)}</span>
-        </Meta>
-      </Content>
-    </Card>
-  );
-};
 
 export default DashCamCard;

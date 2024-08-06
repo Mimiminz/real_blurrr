@@ -12,37 +12,39 @@ import { fetchCommentList } from "@/api/comment";
 import { fetchComment } from "@/types/commentTypes";
 
 
-const Page = () => {
-   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
-   const { isLoggedIn, user } = useAuthStore();
+export default function ChannelDashCamDetailPage({ params }: {
+   params: { dashcamId: string };
+}) {
+   const dashCamDetailId = params.dashcamId;
+   const { isLoggedIn } = useAuthStore();
 
    const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
    const [commentList, setCommentList] = useState<fetchComment | null>(null);
 
    const loadDetail = useCallback(async () => {
       try {
-         const data = await fetchDashCamDetail(dashcamId); // API 호출
+         const data = await fetchDashCamDetail(dashCamDetailId); // API 호출
          setDashCamDetail(data);
       } catch (error) {
          console.error('Failed to load dash cam detail:', error);
-         // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
       }
-   }, [dashcamId]); // dashcamId를 의존성 배열에 포함
+   }, [dashCamDetailId]); // dashcamId를 의존성 배열에 포함
 
    const loadCommentDetail = useCallback(async () => {
       if (!isLoggedIn) return;
 
       try {
-         const fetchCommentsList = await fetchCommentList(dashcamId);
+         const fetchCommentsList = await fetchCommentList(dashCamDetailId);
          setCommentList(fetchCommentsList);
       } catch (error) {
          console.log(error);
       }
-   }, [dashcamId, isLoggedIn]);
+   }, [dashCamDetailId, isLoggedIn]);
 
    useEffect(() => {
       loadDetail();
-   }, [loadDetail]);
+      loadCommentDetail();
+   }, [loadDetail, loadCommentDetail]);
 
    if (!dashCamDetail) {
       return <div>Loading...</div>;
@@ -63,19 +65,19 @@ const Page = () => {
                      mentionedLeagues={dashCamDetail.mentionedLeagues} />
                </LeftColumn>
                <RightColumn>
+                  <VoteSection>
+                     <Vote />
+                  </VoteSection>
                   <CommentsSection>
                      <CommentList
                         comments={commentList?.comments || []}
                         commentCount={dashCamDetail.commentCount}
-                        boardId={dashcamId}
+                        boardId={dashCamDetailId}
                         leagueId=""
                         isLeague={false}
                         onCommentAdded={loadCommentDetail}
                      />
                   </CommentsSection>
-                  <VoteSection>
-                     <Vote />
-                  </VoteSection>
                </RightColumn>
             </InnerContentContainer>
          </ContentContainer>
@@ -100,7 +102,7 @@ const InnerContentContainer = styled.div`
 `;
 
 const LeftColumn = styled.div`
-  flex: 1.5;
+  flex: 1.3;
   margin-right: 8px;
   display: flex;
   flex-direction: column;
@@ -140,5 +142,3 @@ const VoteSection = styled.div`
 const CommentContainer = styled.div`
   margin: 16px 10px;
 `;
-
-export default Page;
