@@ -20,6 +20,7 @@ public class ErrorMessage {
     public static final String DUPLICATE_EMAIL_MESSAGE = "중복된 이메일이 존재합니다.";
     public static final String EXPIRED_EMAIL_CODE_MESSAGE = "인증 코드의 유효시간이 경과했습니다. 다시 시도해 주세요.";
     public static final String ALREADY_VOTED_MESSAGE = "이미 투표한 사용자입니다.";
+    public static final String KEYWORD_LIMIT_EXCEEDED_MESSAGE = "키워드는 최대 5개까지만 입력 가능합니다.";
 
     /**
      * [401 UnAuthorized]

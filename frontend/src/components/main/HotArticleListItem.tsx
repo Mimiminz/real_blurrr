@@ -53,7 +53,7 @@ const ArticleDetail = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #ebebeb3d;
+    background-color: #f9f9f9;
   }
 `;
 

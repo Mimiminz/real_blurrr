@@ -8,7 +8,6 @@ import static com.luckvicky.blur.global.constant.StringFormat.CONDITION_TITLE;
 import com.luckvicky.blur.domain.board.exception.FailToCreateBoardException;
 import com.luckvicky.blur.domain.board.exception.InValidSearchConditionException;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
-import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
@@ -19,6 +18,7 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDetailDto;
+import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
@@ -30,26 +30,23 @@ import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueExcept
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
-import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SearchCondition;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
-import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
-import java.util.List;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +84,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     }
 
     @Override
-    public LeagueBoardListResponse getLeagueBoards(
+    public PaginatedResponse<LeagueBoardDto> getLeagueBoards(
             ContextMember contextMember, UUID leagueId, String leagueType, int pageNumber, String criteria
     ) {
 
@@ -105,13 +102,17 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 Sort.by(Direction.DESC, SortingCriteria.valueOf(criteria).getCriteria())
         );
 
-        List<LeagueBoard> leagueBoards = leagueBoardRepository
-                .findAllByLeagueAndStatus(league, pageable, ActivateStatus.ACTIVE).getContent();
+        Page<LeagueBoard> paginatedResult = leagueBoardRepository
+                .findAllByLeagueAndStatus(league, pageable, ActivateStatus.ACTIVE);
 
-        return LeagueBoardListResponse.of(
-                leagueBoards.stream()
-                        .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
-                        .collect(Collectors.toList())
+        return PaginatedResponse.of(
+                paginatedResult.getContent().stream()
+                        .map(leagueBoard -> mapper.map(leagueBoard, LeagueBoardDto.class))
+                        .collect(Collectors.toList()),
+                paginatedResult.getNumber(),
+                paginatedResult.getSize(),
+                paginatedResult.getTotalElements(),
+                paginatedResult.getTotalPages()
         );
 
     }
@@ -146,7 +147,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public MentionLeagueListResponse getMentionLeagueBoards(
+    public PaginatedResponse<ChannelBoardDto> getMentionLeagueBoards(
             UUID leagueId, UUID memberId, int pageNumber, String criteria
     ) {
 
@@ -162,21 +163,30 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 Sort.by(Direction.DESC, sortingCriteria.getCriteria())
         );
 
-        List<ChannelBoard> mentionedChannelBoards = channelBoardRepository
+        Page<ChannelBoard> paginatedResult = channelBoardRepository
                 .findAllByMentionedLeague(mentionedLeague, ActivateStatus.ACTIVE, pageable);
 
-        return MentionLeagueListResponse.of(
-                mentionedChannelBoards.stream()
+        return PaginatedResponse.of(
+                paginatedResult.stream()
                         .map(board -> mapper.map(board, ChannelBoardDto.class))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                paginatedResult.getNumber(),
+                paginatedResult.getSize(),
+                paginatedResult.getTotalElements(),
+                paginatedResult.getTotalPages()
         );
 
     }
 
     @Override
-    public LeagueBoardListResponse search(UUID leagueId, String leagueType, String keyword, String condition,
+    public PaginatedResponse<LeagueBoardDto> search(
+            UUID leagueId,
+            String leagueType,
+            String keyword,
+            String condition,
             int pageNumber,
-            String criteria) {
+            String criteria
+    ) {
 
         League league = leagueRepository.getOrThrow(leagueId);
 
@@ -191,29 +201,32 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 Sort.by(Direction.DESC, sortingCriteria.getCriteria())
         );
 
-        List<LeagueBoard> leagueBoards;
+        Page<LeagueBoard> paginatedResult;
         switch (searchCondition.getCondition()) {
 
             case CONDITION_TITLE ->
-                    leagueBoards = leagueBoardRepository
-                            .findAllByLeagueAndTitleContainingIgnoreCase(league, keyword.toLowerCase(), pageable).getContent();
+                    paginatedResult = leagueBoardRepository
+                            .findAllByLeagueAndTitleContainingIgnoreCase(league, keyword.toLowerCase(), pageable);
             case CONDITION_CONTENT ->
-                    leagueBoards = leagueBoardRepository
-                            .findAllByLeagueAndContentContainingIgnoreCase(league, keyword.toLowerCase(), pageable).getContent();
+                    paginatedResult = leagueBoardRepository
+                            .findAllByLeagueAndContentContainingIgnoreCase(league, keyword.toLowerCase(), pageable);
             case CONDITION_NICKNAME ->
-                    leagueBoards = leagueBoardRepository
-                            .findAllByLeagueAndMemberNicknameContainingIgnoreCase(league, keyword.toLowerCase(), pageable).getContent();
+                    paginatedResult = leagueBoardRepository
+                            .findAllByLeagueAndMemberNicknameContainingIgnoreCase(league, keyword.toLowerCase(), pageable);
 
             default -> throw new InValidSearchConditionException();
 
         }
 
-        return LeagueBoardListResponse.of(
-                leagueBoards.stream()
-                        .map(leagueBoard -> mapper.map(leagueBoard, BoardDto.class))
-                        .collect(Collectors.toList())
+        return PaginatedResponse.of(
+                paginatedResult.getContent().stream()
+                        .map(leagueBoard -> mapper.map(leagueBoard, LeagueBoardDto.class))
+                        .collect(Collectors.toList()),
+                paginatedResult.getNumber(),
+                paginatedResult.getSize(),
+                paginatedResult.getTotalElements(),
+                paginatedResult.getTotalPages()
         );
-
     }
 
     private static void isEqualLeagueType(LeagueType reqeustType, LeagueType findLeagueType) {

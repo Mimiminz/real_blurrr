@@ -12,7 +12,7 @@ public interface ChannelService {
     List<ChannelDto> getAllChannels(ContextMember nullableMember);
     List<ChannelDto> getFollowedChannels(UUID memberId);
     List<ChannelDto> getCreatedChannels(UUID memberId);
-    List<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember);
+    List<ChannelDto> searchChannelsByKeywords(List<String> keywords, ContextMember nullableMember);
     ChannelDto getChannelById(UUID channelId, ContextMember nullableMember);
     boolean createFollow(UUID memberId, UUID channelId);
     boolean deleteFollow(UUID memberId, UUID channelId);

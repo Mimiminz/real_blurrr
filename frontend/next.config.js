@@ -1,4 +1,5 @@
 module.exports = {
+<<<<<<< HEAD
   // reactStrictMode: false,
   compiler: {
     styledComponents: true,
@@ -17,4 +18,10 @@ module.exports = {
       },
     ];
   },
+=======
+  compiler: {
+    styledComponents: true,
+  },
+  output: "standalone",
+>>>>>>> dev
 };
