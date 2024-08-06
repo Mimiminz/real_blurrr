@@ -4,74 +4,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
+import { useAuthStore } from "@/store/authStore";
 import {
   PostDetail,
   Comment as CommentProp,
-  CommentStatus,
 } from "@/types/channelType";
 import { fetchComment } from "@/types/commentTypes";
 import { fetchChannelPostDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
 
-const Content = styled.div`
-  font-size: 17px;
-  line-height: 1.5;
-  color: #333;
-  padding: 20px;
-  padding-bottom: 20px;
-  border-top: 1px solid #bebebe;
-`;
-
-const CommentNumber = styled.div`
-  svg {
-    margin-right: 5px;
-  }
-`;
-
-const CreateCommentContainer = styled.div`
-  margin: 16px 0px;
-`;
-
-const WriterContainer = styled.div`
-  display: flex;
-  justify-content: end;
-`;
-
-const WriterButton = styled.button`
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  background-color: white;
-  margin-right: 10px;
-  cursor: pointer;
-`;
-
-const CommentWrapper = styled.div`
-  width: 100%;
-`;
-
-const CommentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 20px 0px;
-  border-top: 1px solid #bebebe;
-`;
-
-const HeartButton = styled.button`
-  margin: 5px 0px 20px auto;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  color: #666;
-  display: flex;
-  justify-content: flex-end;
-
-  &:hover {
-    color: #666;
-  }
-`;
 
 export default function ChannelBoardDetailPage({
   params,
@@ -85,6 +27,7 @@ export default function ChannelBoardDetailPage({
   const [commentList, setCommentList] = useState<fetchComment | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isLoggedIn, user } = useAuthStore();
 
   const toggleLike = () => {
     setIsLiked((prevIsLiked) => !prevIsLiked);
@@ -115,20 +58,35 @@ export default function ChannelBoardDetailPage({
   }, [boardId, channelId]);
 
   const loadCommentDetail = useCallback(async () => {
+    if (!isLoggedIn) return;
+
     try {
-      const fetchcommentsList = await fetchCommentList(boardId);
-      setCommentList(fetchcommentsList);
+      const fetchCommentsList = await fetchCommentList(boardId);
+      setCommentList(fetchCommentsList);
     } catch (error) {
       console.log(error);
     }
-  }, [boardId]);
+  }, [boardId, isLoggedIn]);
+
+  const handleDelete = async () => {
+    try {
+      // await fetchBoardDelete(boardId);
+      // const isDelete = confirm("정말 삭제하실건가요?");
+      // if (!isDelete) {
+      //   return;
+      // }
+      // router.push(`/league/${leagueName}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     loadBoardDetail();
     loadCommentDetail();
   }, [loadBoardDetail, loadCommentDetail]);
 
-  if (!boardDetail || !commentList) {
+  if (!boardDetail) {
     return <div>{error ? error : "Loading..."}</div>;
   }
 
@@ -143,70 +101,75 @@ export default function ChannelBoardDetailPage({
         tags={boardDetail.mentionedLeagues}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <HeartButton onClick={toggleLike}>
-        {isLiked ? <FaHeart /> : <FaRegHeart />}
-      </HeartButton>
       <CommentContainer>
         <WriterContainer>
-          <WriterButton>삭제</WriterButton>
+          <HeartButton onClick={toggleLike}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </HeartButton>
+          {user?.nickname === boardDetail.member.nickname && (
+            <WriterButton onClick={handleDelete}>삭제</WriterButton>
+          )}
         </WriterContainer>
         <CommentList
-          comments={commentList.comments}
-          commentCount={commentList.commentCount}
+          comments={commentList?.comments || []}
+          commentCount={boardDetail.commentCount}
           boardId={boardId}
           leagueId=""
           isLeague={false}
           onCommentAdded={loadCommentDetail}
         />
-        {/* <CommentNumber>
-               <LiaCommentDots />
-               {boardDetail.commentCount}
-            </CommentNumber>
-            <CreateCommentContainer>
-               <CreateComment boardId={boardId} isReply={false} commentId="" onCommentAdded={loadBoardDetail} />
-            </CreateCommentContainer>
-            {boardDetail.comments.map((comment) => (
-               <React.Fragment key={comment.id}>
-                  {comment.status === CommentStatus.ACTIVE ? (
-                     <CommentWrapper>
-                        <Comment
-                           id={comment.id}
-                           boardId={boardId}
-                           avatarUrl={comment.member.profileUrl}
-                           userName={comment.member.nickname}
-                           userDetail={comment.member.carTitle}
-                           text={comment.content}
-                           time={comment.createdAt}
-                           onCommentAdded={loadBoardDetail}
-                        />
-                     </CommentWrapper>
-                  ) : (
-                     <div style={{ color: '#999', margin: '10px 0' }}>삭제된 댓글입니다.</div>
-                  )}
-                  {comment.replies.length > 0 && (
-                     comment.replies.map((reply) => (
-                        <Reply
-                           key={reply.id}
-                           id={reply.id}
-                           boardId={boardId}
-                           avatarUrl={reply.member.profileUrl}
-                           userName={reply.member.nickname}
-                           userDetail={reply.member.carTitle}
-                           text={reply.content}
-                           time={reply.createdAt}
-                           onCommentAdded={loadBoardDetail}
-                        />
-                     ))
-                  )}
-               </React.Fragment>
-            ))}
-            <CommentList
-          comments={commentList.comments}
-          commentCount={commentList.commentCount}
-          boardId={boardId}
-          onCommentAdded={loadCommentDetail}
-        /> */}
       </CommentContainer>
     </>
   );
 }
+
+const Content = styled.div`
+  font-size: 17px;
+  line-height: 1.5;
+  color: #333;
+  padding: 20px;
+  padding-bottom: 50px;
+  border-top: 1px solid #bebebe;
+`;
+
+const CommentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #bebebe;
+`;
+
+const WriterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
+
+const WriterButton = styled.p`
+  padding: 0px;
+  /* border-radius: 40px; */
+  /* border: 1px solid #ddd; */
+  font-size: 14px;
+  background-color: white;
+  margin: 5px 10px 20px 0;
+  cursor: pointer;
+
+  &:hover {
+    color: #666;
+  }
+`;
+
+const HeartButton = styled.button`
+  margin: 5px 0px 20px 0px;
+  min-width: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+  display: flex;
+  justify-content: center;
+
+  &:hover {
+    color: #666;
+  }
+`;

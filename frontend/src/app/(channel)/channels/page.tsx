@@ -6,7 +6,7 @@ import ChannelCard from '@/components/channel/list/ChannelCard';
 import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
 import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
 import { useRouter } from 'next/navigation';
-import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchTags } from '@/api/channel';
+import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchKeywords } from '@/api/channel';
 import { Channels } from '@/types/channelType';
 import { useAuthStore } from '@/store/authStore';
 
@@ -15,33 +15,35 @@ const ChannelPage: React.FC = () => {
   const [FollowingChannels, setFollowingChannels] = useState<Channels[]>([]);
   const [CreatedChannels, setCreatedChannels] = useState<Channels[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const router = useRouter();
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID;
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
 
+  useEffect(() => {
+    const accessToken = useAuthStore.getState().accessToken;
+    setIsLoggedIn(!!accessToken);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const ChannelData = await fetchChannels();
-        const FollowingChannelData = await fetchFollowingChannels();
-        const CreatedChannelData = await fetchCreatedChannels();
         setChannels(ChannelData);
-        setFollowingChannels(FollowingChannelData);
-        setCreatedChannels(CreatedChannelData);
+
+        if (isLoggedIn) {
+          const FollowingChannelData = await fetchFollowingChannels();
+          const CreatedChannelData = await fetchCreatedChannels();
+          setFollowingChannels(FollowingChannelData);
+          setCreatedChannels(CreatedChannelData);
+        }
       } catch (error) {
         console.error('Failed to fetch channels data:', error);
       }
     };
     loadData();
-  }, []);
-
-  useEffect(() => {
-    const accessToken = useAuthStore.getState().accessToken;
-    setIsLoggedIn(!!accessToken);
-  }, []);
+  }, [isLoggedIn]);
 
   const handleCreateChannel = () => {
     router.push(`/channels/11ef4fda-4b03-5943-acdf-3f973caa821e`);
@@ -57,13 +59,13 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-  const loadChannelsByTags = async (newTags: string[]) => {
+  const loadChannelsByKeywords = async (newKeywords: string[]) => {
     try {
-      if (newTags.length === 0) {
+      if (newKeywords.length === 0) {
         const ChannelData = await fetchChannels();
         setChannels(ChannelData);
       } else {
-        const searchResults = await fetchSearchTags(newTags);
+        const searchResults = await fetchSearchKeywords(newKeywords);
         setChannels(searchResults);
       }
     } catch (error) {
@@ -76,20 +78,20 @@ const ChannelPage: React.FC = () => {
       return;
     }
 
-    if (tags.length >= 5) {
+    if (keywords.length >= 5) {
       alert('태그는 5개까지 검색 가능합니다');
       return;
     }
 
-    const newTags = [...tags, newKeyword];
-    setTags(newTags);
-    loadChannelsByTags(newTags);
+    const newKeywords = [...keywords, newKeyword];
+    setKeywords(newKeywords);
+    loadChannelsByKeywords(newKeywords);
   };
 
-  const handleRemoveTag = async (tagToRemove: string) => {
-    const newTags = tags.filter(tag => tag !== tagToRemove);
-    setTags(newTags);
-    loadChannelsByTags(newTags);
+  const handleRemoveKeyword = async (keywordToRemove: string) => {
+    const newKeywords = keywords.filter(keyword => keyword !== keywordToRemove);
+    setKeywords(newKeywords);
+    loadChannelsByKeywords(newKeywords);
   };
 
   return (
@@ -120,27 +122,31 @@ const ChannelPage: React.FC = () => {
       <SearchBarContainer>
         <SearchBar onSearch={onSearch} />
       </SearchBarContainer>
-      <TagContainer>
-        {tags.map((tag, index) => (
-          <Tag key={index}>
-            <TagText>@{tag}</TagText>
-            <RemoveTagButton onClick={() => handleRemoveTag(tag)}>×</RemoveTagButton>
-          </Tag>
+      <KeywordContainer>
+        {keywords.map((keyword, index) => (
+          <Keyword key={index}>
+            <KeywordText>{keyword}</KeywordText>
+            <RemoveKeywordButton onClick={() => handleRemoveKeyword(keyword)}>×</RemoveKeywordButton>
+          </Keyword>
         ))}
-      </TagContainer>
+      </KeywordContainer>
       <PageContainer>
-        <GridContainer>
-          {Channels.map((channel) => (
-            <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
-              <ChannelCard
-                name={channel.name}
-                followCount={channel.followCount}
-                tags={channel.tags}
-                img={channel.img}
-              />
-            </div>
-          ))}
-        </GridContainer>
+        {Channels.length === 0 ? (
+          <EmptyMessage>채널이 없습니다.</EmptyMessage>
+        ) : (
+          <GridContainer>
+            {Channels.map((channel) => (
+              <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
+                <ChannelCard
+                  name={channel.name}
+                  followCount={channel.followCount}
+                  tags={channel.tags}
+                  img={channel.img}
+                />
+              </div>
+            ))}
+          </GridContainer>
+        )}
       </PageContainer>
     </>
   );
@@ -183,9 +189,10 @@ const PageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
-const TagContainer = styled.div`
+const KeywordContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
   gap: 8px;
@@ -197,21 +204,21 @@ const TagContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const Tag = styled.div`
+const Keyword = styled.div`
   padding: 5px 10px;
   background-color: #374151;
-  border-radius: 15px;
+  border-radius: 10px;
   font-size: 14px;
   display: flex;
   align-items: center;
 `;
 
-const TagText = styled.span`
+const KeywordText = styled.span`
   margin-right: 8px;
   color: #fff;
 `;
 
-const RemoveTagButton = styled.button`
+const RemoveKeywordButton = styled.button`
   border: none;
   background: none;
   cursor: pointer;
@@ -238,6 +245,13 @@ const GridContainer = styled.div`
   @media (min-width: 1440px) {
     grid-template-columns: repeat(5, minmax(200px, 1fr));
   }
+`;
+
+const EmptyMessage = styled.p`
+  padding-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
 `;
 
 export default ChannelPage;

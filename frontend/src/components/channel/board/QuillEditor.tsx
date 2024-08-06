@@ -3,8 +3,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import AWS from "aws-sdk";
 
-const ACCESS_KEY = process.env.NEXT_PUBLIC_ACCESS_KEY;
-const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY;
+const ACCESS_KEY = process.env.NEXT_PUBLIC_S3_ACCESS_KEY;
+const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY;
 const CLOUD_FRONT_URL = process.env.NEXT_PUBLIC_CLOUD_FRONT_URL;
 
 interface QuillEditorProps {
