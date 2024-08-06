@@ -27,10 +27,19 @@ public class MyCarBoard extends Board {
     @Column(nullable = false, columnDefinition = "TEXT")
     String thumbnail;
 
+    public MyCarBoard(Channel channel, String thumbnail) {
+        this.channel = channel;
+        this.thumbnail = thumbnail;
+    }
+
     public MyCarBoard(String title, String content, BoardType type, Member member, Channel channel, String thumbnail) {
         super(title, content, type, member);
         this.channel = channel;
         this.thumbnail = thumbnail;
     }
 
+    @Override
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 }

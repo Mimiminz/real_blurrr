@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.board.model.entity;
 
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
@@ -19,6 +20,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -39,13 +41,13 @@ public class Board extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private Long viewCount;
+    private Long viewCount = 0L;
 
     @Column(nullable = false)
-    private Long commentCount;
+    private Long commentCount = 0L;
 
     @Column(nullable = false)
-    private Long likeCount;
+    private Long likeCount = 0L;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -102,4 +104,7 @@ public class Board extends BaseEntity {
         }
     }
 
+    public void setChannel(Channel channel) {
+        return;
+    }
 }

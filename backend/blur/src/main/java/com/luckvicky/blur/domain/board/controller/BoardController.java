@@ -40,13 +40,13 @@ public class BoardController {
             )
     })
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardCreateRequest request) {
-        return ResponseUtil.created(
-                Result.builder()
-                        .data(boardService.createBoard(request))
-                        .build()
-        );
-
+    public ResponseEntity createBoard(@RequestBody BoardCreateRequest request, @AuthUser ContextMember member) {
+//        return ResponseUtil.created(
+//                Result.builder()
+//                        .data(boardService.createBoard(request))
+//                        .build()
+//        );
+        return null;
     }
 
 

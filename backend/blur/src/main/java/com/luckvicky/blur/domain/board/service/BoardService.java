@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface BoardService {
 
-    Boolean createBoard(BoardCreateRequest request);
+    Boolean createBoard(BoardCreateRequest request, UUID memberId);
 
     BoardDetailDto getBoardDetail(UUID boardId, UUID id);
 

@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.channelboard.service;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
@@ -139,14 +140,14 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
     }
 
     @Override
-    public ChannelBoardDetailDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId) {
+    public ChannelBoardDetailDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId, BoardType boardType) {
 
         Channel channel = channelRepository.getOrThrow(channelId);
         Member member = memberRepository.getOrThrow(memberId);
         ChannelBoard channelBoard = channelBoardRepository.save(request.toEntity(channel, member));
-        List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
+        List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.getMentionedLeagueNames());
 
-        if (mentionedLeagues.size() != request.mentionedLeagueNames().size()) {
+        if (mentionedLeagues.size() != request.getMentionedLeagueNames().size()) {
             throw new NotExistLeagueException();
         }
 

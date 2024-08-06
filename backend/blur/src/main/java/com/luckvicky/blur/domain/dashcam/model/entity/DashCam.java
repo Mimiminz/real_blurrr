@@ -56,6 +56,10 @@ public class DashCam extends Board {
 
     public void increaseVoteCount() {this.totalVoteCount++;}
 
+    @Override
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 }
 
 
