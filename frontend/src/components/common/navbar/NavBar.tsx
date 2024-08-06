@@ -18,7 +18,12 @@ const NavBar = () => {
       clearAuthState: state.clearAuthState,
     })
   );
-  const { setInitialized, setUserLeagueList } = useLeagueStore();
+  const {
+    setInitialized,
+    setUserLeagueList,
+    setMentionTabs,
+    setIsLoadUserLeagues,
+  } = useLeagueStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
     null
@@ -43,6 +48,8 @@ const NavBar = () => {
     setIsLoggedIn(false);
     setInitialized(false);
     setUserLeagueList([]);
+    setMentionTabs([]);
+    setIsLoadUserLeagues(false);
     alert("로그아웃되었습니다.");
     router.push("/");
   };
