@@ -7,7 +7,6 @@ import com.luckvicky.blur.domain.like.exception.FailToDeleteLikeException;
 import com.luckvicky.blur.domain.like.exception.NotExistLikeException;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardLikeResponse;
 import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -16,7 +15,6 @@ import com.luckvicky.blur.infra.redisson.DistributedLock;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
