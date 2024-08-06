@@ -66,7 +66,7 @@ export default function ChannelDashCamDetailPage({ params }: {
                </LeftColumn>
                <RightColumn>
                   <VoteSection>
-                     <Vote />
+                     <Vote voteId={dashCamDetail.id} />
                   </VoteSection>
                   <CommentsSection>
                      <CommentList
@@ -116,19 +116,16 @@ const RightColumn = styled.div`
   width: 100%;
 `;
 
-const Section = styled.div`
+const CommentsSection = styled.div`
   background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 30px 16px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const CommentsSection = styled(Section)`
+  padding: 0px 16px;
   flex-grow: 1;
   height: 100%;
-  margin-bottom: 16px;
+  margin-top: 16px;
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 `;
 const VoteSection = styled.div`
@@ -137,8 +134,4 @@ const VoteSection = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const CommentContainer = styled.div`
-  margin: 16px 10px;
 `;

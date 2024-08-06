@@ -1,5 +1,13 @@
 import api from '@/api/index'; 
-import { PostDataInfo, Channels, DashCamList, DashCamDetail, PostData, PostDetail, PostInfo } from '@/types/channelType';
+import { 
+  Vote, 
+  PostDataInfo, 
+  Channels, 
+  DashCamList, 
+  DashCamDetail, 
+  PostDetail, 
+  PostInfo 
+} from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
 export const fetchFollowingChannels = async (): Promise<Channels[]> => {
@@ -203,7 +211,7 @@ export const fetchDashCams = async (keyword: string, pageNumber: number, criteri
 // 블랙박스 게시물 상세 정보를 가져오는 함수
 export const fetchDashCamDetail = async (boardId: string): Promise<DashCamDetail> => {
   try {
-    const response = await api.get<DashCamDetail>(`/v1/channels/dashcams/boards/${boardId}`);
+    const response = await api.get(`/v1/channels/dashcams/boards/${boardId}`);
     console.log(response.data);
     return response.data.board;
   } catch (error) {
@@ -211,3 +219,14 @@ export const fetchDashCamDetail = async (boardId: string): Promise<DashCamDetail
     throw error;
   }
 };
+
+// 블랙박스 투표 확인
+export const fetchVote = async ( boardId: string): Promise<Vote> => {
+  try {
+    const response = await api.get(`/v1/channels/board/${boardId}/votes`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching vote:', error);
+    throw error;
+  }
+}

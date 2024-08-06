@@ -14,16 +14,13 @@ interface PostTitleProps {
 
 const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortChange }) => {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedSort, setSelectedSort] = useState('게시글 정렬');
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
-    const accessToken = useAuthStore.getState().accessToken;
-    setIsLoggedIn(!!accessToken);
-
-    setIsFollowing(accessToken ? true : false);
+    setIsFollowing(isLoggedIn ? true : false);
   }, []);
 
   const handleCreatePost = () => {

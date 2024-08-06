@@ -27,7 +27,6 @@ export interface Mentioned {
    name: string;
  }
 
-
 export interface DashCamList {
   totalPages: number;
   totalElements: number;
@@ -64,9 +63,12 @@ export interface DashCamDetail {
  }
 
  export interface Option {
-  num: number;
+  id: string;
+  optionOrder: number;
   content: string;
+  voteCount: number;
  }
+ 
 export interface Channels {
    id: string;
    name: string;
@@ -128,4 +130,10 @@ export interface PostDataInfo {
   pageNumber: number;
   pageSize: number;
   content: PostData[];
+}
+
+export interface Vote { 
+  hasVoted: boolean;
+  selectedOptionId: string;
+  options: Option[];
 }

@@ -10,21 +10,6 @@ interface DashCamCardProps {
 
 const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
   const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const [isOverflow, setIsOverflow] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    // 클라이언트 측에서만 실행되도록 설정
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient && titleRef.current) {
-      const isOverflowing = titleRef.current.scrollWidth > titleRef.current.clientWidth;
-      setIsOverflow(isOverflowing);
-    }
-  }, [title, isClient]);
 
   const formatPostDate = (createdAt: string) => {
     const postDate = new Date(createdAt);
@@ -53,7 +38,7 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
           ))}
         </Tags>
         <TitleContainer suppressHydrationWarning={true}>
-          <Title ref={titleRef} className={isOverflow ? 'scroll' : ''}>{title}</Title>
+          <Title>{title}</Title>
         </TitleContainer>
         <Meta>
           <span><FiEye /> {viewCount}</span>
