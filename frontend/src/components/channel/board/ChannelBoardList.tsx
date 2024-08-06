@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import ChannelBoardListItem from "@/components/channel/board/ChannelBoardListItem";
-import { fetchPosts } from '@/api/channel';
-import { PostData } from '@/types/channelType';
+import PaginationComponent from "@/components/common/UI/Pagination";
+import { fetchPosts } from "@/api/channel";
+import { PostData } from "@/types/channelType";
 import { useRouter } from "next/navigation";
 
 interface ChannelBoardListProps {
@@ -12,40 +13,62 @@ interface ChannelBoardListProps {
   criteria: string;
 }
 
-const ChannelBoardList: React.FC<ChannelBoardListProps> = ({ channelId, keyword, criteria }) => {
+const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
+  channelId,
+  keyword,
+  criteria,
+}) => {
   const [Posts, setPosts] = useState<PostData[]>([]);
   const router = useRouter();
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchPosts(channelId, keyword, 0, criteria);
-        setPosts(data);
-        console.log('Posts loaded:', data);
+        const data = await fetchPosts(
+          channelId,
+          keyword,
+          currentPage - 1,
+          criteria
+        );
+        setPosts(data.content);
+        setTotalPages(data.totalPages);
+        console.log("Posts loaded:", data);
       } catch (error) {
-        console.error('Failed to load channel board list data:', error);
+        console.error("Failed to load channel board list data:", error);
       }
     };
 
     loadData();
-  }, [keyword, criteria, channelId]);
+  }, [keyword, criteria, channelId, currentPage]);
 
   const handlePostClick = (channelId: string, boardId: string) => {
     router.push(`/channels/${channelId}/${boardId}`);
   };
 
-  return (
-    <ChannelList>
-      {Posts.map((post) => (
-        <ChannelBoardListItem
-          key={post.board.id}
-          post={post.board}
-          mentions={post.mentionedLeagues}
-          onClick={() => handlePostClick(channelId, post.board.id)}
-        />
-      ))}
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
-    </ChannelList>
+  return (
+      <ChannelList>
+        {Posts.map((post) => (
+          <ChannelBoardListItem
+            key={post.board.id}
+            post={post.board}
+            mentions={post.mentionedLeagues}
+            onClick={() => handlePostClick(channelId, post.board.id)}
+          />
+        ))}
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        />
+        </ChannelList>
   );
 };
 const ChannelList = styled.div``;
