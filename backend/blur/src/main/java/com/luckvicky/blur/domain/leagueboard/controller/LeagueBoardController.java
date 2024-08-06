@@ -169,21 +169,6 @@ public class LeagueBoardController {
 
     }
 
-<<<<<<< backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/controller/LeagueBoardController.java
-=======
-    @Operation(summary = "게시글 좋아요 상태 조회", description = "사용자, 게시글 고유 식별값을 받아 좋아요 상태를 조회한다.")
-    @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
-    @GetMapping("/boards/{boardId}/likes")
-    public ResponseEntity<Result<LeagueBoardLikeResponse>> getLikeStatusByBoard(
-            @AuthUser ContextMember member,
-            @PathVariable(name = "boardId") UUID boardId
-    ) {
-        
-        return ResponseUtil.created(Result.of(leagueBoardService.getBoardLike(member.getId(), boardId)));
-        
-    }
-
->>>>>>> backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/controller/LeagueBoardController.java
     @Operation(summary = "리그 게시글 댓글 목록 조회 API", description = "리그 게시물의 댓글 목록을 가져온다.")
     @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     @CertificationMember

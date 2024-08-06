@@ -19,11 +19,6 @@ public interface LeagueBoardService {
 
     PaginatedResponse<LeagueBoardDto> search(UUID leagueId, String leagueType, String keyword, String condition, int pageNumber, String criteria);
 
-<<<<<<< backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/service/LeagueBoardService.java
-=======
-    PaginatedResponse<LeagueBoardDto> search(UUID leagueId, String leagueType, String keyword, String condition, int pageNumber, String criteria);
-
->>>>>>> backend/blur/src/main/java/com/luckvicky/blur/domain/leagueboard/service/LeagueBoardService.java
     PaginatedResponse<LeagueBoardDto> getLeagueBoards(ContextMember contextMember, UUID leagueId, String leagueType, int pageNumber, String criteria);
 
 }
