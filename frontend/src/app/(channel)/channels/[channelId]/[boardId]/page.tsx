@@ -5,15 +5,16 @@ import styled from "styled-components";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
 import { useAuthStore } from "@/store/authStore";
-import {
-  PostDetail,
-  Comment as CommentProp,
-} from "@/types/channelType";
+import { PostDetail, Comment as CommentProp } from "@/types/channelType";
 import { fetchComment } from "@/types/commentTypes";
 import { fetchChannelPostDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
-
+import {
+  fetchChannelLike,
+  fetchChannelLikeDelete,
+  fetchLeaugueLikeState,
+} from "@/api/board";
 
 export default function ChannelBoardDetailPage({
   params,
@@ -25,12 +26,23 @@ export default function ChannelBoardDetailPage({
 
   const [boardDetail, setBoardDetail] = useState<PostDetail | null>(null);
   const [commentList, setCommentList] = useState<fetchComment | null>(null);
-  const [isLiked, setIsLiked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isLoggedIn, user } = useAuthStore();
 
-  const toggleLike = () => {
-    setIsLiked((prevIsLiked) => !prevIsLiked);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  const toggleLike = async () => {
+    if (isLiked) {
+      const likeData = await fetchChannelLikeDelete(boardId);
+      setLikeCount(likeData.likeCount);
+      setIsLiked(likeData.isLike);
+    } else {
+      const likeData = await fetchChannelLike(boardId);
+      setLikeCount(likeData.likeCount);
+      setIsLiked(likeData.isLike);
+    }
+    // setIsLiked((prevIsLiked) => !prevIsLiked);
   };
 
   const formatPostDate = (createdAt: string) => {
@@ -51,6 +63,8 @@ export default function ChannelBoardDetailPage({
     try {
       const details = await fetchChannelPostDetail(boardId, channelId);
       setBoardDetail(details);
+      setLikeCount(details.likeCount);
+      setIsLiked(details.liked);
     } catch (error) {
       console.error(error);
       setError("Failed to load post details. Please try again later.");
@@ -96,7 +110,7 @@ export default function ChannelBoardDetailPage({
         title={boardDetail.title}
         createdAt={formatPostDate(boardDetail.createdAt)}
         viewCount={boardDetail.viewCount}
-        likeCount={boardDetail.likeCount}
+        likeCount={likeCount}
         member={boardDetail.member}
         tags={boardDetail.mentionedLeagues}
       />
