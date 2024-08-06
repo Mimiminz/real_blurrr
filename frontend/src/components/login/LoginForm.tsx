@@ -79,7 +79,13 @@ const LoginForm = () => {
 
   return (
     <Container>
+      <Image
+              src="/images/logo/logo.png"
+              alt="로고"
+      />
+      <Div>
       <Title>로그인</Title>
+      <SubTitle>blurrr의 다양한 서비스를 이용해 보세요!</SubTitle>
       <Formik
         initialValues={{ email: "", password: "", rememberMe: false }}
         validationSchema={Yup.object({
@@ -97,7 +103,9 @@ const LoginForm = () => {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
+          
           <StyledForm>
+            
             <StyledField name="email" type="email" placeholder="이메일" />
             <StyledErrorMessage name="email" component="div" />
             <StyledField
@@ -113,38 +121,68 @@ const LoginForm = () => {
             <Button type="submit" disabled={isSubmitting}>
               로그인
             </Button>
-            <Div>
+         
               <Link href="#" onClick={() => router.push("/findpassword")}>
                 비밀번호를 잊으셨나요?
               </Link>
               <Link href="#" onClick={() => router.push("/signup")}>
                 회원가입
               </Link>
-            </Div>
+        
           </StyledForm>
         )}
       </Formik>
+      </Div>
     </Container>
   );
 };
 
 const Container = styled.div`
-  max-width: 400px;
-  margin: 5% auto;
-  padding: 2em;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap:80px;
+
+  @media (min-width: 480px) {
+    gap: 40px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 80px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 80px;
+  }
+
+  @media (min-width: 1440px) {
+    gap: 100px;
+  }
 `;
 
 const Title = styled.h2`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  margin-bottom: 2em;
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+`;
+
+const SubTitle = styled.h4`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const Div = styled.div`
   display: flex;
-  justify-content: space-between;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const StyledForm = styled(Form)`
@@ -198,6 +236,30 @@ const Link = styled.a`
   color: #000000;
   cursor: pointer;
   text-decoration: none;
+`;
+
+const Image = styled.img`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: auto;
+
+  @media (min-width: 480px) {
+    width: 80px;
+  }
+
+  @media (min-width: 768px) {
+    width: 80px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 80px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 100px;
+  }
 `;
 
 export default LoginForm;
