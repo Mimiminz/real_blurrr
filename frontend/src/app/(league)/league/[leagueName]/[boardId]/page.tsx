@@ -198,7 +198,11 @@ export default function BoardDetailPage({
       <CommentContainer>
         <WriterContainer>
           <HeartButton onClick={toggleLike}>
-            {isLiked ? <FaHeart /> : <FaRegHeart />}
+            {isLiked ? (
+              <FaHeart color="#d60606" />
+            ) : (
+              <FaRegHeart color="#333" />
+            )}
           </HeartButton>
           {user?.nickname === boardDetail.member.nickname && (
             <WriterButton onClick={handleDelete}>삭제</WriterButton>
@@ -272,12 +276,12 @@ const HeartButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 20px;
-  color: #666;
+  color: #ff0000;
   display: flex;
   justify-content: center;
 
   &:hover {
-    color: #666;
+    color: #ff0000;
   }
 `;
 
