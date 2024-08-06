@@ -125,8 +125,6 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         isAllocatedLeague(board.getLeague(), member);
 
-        board.increaseViewCount();
-
         return LeagueBoardDetailResponse.of(
                 LeagueBoardDetailDto.of(board, isLike(member,  board))
         );
