@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
 const LayoutContainer = styled.div`
-  padding: 50px 16px;  // 패딩 추가
+  padding: 10px 16px;  // 패딩 추가
 `;
 
 const BreadcrumbContainer = styled.div`
