@@ -7,33 +7,20 @@ stages:
   - backend-deploy
 
 before_script:
-
   - apt-get update || { echo "apt-get update failed"; exit 1; }
-  - apt-get install -y curl
-
-  # Node.js와 npm 설치 추가 (Node.js 18.x)
-  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Node.js setup failed"; exit 1; }
-  - apt-get install -y nodejs
-  - node -v
-  - npm -v
-
-  # 자바 17 설치
-  - echo "install java"
-  - apt-get install openjdk-17-jdk -y
-  - java -version
-
-  # JAVA_HOME 환경 변수 설정
-  - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-  - export PATH="$JAVA_HOME/bin:$PATH"
-
-  # JAVA_HOME과 PATH 확인
-  - echo "JAVA_HOME is set to $JAVA_HOME"
-  - echo "PATH is set to $PATH"
 
 frontend-build:
   stage: frontend-build
 
   script:
+
+    # Node.js와 npm 설치 추가 (Node.js 18.x)
+    - apt-get install -y curl
+    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Node.js setup failed"; exit 1; }
+    - apt-get install -y nodejs
+    - node -v
+    - npm -v
+
     - echo 'Install dependencies for frontend'
     - cd frontend
     - npm install
@@ -101,6 +88,19 @@ backend-build:
     - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
     - ls -al backend/blur/src/main/resources
 
+    # 자바 17 설치
+    - echo "install java"
+    - apt-get install openjdk-17-jdk -y
+    - java -version
+
+    # JAVA_HOME 환경 변수 설정
+    - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+    - export PATH="$JAVA_HOME/bin:$PATH"
+
+    # JAVA_HOME과 PATH 확인
+    - echo "JAVA_HOME is set to $JAVA_HOME"
+    - echo "PATH is set to $PATH"
+
     - echo 'Build backend'
     - cd backend/blur
     - chmod +x ./gradlew
@@ -125,6 +125,7 @@ backend-deploy:
     SPRING_PROFILE: "dev"
 
   script:
+
     - echo "Deploying backend..."
     - apt-get install openssh-client -y
 
