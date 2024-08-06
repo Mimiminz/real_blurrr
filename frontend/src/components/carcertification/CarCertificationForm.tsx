@@ -9,6 +9,7 @@ const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [ocrResults, setOcrResults] = useState<any[]>([]);
+  const [preprocessedImage, setPreprocessedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
 
@@ -70,6 +71,7 @@ const CarCertificationForm = () => {
         if (result && result.extracted_texts) {
             const fourteenthText = result.extracted_texts[14] || null;
             setOcrResults(fourteenthText ? [fourteenthText] : []);
+            setPreprocessedImage(result.preprocessed_image);
         } else {
             console.error("OCR 결과가 없습니다:", result);
         }
@@ -110,15 +112,19 @@ const CarCertificationForm = () => {
         onChange={handleImageUpload}
       />
        <Button onClick={handleSubmit}>제출</Button>
-       {ocrResults.length > 0 && (
+       {preprocessedImage && (
         <ResultsContainer>
-          <ul>
-            {ocrResults.map((result, index) => (
-              <div key={index}>
-                <strong>차명 : </strong> {result.text} <br />
-              </div>
-            ))}
-          </ul>
+          <Image src={preprocessedImage} alt="전처리된 이미지" />
+        </ResultsContainer>
+      )}
+      {ocrResults.length > 0 && (
+        <ResultsContainer>
+          {ocrResults.map((result, index) => (
+            <Div key={index}>
+              차량 브랜드 : {}
+              차량 모델 : {result.text}
+            </Div>
+          ))}
         </ResultsContainer>
       )}
       <ButtonContainer>
@@ -138,7 +144,7 @@ const Container = styled.div`
   text-align: center;
   justify-content: center;
   width: 350px;
-  height: 500px;
+  height: 100%;
   margin: 20px;
   padding: 40px;
   background-color: #f0f0f0;
@@ -151,6 +157,7 @@ const Head = styled.div`
   flex-direction: column;
   font-weight: bold;
 `;
+
 
 const Body = styled.div`
   display: flex;
@@ -222,6 +229,13 @@ const ButtonContainer = styled.div`
 `;
 
 const ResultsContainer = styled.div`
-  margin-top: 20px;
+  display: flex;
+  margin-top: 10px;
   text-align: left;
 `;
+
+const Div = styled.div`
+  display: flex;
+  font-weight: 400;
+
+`
