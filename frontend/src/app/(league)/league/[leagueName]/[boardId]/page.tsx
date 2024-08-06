@@ -17,11 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { fetchLeagueCommentList } from "@/api/comment";
 import { fetchUserLeagueList } from "@/api/league";
 import CommentList from "@/components/common/UI/comment/CommentList";
-import {
-  fetchLeagueLike,
-  fetchLeagueLikeDelete,
-  fetchLeaugueLikeState,
-} from "@/api/board";
+import { fetchLeagueLike, fetchLeagueLikeDelete } from "@/api/board";
 import { formatPostDate } from "@/utils/formatPostDate";
 import Loading from "@/components/common/UI/Loading";
 
@@ -50,6 +46,8 @@ export default function BoardDetailPage({
     try {
       const details = await fetchLeagueDetail(boardId);
       setBoardDetail(details);
+      setIsLiked(details.like);
+      setLikeCount(details.likeCount);
     } catch (error) {
       console.log(error);
     }
@@ -64,28 +62,30 @@ export default function BoardDetailPage({
     }
   };
 
-  const loadLike = async () => {
-    try {
-      const fetchLikeState = await fetchLeaugueLikeState(boardId);
-      setIsLiked(fetchLikeState.isLike);
-      setLikeCount(fetchLikeState.likeCount);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const loadLike = async () => {
+  //   try {
+  //     const fetchLikeState = await fetchLeaugueLikeState(boardId);
+  //     setIsLiked(fetchLikeState.isLike);
+  //     setLikeCount(fetchLikeState.likeCount);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const toggleLike = async () => {
     if (isLiked) {
-      await fetchLeagueLikeDelete(boardId);
+      const likeData = await fetchLeagueLikeDelete(boardId);
+      setLikeCount(likeData.likeCount);
+      setIsLiked(likeData.isLike);
     } else {
-      await fetchLeagueLike(boardId);
+      const likeData = await fetchLeagueLike(boardId);
+      setLikeCount(likeData.likeCount);
+      setIsLiked(likeData.isLike);
     }
-    loadLike();
   };
 
   useEffect(() => {
     loadBoardDetail();
-    loadLike();
   }, [boardId]);
 
   useEffect(() => {
