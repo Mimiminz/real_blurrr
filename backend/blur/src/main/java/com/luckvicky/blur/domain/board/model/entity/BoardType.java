@@ -14,15 +14,15 @@ public enum BoardType {
 
     public static BoardType convertToEnum(String type) {
 
-        BoardType boardType;
+//        BoardType boardType;
+//
+//        try {
+//            boardType = BoardType.valueOf(type);
+//        } catch (IllegalArgumentException e) {
+//            throw new InvalidBoardTypeException();
+//        }
 
-        try {
-            boardType = BoardType.valueOf(type);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidBoardTypeException();
-        }
-
-        return boardType;
+        return BoardType.valueOf(type.toUpperCase());
 
     }
 
