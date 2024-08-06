@@ -8,6 +8,8 @@ import { useAuthStore } from "../../store/authStore";
 import { login as loginApi } from "@/api/auth";
 import api from "../../api/index";
 import { useLeagueStore } from "@/store/leagueStore";
+import { fetchUserLeagueList } from "@/api/league";
+import { LeagueList, UserLeague } from "@/types/leagueTypes";
 
 interface LoginFormValues {
   email: string;
@@ -24,7 +26,7 @@ const LoginForm = () => {
       setUser: state.setUser,
     })
   );
-  const { setInitialized } = useLeagueStore();
+  const { setInitialized, setUserLeagueList } = useLeagueStore();
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -48,7 +50,17 @@ const LoginForm = () => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setUser(userResponse.data);
-      setInitialized(false);
+      if (userResponse.data.isAuth) {
+        const userLeagues: UserLeague[] = await fetchUserLeagueList();
+        const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+          id: userLeague.league.id,
+          name: userLeague.league.name,
+          type: userLeague.league.type,
+          peopleCount: userLeague.league.peopleCount,
+        }));
+
+        setUserLeagueList(userTabs);
+      }
 
       router.push("/");
     } catch (error) {
