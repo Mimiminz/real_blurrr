@@ -19,6 +19,5 @@ const HeaderContainer = styled.header`
   width: 100%;
   height: 60px; 
   background-color: #fff;
-  border-bottom: 1px solid #ccc;
   z-index: 1000;
 `;
