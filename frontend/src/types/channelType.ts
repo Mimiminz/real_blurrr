@@ -104,9 +104,11 @@ export interface PostDetail {
   member: PostMember;
   title: string;
   content: string;
-  createdAt: string; 
+  createdAt: string;
   viewCount: number;
   commentCount: number;
   likeCount: number;
   mentionedLeagues: Mentioned[];
+  comments: Comment[];
+  liked: boolean;
 }
