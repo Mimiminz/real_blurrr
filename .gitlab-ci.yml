@@ -53,6 +53,9 @@ frontend-build:
 frontend-deploy:
   stage: frontend-deploy
 
+  variables:
+    DEPLOY_PATH: "/home/ubuntu/blurrr/frontend"
+
   script:
     - echo "Deploying frontend..."
     - apt-get install openssh-client -y
@@ -63,10 +66,10 @@ frontend-deploy:
     - chmod 400 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
 
-    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
-    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:/home/ubuntu/blurrr/frontend
+    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
     - echo "complete file send"
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd /home/ubuntu/blurrr/frontend && ./deploy.sh"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
 
   needs: ["frontend-build"]
 
@@ -121,8 +124,7 @@ backend-deploy:
   stage: backend-deploy
 
   variables:
-    DEPLOY_PATH: "/home/ubuntu/app"
-    SPRING_PROFILE: "dev"
+    DEPLOY_PATH: "/home/ubuntu/app/backend"
 
   script:
 
