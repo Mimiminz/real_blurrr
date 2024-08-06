@@ -12,6 +12,7 @@ import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.board.repository.MyCarRepository;
 import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
@@ -45,23 +46,26 @@ public class BoardServiceImpl implements BoardService {
     private final LikeRepository likeRepository;
     private final Map<BoardType, BoardFactory> factoryMap;
     private final ChannelRepository channelRepository;
+    private final MyCarRepository myCarRepository;
 
     public BoardServiceImpl(ModelMapper mapper, BoardRepository boardRepository, MemberRepository memberRepository,
-                            LikeRepository likeRepository, Map<BoardType, BoardFactory> factoryMap, ChannelRepository channelRepository) {
+                            LikeRepository likeRepository, Map<BoardType, BoardFactory> factoryMap, ChannelRepository channelRepository,
+                            MyCarRepository myCarRepository) {
         this.mapper = mapper;
         this.boardRepository = boardRepository;
         this.memberRepository = memberRepository;
         this.likeRepository = likeRepository;
         this.factoryMap = factoryMap;
         this.channelRepository = channelRepository;
+        this.myCarRepository = myCarRepository;
     }
 
     @Transactional
     @Override
     public Boolean createBoard(BoardCreateRequest request, UUID memberId) {
 
-        BoardType boardType = BoardType.convertToEnum(request.getBoardType());
         Member member = memberRepository.getOrThrow(memberId);
+        BoardType boardType = BoardType.convertToEnum(request.getBoardType());
 
         Board createdBoard = factoryMap.get(boardType).createBoard(request, member);
 
@@ -125,7 +129,6 @@ public class BoardServiceImpl implements BoardService {
         Member member = memberRepository.getOrThrow(memberId);
         Board board = boardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
-
         return BoardDetailDto.of(
                 board, isLike(member, board)
         );

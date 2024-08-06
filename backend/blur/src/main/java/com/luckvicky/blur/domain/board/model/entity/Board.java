@@ -28,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Entity
 @SuperBuilder
-@DiscriminatorColumn
+@DiscriminatorColumn()
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "boards")

@@ -59,4 +59,17 @@ public class BoardDetailDto {
                 .build();
     }
 
+    public static BoardDetailDto of(Board board) {
+        return BoardDetailDto.builder()
+                .id(board.getId())
+                .member(SimpleMemberDto.of(board.getMember()))
+                .title(board.getTitle())
+                .content(board.getContent())
+                .createdAt(board.getCreatedAt().toString())
+                .viewCount(board.getViewCount())
+                .commentCount(board.getCommentCount())
+                .likeCount(board.getLikeCount())
+                .build();
+    }
+
 }
