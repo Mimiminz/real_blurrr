@@ -52,27 +52,12 @@ export interface DashCamDetail {
    content: string;
    options: Option;
    mentionedLeagues: Mentioned[];
-   comments: Comment[];
  }
 
  export interface Option {
   num: number;
   content: string;
  }
-
- export enum CommentStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE'
-}
-
-export interface Comment {
-  id: string;
-  member: Member;
-  content: string;
-  createdAt: string;
-  status: CommentStatus;
-  replies: Comment[];
-}
 export interface Channels {
    id: string;
    name: string;
@@ -124,5 +109,4 @@ export interface PostDetail {
   commentCount: number;
   likeCount: number;
   mentionedLeagues: Mentioned[];
-  comments: Comment[];
 }

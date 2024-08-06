@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
 import { useAuthStore } from "@/store/authStore";
-import { PostDetail, Comment as CommentProp } from "@/types/channelType";
+import { PostDetail } from "@/types/channelType";
 import { fetchComment } from "@/types/commentTypes";
 import { fetchChannelPostDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
@@ -13,7 +13,6 @@ import { fetchCommentList } from "@/api/comment";
 import {
   fetchChannelLike,
   fetchChannelLikeDelete,
-  fetchLeaugueLikeState,
 } from "@/api/board";
 
 export default function ChannelBoardDetailPage({

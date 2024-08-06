@@ -1,14 +1,87 @@
 "use client";
 
 import React, { useEffect, useCallback, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import DashCamContent from '@/components/channel/dashcam/detail/DashCamContent';
 import Vote from '@/components/channel/dashcam/detail/Vote';
-import { LiaCommentDots } from "react-icons/lia";
-import { FaRegHeart, FaRegEye } from "react-icons/fa";
 import { fetchDashCamDetail } from '@/api/channel';
-import { DashCamDetail, CommentStatus } from '@/types/channelType';
+import CommentList from "@/components/common/UI/comment/CommentList";
+import { DashCamDetail } from '@/types/channelType';
+import { useAuthStore } from "@/store/authStore";
+import { fetchCommentList } from "@/api/comment";
+import { fetchComment } from "@/types/commentTypes";
+
+
+const Page = () => {
+   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
+   const { isLoggedIn, user } = useAuthStore();
+
+   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
+   const [commentList, setCommentList] = useState<fetchComment | null>(null);
+
+   const loadDetail = useCallback(async () => {
+      try {
+         const data = await fetchDashCamDetail(dashcamId); // API 호출
+         setDashCamDetail(data);
+      } catch (error) {
+         console.error('Failed to load dash cam detail:', error);
+         // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
+      }
+   }, [dashcamId]); // dashcamId를 의존성 배열에 포함
+
+   const loadCommentDetail = useCallback(async () => {
+      if (!isLoggedIn) return;
+
+      try {
+         const fetchCommentsList = await fetchCommentList(dashcamId);
+         setCommentList(fetchCommentsList);
+      } catch (error) {
+         console.log(error);
+      }
+   }, [dashcamId, isLoggedIn]);
+
+   useEffect(() => {
+      loadDetail();
+   }, [loadDetail]);
+
+   if (!dashCamDetail) {
+      return <div>Loading...</div>;
+   }
+
+   return (
+      <Container>
+         <ContentContainer>
+            <InnerContentContainer>
+               <LeftColumn>
+                  <DashCamContent
+                     id={dashCamDetail.id}
+                     member={dashCamDetail.member}
+                     title={dashCamDetail.title}
+                     createdAt={dashCamDetail.createdAt}
+                     videoUrl={dashCamDetail.videoUrl}
+                     content={dashCamDetail.content}
+                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
+               </LeftColumn>
+               <RightColumn>
+                  <CommentsSection>
+                     <CommentList
+                        comments={commentList?.comments || []}
+                        commentCount={dashCamDetail.commentCount}
+                        boardId={dashcamId}
+                        leagueId=""
+                        isLeague={false}
+                        onCommentAdded={loadCommentDetail}
+                     />
+                  </CommentsSection>
+                  <VoteSection>
+                     <Vote />
+                  </VoteSection>
+               </RightColumn>
+            </InnerContentContainer>
+         </ContentContainer>
+      </Container>
+   );
+};
 
 const Container = styled.div`
   padding-top: 20px;
@@ -67,144 +140,5 @@ const VoteSection = styled.div`
 const CommentContainer = styled.div`
   margin: 16px 10px;
 `;
-
-const StatsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 10px;
-`;
-
-const StatItem = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #333;
-
-  & > svg {
-    margin-right: 5px;
-    font-size: 17px;
-  }
-`;
-
-const StatGroup = styled.div`
-  display: flex;
-  align-items: center;
-
-  & > ${StatItem} + ${StatItem} {
-    margin-left: 16px;
-  }
-`;
-
-const StyleCreateComment = styled.div`
-  margin: 16px 0px;
-`;
-
-const CommentWrapper = styled.div`
-  width: 100%;
-`;
-
-const Page = () => {
-   const pathname = usePathname();
-   const dashcamId = pathname.split('/').pop();
-
-   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
-
-   const loadDetail = useCallback(async () => {
-      try {
-         const data = await fetchDashCamDetail(dashcamId as string); // API 호출
-         setDashCamDetail(data);
-      } catch (error) {
-         console.error('Failed to load dash cam detail:', error);
-         // 사용자에게 오류 메시지를 표시하거나 적절한 UI를 제공
-      }
-   }, [dashcamId]); // dashcamId를 의존성 배열에 포함
-
-   useEffect(() => {
-      loadDetail();
-   }, [loadDetail]);
-
-   if (!dashCamDetail) {
-      return <div>Loading...</div>;
-   }
-
-   return (
-      <Container>
-         <ContentContainer>
-            <InnerContentContainer>
-               <LeftColumn>
-                  <DashCamContent
-                     id={dashCamDetail.id}
-                     member={dashCamDetail.member}
-                     title={dashCamDetail.title}
-                     createdAt={dashCamDetail.createdAt}
-                     videoUrl={dashCamDetail.videoUrl}
-                     content={dashCamDetail.content}
-                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
-               </LeftColumn>
-               <RightColumn>
-                  <CommentsSection>
-                     {/* <StatsContainer>
-                        <StatItem>
-                           <LiaCommentDots /> {dashCamDetail.commentCount}
-                        </StatItem>
-                        <StatGroup>
-                           <StatItem>
-                              <FaRegEye /> {dashCamDetail.viewCount}
-                           </StatItem>
-                           <StatItem>
-                              <FaRegHeart /> {dashCamDetail.likeCount}
-                           </StatItem>
-                        </StatGroup>
-                     </StatsContainer>
-                     <StyleCreateComment>
-                        <CreateComment boardId={dashCamDetail.id} isReply={false} commentId="" onCommentAdded={loadDetail} />
-                     </StyleCreateComment>
-                     {dashCamDetail.comments.map((comment) => (
-                        <React.Fragment key={comment.id}>
-                           {comment.status === CommentStatus.ACTIVE ? (
-                              <CommentWrapper>
-                                 <Comment
-                                    id={comment.id}
-                                    boardId={dashCamDetail.id}
-                                    avatarUrl={comment.member.profileUrl}
-                                    userName={comment.member.nickname}
-                                    userDetail={comment.member.carTitle}
-                                    text={comment.content}
-                                    time={comment.createdAt}
-                                    onCommentAdded={loadDetail}
-                                 />
-                              </CommentWrapper>
-                           ) : (
-                              "없는 댓글"
-                           )}
-                           {comment.replies.length > 0 && (
-                              comment.replies.map((reply) => (
-                                 <Reply
-                                    key={reply.id}
-                                    id={reply.id}
-                                    boardId={dashCamDetail.id}
-                                    avatarUrl={reply.member.profileUrl}
-                                    userName={reply.member.nickname}
-                                    userDetail={reply.member.carTitle}
-                                    text={reply.content}
-                                    time={reply.createdAt}
-                                 />
-                              ))
-                           )}
-                        </React.Fragment>
-                     ))} */}
-                  </CommentsSection>
-                  <VoteSection>
-                     <Vote />
-                  </VoteSection>
-               </RightColumn>
-            </InnerContentContainer>
-         </ContentContainer>
-      </Container>
-   );
-};
 
 export default Page;
