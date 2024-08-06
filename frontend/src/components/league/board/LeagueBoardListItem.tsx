@@ -20,7 +20,7 @@ function LeagueBoardListItem({
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>{writerCar}</UserTags>
+          <UserTags>GV70</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -53,6 +53,11 @@ const ArticleDetail = styled.div`
   align-items: center;
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ebebeb3d;
+  }
 `;
 
 const ArticleInfo = styled.div`
@@ -62,20 +67,18 @@ const ArticleInfo = styled.div`
 
 const UserContainer = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 6px;
 `;
 
 const UserName = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
 `;
 
 const UserTags = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
   color: #787878;
 `;

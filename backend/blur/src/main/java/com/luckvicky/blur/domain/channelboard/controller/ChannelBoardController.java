@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.channelboard.controller;
 
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
+import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;ChannelBoardController.java
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
@@ -10,6 +11,7 @@ import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,21 +61,6 @@ public class ChannelBoardController {
             summary = "채널 게시글 목록 검색 조회 API",
             description = "채널에 대한 게시물 목록을 검색한다."
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "게시물 목록 조회 성공",
-                    content = @Content(schema = @Schema(implementation = ChannelBoardListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "게시물 목록 조회 성공 (단, 게시글 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "게시물 목록 조회 실패"
-            )
-    })
     @Parameters({
             @Parameter(name = "channelId", description = "채널 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
@@ -89,7 +76,7 @@ public class ChannelBoardController {
             ),
     })
     @GetMapping
-    public ResponseEntity getChannelBoard(
+    public ResponseEntity<Result<ChannelBoardListResponse>> getChannelBoards(
             @PathVariable(name = "channelId")UUID channelId,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
@@ -104,14 +91,12 @@ public class ChannelBoardController {
 
         if (Objects.isNull(channelBoardListDtos) || channelBoardListDtos.isEmpty()) {
             return ResponseUtil.noContent(
-                    Result.builder().build()
+                    Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(ChannelBoardListResponse.of(channelBoardListDtos))
-                        .build()
+                Result.of(ChannelBoardListResponse.of(channelBoardListDtos))
         );
     }
 
@@ -123,10 +108,10 @@ public class ChannelBoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<Result<ChannelBoardDetailResponse>> getBoardDetail(
             @PathVariable(name = "boardId") UUID boardId,
-            @AuthUser ContextMember contextMember
+            @NullableAuthUser ContextMember nullableMember
     ) {
 
-        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId, contextMember.getId());
+        ChannelBoardDetailDto boardDetail = channelBoardService.getBoardDetail(boardId, nullableMember);
 
         return ResponseUtil.ok(
                 Result.of(ChannelBoardDetailResponse.of(boardDetail))

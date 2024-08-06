@@ -6,7 +6,6 @@ import { MdAccessTime } from "react-icons/md";
 import { LeagueMentionListItemProps } from "@/types/leagueTypes";
 import { formatPostDate } from "@/utils/formatPostDate";
 
-
 function LeagueMentionListItem({
   title,
   writer,
@@ -16,7 +15,6 @@ function LeagueMentionListItem({
   commentCount,
   channelName,
 }: LeagueMentionListItemProps) {
-  
   return (
     <ArticleDetail>
       <ArticleInfo>
@@ -57,6 +55,11 @@ const ArticleDetail = styled.div`
   align-items: center;
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ebebeb3d;
+  }
 `;
 
 const ArticleInfo = styled.div`

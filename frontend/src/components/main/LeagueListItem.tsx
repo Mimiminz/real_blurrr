@@ -41,10 +41,12 @@ const CardContainer = styled.div`
   text-align: center;
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  cursor: pointer;  
 
   &:hover {
     background: #ffedd5;
+    transition: 0.3s ease-in-out;
+    border: none;
   }
 `;
 

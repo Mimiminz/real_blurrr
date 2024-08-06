@@ -13,6 +13,7 @@ import {
   UserLeague,
   LeagueList,
   MentionChannelList,
+  MentionChannelBoardList,
 } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
@@ -27,6 +28,8 @@ import {
   fetchMentionBoardList,
 } from "@/api/league";
 import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
+import PaginationComponent from "@/components/common/UI/Pagination";
+import Loading from "@/components/common/UI/Loading";
 
 export default function LeaguePage({
   params,
@@ -55,9 +58,14 @@ export default function LeaguePage({
 
   const [boardList, setBoardList] = useState<LeagueBoardItem[]>([]);
   const [mentionBoardList, setMentionBoardList] = useState<
-    MentionChannelList[]
+    MentionChannelBoardList[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchTotalPages, setSearchTotalPages] = useState<number>(1);
 
   // 정렬 기준
   const [criteria, setCriteria] = useState<string>("TIME");
@@ -130,6 +138,9 @@ export default function LeaguePage({
 
   useEffect(() => {
     const loadBoardData = async () => {
+      if (!initialized) {
+        return;
+      }
       const findActiveTab =
         brandLeagueList.find((t) => t.name === leagueName) ||
         userLeagueList.find((t) => t.name === leagueName);
@@ -139,9 +150,11 @@ export default function LeaguePage({
         const boardData = await fetchLeagueBoardList(
           findActiveTab.id,
           criteria,
-          findActiveTab.type
+          findActiveTab.type,
+          currentPage - 1
         );
-        setBoardList(boardData);
+        setBoardList(boardData.content);
+        setTotalPages(boardData.totalPages);
         setLoading(false);
       } else {
         const findActiveTab = userLeagueList.find(
@@ -151,21 +164,33 @@ export default function LeaguePage({
         if (findActiveTab) {
           const boardData = await fetchMentionBoardList(
             findActiveTab.id,
-            criteria
+            criteria,
+            currentPage - 1
           );
-          setMentionBoardList(boardData);
+          setMentionBoardList(boardData.content);
+          setTotalPages(boardData.totalPages);
+
           setLoading(false);
+        } else {
+          alert("인증받지 못한 리그입니다. 자동차 인증을 해 주세요.");
+          router.back();
+          return;
         }
       }
     };
 
     loadBoardData();
-  }, [brandLeagueList, userLeagueList, leagueName, criteria, setActiveTab]);
+  }, [
+    brandLeagueList,
+    userLeagueList,
+    leagueName,
+    criteria,
+    setActiveTab,
+    currentPage,
+  ]);
 
-  const handleCriteriaChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setCriteria(event.target.value);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleWriteClick = () => {
@@ -210,15 +235,20 @@ export default function LeaguePage({
     }
     setIsSearching(true);
     try {
-      const results = await fetchBoardSearch(activeTab.id, keyword);
-      setSearchResults(results);
+      const results = await fetchBoardSearch(
+        activeTab.id,
+        keyword,
+        currentPage - 1
+      );
+      setSearchResults(results.content);
+      setSearchTotalPages(results.totalPages);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
@@ -267,6 +297,21 @@ export default function LeaguePage({
       ) : (
         <LeagueBoardList leagueName={leagueName} boardList={boardList} />
       )}
+      {isSearching
+        ? searchTotalPages > 0 && (
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={searchTotalPages}
+              onPageChange={handlePageChange}
+            />
+          )
+        : totalPages > 0 && (
+            <PaginationComponent
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
     </Container>
   );
 }

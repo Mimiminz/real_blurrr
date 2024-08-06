@@ -27,6 +27,8 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -101,17 +103,24 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
     @Override
     @Transactional
-    public ChannelBoardDetailDto getBoardDetail(UUID boardId, UUID memberId) {
+    public ChannelBoardDetailDto getBoardDetail(UUID boardId, ContextMember nullableMember) {
 
 
         ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
                 .orElseThrow(NotExistBoardException::new);
 
-        List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
-
         board.increaseViewCount();
 
-        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), isLike(memberId, board));
+        boolean isLiked = false;
+        if(Objects.nonNull(nullableMember)){
+            isLiked = isLike(nullableMember.getId(),board);
+        }
+
+
+        List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
+
+
+        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), isLiked);
 
 
     }
@@ -152,10 +161,6 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         }
 
         return channelBoardMapper.toChannelBoardDto(channelBoard);
-    }
-
-    private boolean isLike(Member member, Board board) {
-        return likeRepository.existsByMemberAndBoard(member, board);
     }
 
     private boolean isLike(UUID memberId, Board board) {

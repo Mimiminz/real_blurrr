@@ -1,8 +1,10 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import com.amazonaws.services.ec2.model.TagDescription;
 import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
+import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelMemberFollow;
@@ -98,33 +100,48 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public List<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember) {
+    public List<ChannelDto> searchChannelsByKeywords(List<String> keywords, ContextMember nullableMember) {
+        if (keywords.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        // 1. 이름 중 키워드 포함하는 채널 검색
-        List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
+        Set<Channel> resultChannels = null;
 
-        // 2-1. 태그 중 키워드 포함하는 채널 검색
-        List<ChannelTag> channelTagsByKeyword = channelTagRepository.findByTagNameContainingIgnoreCase(keyword);
+        for (String keyword : keywords) {
+            Set<Channel> keywordChannels = new HashSet<>();
 
-        // 2-2. 채널 추출
-        List<Channel> channelsByTag = channelTagsByKeyword.stream()
-                .map(ChannelTag::getChannel)
-                .distinct()
-                .toList();
+            // 1. 이름 중 키워드 포함하는 채널 검색
+            List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
+            keywordChannels.addAll(channelsByName);
 
-        // 3. 채널 병합
-        Set<Channel> allChannels = new HashSet<>();
-        allChannels.addAll(channelsByName);
-        allChannels.addAll(channelsByTag);
+            // 2-1. 태그 중 키워드 포함하는 채널 검색
+            List<ChannelTag> channelTagsByKeyword = channelTagRepository.findByTagNameContainingIgnoreCase(keyword);
+
+            // 2-2. 채널 추출
+            List<Channel> channelsByTag = channelTagsByKeyword.stream()
+                    .map(ChannelTag::getChannel)
+                    .toList();
+            keywordChannels.addAll(channelsByTag);
+
+            if (resultChannels == null) {
+                resultChannels = keywordChannels;
+            } else {
+                resultChannels.retainAll(keywordChannels);
+            }
+
+            if (resultChannels.isEmpty()) {
+                break;  // 일치하는 채널이 없으면 early exit
+            }
+        }
 
         Member member;
         if(Objects.nonNull(nullableMember)) {
-           member = memberRepository.getOrThrow(nullableMember.getId());
+            member = memberRepository.getOrThrow(nullableMember.getId());
         } else {
             member = null;
         }
 
-        return allChannels.stream()
+        return resultChannels.stream()
                 .map(channel -> {
                     if(Objects.nonNull(member)) {
                         var dto = ChannelMapper.convertToDto(channel);
@@ -183,6 +200,17 @@ public class ChannelServiceImpl implements ChannelService {
         channelMemberFollowRepository.deleteById(findFollow.getId());
 
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TagDto> searchTagsByKeyword(String keyword) {
+        List<Tag> tags = tagRepository.findAllByNameContainingIgnoreCase(keyword);
+
+        return tags.stream()
+                .limit(5)
+                .map(TagDto::of)
+                .collect(Collectors.toList());
     }
 
 

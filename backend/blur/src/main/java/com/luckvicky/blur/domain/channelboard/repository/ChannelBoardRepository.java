@@ -56,7 +56,7 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
             + "INNER JOIN Mention m ON cb = m.board AND m.league = :league "
             + "LEFT JOIN FETCH cb.channel "
             + "WHERE cb.status = :status ")
-    List<ChannelBoard> findAllByMentionedLeague(
+    Page<ChannelBoard> findAllByMentionedLeague(
             @Param("league") League league,
             @Param("status") ActivateStatus status,
             Pageable pageable
