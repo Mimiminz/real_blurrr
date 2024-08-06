@@ -6,6 +6,7 @@ import api, { requestEmailVerificationCode, verifyEmailCode } from '../../api/in
 import { SignupFormValues } from '@/types/authTypes';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
+import { useRouter } from "next/navigation";
 
 const initialValues: SignupFormValues = {
   email: '',
@@ -33,6 +34,7 @@ const validationSchema = Yup.object({
 });
 
 const SignupForm = () => {
+  const router = useRouter();
   const [checkList, setCheckList] = useState<string[]>([]);
   const [buttonColor, setButtonColor] = useState<boolean>(false);
   const [nicknameError, setNicknameError] = useState<string>('');
@@ -154,8 +156,13 @@ const SignupForm = () => {
 
   return (
     <Container>
+      <Image
+              src="/images/logo/logo.png"
+              alt="로고"
+      />
+      <Div>
       <Title>회원가입</Title>
-      <SubTitle>blurrr의 다양한 서비스를 이용해 보세요!</SubTitle>
+      <SubTitle>간편한 가입으로 다양한 서비스를 이용해 보세요!</SubTitle>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -295,7 +302,7 @@ const SignupForm = () => {
               </div>
             </TermsContainer>
 
-            <Button
+            <Button onClick={() => router.push("/")}
               type="submit"
               disabled={!buttonColor}
               className={buttonColor ? 'text-green-500' : 'text-slate-200'}
@@ -306,25 +313,56 @@ const SignupForm = () => {
           </StyledForm>
         )}
       </Formik>
+      </Div>
     </Container>
   );
 };
 
 const Container = styled.div`
-  max-width: 400px;
-  margin: 5% auto;
-  padding: 2em;
-  background: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  gap:80px;
+
+  @media (min-width: 480px) {
+    gap: 40px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 80px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 80px;
+  }
+
+  @media (min-width: 1440px) {
+    gap: 100px;
+  }
 `;
 
-const Title = styled.h2`
+const Title = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  margin-bottom: 0.5em;
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center; 
+`;
+
+const Div = styled.div`
+  display: flex;
+  width: 60%;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const SubTitle = styled.h4`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 `;
 
@@ -387,7 +425,7 @@ const SuccessMessage = styled.div`
 const Button = styled.button`
   padding: 0.7em;
   margin-left: 0.5em;
-  font-size: 1em;
+  font-size: 0%.8;
   color: #fff;
   background-color: #f9803a;
   border: none;
@@ -431,6 +469,30 @@ const TimerDisplay = styled.div`
   font-weight: bold;
   color: #d9534f;
   margin-bottom: 10px;
+`;
+
+const Image = styled.img`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: auto;
+
+  @media (min-width: 480px) {
+    width: 80px;
+  }
+
+  @media (min-width: 768px) {
+    width: 80px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 80px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 100px;
+  }
 `;
 
 export default SignupForm;

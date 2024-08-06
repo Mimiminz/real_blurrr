@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useRouter } from "next/navigation";
 import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
@@ -9,9 +9,20 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { useAuthStore } from "@/store/authStore";
 import Notifications from "./Notifications";
 import { useLeagueStore } from "@/store/leagueStore";
+import LoginForm from "@/components/login/LoginForm";
+import SignupForm from "@/components/signup/SignupForm";
 
 const NavBar = () => {
   const router = useRouter();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+
+  const openSignupModal = () => setIsSignupModalOpen(true);
+  const closeSignupModal = () => setIsSignupModalOpen(false);
+
   const { isLoggedIn, setIsLoggedIn, clearAuthState } = useAuthStore(
     (state) => ({
       isLoggedIn: state.isLoggedIn,
@@ -57,6 +68,7 @@ const NavBar = () => {
   };
 
   return (
+    <>
     <Nav>
       <Image
         src="/images/logo/logo.png"
@@ -83,8 +95,8 @@ const NavBar = () => {
           </>
         ) : (
           <>
-            <MenuItem onClick={() => router.push("/login")}>로그인</MenuItem>
-            <MenuItem onClick={() => router.push("/signup")}>회원가입</MenuItem>
+            <MenuItem onClick={openLoginModal}>로그인</MenuItem>
+            <MenuItem onClick={openSignupModal}>회원가입</MenuItem>
           </>
         )}
       </Menu>
@@ -92,10 +104,90 @@ const NavBar = () => {
         <Notifications onClose={handleCloseNotifications} />
       )}
     </Nav>
+
+    {isLoginModalOpen && (
+      <ModalOverlay onClick={closeLoginModal}>
+        <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+          <LoginForm />
+          <CloseButton onClick={closeLoginModal}>×</CloseButton>
+        </ModalContent>
+      </ModalOverlay>
+    )}
+
+    {isSignupModalOpen && (
+      <ModalOverlay onClick={closeSignupModal}>
+        <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+          <SignupForm />
+          <CloseButton onClick={closeSignupModal}>×</CloseButton>
+        </ModalContent>
+      </ModalOverlay>
+    )}
+    </>
   );
+  
 };
 
 export default NavBar;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: #ffffff;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  max-width: 50%;
+  width: 100%;
+  animation: ${fadeIn} 300ms ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 300ms ease-in-out;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+`;
 
 const Nav = styled.nav`
   display: flex;
