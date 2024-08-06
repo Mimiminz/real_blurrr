@@ -20,6 +20,9 @@ import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchLeagueLike, fetchLeagueLikeDelete } from "@/api/board";
 import { formatPostDate } from "@/utils/formatPostDate";
 import Loading from "@/components/common/UI/Loading";
+import NoCarPopup from "@/components/league/NoCarPopup";
+import NoAuthority from "@/components/league/NoAuthority";
+import LoginForm from "@/components/login/LoginForm";
 
 export default function BoardDetailPage({
   params,
@@ -32,8 +35,7 @@ export default function BoardDetailPage({
   const leagueName = decodeURIComponent(encodedLeagueName);
   const boardId = params.boardId;
 
-  const { activeTab, brandLeagueList, userLeagueList, setActiveTab } =
-    useLeagueStore();
+  const { activeTab, setActiveTab, userLeagueList } = useLeagueStore();
   const { isLoggedIn, user } = useAuthStore();
 
   const [boardDetail, setBoardDetail] = useState<BoardDetail | null>(null);
@@ -41,6 +43,10 @@ export default function BoardDetailPage({
   const [loading, setLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showNoAuthority, setShowNoAuthority] = useState(false);
 
   const loadBoardDetail = async () => {
     try {
@@ -62,16 +68,6 @@ export default function BoardDetailPage({
     }
   };
 
-  // const loadLike = async () => {
-  //   try {
-  //     const fetchLikeState = await fetchLeaugueLikeState(boardId);
-  //     setIsLiked(fetchLikeState.isLike);
-  //     setLikeCount(fetchLikeState.likeCount);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const toggleLike = async () => {
     if (isLiked) {
       const likeData = await fetchLeagueLikeDelete(boardId);
@@ -84,45 +80,52 @@ export default function BoardDetailPage({
     }
   };
 
+  const checkLeagueInUserList = () => {
+    return userLeagueList.some((league) => league.name === leagueName);
+  };
+
   useEffect(() => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+      setLoading(false);
+    } else if (!user?.isAuth) {
+      setShowPopup(true);
+      setLoading(false);
+      return;
+    } else if (!checkLeagueInUserList()) {
+      setShowNoAuthority(true);
+      setLoading(false);
+    }
     loadBoardDetail();
-  }, [boardId]);
+  }, [boardId, isLoggedIn, user]);
 
   useEffect(() => {
     const loadBoardData = async () => {
-      if (isLoggedIn && user?.isAuth) {
-        const userLeagues: UserLeague[] = await fetchUserLeagueList();
-        const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
-          id: userLeague.league.id,
-          name: userLeague.league.name,
-          type: userLeague.league.type,
-          peopleCount: userLeague.league.peopleCount,
-        }));
-        const findActiveTab = userTabs.find((t) => t.name === leagueName);
+      const findActiveTab = userLeagueList.find((t) => t.name === leagueName);
 
-        if (findActiveTab) {
-          setActiveTab(findActiveTab);
-          await loadCommentDetail(findActiveTab.id);
-          setLoading(false);
-        } else {
-          alert("인증받지 못한 리그입니다");
-          router.back();
-          return;
-        }
+      if (findActiveTab) {
+        setActiveTab(findActiveTab);
+        await loadCommentDetail(findActiveTab.id);
+        setLoading(false);
       } else {
-        alert("인증받지 못한 리그입니다");
-        router.back();
-        return;
+        if (!user?.isAuth) {
+          setShowPopup(true);
+        } else {
+          setShowNoAuthority(true);
+        }
+        setLoading(false);
       }
     };
 
-    if (!activeTab.id) {
-      loadBoardData();
-    } else {
-      loadCommentDetail(activeTab.id);
-      setLoading(false);
+    if (isLoggedIn && user?.isAuth) {
+      if (activeTab.id) {
+        loadCommentDetail(activeTab.id);
+        setLoading(false);
+      } else {
+        loadBoardData();
+      }
     }
-  }, [activeTab, boardId, leagueName, setActiveTab]);
+  }, [activeTab, boardId, leagueName, setActiveTab, isLoggedIn, user]);
 
   const handleCommentAdded = async () => {
     if (activeTab && activeTab.id) {
@@ -132,22 +135,46 @@ export default function BoardDetailPage({
 
   const handleDelete = async () => {
     try {
-      await fetchBoardDelete(boardId);
       const isDelete = confirm("정말 삭제하실건가요?");
       if (!isDelete) {
         return;
       }
+      await fetchBoardDelete(boardId);
       router.push(`/league/${leagueName}`);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const closePopup = () => {
+    setShowPopup(false);
+    setShowLogin(false);
+    setShowNoAuthority(false);
+    router.back();
+  };
+  const closeLoginPopup = () => {
+    router.back();
+  };
+
   if (loading || !boardDetail || !commentList) {
+    if (showLogin) {
+      return (
+        <PopupContainer onClick={closePopup}>
+          <PopupContent onClick={(e) => e.stopPropagation()}>
+            <CloseIcon onClick={closePopup}>×</CloseIcon>
+            <LoginForm />
+          </PopupContent>
+        </PopupContainer>
+      );
+    }
+    if (showPopup) {
+      return <NoCarPopup closePopup={closePopup} />;
+    }
+    if (showNoAuthority) {
+      return <NoAuthority closePopup={closePopup} />;
+    }
     return <Loading />;
   }
-
-  console.log(boardDetail.createdAt);
 
   return (
     <>
@@ -186,6 +213,16 @@ export default function BoardDetailPage({
           onCommentAdded={handleCommentAdded}
         />
       </CommentContainer>
+      {showPopup && <NoCarPopup closePopup={closePopup} />}
+      {showLogin && (
+        <PopupContainer onClick={closePopup}>
+          <PopupContent onClick={(e) => e.stopPropagation()}>
+            <CloseIcon onClick={closePopup}>×</CloseIcon>
+            <LoginForm />
+          </PopupContent>
+        </PopupContainer>
+      )}
+      {showNoAuthority && <NoAuthority closePopup={closePopup} />}
     </>
   );
 }
@@ -218,8 +255,6 @@ const WriterContainer = styled.div`
 
 const WriterButton = styled.p`
   padding: 0px;
-  /* border-radius: 40px; */
-  /* border: 1px solid #ddd; */
   font-size: 14px;
   background-color: white;
   margin: 5px 10px 20px 0;
@@ -243,5 +278,48 @@ const HeartButton = styled.button`
 
   &:hover {
     color: #666;
+  }
+`;
+
+const PopupContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const PopupContent = styled.div`
+  position: relative;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 400px;
+  width: 60%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+`;
+
+const CloseIcon = styled.span`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #999;
+  &:hover {
+    color: #333;
   }
 `;
