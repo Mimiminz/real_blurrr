@@ -4,11 +4,10 @@ import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
-import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardListResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
-import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.NullableAuthUser;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -45,7 +43,10 @@ public class DashcamBoardController {
     private final DashcamBoardService dashcamBoardService;
     private final S3ImageService s3ImageService;
 
-    @Operation(summary = "블랙박스 게시글 목록 조회 API")
+    @Operation(
+            summary = "블랙박스 게시글 목록 검색 조회 API",
+            description = "블랙박스 게시물을 검색한다."
+    )
     @Parameters({
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
@@ -56,28 +57,29 @@ public class DashcamBoardController {
                             @ExampleObject(name = "좋아요", value = "LIKE"),
                             @ExampleObject(name = "조회수", value = "VIEW"),
                             @ExampleObject(name = "댓글", value = "COMMENT"),
-                    },
-                    schema = @Schema(implementation = SortingCriteria.class)
+                    }
             ),
     })
     @GetMapping
-    public ResponseEntity<Result<DashcamBoardListResponse>> getDashcamBoards(
-            @RequestParam int pageNumber,
-            @RequestParam SortingCriteria criteria
+    public ResponseEntity<Result<PaginatedResponse<DashcamBoardListDto>>> getDashcamBoards(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ){
-        List<DashcamBoardListDto> boardDtos = dashcamBoardService.getDashcamBoards(
+        PaginatedResponse<DashcamBoardListDto> response = dashcamBoardService.getDashcamBoards(
+                keyword,
                 pageNumber,
                 criteria
         );
 
-        if (Objects.isNull(boardDtos) || boardDtos.isEmpty()) {
+        if (Objects.isNull(response) || response.getContent().isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.of(DashcamBoardListResponse.of(boardDtos))
+                Result.of(response)
         );
 
     }
