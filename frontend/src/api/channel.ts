@@ -1,5 +1,13 @@
 import api from '@/api/index'; 
-import { Channels, DashCams, DashCamDetail, PostData, PostDetail, PostInfo } from '@/types/channelType';
+import { 
+  Vote, 
+  PostDataInfo, 
+  Channels, 
+  DashCamList, 
+  DashCamDetail, 
+  PostDetail, 
+  PostInfo 
+} from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
 export const fetchFollowingChannels = async (): Promise<Channels[]> => {
@@ -83,30 +91,47 @@ export const fetchChannelInfo = async (channelId: string): Promise<PostInfo>  =>
 };
 
 // 채널 게시글 목록 데이터를 가져오는 함수
-export const fetchPosts = async (channelId: string, keyword: string, pageNumber: number, criteria: string): Promise<PostData[]> => {
+export const fetchPosts = async (
+  channelId: string,
+  keyword: string,
+  pageNumber: number,
+  criteria: string
+): Promise<PostDataInfo> => {
   try {
     const response = await api.get(`/v1/channels/${channelId}/boards`, {
       params: {
         keyword,
         pageNumber, // 페이지 번호
-        criteria,   // 정렬 기준
+        criteria, // 정렬 기준
       },
     });
-    console.log('channelPost call');
+    console.log("channelPost call");
 
     if (response.status === 204) {
-      return []; // 검색 결과가 없는 경우 빈 배열 반환
+      return {
+        totalPages: 0,
+        totalElements: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        content: [],
+      }; // 검색 결과가 없는 경우 빈 배열 반환
     }
 
     // 응답 데이터가 정의되어 있는지 확인
-    if (response.data && response.data.data && response.data.data.boards) {
-      return response.data.data.boards;
+    if (response.data && response.data.data) {
+      return response.data.data;
     } else {
-      console.error('Unexpected response structure:', response);
-      return [];
+      console.error("Unexpected response structure:", response);
+      return {
+        totalPages: 0,
+        totalElements: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        content: [],
+      };
     }
   } catch (error) {
-    console.error('Error fetching channel post list:', error);
+    console.error("Error fetching channel post list:", error);
     throw error;
   }
 };
@@ -144,8 +169,6 @@ export const fetchPostWrite = async (
   }
 };
 
-
-
 // 채널 팔로우 / 언팔로우 하는 함수
 export const followChannel = async (channelId: string) => {
   try {
@@ -167,27 +190,28 @@ export const unfollowChannel = async (channelId: string) => {
   }
 };
 
-
 // 블랙박스 목록 데이터를 가져오는 함수
-export const fetchDashCams = async (pageNumber: number, criteria: string): Promise<DashCams[]> => {
-   try {
-     const response = await api.get('/v1/channels/dashcams/boards', {
-       params: {
-         pageNumber, // 쿼리 매개변수: 페이지 번호
-         criteria,   // 쿼리 매개변수: 정렬 기준
-       },
-     });
-     return response.data.data.boards;
-   } catch (error) {
-     console.error('Error fetching dash cam data:', error);
-     throw error;
-   }
+export const fetchDashCams = async (keyword: string, pageNumber: number, criteria: string): Promise<DashCamList> => {
+  try {
+    const response = await api.get('/v1/channels/dashcams/boards', {
+      params: {
+        keyword,
+        pageNumber, 
+        criteria,   
+      },
+    });
+    
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching dash cam data:', error);
+    throw error;
+  }
 };
 
 // 블랙박스 게시물 상세 정보를 가져오는 함수
 export const fetchDashCamDetail = async (boardId: string): Promise<DashCamDetail> => {
   try {
-    const response = await api.get<DashCamDetail>(`/v1/channels/dashcams/boards/${boardId}`);
+    const response = await api.get(`/v1/channels/dashcams/boards/${boardId}`);
     console.log(response.data);
     return response.data.board;
   } catch (error) {
@@ -195,3 +219,14 @@ export const fetchDashCamDetail = async (boardId: string): Promise<DashCamDetail
     throw error;
   }
 };
+
+// 블랙박스 투표 확인
+export const fetchVote = async ( boardId: string): Promise<Vote> => {
+  try {
+    const response = await api.get(`/v1/channels/board/${boardId}/votes`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching vote:', error);
+    throw error;
+  }
+}

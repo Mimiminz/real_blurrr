@@ -1,14 +1,83 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from "next/navigation";
 import DashCamCard from '@/components/channel/dashcam/DashCamCard';
 import PostTitle from '@/components/channel/PostTitle';
 import { fetchDashCams } from '@/api/channel';
-import { DashCams } from '@/types/channelType';
+import { DashCamList } from '@/types/channelType';
 
-const Container = styled.div``;
+const DashCamPage: React.FC = () => {
+   const [dashCams, setDashCams] = useState<DashCamList>();
+   const [keyword, setKeyword] = useState('');
+   const [sortCriteria, setSortCriteria] = useState('TIME');
+
+   const router = useRouter();
+
+   const handleSortChange = (newSort: string) => {
+      const criteriaMap: { [key: string]: string } = {
+         '최신순': 'TIME',
+         '댓글수': 'COMMENT',
+         '조회수': 'VIEW',
+         '좋아요': 'LIKE'
+      };
+
+      const newCriteria = criteriaMap[newSort] || 'TIME';
+      setSortCriteria(newCriteria);
+   };
+
+   const handleSearch = (newKeyword: string) => {
+      setKeyword(newKeyword);
+   };
+
+   const loadData = useCallback(async () => {
+      try {
+         const data = await fetchDashCams(keyword, 0, sortCriteria);
+         setDashCams(data);
+      } catch (error) {
+         console.error('Failed to load dash cam data:', error);
+      }
+   }, [keyword, sortCriteria]);
+
+   useEffect(() => {
+      loadData();
+   }, [loadData]);
+
+   const handleCardClick = (dashCamDetailId: string) => {
+      router.push(`/channels/dashcam/${dashCamDetailId}`);
+   };
+
+   return (
+      <Container>
+         <PostTitle
+            channel="dashcam"
+            title="다양한 블랙박스 영상을 보고 직접 투표하자"
+            onSearch={handleSearch}
+            onSortChange={handleSortChange}
+         />
+         {!dashCams ? (
+            <CenteredMessage>로딩 중...</CenteredMessage>
+         ) : dashCams.content.length === 0 ? (
+            <CenteredMessage>게시글이 없습니다. 게시글을 작성해보세요!</CenteredMessage>
+         ) : (
+            <CardGrid>
+               {dashCams.content.map((dashCam) => (
+                  <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
+                     <DashCamCard
+                        dashCamTitle={dashCam}
+                     />
+                  </div>
+               ))}
+            </CardGrid>
+         )}
+      </Container>
+   );
+};
+
+const Container = styled.div`
+  padding: 20px;
+`;
 
 const CardGrid = styled.div`
   display: grid;
@@ -32,66 +101,13 @@ const CardGrid = styled.div`
   }
 `;
 
-const DashCam: React.FC = () => {
-   const [dashCams, setDashCams] = useState<DashCams[]>([]);
-   const [keyword, setKeyword] = useState('');
-   const [sortCriteria, setSortCriteria] = useState('TIME');
+const CenteredMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #555;
+`;
 
-   const router = useRouter();
-
-   const handleSortChange = (newSort: string) => {
-      // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환
-      const criteriaMap: { [key: string]: string } = {
-         '최신순': 'TIME',
-         '댓글수': 'COMMENT',
-         '조회수': 'VIEW',
-         '좋아요': 'LIKE'
-      };
-
-      const newCriteria = criteriaMap[newSort] || 'TIME'; // 매핑되지 않는 경우 기본값 설정
-      setSortCriteria(newCriteria);
-   };
-
-   const handleSearch = (newKeyword: string) => {
-      setKeyword(newKeyword);
-   };
-
-   useEffect(() => {
-      const loadData = async () => {
-         try {
-            const data = await fetchDashCams(0, 'TIME');
-            setDashCams(data);
-         } catch (error) {
-            console.error('Failed to load dash cam data:', error);
-         }
-      };
-
-      loadData();
-   }, []);
-
-   const handleCardClick = (id: string) => {
-      router.push(`/channels/dashcam/${id}`);
-   };
-
-   return (
-      <Container>
-         <PostTitle
-            channel="dashcam"
-            title="다양한 블랙박스 영상을 보고 직접 투표하자"
-            onSearch={handleSearch}
-            onSortChange={handleSortChange}
-         />
-         <CardGrid>
-            {dashCams.map((dashCam) => (
-               <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
-                  <DashCamCard
-                     dashCamTitle={dashCam}  // DashCamCard가 dashCamTitle prop을 필요로 하는지 확인
-                  />
-               </div>
-            ))}
-         </CardGrid>
-      </Container>
-   );
-};
-
-export default DashCam;
+export default DashCamPage;
