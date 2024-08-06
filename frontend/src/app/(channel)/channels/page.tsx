@@ -59,13 +59,13 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-  const loadChannelsByKeywords = async (newKeyword: string[]) => {
+  const loadChannelsByKeywords = async (newKeywords: string[]) => {
     try {
-      if (newKeyword.length === 0) {
+      if (newKeywords.length === 0) {
         const ChannelData = await fetchChannels();
         setChannels(ChannelData);
       } else {
-        const searchResults = await fetchSearchKeywords(newKeyword);
+        const searchResults = await fetchSearchKeywords(newKeywords);
         setChannels(searchResults);
       }
     } catch (error) {
@@ -131,18 +131,22 @@ const ChannelPage: React.FC = () => {
         ))}
       </KeywordContainer>
       <PageContainer>
-        <GridContainer>
-          {Channels.map((channel) => (
-            <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
-              <ChannelCard
-                name={channel.name}
-                followCount={channel.followCount}
-                tags={channel.tags}
-                img={channel.img}
-              />
-            </div>
-          ))}
-        </GridContainer>
+        {Channels.length === 0 ? (
+          <EmptyMessage>채널이 없습니다.</EmptyMessage>
+        ) : (
+          <GridContainer>
+            {Channels.map((channel) => (
+              <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
+                <ChannelCard
+                  name={channel.name}
+                  followCount={channel.followCount}
+                  tags={channel.tags}
+                  img={channel.img}
+                />
+              </div>
+            ))}
+          </GridContainer>
+        )}
       </PageContainer>
     </>
   );
@@ -185,6 +189,7 @@ const PageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const KeywordContainer = styled.div`
@@ -240,6 +245,13 @@ const GridContainer = styled.div`
   @media (min-width: 1440px) {
     grid-template-columns: repeat(5, minmax(200px, 1fr));
   }
+`;
+
+const EmptyMessage = styled.p`
+  padding-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
 `;
 
 export default ChannelPage;
