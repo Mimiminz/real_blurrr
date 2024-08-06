@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { IoMdNotifications } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
+import { FiMenu, FiX } from "react-icons/fi";
 import { useAuthStore } from "@/store/authStore";
 import Notifications from "./Notifications";
 import { useLeagueStore } from "@/store/leagueStore";
@@ -28,6 +29,7 @@ const NavBar = () => {
   const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
     null
   );
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setClientIsLoggedIn(isLoggedIn);
@@ -61,7 +63,10 @@ const NavBar = () => {
         alt="로고"
         onClick={() => router.push("/")}
       />
-      <Menu>
+      <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
+        {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+      </MenuToggleBtn>
+      <Menu className={menuOpen ? "open" : ""}>
         <MenuItem onClick={() => router.push("/")}>홈</MenuItem>
         <MenuItem onClick={() => router.push(`/league`)}>리그</MenuItem>
         <MenuItem onClick={() => router.push("/channels")}>채널</MenuItem>
@@ -96,10 +101,36 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 80px 20px 80px;
+  padding: 20px;
   background-color: #ffffff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   color: black;
+
+  @media (min-width: 480px) {
+    padding: 20px 40px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 20px 60px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 20px 80px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 20px 100px;
+  }
+`;
+
+const MenuToggleBtn = styled.div`
+  display: none;
+  color: black; 
+
+  @media (max-width: 768px) {
+    display: flex;
+    cursor: pointer;
+  }
 `;
 
 const Menu = styled.div`
@@ -107,31 +138,78 @@ const Menu = styled.div`
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 40px;
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
   gap: 20px;
-  align-items: center;
-  cursor: pointer;
 
-  svg {
-    width: 24px;
-    height: 24px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    padding: 20px 0;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden; 
   }
+
+  &.open {
+    max-height: 300px;
+    opacity: 1;
+    visibility: visible;
+  }
+
 `;
 
 const MenuItem = styled.div`
   cursor: pointer;
-  &:hover {
+  font-size: 15px;
+  margin: 0 10px;
+  a {
+    color: black;
     text-decoration: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
 const Image = styled.img`
   width: 80px;
-  height: 25px;
+  height: auto;
+
+  @media (min-width: 480px) {
+    width: 60px;
+  }
+
+  @media (min-width: 768px) {
+    width: 60px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 80px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 100px;
+  }
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const Spinner = styled.div`
