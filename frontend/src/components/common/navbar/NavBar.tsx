@@ -134,7 +134,6 @@ const MenuToggleBtn = styled.div`
 
 const Menu = styled.div`
   display: flex;
-  flex-direction: column;
   font-size: 1rem;
   font-weight: bold;
   justify-content: center;
@@ -179,7 +178,7 @@ const MenuItem = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 20px;
-  margin: 0 40px;
+  margin: 0 20px;
   font-weight: 400;
   text-align: left;
   a {
