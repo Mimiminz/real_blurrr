@@ -5,36 +5,40 @@ import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(name = "게시글 생성 요청")
-public record BoardCreateRequest(
+public class BoardCreateRequest {
+    @Schema(
+            description = "제목",
+            example = "제목입니다.",
+            maxLength = 20
+    )
+    String title;
 
-        @Schema(
-                description = "제목",
-                example = "제목입니다.",
-                maxLength = 20
-        )
-        String title,
+    @Schema(
+            description = "본문",
+            example = "본문입니다."
+    )
+    String content;
 
-        @Schema(
-                description = "사용자 고유 식별값",
-                example = "11ef4830-22b0-8bab-bdb9-5b68a61f28a6"
-        )
-        UUID memberId,
+    @Schema(
+            description = "게시판 유형(CHANNEL | LEAGUE | DASHCAM | MYCAR)",
+            example = "CHANNEL"
+    )
+    String boardType;
 
-        @Schema(
-                description = "본문",
-                example = "본문입니다."
-        )
-        String content,
-
-        @Schema(
-                description = "게시판 유형(CHANNEL | LEAGUE | DASHCAM)",
-                example = "CHANNEL"
-        )
-        String boardType
-
-) {
+    public BoardCreateRequest(String title, String content, String boardType) {
+        this.title = title;
+        this.content = content;
+        this.boardType = boardType;
+    }
 
     public Board toEntity(Member member, BoardType type) {
         return Board.builder()

@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channelboard.service;
 
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
@@ -16,6 +17,6 @@ public interface ChannelBoardService {
 
     List<CommentDto> getComments(UUID boardId);
 
-    ChannelBoardDetailDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId);
+    ChannelBoardDetailDto createChannelBoard(UUID channelId, ChannelBoardCreateRequest request, UUID memberId, BoardType boardType);
 
 }

@@ -17,7 +17,6 @@ public class NotificationConfig {
 
     @Bean
     public Map<String, NotificationFactory> factoryMap() {
-        log.info("=======================================");
         Map<String, NotificationFactory> factoryMap = new HashMap<>();
         factoryMap.put(AlarmType.ADD_COMMENT.getType(), commentNotificationFactory());
         return factoryMap;

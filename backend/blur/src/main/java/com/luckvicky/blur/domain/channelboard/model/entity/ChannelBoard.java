@@ -28,4 +28,9 @@ public class ChannelBoard extends Board {
         this.channel = channel;
     }
 
+
+    @Override
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 }

@@ -5,12 +5,17 @@ import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.exception.UnauthorizedBoardDeleteException;
+import com.luckvicky.blur.domain.board.factory.BoardFactory;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
+import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
+import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -18,6 +23,7 @@ import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -31,24 +37,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
     private final ModelMapper mapper;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final LikeRepository likeRepository;
-    private final ChannelBoardRepository channelBoardRepository;
+    private final Map<BoardType, BoardFactory> factoryMap;
+    private final ChannelRepository channelRepository;
 
+    public BoardServiceImpl(ModelMapper mapper, BoardRepository boardRepository, MemberRepository memberRepository,
+                            LikeRepository likeRepository, Map<BoardType, BoardFactory> factoryMap, ChannelRepository channelRepository) {
+        this.mapper = mapper;
+        this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
+        this.likeRepository = likeRepository;
+        this.factoryMap = factoryMap;
+        this.channelRepository = channelRepository;
+    }
+
+    @Transactional
     @Override
-    public Boolean createBoard(BoardCreateRequest request) {
+    public Boolean createBoard(BoardCreateRequest request, UUID memberId) {
 
-        BoardType boardType = BoardType.convertToEnum(request.boardType());
-        Member member = memberRepository.getOrThrow(request.memberId());
+        BoardType boardType = BoardType.convertToEnum(request.getBoardType());
+        Member member = memberRepository.getOrThrow(memberId);
 
-        Board createdBoard = boardRepository.save(
-                request.toEntity(member, boardType)
-        );
+        Board createdBoard = factoryMap.get(boardType).createBoard(request, member);
+
+        if (boardType != BoardType.LEAGUE) {
+            Channel channel = channelRepository
+                    .findByNameIs(boardType.getName())
+                    .orElseThrow(NotExistChannelException::new);
+
+            createdBoard.setChannel(channel);
+        }
+        boardRepository.save(createdBoard);
 
         return isCreated(createdBoard);
 
@@ -137,4 +161,5 @@ public class BoardServiceImpl implements BoardService {
         board.increaseViewCount();
         boardRepository.save(board);
     }
+
 }

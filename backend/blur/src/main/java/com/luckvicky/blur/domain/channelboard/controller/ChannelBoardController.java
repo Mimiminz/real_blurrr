@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channelboard.controller;
 
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
@@ -45,7 +46,8 @@ public class ChannelBoardController {
             @Valid @RequestBody ChannelBoardCreateRequest request,
             @AuthUser ContextMember contextMember
             ) {
-        ChannelBoardDetailDto createdBoard = channelBoardService.createChannelBoard(channelId, request,contextMember.getId());
+        ChannelBoardDetailDto createdBoard = channelBoardService.createChannelBoard(channelId, request,contextMember.getId(),
+                BoardType.CHANNEL);
         return ResponseUtil.created(
                 Result.<ChannelBoardDetailDto>builder()
                         .data(createdBoard)

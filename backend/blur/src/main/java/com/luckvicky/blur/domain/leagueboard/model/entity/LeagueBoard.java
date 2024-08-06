@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.leagueboard.model.entity;
 
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import jakarta.persistence.Entity;
