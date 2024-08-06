@@ -1,5 +1,9 @@
 package com.luckvicky.blur.domain.channel.service;
 
+import static com.luckvicky.blur.global.constant.Number.CHANNEL_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.CREATE_CHANNEL_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.FOLLOW_CHANNEL_PAGE_SIZE;
+
 import com.amazonaws.services.ec2.model.TagDescription;
 import com.luckvicky.blur.domain.channel.exception.NotExistFollowException;
 import com.luckvicky.blur.domain.channel.mapper.ChannelMapper;
@@ -17,6 +21,7 @@ import com.luckvicky.blur.domain.channel.repository.TagRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.SliceResponse;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +32,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,84 +82,71 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public List<ChannelDto> getAllChannels(ContextMember nullableMember) {
-        List<UUID> channelIds = channelRepository.findAllChannelIds();
-        List<ChannelDto> channelDtos;
+    public SliceResponse<ChannelDto> getAllChannels(ContextMember nullableMember, int pageNumber) {
 
+        Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
+        Slice<UUID> channelIdsSlice = channelRepository.findAllChannelIds(pageable);
+
+        List<ChannelDto> channelDtos;
         if (Objects.isNull(nullableMember)) {
-            channelDtos = getChannelDtos(channelIds);
+            channelDtos = getChannelDtos(channelIdsSlice.getContent());
         } else {
-            channelDtos = getChannelDtosWithFollowInfo(nullableMember.getId(), channelIds);
+            channelDtos = getChannelDtosWithFollowInfo(nullableMember.getId(), channelIdsSlice.getContent());
         }
-        return channelDtos;
+        return new SliceResponse<>(
+                channelDtos,
+                channelIdsSlice.getNumber(),
+                channelIdsSlice.isFirst(),
+                channelIdsSlice.hasNext()
+        );
     }
 
     @Override
     public List<ChannelDto> getFollowedChannels(UUID memberId) {
+
+
         List<UUID> channelIds = channelMemberFollowRepository.findChannelIdsByMemberId(memberId);
+
         return getChannelDtosWithFollowInfo(memberId, channelIds);
     }
 
     @Override
     public List<ChannelDto> getCreatedChannels(UUID memberId) {
+
+
         List<UUID> channelIds = channelRepository.findChannelIdsByOwnerId(memberId);
+
         return getChannelDtosWithFollowInfo(memberId, channelIds);
     }
 
 
     @Override
-    public List<ChannelDto> searchChannelsByKeywords(List<String> keywords, ContextMember nullableMember) {
-        if (keywords.isEmpty()) {
-            return Collections.emptyList();
+    public SliceResponse<ChannelDto> searchChannelsByKeywords(String keyword, ContextMember nullableMember, int pageNumber) {
+        if (keyword.isEmpty()) {
+            return new SliceResponse<>(Collections.emptyList(), pageNumber, true, false);
         }
 
-        Set<Channel> resultChannels = null;
+        Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
 
-        for (String keyword : keywords) {
-            Set<Channel> keywordChannels = new HashSet<>();
+        Slice<Channel> channelSlice = channelRepository.findByKeyword(keyword, pageable);
 
-            // 1. 이름 중 키워드 포함하는 채널 검색
-            List<Channel> channelsByName = channelRepository.findByNameContainingIgnoreCase(keyword);
-            keywordChannels.addAll(channelsByName);
 
-            // 2-1. 태그 중 키워드 포함하는 채널 검색
-            List<ChannelTag> channelTagsByKeyword = channelTagRepository.findByTagNameContainingIgnoreCase(keyword);
-
-            // 2-2. 채널 추출
-            List<Channel> channelsByTag = channelTagsByKeyword.stream()
-                    .map(ChannelTag::getChannel)
-                    .toList();
-            keywordChannels.addAll(channelsByTag);
-
-            if (resultChannels == null) {
-                resultChannels = keywordChannels;
-            } else {
-                resultChannels.retainAll(keywordChannels);
-            }
-
-            if (resultChannels.isEmpty()) {
-                break;  // 일치하는 채널이 없으면 early exit
-            }
-        }
-
-        Member member;
-        if(Objects.nonNull(nullableMember)) {
-            member = memberRepository.getOrThrow(nullableMember.getId());
+        List<ChannelDto> channelDtos;
+        if (Objects.isNull(nullableMember)) {
+            channelDtos = getChannelDtos(channelSlice.getContent().stream().map(Channel::getId).toList());
         } else {
-            member = null;
+            channelDtos = getChannelDtosWithFollowInfo(nullableMember.getId(), channelSlice.getContent().stream().map(Channel::getId).toList());
         }
 
-        return resultChannels.stream()
-                .map(channel -> {
-                    if(Objects.nonNull(member)) {
-                        var dto = ChannelMapper.convertToDto(channel);
-                        dto.setIsFollowed(member.getFollowingChannels().contains(channel));
-                        return dto;
-                    } else {
-                        return ChannelMapper.convertToDto(channel);
-                    }
-                })
-                .toList();
+
+        return new SliceResponse<>(
+                channelDtos,
+                channelSlice.getNumber(),
+                channelSlice.isFirst(),
+                channelSlice.hasNext()
+        );
+
+
     }
 
 

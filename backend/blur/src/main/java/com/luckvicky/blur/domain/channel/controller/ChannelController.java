@@ -10,6 +10,7 @@ import com.luckvicky.blur.domain.channel.model.dto.response.TagListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.model.dto.SliceResponse;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
@@ -84,51 +85,53 @@ public class ChannelController {
 
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping
-    public ResponseEntity<Result<ChannelListResponse>> getAllChannels(@NullableAuthUser ContextMember nullableMember) {
-        List<ChannelDto> channels = channelService.getAllChannels(nullableMember);
+    public ResponseEntity<Result<SliceResponse<ChannelDto>>> getAllChannels(
+            @NullableAuthUser ContextMember nullableMember,
+            @RequestParam(defaultValue = "0") int pageNumber) {
+        SliceResponse<ChannelDto> response = channelService.getAllChannels(nullableMember, pageNumber);
 
-        if (ObjectUtils.isEmpty(channels)) {
-            return ResponseUtil.noContent(
-                    Result.empty()
-            );
+        if (response.getContent().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
         return ResponseUtil.ok(
-                Result.of(ChannelListResponse.of(channels))
+                Result.of(response)
         );
     }
 
 
     @Operation(summary = "팔로우 채널 목록 조회 API")
     @GetMapping("/followers")
-    public ResponseEntity<Result<ChannelListResponse>> getFollowChannels(@AuthUser ContextMember contextMember) {
-        List<ChannelDto> channels = channelService.getFollowedChannels(contextMember.getId());
+    public ResponseEntity<Result<ChannelListResponse>> getFollowChannels(
+            @AuthUser ContextMember contextMember) {
+        List<ChannelDto> channelDtos = channelService.getFollowedChannels(contextMember.getId());
 
-        if (Objects.isNull(channels) || channels.isEmpty()) {
+        if (Objects.isNull(channelDtos) || channelDtos.isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.of(ChannelListResponse.of(channels))
+                Result.of(ChannelListResponse.of(channelDtos))
         );
     }
 
 
     @Operation(summary = "생성 채널 목록 조회 API")
     @GetMapping("/created")
-    public ResponseEntity<Result<ChannelListResponse>> getCreateChannels(@AuthUser ContextMember contextMember) {
-        List<ChannelDto> channels = channelService.getCreatedChannels(contextMember.getId());
+    public ResponseEntity<Result<ChannelListResponse>> getCreateChannels(
+            @AuthUser ContextMember contextMember) {
+        List<ChannelDto> channelDtos = channelService.getCreatedChannels(contextMember.getId());
 
-        if (Objects.isNull(channels) || channels.isEmpty()) {
+        if (Objects.isNull(channelDtos) || channelDtos.isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.of(ChannelListResponse.of(channels))
+                Result.of(ChannelListResponse.of(channelDtos))
         );
     }
 
@@ -166,28 +169,29 @@ public class ChannelController {
 
     @Operation(summary = "채널 검색 API")
     @GetMapping("/search")
-    public ResponseEntity<Result<ChannelListResponse>> searchChannelsByKeyword(
+    public ResponseEntity<Result<SliceResponse<ChannelDto>>> searchChannelsByKeyword(
             @Parameter(description = "검색할 키워드", required = true)
-            @RequestParam List<String> keywords,
-            @NullableAuthUser ContextMember nullableMember) {
-
-        if(keywords.size()>5) {
-            throw new KeywordLimitExceededException();
-        }
+            @RequestParam String keyword,
+            @NullableAuthUser ContextMember nullableMember,
+            @RequestParam(defaultValue = "0") int pageNumber) {
 
 
-        List<ChannelDto> channels = channelService.searchChannelsByKeywords(keywords, nullableMember);
 
-        if (Objects.isNull(channels) || channels.isEmpty()) {
+        SliceResponse<ChannelDto> response = channelService.searchChannelsByKeywords(keyword, nullableMember, pageNumber);
+
+        if (Objects.isNull(response) || response.getContent().isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
         }
 
         return ResponseUtil.ok(
-                Result.of(ChannelListResponse.of(channels))
+                Result.of(response)
         );
     }
+
+
+
 
     @Operation(summary = "Presigned url 요청 API")
     @GetMapping("/aws")
