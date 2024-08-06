@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MyHeartListItem from './MyHeartListItem';
-import { MyHeartItem } from '@/types/myHeartTypes';
+import { MyHeartItem } from '@/types/myPageTypes';
 import { useAuthStore } from '@/store/authStore';
 import { getMyHeartList } from '@/api/mypage';
 

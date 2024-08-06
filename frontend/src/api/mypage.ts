@@ -1,4 +1,4 @@
-import { MyHeartItem } from '@/types/myHeartTypes';
+import { MyHeartItem } from '@/types/myPageTypes';
 import api from '../api/index'
 import axios from 'axios';
   
