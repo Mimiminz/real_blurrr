@@ -1,12 +1,9 @@
 package com.luckvicky.blur.domain.channelboard.model.dto.request;
 
-
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
+import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter

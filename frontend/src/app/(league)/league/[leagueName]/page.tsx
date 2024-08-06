@@ -10,6 +10,9 @@ import MoreBrandTab from "@/components/league/tab/MoreBrandTab";
 import LeagueMentionBoardList from "@/components/league/board/LeagueMentionList";
 import PaginationComponent from "@/components/common/UI/Pagination";
 import Loading from "@/components/common/UI/Loading";
+import NoCarPopup from "@/components/league/NoCarPopup";
+import NoAuthority from "@/components/league/NoAuthority";
+import LoginForm from "@/components/login/LoginForm";
 
 import {
   LeagueBoardItem,
@@ -62,6 +65,11 @@ export default function LeaguePage({
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // 팝업
+  const [showNoCarPopup, setShowNoCarPopup] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showNoAuthority, setShowNoAuthority] = useState(false);
+
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -81,20 +89,12 @@ export default function LeaguePage({
       try {
         if (isLoggedIn && !isLoadUserLeagues) {
           if (user?.isAuth) {
-            const userLeagues: UserLeague[] = await fetchUserLeagueList();
-            const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
-              id: userLeague.league.id,
-              name: userLeague.league.name,
-              type: userLeague.league.type,
-              peopleCount: userLeague.league.peopleCount,
-            }));
-            setUserLeagueList(userTabs);
-            const userMentionTabs: LeagueList[] = userLeagues.map(
-              (userLeague) => ({
-                id: `mention${userLeague.league.id}`,
-                name: userLeague.league.name,
-                type: userLeague.league.type,
-                peopleCount: userLeague.league.peopleCount,
+            const userMentionTabs: LeagueList[] = userLeagueList.map(
+              (league) => ({
+                id: `mention${league.id}`,
+                name: league.name,
+                type: league.type,
+                peopleCount: league.peopleCount,
               })
             );
             setMentionTabs(userMentionTabs);
@@ -160,7 +160,6 @@ export default function LeaguePage({
         const findActiveTab = userLeagueList.find(
           (t) => t.name === leagueName.split("mention")[1]
         );
-        console.log(findActiveTab);
         if (findActiveTab) {
           const boardData = await fetchMentionBoardList(
             findActiveTab.id,
@@ -172,8 +171,14 @@ export default function LeaguePage({
 
           setLoading(false);
         } else {
-          alert("인증받지 못한 리그입니다. 자동차 인증을 해 주세요.");
-          router.back();
+          if (!isLoggedIn) {
+            setShowLoginPopup(true);
+          } else if (!user?.isAuth) {
+            setShowNoCarPopup(true);
+          } else {
+            setShowNoAuthority(true);
+          }
+          setLoading(false);
           return;
         }
       }
@@ -247,6 +252,17 @@ export default function LeaguePage({
     }
   };
 
+  const closeNoCarPopup = () => {
+    setShowNoCarPopup(false);
+    setShowNoAuthority(false);
+    router.back();
+  };
+
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+    router.back();
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -312,6 +328,17 @@ export default function LeaguePage({
               onPageChange={handlePageChange}
             />
           )}
+
+      {showNoCarPopup && <NoCarPopup closePopup={closeNoCarPopup} />}
+      {showLoginPopup && (
+        <PopupContainer onClick={closeLoginPopup}>
+          <PopupContent onClick={(e) => e.stopPropagation()}>
+            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+            <LoginForm />
+          </PopupContent>
+        </PopupContainer>
+      )}
+      {showNoAuthority && <NoAuthority closePopup={closeNoCarPopup} />}
     </Container>
   );
 }
@@ -385,5 +412,48 @@ const StyledButton = styled.button`
 
   &:hover {
     color: #f97316;
+  }
+`;
+
+const PopupContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const PopupContent = styled.div`
+  position: relative;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+`;
+
+const CloseIcon = styled.span`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #bbb;
+  &:hover {
+    color: #333;
   }
 `;

@@ -10,6 +10,7 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreat
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
+import com.luckvicky.blur.domain.leagueboard.service.ViewCounterService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -43,6 +44,7 @@ public class LeagueBoardController {
 
     private final LeagueBoardService leagueBoardService;
     private final LeagueCommentService leagueCommentService;
+    private final ViewCounterService viewCounterService;
 
     @Operation(summary = "리그 게시글 생성 API")
     @Parameters({
@@ -165,7 +167,13 @@ public class LeagueBoardController {
             @PathVariable(name = "boardId") UUID boardId
     ) {
 
-        return ResponseUtil.ok(Result.of(leagueBoardService.getLeagueBoardDetail(member.getId(), boardId)));
+        LeagueBoardDetailResponse response = leagueBoardService.getLeagueBoardDetail(member.getId(), boardId);
+
+        viewCounterService.increase(response.boardDetail().getId());
+
+        return ResponseUtil.ok(
+                Result.of(response)
+        );
 
     }
 
