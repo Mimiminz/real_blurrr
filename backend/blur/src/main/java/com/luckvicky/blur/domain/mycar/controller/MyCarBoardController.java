@@ -7,16 +7,20 @@ import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateReque
 import com.luckvicky.blur.domain.mycar.service.MyCarBoardService;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.security.AuthUser;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,8 +54,14 @@ public class MyCarBoardController {
     public ResponseEntity findMyCars(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10,
                 Sort.by(Direction.DESC, SortingCriteria.valueOf("VIEW").getCriteria()));
-        return ResponseEntity.ok(myCarBoardService.findMyCars(pageable));
+        return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable)));
     }
 
-
+    @Operation(description = "차 자랑 상세 조회")
+    @GetMapping("/{id}")
+    public ResponseEntity findMyCarDetail(
+            @PathVariable(name = "id") UUID id,
+            @NullableAuthUser ContextMember contextMember) {
+        return ResponseEntity.ok(myCarBoardService.findMyCarDetail(id, contextMember));
+    }
 }
