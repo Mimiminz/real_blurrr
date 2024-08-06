@@ -1,7 +1,7 @@
 export type DashCamContentData = Pick<DashCamDetail, 'id' | 'member' | 'title' | 'createdAt' | 'videoUrl' | 'content' | 'mentionedLeagues'>;
 
 export interface SimpleMember {
-  id: string;
+  profileUrl: string;
   nickname: string;
   carTitle: string;
 }
@@ -27,7 +27,16 @@ export interface Mentioned {
    name: string;
  }
 
-export interface DashCams {
+
+export interface DashCamList {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: DashCam[];
+}
+
+export interface DashCam {
   id: string;
   member: SimpleMember;
   title: string;
@@ -40,18 +49,18 @@ export interface DashCams {
 }
 
 export interface DashCamDetail {
-   board: DashCamDetail | PromiseLike<DashCamDetail>;
    id: string;
    member: SimpleMember;
    title: string;
    viewCount: number;
    commentCount: number;
    likeCount: number;
+   voteCount: number;
    createdAt: string; // ISO 날짜 문자열을 가리킴
    videoUrl: string[];
    content: string;
-   options: Option;
    mentionedLeagues: Mentioned[];
+   liked: boolean;
  }
 
  export interface Option {
@@ -111,4 +120,12 @@ export interface PostDetail {
   mentionedLeagues: Mentioned[];
   comments: Comment[];
   liked: boolean;
+}
+
+export interface PostDataInfo {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: PostData[];
 }

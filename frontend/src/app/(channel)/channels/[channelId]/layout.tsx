@@ -6,7 +6,7 @@ import Breadcrumb from '@/components/common/UI/BreadCrumb';
 import { useChannelStore } from '@/store/channelStore'; // zustand 상태 가져오기
 
 const LayoutContainer = styled.div`
-  padding: 50px 16px;  // 패딩 추가
+  padding: 10px 16px;  // 패딩 추가
 `;
 
 const BreadcrumbContainer = styled.div`
