@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import EnterPassword from '@/components/mypage/EnterPassword';
 import Profile from '@/components/mypage/Profile';
+import ChangePassword from '@/components/mypage/ChangePassword';
 import MyHeartList from '@/components/mypage/MyHeartList';
 import MyPostList from '@/components/mypage/MyPostList';
 import Withdrawal from '@/components/mypage/Withdrawal';
@@ -9,12 +10,13 @@ import Withdrawal from '@/components/mypage/Withdrawal';
 const tabs = [
   { id: 'enterPassword', label: 'Enter Password' },
   { id: 'profile', label: 'Profile' },
+  { id: 'changePassword', label: 'Change Password' },
   { id: 'myHeartList', label: 'My Heart List' },
   { id: 'myPostList', label: 'My Post List' },
   { id: 'withdrawal', label: 'Withdrawal' },
 ];
 
-type TabId = 'enterPassword' | 'profile' | 'myHeartList' | 'myPostList' | 'withdrawal';
+type TabId = 'enterPassword' | 'profile' | 'changePassword' | 'myHeartList' | 'myPostList' | 'withdrawal';
 
 const MypageTabBox = (): JSX.Element => {
   const [selectedTab, setSelectedTab] = useState<TabId>('enterPassword');
@@ -25,6 +27,8 @@ const MypageTabBox = (): JSX.Element => {
         return <EnterPassword onPasswordEntered={() => setSelectedTab('profile')} />;
       case 'profile':
         return <Profile />;
+      case 'changePassword':
+        return <ChangePassword />;
       case 'myHeartList':
         return <MyHeartList />;
       case 'myPostList':
