@@ -35,32 +35,76 @@
     {
       "title": "교차로에서 사고가 났어요",
       "totalVotes": 1000,
-      "optionA": 300,
-      "optionB": 700
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 200
+        },
+        {
+          "voteCount": 300
+        },
+        {
+          "voteCount": 500
+        }
+      ]
     },
     {
-      "title": "고속도로에서 속도 위반을 했습니다",
+      "title": "고속도로에서 급정거",
       "totalVotes": 1500,
-      "optionA": 900,
-      "optionB": 600
+      "optionNumber": 2,
+      "options": [
+        {
+          "voteCount": 900
+        },
+        {
+          "voteCount": 600
+        }
+      ]
     },
     {
-      "title": "주차장에서 접촉 사고가 났어요",
+      "title": "횡단보도에서의 보행자 사고",
       "totalVotes": 1200,
-      "optionA": 400,
-      "optionB": 800
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 500
+        },
+        {
+          "voteCount": 400
+        },
+        {
+          "voteCount": 300
+        }
+      ]
     },
     {
-      "title": "신호등 없는 횡단보도에서 사고",
+      "title": "주차장에서 접촉사고",
       "totalVotes": 800,
-      "optionA": 300,
-      "optionB": 500
+      "optionNumber": 2,
+      "options": [
+        {
+          "voteCount": 500
+        },
+        {
+          "voteCount": 300
+        }
+      ]
     },
     {
-      "title": "비 오는 날 빗길 사고",
-      "totalVotes": 1100,
-      "optionA": 600,
-      "optionB": 500
+      "title": "터널에서의 사고 발생",
+      "totalVotes": 900,
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 300
+        },
+        {
+          "voteCount": 400
+        },
+        {
+          "voteCount": 200
+        }
+      ]
     }
   ],
   "carPicture": [

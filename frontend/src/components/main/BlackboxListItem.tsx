@@ -1,24 +1,49 @@
 import React from "react";
 import styled from "styled-components";
 
+interface option {
+  voteCount: number;
+  percentage?: number;
+}
+
 interface blackboxArticle {
   title: string;
   totalVotes: number;
-  optionA: number;
-  optionB: number;
+  optionNumber: number;
+  options: option[];
 }
 
 function BlackboxListItem({
   title,
   totalVotes,
-  optionA,
-  optionB,
+  optionNumber,
+  options,
 }: blackboxArticle) {
-  const percentageA = parseFloat(((optionA / totalVotes) * 100).toFixed(1));
-  const percentageB = parseFloat(((optionB / totalVotes) * 100).toFixed(1));
+  const optionPercentage = options.map((option) => ({
+    ...option,
+    percentage: Math.round((option.voteCount / totalVotes) * 100),
+  }));
 
-  const largerPercentage =
-    percentageA > percentageB ? percentageA : percentageB;
+  if (!optionPercentage) {
+    return <div>loading...</div>;
+  }
+
+  // 옵션 퍼센티지에 따라 색상을 설정합니다.
+  const sortedOptions = [...optionPercentage].sort(
+    (a, b) => b.percentage! - a.percentage!
+  );
+  const colors = ["#FF900D", "#ecb277", "#e0e0e0"];
+
+  // 원래 순서대로 색상을 매핑합니다.
+  const coloredOptions = optionPercentage.map((option) => {
+    const index = sortedOptions.findIndex(
+      (sortedOption) => sortedOption === option
+    );
+    return {
+      ...option,
+      color: colors[index],
+    };
+  });
 
   return (
     <Container>
@@ -27,12 +52,11 @@ function BlackboxListItem({
         <Participants>{totalVotes}명 참여</Participants>
       </ArticleInfo>
       <BarContainer>
-        <Bar width={percentageA} larger={percentageA === largerPercentage}>
-          {percentageA}%
-        </Bar>
-        <Bar width={percentageB} larger={percentageB === largerPercentage}>
-          {percentageB}%
-        </Bar>
+        {coloredOptions.map((option, index) => (
+          <Bar key={index} width={option.percentage} color={option.color}>
+            {option.percentage}%
+          </Bar>
+        ))}
       </BarContainer>
     </Container>
   );
@@ -77,15 +101,17 @@ const BarContainer = styled.div`
   overflow: hidden;
 `;
 
-const Bar = styled.div.withConfig({
-  shouldForwardProp: (prop) => !["larger"].includes(prop),
-})<{ width: number; larger: boolean }>`
-  width: ${({ width }) => width}%;
-  background-color: ${({ theme, larger }) =>
-    larger ? theme.colors.main : "#e0e0e0"};
-  color: ${({ theme, larger }) =>
-    larger ? "white" : theme.colors.subDescription};
-  text-align: center;
+const Bar = styled.div<{ width?: number; color?: string }>`
+  height: 100%;
+  width: ${(props) => props.width}%;
+  background-color: ${(props) => props.color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => (props.color === "#e0e0e0" ? "#000" : "#fff")};
   font-size: 12px;
-  line-height: 24px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
 `;
