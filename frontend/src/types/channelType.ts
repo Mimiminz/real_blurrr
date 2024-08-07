@@ -1,3 +1,4 @@
+import { likeState } from './boardType';
 export type DashCamContentData = Pick<DashCamDetail, 'id' | 'member' | 'title' | 'createdAt' | 'videoUrl' | 'content' | 'mentionedLeagues'>;
 
 export interface SimpleMember {
@@ -61,6 +62,13 @@ export interface DashCamDetail {
    mentionedLeagues: Mentioned[];
    liked: boolean;
  }
+
+export interface ChannelInfo {
+  content: Channels[];
+  currentPage: number;
+  first: number;
+  hasNext: boolean;
+}
 
 export interface Channels {
    id: string;
@@ -139,3 +147,7 @@ export interface Option {
   voteCount: number;
  }
  
+export interface Video {
+  videoUrl: string[];
+
+}
