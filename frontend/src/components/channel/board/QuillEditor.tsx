@@ -1,6 +1,7 @@
-import React, { useMemo, useState, useRef } from "react";
-import ReactQuill from "react-quill";
+import React, { useMemo, useRef } from "react";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { ImageActions } from '@xeger/quill-image-actions';
 import AWS from "aws-sdk";
 
 const ACCESS_KEY = process.env.NEXT_PUBLIC_S3_ACCESS_KEY;
@@ -11,6 +12,8 @@ interface QuillEditorProps {
   content: string;
   setContent: (content: string) => void;
 }
+
+Quill.register('modules/imageActions', ImageActions);
 
 const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
   const quillRef = useRef<ReactQuill | null>(null);
@@ -63,11 +66,13 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
     });
   };
 
+
   const modules = useMemo(() => {
     return {
+      imageActions: {},
       toolbar: {
         container: [
-          [{ font: [] }, { size: [] }],
+          [{ size: [] }],
           ["bold", "italic", "underline", "strike"],
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
@@ -76,14 +81,16 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
           ["vote"],
         ],
         handlers: {
-          image: imageHandler,
+          image: imageHandler
+        },
+        ImageResize: {
+          modules: ['Resize'],
         },
       },
     };
   }, []);
 
   const formats = [
-    "font",
     "size",
     "bold",
     "italic",
@@ -98,6 +105,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
     "link",
     "image",
     "video",
+    'height',
+    'width',
   ];
   console.log(content);
 
@@ -106,6 +115,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
       ref={quillRef}
       style={{ height: "400px", paddingBottom: "40px" }} // 적절한 높이와 여유 공간 설정
       value={content}
+      theme="snow"
       onChange={setContent}
       modules={modules}
       formats={formats}

@@ -6,7 +6,10 @@ import {
   DashCamList, 
   DashCamDetail, 
   PostDetail, 
-  PostInfo 
+  PostInfo,
+  Option,
+  Video,
+  ChannelInfo
 } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
@@ -42,15 +45,11 @@ export const fetchCreatedChannels = async (): Promise<Channels[]> => {
 };
 
 // 전체 채널 목록 데이터를 가져오는 함수
-export const fetchChannels = async (): Promise<Channels[]> => {
+export const fetchChannels = async (): Promise<ChannelInfo> => {
   try {
     const response = await api.get('/v1/channels');
 
-    if (response.status === 204) {
-      return []; 
-    }
-
-    return response.data.data.channels;
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching channels data:', error);
     throw error;
@@ -249,3 +248,58 @@ export const addVote = async ( boardId: string, optionId: string)  => {
     throw error;
   }
 }
+
+// 채널 게시글 생성 함수
+export const fetchDashCamWrite = async (
+  title: string,
+  content: string,
+  option: Option,
+  videos: Video,
+) => {
+  try {
+    const response = await api.post(`/v1/channels/dashcams/boards`, {
+      title: title,
+      content: content,
+      options: option,
+      videos: videos
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const videoPresigned = async ( fileName: string ) => {
+  try {
+    const response = await api.get(`/v1/channels/dashcams/boards/aws`, {
+      params: { fileName }
+    });
+    
+    console.log(response.data);
+
+    return response.data;
+
+  } catch (error) {
+    console.error('Error fetching video url:', error);
+    throw error;
+  }
+}
+
+// 내 차 자랑 목록 데이터를 가져오는 함수
+export const fetchBoast = async (keyword: string, pageNumber: number, criteria: string): Promise<DashCamList> => {
+  try {
+    const response = await api.get('/v1/channels/dashcams/boards', {
+      params: {
+        keyword,
+        pageNumber, 
+        criteria,   
+      },
+    });
+    
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching dash cam data:', error);
+    throw error;
+  }
+};

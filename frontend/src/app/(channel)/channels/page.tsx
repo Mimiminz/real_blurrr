@@ -7,8 +7,9 @@ import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경�
 import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
 import { useRouter } from 'next/navigation';
 import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchKeywords } from '@/api/channel';
-import { Channels } from '@/types/channelType';
+import { ChannelInfo, Channels } from '@/types/channelType';
 import { useAuthStore } from '@/store/authStore';
+import Loading from "@/components/common/UI/Loading";
 
 const ChannelPage: React.FC = () => {
   const [Channels, setChannels] = useState<Channels[]>([]);
@@ -30,7 +31,7 @@ const ChannelPage: React.FC = () => {
     const loadData = async () => {
       try {
         const ChannelData = await fetchChannels();
-        setChannels(ChannelData);
+        setChannels(ChannelData.content);
 
         if (isLoggedIn) {
           const FollowingChannelData = await fetchFollowingChannels();
@@ -63,7 +64,7 @@ const ChannelPage: React.FC = () => {
     try {
       if (newKeywords.length === 0) {
         const ChannelData = await fetchChannels();
-        setChannels(ChannelData);
+        setChannels(ChannelData.content);
       } else {
         const searchResults = await fetchSearchKeywords(newKeywords);
         setChannels(searchResults);
@@ -93,6 +94,10 @@ const ChannelPage: React.FC = () => {
     setKeywords(newKeywords);
     loadChannelsByKeywords(newKeywords);
   };
+
+  if (!Channels?.length) {
+    return <Loading />;
+  }
 
   return (
     <>

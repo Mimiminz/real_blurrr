@@ -4,7 +4,7 @@ import SearchBar from '@/components/common/UI/SearchBar';
 import { useRouter } from "next/navigation";
 import { useAuthStore } from '@/store/authStore';
 import { followChannel, unfollowChannel, fetchChannelInfo } from '@/api/channel';
-import { useChannelStore } from '@/store/channelStore'; // Ensure you have the correct path
+import { useChannelStore } from '@/store/channelStore';
 import { Mentioned } from '@/types/channelType';
 
 interface PostInfo {
@@ -130,9 +130,9 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
             </DropdownMenu>
           )}
           {isLoggedIn && (
-            <button className="setPosition setButton" onClick={handleCreatePost}>
+            <CreateButton onClick={handleCreatePost}>
               글 작성 +
-            </button>
+            </CreateButton>
           )}
         </FilterSection>
       </TitleSection>
@@ -164,11 +164,6 @@ const TitleSection = styled.div`
     font-weight: bold;
     margin: 5px 0;
   }
-
-  .setPosition {
-    display: flex;
-    margin-left: auto;
-  }
 `;
 
 const SetButton = styled.button<{ isFollowing: boolean }>`
@@ -180,6 +175,12 @@ const SetButton = styled.button<{ isFollowing: boolean }>`
   background-color: ${({ isFollowing }) => (isFollowing ? '#f1f1f1' : '#333')};
   color: ${({ isFollowing }) => (isFollowing ? '#333' : '#f1f1f1')};
   white-space: nowrap;
+`;
+
+const CreateButton = styled(SetButton)`
+  background-color: #f1f1f1;
+  color: #333;
+  margin-left: auto;
 `;
 
 const FilterSection = styled.div`
