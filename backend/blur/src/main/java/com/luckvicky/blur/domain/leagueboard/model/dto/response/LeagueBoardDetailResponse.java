@@ -21,6 +21,9 @@ public record LeagueBoardDetailResponse(
         @Schema(description = "제목")
         String title,
 
+        @Schema(description = "제목")
+        String content,
+
         @Schema(description = "생성 시간")
         LocalDateTime createdAt,
 
@@ -40,6 +43,7 @@ public record LeagueBoardDetailResponse(
                 .id(boardDetail.getId())
                 .member(boardDetail.getMember())
                 .title(boardDetail.getTitle())
+                .content(boardDetail.getContent())
                 .createdAt(boardDetail.getCreatedAt())
                 .viewCount(boardDetail.getViewCount())
                 .likeCount(boardDetail.getLikeCount())
