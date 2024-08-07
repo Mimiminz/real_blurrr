@@ -22,6 +22,15 @@ const initialValues: SignupFormValues = {
 const validationSchema = Yup.object({
   email: Yup.string().email('이메일은 필수 입력 항목입니다.'),
   nickname: Yup.string().required('닉네임은 필수 입력 항목입니다.'),
+  password: Yup.string()
+    .required('비밀번호는 필수 입력 항목입니다.')
+    .matches(
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/,
+      '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.'
+    ),
+  passwordCheck: Yup.string()
+    .required('비밀번호 확인은 필수 입력 항목입니다.')
+    .oneOf([Yup.ref('password'), ''], '비밀번호가 일치하지 않습니다.'),
 });
 
 const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
@@ -29,7 +38,7 @@ const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers
   setSubmitting(false);
 };
 
-const Profile = (): JSX.Element => {
+const ChangePassword = (): JSX.Element => {
   const [profileImage, setProfileImage] = useState<string>('images/profile.jpg');
   const user = useAuthStore(state => state.user);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,23 +55,8 @@ const Profile = (): JSX.Element => {
 
   return (
     <Container>
-      <Title>프로필 정보</Title>
-      <UserContainer>
-        <ImageContainer>
-          <UserImage src={user ? user.profileUrl : "" } alt='User Profile Image' />
-          <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
-          <ImageUploadInput 
-            id='imageUpload' 
-            type='file' 
-            accept='image/*' 
-            onChange={handleImageChange} 
-          />
-        </ImageContainer>
-        <SubUserContainer>
-          <UserCarName>{user? user.carTitle: "차량 미인증"}</UserCarName>
-          <UserName>{user? user.nickname: ""}</UserName>
-        </SubUserContainer>
-      </UserContainer>
+      <Title>비밀번호 변경</Title>
+    
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -72,25 +66,42 @@ const Profile = (): JSX.Element => {
           <StyledForm>
             <InputContainer>
               <StyledField
-                name="email"
-                type="email"
-                placeholder= {user ? user.email : ""}
-                className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
-                readOnly
+                name="password"
+                type="password"
+                placeholder="현재 비밀번호"
+                className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
               />
-              <StyledErrorMessage name="email" component="div" />
+              <StyledErrorMessage name="password" component="div" />
+              {touched.password && !errors.password && (
+                <SuccessMessage>올바른 비밀번호입니다.</SuccessMessage>
+              )}
+            </InputContainer>
+
+        
+
+            <InputContainer>
+              <StyledField
+                name="password"
+                type="password"
+                placeholder="새 비밀번호"
+                className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
+              />
+              <StyledErrorMessage name="password" component="div" />
+              {touched.password && !errors.password && (
+                <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
+              )}
             </InputContainer>
 
             <InputContainer>
               <StyledField
-                name="nickname"
-                type="text"
-                placeholder={user ? user.nickname : ""}
-                className={touched.nickname ? (errors.nickname ? 'error' : 'valid') : ''}
+                name="passwordCheck"
+                type="password"
+                placeholder="비밀번호 확인"
+                className={touched.passwordCheck ? (errors.passwordCheck ? 'error' : 'valid') : ''}
               />
-              <StyledErrorMessage name="nickname" component="div" />
-              {touched.nickname && !errors.nickname && (
-                <SuccessMessage>사용 가능한 닉네임입니다.</SuccessMessage>
+              <StyledErrorMessage name="passwordCheck" component="div" />
+              {touched.passwordCheck && !errors.passwordCheck && (
+                <SuccessMessage>새 비밀번호가 일치합니다.</SuccessMessage>
               )}
             </InputContainer>
 
@@ -118,7 +129,7 @@ const UserContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 80px;
+  margin-top: 20px;
   margin-bottom: 20px;
   gap: 70px;
   border-radius: 15px;
@@ -177,6 +188,7 @@ const StyledForm = styled(Form)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 100px;
   width: 100%;
 
   .error {
@@ -246,4 +258,4 @@ const Button = styled.button`
   }
 `;
 
-export default Profile;
+export default ChangePassword;

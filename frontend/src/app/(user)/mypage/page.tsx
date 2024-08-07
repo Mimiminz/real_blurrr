@@ -4,26 +4,32 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import EnterPassword from '@/components/mypage/EnterPassword';
 import Profile from '@/components/mypage/Profile';
+import ChangePassword from '@/components/mypage/ChangePassword';
 import MyHeartList from '@/components/mypage/MyHeartList';
 import MyPostList from '@/components/mypage/MyPostList';
 import Withdrawal from '@/components/mypage/Withdrawal';
+import { useAuthStore } from '@/store/authStore';
 
 const tabs = [
   { id: 'enterPassword', label: '내 정보' },
+  { id: 'changePassword', label: '비밀번호 변경'},
   { id: 'myHeartList', label: '내 좋아요 목록' },
   { id: 'myPostList', label: '내 게시글 목록' },
   { id: 'withdrawal', label: '회원 탈퇴' },
 ];
 
-type TabId = 'enterPassword' | 'profile' | 'myHeartList' | 'myPostList' | 'withdrawal';
+type TabId = 'enterPassword' | 'profile' | 'changePassword' |'myHeartList' | 'myPostList' | 'withdrawal';
 
 const MypageTabBox = (): JSX.Element => {
   const [selectedTab, setSelectedTab] = useState<TabId>('enterPassword');
+  const user = useAuthStore(state => state.user);
 
   const renderContent = (): JSX.Element => {
     switch (selectedTab) {
       case 'enterPassword':
         return <EnterPassword onPasswordEntered={() => setSelectedTab('profile')} />;
+      case 'changePassword':
+        return <ChangePassword />;
       case 'profile':
         return <Profile />;
       case 'myHeartList':
@@ -41,9 +47,9 @@ const MypageTabBox = (): JSX.Element => {
     <Container>
       <Tabs>
         <UserContainer>
-          <UserImage src = 'images/profile.jpg'></UserImage>
-          <UserCarName>테슬라 오너</UserCarName>
-          <UserName>상현전 님</UserName>
+          <UserImage src = {user ? user.profileUrl : "" }></UserImage>
+          <UserName>{user ? user.nickname: ""}</UserName>
+          <UserCarName>{user? user.carTitle: "차량 미인증"}</UserCarName>
         </UserContainer>
         {tabs.map((tab) => (
           <Tab
@@ -66,8 +72,8 @@ export default MypageTabBox;
 
 const Container = styled.div`
   display: flex;
-  width: 100%;
-  height:700px;
+  width:100%;
+  height:500px;
 `;
 
 const Tabs = styled.div`
