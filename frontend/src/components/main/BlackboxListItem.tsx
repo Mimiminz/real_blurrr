@@ -34,8 +34,8 @@ function BlackboxListItem({
   );
   const colors =
     optionNumber === 2
-      ? ["#FF900D", "#e5e7eb"]
-      : ["#FF900D", "#f5d8b2", "#e5e7eb"];
+      ? ["#FF900D", "#FFCC80"]
+      : ["#FF900D", "#FFCC80", "#FFF3E0"];
 
   // 원래 순서대로 색상을 매핑합니다.
   const coloredOptions = optionPercentage.map((option) => {
@@ -99,7 +99,7 @@ const BarContainer = styled.div`
   align-items: center;
   height: 24px;
   width: 50%;
-  background-color: #e0e0e0;
+  background-color: #fff3e0;
   border-radius: 12px;
   overflow: hidden;
 `;
