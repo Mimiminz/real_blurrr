@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
-import SearchBar from '@/components/common/UI/SearchBar';
+import React, { useEffect, useState, useCallback } from "react";
+import styled from "styled-components";
+import SearchBar from "@/components/common/UI/SearchBar";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from '@/store/authStore';
-import { followChannel, unfollowChannel, fetchChannelInfo } from '@/api/channel';
-import { useChannelStore } from '@/store/channelStore';
-import { Mentioned } from '@/types/channelType';
+import { useAuthStore } from "@/store/authStore";
+import {
+  followChannel,
+  unfollowChannel,
+  fetchChannelInfo,
+} from "@/api/channel";
+import { useChannelStore } from "@/store/channelStore";
+import { Mentioned } from "@/types/channelType";
 
 interface PostInfo {
   id: string;
@@ -24,42 +28,50 @@ interface PostTitleProps {
   onSortChange: (sort: string) => void;
 }
 
-const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChange }) => {
+const PostTitle: React.FC<PostTitleProps> = ({
+  channelType,
+  onSearch,
+  onSortChange,
+}) => {
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedSort, setSelectedSort] = useState('게시글 정렬');
+  const [selectedSort, setSelectedSort] = useState("게시글 정렬");
   const [isFollowing, setIsFollowing] = useState(false);
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID as string;
 
-  const { setChannelName, setChannelId, channelName, channelId } = useChannelStore();
+  const { setChannelName, setChannelId, channelName, channelId } =
+    useChannelStore();
 
-  const getChannelInfo = useCallback(async (channelType: string) => {
-    try {
-      let actualChannelId = '';
-      if (channelType === "dashcam") {
-        actualChannelId = dashcamId;
-      } else if (channelType === "boast") {
-        actualChannelId = boastId;
-      } else {
-        actualChannelId = channelType;
+  const getChannelInfo = useCallback(
+    async (channelType: string) => {
+      try {
+        let actualChannelId = "";
+        if (channelType === "dashcam") {
+          actualChannelId = dashcamId;
+        } else if (channelType === "boast") {
+          actualChannelId = boastId;
+        } else {
+          actualChannelId = channelType;
+        }
+        setChannelId(actualChannelId);
+
+        const info: PostInfo = await fetchChannelInfo(actualChannelId);
+        setIsFollowing(info.isFollowed);
+
+        if (info && info.name) {
+          setChannelName(info.name);
+        } else {
+          throw new Error("Invalid channel info received");
+        }
+      } catch (error) {
+        console.error("Error fetching channel info:", error);
       }
-      setChannelId(actualChannelId);
-
-      const info: PostInfo = await fetchChannelInfo(actualChannelId);
-      setIsFollowing(info.isFollowed);
-
-      if (info && info.name) {
-        setChannelName(info.name);
-      } else {
-        throw new Error('Invalid channel info received');
-      }
-    } catch (error) {
-      console.error('Error fetching channel info:', error);
-    }
-  }, [dashcamId, boastId, setChannelName, setChannelId]);
+    },
+    [dashcamId, boastId, setChannelName, setChannelId]
+  );
 
   useEffect(() => {
     getChannelInfo(channelType);
@@ -86,9 +98,9 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
       }
       setIsFollowing(!isFollowing); // 팔로우 상태 토글
     } catch (error) {
-      console.error('Error updating follow status:', error);
+      console.error("Error updating follow status:", error);
     }
-  }
+  };
 
   const handleBlur = () => {
     setTimeout(() => setDropdownVisible(false), 200); // 드롭다운 메뉴가 닫히기 전에 클릭 이벤트가 발생하도록 시간을 둠
@@ -103,11 +115,11 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
   return (
     <Container>
       <TitleSection>
-        <h1>{channelName || 'Channel Title'}</h1> {/* 실제 채널 이름을 표시 */}
+        <h1>{channelName || "Channel Title"}</h1> {/* 실제 채널 이름을 표시 */}
         <SideSection>
           {isLoggedIn && (
             <SetButton isFollowing={isFollowing} onClick={handleFollowChannel}>
-              {isFollowing ? '언팔로우 -' : '팔로우 +'}
+              {isFollowing ? "언팔로우 -" : "팔로우 +"}
             </SetButton>
           )}
           <SearchBar onSearch={onSearch} />
@@ -119,7 +131,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
           </DropdownButton>
           {isDropdownVisible && (
             <DropdownMenu>
-              {['최신순', '댓글수', '조회수', '좋아요'].map((sort, index) => (
+              {["최신순", "댓글수", "조회수", "좋아요"].map((sort, index) => (
                 <DropdownItem
                   key={index}
                   onClick={() => handleSortChange(sort)}
@@ -130,9 +142,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
             </DropdownMenu>
           )}
           {isLoggedIn && (
-            <CreateButton onClick={handleCreatePost}>
-              글 작성 +
-            </CreateButton>
+            <CreateButton onClick={handleCreatePost}>글 작성 +</CreateButton>
           )}
         </FilterSection>
       </TitleSection>
@@ -172,8 +182,8 @@ const SetButton = styled.button<{ isFollowing: boolean }>`
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  background-color: ${({ isFollowing }) => (isFollowing ? '#f1f1f1' : '#333')};
-  color: ${({ isFollowing }) => (isFollowing ? '#333' : '#f1f1f1')};
+  background-color: ${({ isFollowing }) => (isFollowing ? "#f1f1f1" : "#333")};
+  color: ${({ isFollowing }) => (isFollowing ? "#333" : "#f1f1f1")};
   white-space: nowrap;
 `;
 
@@ -187,18 +197,18 @@ const FilterSection = styled.div`
   display: flex;
   align-items: center;
   margin-top: 30px;
-  position: relative; 
+  position: relative;
 `;
 
 const DropdownButton = styled.button`
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  background-color: white; 
+  background-color: white;
   cursor: pointer;
   font-size: 14px;
   color: #969696;
-  width: 110px; 
+  width: 110px;
   display: flex;
   justify-content: space-between;
   align-items: center;
