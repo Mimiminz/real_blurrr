@@ -1,82 +1,97 @@
-"use client"
+"use client";
 
-import React, { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useEffect, useState } from "react";
+import styled from "styled-components";
 import { useRouter } from "next/navigation";
-import DashCamCard from '@/components/channel/dashcam/DashCamCard';
-import PostTitle from '@/components/channel/PostTitle';
-import { fetchDashCams } from '@/api/channel';
-import { DashCamList } from '@/types/channelType';
+import DashCamCard from "@/components/channel/dashcam/DashCamCard";
+import PostTitle from "@/components/channel/PostTitle";
+import { fetchDashCams } from "@/api/channel";
+import { DashCamList } from "@/types/channelType";
 import Loading from "@/components/common/UI/Loading";
+import PaginationComponent from "@/components/common/UI/Pagination";
 
 const DashCamPage: React.FC = () => {
-   const [dashCams, setDashCams] = useState<DashCamList>();
-   const [keyword, setKeyword] = useState('');
-   const [sortCriteria, setSortCriteria] = useState('TIME');
+  const [dashCams, setDashCams] = useState<DashCamList>();
+  const [keyword, setKeyword] = useState("");
+  const [sortCriteria, setSortCriteria] = useState("TIME");
 
-   const router = useRouter();
+  const router = useRouter();
 
-   const handleSortChange = (newSort: string) => {
-      const criteriaMap: { [key: string]: string } = {
-         '최신순': 'TIME',
-         '댓글수': 'COMMENT',
-         '조회수': 'VIEW',
-         '좋아요': 'LIKE'
-      };
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-      const newCriteria = criteriaMap[newSort] || 'TIME';
-      setSortCriteria(newCriteria);
-   };
+  const handleSortChange = (newSort: string) => {
+    const criteriaMap: { [key: string]: string } = {
+      최신순: "TIME",
+      댓글수: "COMMENT",
+      조회수: "VIEW",
+      좋아요: "LIKE",
+    };
 
-   const handleSearch = (newKeyword: string) => {
-      setKeyword(newKeyword);
-   };
+    const newCriteria = criteriaMap[newSort] || "TIME";
+    setSortCriteria(newCriteria);
+  };
 
-   const loadData = useCallback(async () => {
-      try {
-         const data = await fetchDashCams(keyword, 0, sortCriteria);
-         setDashCams(data);
-      } catch (error) {
-         console.error('Failed to load dash cam data:', error);
-      }
-   }, [keyword, sortCriteria]);
+  const handleSearch = (newKeyword: string) => {
+    setKeyword(newKeyword);
+  };
 
-   useEffect(() => {
-      loadData();
-   }, [loadData]);
+  const loadData = useCallback(async () => {
+    try {
+      const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
+      setDashCams(data);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("Failed to load dash cam data:", error);
+    }
+  }, [keyword, sortCriteria]);
 
-   const handleCardClick = (dashCamDetailId: string) => {
-      router.push(`/channels/dashcam/${dashCamDetailId}`);
-   };
+  useEffect(() => {
+    loadData();
+  }, []);
 
-   if (!dashCams?.content.length) {
-      return <Loading />;
-   }
+  const handleCardClick = (dashCamDetailId: string) => {
+    router.push(`/channels/dashcam/${dashCamDetailId}`);
+  };
 
-   return (
-      <Container>
-         <PostTitle
-            channelType="dashcam"
-            onSearch={handleSearch}
-            onSortChange={handleSortChange}
-         />
-         {!dashCams ? (
-            <CenteredMessage>로딩 중...</CenteredMessage>
-         ) : dashCams.content.length === 0 ? (
-            <CenteredMessage>게시글이 없습니다. 게시글을 작성해보세요!</CenteredMessage>
-         ) : (
-            <CardGrid>
-               {dashCams.content.map((dashCam) => (
-                  <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
-                     <DashCamCard
-                        dashCamTitle={dashCam}
-                     />
-                  </div>
-               ))}
-            </CardGrid>
-         )}
-      </Container>
-   );
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  if (!dashCams?.content.length) {
+    return <Loading />;
+  }
+
+  return (
+    <Container>
+      <PostTitle
+        channelType="dashcam"
+        onSearch={handleSearch}
+        onSortChange={handleSortChange}
+      />
+      {!dashCams ? (
+        <CenteredMessage>로딩 중...</CenteredMessage>
+      ) : dashCams.content.length === 0 ? (
+        <CenteredMessage>
+          게시글이 없습니다. 게시글을 작성해보세요!
+        </CenteredMessage>
+      ) : (
+        <CardGrid>
+          {dashCams.content.map((dashCam) => (
+            <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
+              <DashCamCard dashCamTitle={dashCam} />
+            </div>
+          ))}
+        </CardGrid>
+      )}
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </Container>
+  );
 };
 
 const Container = styled.div`

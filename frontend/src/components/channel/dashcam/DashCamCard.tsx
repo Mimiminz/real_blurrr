@@ -1,35 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import { FiEye } from "react-icons/fi";
-import { FiHeart } from "react-icons/fi";
-import { DashCam } from '@/types/channelType';
-
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import { FaRegEye } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa6";
+import { DashCam } from "@/types/channelType";
+import { formatPostDate } from "@/utils/formatPostDate";
 interface DashCamCardProps {
   dashCamTitle: DashCam;
 }
 
 const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
-  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } = dashCamTitle;
-
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
+  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } =
+    dashCamTitle;
 
   return (
     <Card>
       <ThumbnailContainer>
-        <Thumbnail src={videoUrl[0]} alt={title} onError={(e) => (e.currentTarget.style.display = 'none')} />
+        <Thumbnail
+          src={videoUrl[0]}
+          alt={title}
+          onError={(e) => (e.currentTarget.style.display = "none")}
+        />
       </ThumbnailContainer>
       <Content>
         <Tags>
@@ -41,8 +31,12 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
           <Title>{title}</Title>
         </TitleContainer>
         <Meta>
-          <span><FiEye /> {viewCount}</span>
-          <span><FiHeart /> {likeCount}</span>
+          <span>
+            <FaRegEye /> {viewCount}
+          </span>
+          <span>
+            <FaRegHeart /> {likeCount}
+          </span>
           <span className="created">{formatPostDate(createdAt)}</span>
         </Meta>
       </Content>
@@ -136,6 +130,7 @@ const Meta = styled.div`
 
   svg {
     margin-right: 4px;
+    font-size: 11.5px;
   }
 
   .created {
