@@ -87,5 +87,4 @@ public class Member extends BaseEntity {
     public void updateIsAuth(boolean isAuth) {
         this.isAuth = isAuth;
     }
-
 }

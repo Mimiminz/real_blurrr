@@ -1,6 +1,6 @@
 package com.luckvicky.blur.domain.member.controller;
 
-import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
+import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
@@ -97,7 +97,7 @@ public class AuthController {
 
     @Operation(summary = "비밀번호 변경")
     @PutMapping("/password")
-    public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangePassword changePassword) {
-        return ResponseEntity.ok(memberService.modifyPassword(changePassword));
+    public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangeFindPassword changeFindPassword) {
+        return ResponseEntity.ok(memberService.modifyPassword(changeFindPassword));
     }
 }

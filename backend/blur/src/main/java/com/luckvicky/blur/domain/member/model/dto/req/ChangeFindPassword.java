@@ -4,20 +4,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-@Schema(name = "마이페이지 비밀번호 변경")
-public record ChangePassword(
+@Schema(name = "비밀번호 변경")
+public record ChangeFindPassword(
+        @Schema(description = "변경자 이메일")
         @NotBlank
-        @Schema(description = "현재 비밀번호")
-        String oldPassword,
-        
-        @NotBlank
-        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
-        @Schema(description = "새 비밀번호")
-        String newPassword,
-
+        String email,
+        @Schema(description = "변경 패스워드")
         @NotBlank
         @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
-        @Schema(description = "새 비밀번호 확인")
-        String newPasswordCheck
+        String password,
+        @Schema(description = "변경 패스워드 재입력")
+        @NotBlank
+        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
+        String passwordCheck
 ) {
 }

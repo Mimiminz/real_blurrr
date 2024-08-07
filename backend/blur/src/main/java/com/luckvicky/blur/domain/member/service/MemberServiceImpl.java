@@ -7,6 +7,7 @@ import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
 import com.luckvicky.blur.domain.member.factory.EmailAuthStrategy;
 import com.luckvicky.blur.domain.member.factory.PasswordAuthStrategy;
+import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
@@ -27,7 +28,6 @@ import com.luckvicky.blur.infra.mail.service.MailService;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -101,9 +101,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(signInDto.email())
                 .orElseThrow(NotExistMemberException::new);
 
-        if (!passwordEncoder.matches(signInDto.password(), member.getPassword())) {
-            throw new PasswordMismatchException();
-        }
+        matchPassword(signInDto.password(), member.getPassword());
 
         String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
@@ -158,11 +156,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.getOrThrow(memberId);
         member.updateNickname(updateInfo.nickname());
 
-        //패드워드 변경 시
-        if (StringUtils.hasText(updateInfo.password())) {
-            member.updatePassword(passwordEncoder.encode(updateInfo.password()));
-        }
-
         //이미지 변경 시
         Map<String, String> imgUrl;
         String profileUrl = member.getProfileUrl();
@@ -177,16 +170,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean modifyPassword(ChangePassword changePassword) {
-        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changePassword.email()))
+    public boolean modifyPassword(ChangePassword changePassword, UUID memberId) {
+        Member member = memberRepository.getOrThrow(memberId);
+
+        matchPassword(changePassword.oldPassword(), member.getPassword());
+
+        member.updatePassword(passwordEncoder.encode(changePassword.newPassword()));
+        return true;
+    }
+
+    @Override
+    public boolean modifyPassword(ChangeFindPassword changeFindPassword) {
+        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changeFindPassword.email()))
                 .orElseThrow(InvalidEmailVerificationException::new);
 
-        if (!changePassword.password().equals(changePassword.passwordCheck())) {
+        if (!changeFindPassword.password().equals(changeFindPassword.passwordCheck())) {
             throw new PasswordMismatchException();
         }
 
-        Member member = memberRepository.findByEmail(changePassword.email()).orElseThrow(NotExistMemberException::new);
-        member.updatePassword(passwordEncoder.encode(changePassword.password()));
+        Member member = memberRepository.findByEmail(changeFindPassword.email()).orElseThrow(NotExistMemberException::new);
+        member.updatePassword(passwordEncoder.encode(changeFindPassword.password()));
         return true;
     }
 
@@ -260,4 +263,9 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    private void matchPassword(String plain, String enc) {
+        if (!passwordEncoder.matches(plain, enc)) {
+            throw new PasswordMismatchException();
+        }
+    }
 }

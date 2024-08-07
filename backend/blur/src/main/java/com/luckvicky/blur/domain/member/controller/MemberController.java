@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.member.controller;
 import com.luckvicky.blur.domain.board.model.dto.response.LikeBoardListResponse;
 import com.luckvicky.blur.domain.board.model.dto.response.MyBoardListResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
+import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
@@ -50,7 +51,8 @@ public class MemberController {
 
     @Operation(description = "비밀번호 확인")
     @PostMapping("/password")
-    public ResponseEntity<Boolean> checkPassword(@AuthUser ContextMember member, @Valid @RequestBody CheckPassword checkPassword) {
+    public ResponseEntity<Boolean> checkPassword(@AuthUser ContextMember member,
+                                                 @Valid @RequestBody CheckPassword checkPassword) {
         return ResponseEntity.ok(memberService.checkPassword(member.getId(), checkPassword));
     }
 
@@ -126,6 +128,13 @@ public class MemberController {
 
         return ResponseUtil.ok(Result.of(boards));
 
+    }
+
+    @Operation(description = "마이페이지 비밀번호 변경")
+    @PutMapping("/password")
+    public ResponseEntity<Boolean> modifyPassword(@Valid @RequestBody ChangePassword changePassword,
+                                                  @AuthUser ContextMember contextMember) {
+        return ResponseEntity.ok(memberService.modifyPassword(changePassword, contextMember.getId()));
     }
 
 }
