@@ -9,8 +9,10 @@ import lombok.Builder;
 @Builder
 public record MyCarSimple(
         UUID id,
-        @Schema
+        @Schema(description = "대표 이미지")
         String thumbNail,
+        long likeCnt,
+        long commentCnt,
         long viewCnt,
         SimpleMemberDto simpleMemberDto
 ) {
@@ -18,8 +20,10 @@ public record MyCarSimple(
         return MyCarSimple.builder()
                 .id(myCarBoard.getId())
                 .thumbNail(myCarBoard.getThumbnail())
-                .simpleMemberDto(SimpleMemberDto.of(myCarBoard.getMember()))
+                .likeCnt(myCarBoard.getLikeCount())
+                .commentCnt(myCarBoard.getCommentCount())
                 .viewCnt(myCarBoard.getViewCount())
+                .simpleMemberDto(SimpleMemberDto.of(myCarBoard.getMember()))
                 .build();
     }
 }
