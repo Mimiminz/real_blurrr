@@ -4,6 +4,7 @@ import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.model.entity.ChannelTag;
 import com.luckvicky.blur.domain.channel.model.entity.Tag;
 import com.luckvicky.blur.domain.channelboard.exception.NotExistChannelException;
+import com.luckvicky.blur.domain.member.model.entity.Member;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,15 +26,7 @@ public interface ChannelRepository extends JpaRepository<Channel, UUID> {
 
     Optional<Channel> findByNameIs(String name);
 
-    @Query("SELECT c.id FROM Channel c")
-    Slice<UUID> findAllChannelIds(Pageable pageable);
-
-    @Query("SELECT c.id FROM Channel c WHERE c.owner.id = :memberId")
-    List<UUID> findChannelIdsByOwnerId(@Param("memberId") UUID memberId);
-
-    List<Channel> findByNameContainingIgnoreCase(String keyword);
-
-
+    List<Channel> findChannelsByOwner(Member member);
 
     @Query("SELECT DISTINCT c FROM Channel c "
             + "LEFT JOIN c.tags t "

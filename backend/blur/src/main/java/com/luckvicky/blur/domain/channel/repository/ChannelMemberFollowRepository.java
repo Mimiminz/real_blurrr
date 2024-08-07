@@ -22,7 +22,5 @@ public interface ChannelMemberFollowRepository extends JpaRepository<ChannelMemb
 
     List<ChannelMemberFollow> findAllByMember(Member member);
 
-    List<ChannelMemberFollow> findByMemberId(UUID memberId);
-
     Optional<ChannelMemberFollow> findByMemberAndChannel(Member member, Channel channel);
 }

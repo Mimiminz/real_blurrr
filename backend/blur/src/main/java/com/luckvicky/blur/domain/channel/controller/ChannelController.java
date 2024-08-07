@@ -90,9 +90,10 @@ public class ChannelController {
     @Operation(summary = "전체 채널 목록 조회 API")
     @GetMapping
     public ResponseEntity<Result<SliceResponse<ChannelDto>>> getAllChannels(
-            @NullableAuthUser ContextMember nullableMember,
             @RequestParam(defaultValue = "0") int pageNumber) {
-        SliceResponse<ChannelDto> response = channelService.getAllChannels(nullableMember, pageNumber);
+
+        Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
+        SliceResponse<ChannelDto> response = channelService.getAllChannels(pageable);
 
         if (response.getContent().isEmpty()) {
             return ResponseUtil.noContent(Result.empty());
@@ -176,13 +177,11 @@ public class ChannelController {
     public ResponseEntity<Result<SliceResponse<ChannelDto>>> searchChannelsByKeyword(
             @Parameter(description = "검색할 키워드", required = true)
             @RequestParam String keyword,
-            @NullableAuthUser ContextMember nullableMember,
             @RequestParam(defaultValue = "0") int pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
 
-
-        SliceResponse<ChannelDto> response = channelService.searchChannelsByKeyword(keyword, nullableMember, pageable);
+        SliceResponse<ChannelDto> response = channelService.searchChannelsByKeyword(keyword, pageable);
 
         if (Objects.isNull(response) || response.getContent().isEmpty()) {
             return ResponseUtil.noContent(

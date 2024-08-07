@@ -11,10 +11,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface ChannelService {
     ChannelDto createChannel(ChannelCreateRequest request, UUID memberId);
-    SliceResponse<ChannelDto> getAllChannels(ContextMember nullableMember, int pageNumber);
+    SliceResponse<ChannelDto> getAllChannels(Pageable pageable);
     List<ChannelDto> getFollowedChannels(UUID memberId);
     List<ChannelDto> getCreatedChannels(UUID memberId);
-    SliceResponse<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember, Pageable pageNumber);
+    SliceResponse<ChannelDto> searchChannelsByKeyword(String keyword, Pageable pageable);
     ChannelDto getChannelById(UUID channelId, ContextMember nullableMember);
     boolean createFollow(UUID memberId, UUID channelId);
     boolean deleteFollow(UUID memberId, UUID channelId);

@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.channel.model.dto;
 
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.UUID;
@@ -41,5 +42,17 @@ public class ChannelDto {
         @Schema(description = "팔로우 여부 (null: 비 로그인)" )
         @Setter
         Boolean isFollowed;
+
+        public static ChannelDto of(Channel channel) {
+                return ChannelDto.builder()
+                        .id(channel.getId())
+                        .name(channel.getName())
+                        .imgUrl(channel.getImgUrl())
+                        .info(channel.getInfo())
+                        .owner(channel.getOwner().getNickname())
+                        .followCount(channel.getFollowCount())
+                        .tags(channel.getTags().stream().map(TagDto::of).toList())
+                        .build();
+        }
 
 }
