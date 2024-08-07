@@ -52,7 +52,7 @@ public class MyCarBoardController {
     @Operation(summary = "내 차 자랑 리스트 조회")
     @GetMapping
     public ResponseEntity findMyCars(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, 10,
+        Pageable pageable = PageRequest.of(pageNo, 20,
                 Sort.by(Direction.DESC, SortingCriteria.valueOf("VIEW").getCriteria()));
         return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable)));
     }
