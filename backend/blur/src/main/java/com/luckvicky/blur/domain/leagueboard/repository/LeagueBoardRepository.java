@@ -3,6 +3,7 @@ package com.luckvicky.blur.domain.leagueboard.repository;
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.league.model.entity.League;
+import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDto;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import jakarta.persistence.LockModeType;

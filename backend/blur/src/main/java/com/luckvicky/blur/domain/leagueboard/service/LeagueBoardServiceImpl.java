@@ -105,13 +105,13 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .findAllByLeagueAndStatus(league, pageable, ActivateStatus.ACTIVE);
 
         return PaginatedResponse.of(
-                paginatedResult.getContent().stream()
-                        .map(leagueBoard -> mapper.map(leagueBoard, LeagueBoardDto.class))
-                        .collect(Collectors.toList()),
                 paginatedResult.getNumber(),
                 paginatedResult.getSize(),
                 paginatedResult.getTotalElements(),
-                paginatedResult.getTotalPages()
+                paginatedResult.getTotalPages(),
+                paginatedResult.getContent().stream()
+                        .map(LeagueBoardDto::of)
+                        .toList()
         );
 
     }
@@ -120,8 +120,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     public LeagueBoardDetailResponse getLeagueBoardDetail(UUID memberId, UUID boardId) {
 
         Member member = memberRepository.getOrThrow(memberId);
-        LeagueBoard board = leagueBoardRepository.findByIdForUpdate(boardId, ActivateStatus.ACTIVE)
-                .orElseThrow(NotExistBoardException::new);
+        LeagueBoard board = leagueBoardRepository.getOrThrow(boardId);
 
         isAllocatedLeague(board.getLeague(), member);
 
@@ -153,13 +152,13 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 .findAllByMentionedLeague(mentionedLeague, ActivateStatus.ACTIVE, pageable);
 
         return PaginatedResponse.of(
-                paginatedResult.stream()
-                        .map(board -> mapper.map(board, ChannelBoardDto.class))
-                        .collect(Collectors.toList()),
                 paginatedResult.getNumber(),
                 paginatedResult.getSize(),
                 paginatedResult.getTotalElements(),
-                paginatedResult.getTotalPages()
+                paginatedResult.getTotalPages(),
+                paginatedResult.stream()
+                        .map(board -> mapper.map(board, ChannelBoardDto.class))
+                        .collect(Collectors.toList())
         );
 
     }
@@ -205,14 +204,15 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
         }
 
         return PaginatedResponse.of(
-                paginatedResult.getContent().stream()
-                        .map(leagueBoard -> mapper.map(leagueBoard, LeagueBoardDto.class))
-                        .collect(Collectors.toList()),
                 paginatedResult.getNumber(),
                 paginatedResult.getSize(),
                 paginatedResult.getTotalElements(),
-                paginatedResult.getTotalPages()
+                paginatedResult.getTotalPages(),
+                paginatedResult.getContent().stream()
+                        .map(LeagueBoardDto::of)
+                        .collect(Collectors.toList())
         );
+
     }
 
     private static void isEqualLeagueType(LeagueType reqeustType, LeagueType findLeagueType) {
@@ -234,7 +234,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private UUID isCreated(Board createdLeagueBoard) {
 
         boardRepository.findById(createdLeagueBoard.getId())
-                .orElseThrow(() -> new FailToCreateBoardException());
+                .orElseThrow(FailToCreateBoardException::new);
 
         return createdLeagueBoard.getId();
     }
