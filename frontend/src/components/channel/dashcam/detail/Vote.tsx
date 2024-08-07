@@ -146,13 +146,13 @@ const fadeOut = keyframes`
 `;
 
 const Container = styled.div`
-  padding: 20px;
+  padding: 10px 20px 20px;
   background-color: #f8f8f8;
   border-radius: 10px;
 `;
 
 const Question = styled.h2`
-  margin-bottom: 20px;
+  font-size: 21px;
   color: #333;
 `;
 
