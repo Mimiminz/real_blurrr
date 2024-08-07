@@ -6,6 +6,7 @@ import PaginationComponent from "@/components/common/UI/Pagination";
 import { fetchPosts } from "@/api/channel";
 import { PostData } from "@/types/channelType";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/common/UI/Loading";
 
 interface ChannelBoardListProps {
   channelId: string;
@@ -53,22 +54,26 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
     setCurrentPage(page);
   };
 
+  if (!Posts?.length) {
+    return <Loading />;
+  }
+
   return (
-      <ChannelList>
-        {Posts.map((post) => (
-          <ChannelBoardListItem
-            key={post.board.id}
-            post={post.board}
-            mentions={post.mentionedLeagues}
-            onClick={() => handlePostClick(channelId, post.board.id)}
-          />
-        ))}
+    <ChannelList>
+      {Posts.map((post) => (
+        <ChannelBoardListItem
+          key={post.board.id}
+          post={post.board}
+          mentions={post.mentionedLeagues}
+          onClick={() => handlePostClick(channelId, post.board.id)}
+        />
+      ))}
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
-        />
-        </ChannelList>
+      />
+    </ChannelList>
   );
 };
 const ChannelList = styled.div``;

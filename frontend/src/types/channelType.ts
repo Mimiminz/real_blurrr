@@ -134,6 +134,23 @@ export interface PostDataInfo {
   content: PostData[];
 }
 
+export interface BoastInfo {
+  totalPage: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: Boasts[];
+}
+
+export interface Boasts {
+  id: string;
+  thumbNail: string;
+  likeCnt: number;
+  commentCnt: number;
+  viewCnt: number;
+  simpleMemberDto: SimpleMember;
+}
+
 export interface Vote { 
   hasVoted: boolean;
   selectedOptionId: string;
