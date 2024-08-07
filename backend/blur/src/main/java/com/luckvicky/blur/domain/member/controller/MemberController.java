@@ -134,7 +134,7 @@ public class MemberController {
     @PutMapping("/password")
     public ResponseEntity<Boolean> modifyPassword(@Valid @RequestBody ChangePassword changePassword,
                                                   @AuthUser ContextMember contextMember) {
-        return null;
+        return ResponseEntity.ok(memberService.modifyPassword(changePassword, contextMember.getId()));
     }
 
 }

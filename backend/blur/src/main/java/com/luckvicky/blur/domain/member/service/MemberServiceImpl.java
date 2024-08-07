@@ -156,11 +156,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.getOrThrow(memberId);
         member.updateNickname(updateInfo.nickname());
 
-        //패드워드 변경 시
-        if (StringUtils.hasText(updateInfo.password())) {
-            member.updatePassword(passwordEncoder.encode(updateInfo.password()));
-        }
-
         //이미지 변경 시
         Map<String, String> imgUrl;
         String profileUrl = member.getProfileUrl();
@@ -180,7 +175,8 @@ public class MemberServiceImpl implements MemberService {
 
         matchPassword(changePassword.oldPassword(), member.getPassword());
 
-        return false;
+        member.updatePassword(passwordEncoder.encode(changePassword.newPassword()));
+        return true;
     }
 
     @Override
