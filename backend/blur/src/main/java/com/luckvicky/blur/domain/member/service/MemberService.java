@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
@@ -8,7 +9,6 @@ import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import java.net.MalformedURLException;
@@ -22,7 +22,8 @@ public interface MemberService {
     Boolean checkNickname(String nickname);
     MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
 
-    boolean modifyPassword(ChangePassword changePassword);
+    boolean modifyPassword(ChangePassword changePassword, UUID memberId);
+    boolean modifyPassword(ChangeFindPassword changeFindPassword);
     boolean createEmailAuthCode(String email);
     boolean validEmailAuth(EmailAuth emailAuth);
     boolean createPasswordAuthCode(String email);
