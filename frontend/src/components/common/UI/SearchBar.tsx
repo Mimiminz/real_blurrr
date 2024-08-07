@@ -51,15 +51,21 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 export default SearchBar;
 
 const Container = styled.div`
-  width: 40%;
+  width: 100%;
   display: flex;
   align-items: center;
+
+  @media (min-width: 768px) {
+    width: 40%;
+  }
 `;
 
 const SearchForm = styled.form`
   width: 100%;
   display: flex;
+  gap: 10px;
   align-items: center;
+  justify-content: end;
 `;
 
 const SearchContainer = styled.div`
@@ -69,9 +75,12 @@ const SearchContainer = styled.div`
   border: 1px solid #ddd;
   border-radius: 50px;
   padding: 5px 10px;
-  max-width: 600px;
-  max-height: 28px;
   width: 100%;
+  height: 28px;
+
+  @media (min-width: 480px) {
+    width: 350px;
+  }
 `;
 
 const SearchIcon = styled.span`
@@ -104,13 +113,21 @@ const ClearIcon = styled.span`
 `;
 
 const SearchButton = styled.button`
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  margin-left: 10px;
   background-color: white;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   min-width: 50px;
-  max-height: 38px;
+  margin-top: 0;
+  height: 38px;
+
+  @media (min-width: 480px) {
+  }
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+    height: 40px;
+  }
 `;

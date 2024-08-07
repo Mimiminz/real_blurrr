@@ -35,7 +35,7 @@ export default function MoreBrandTab({
           </TitleContainer>
           {activeTab.type === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>
-              더보기 {showMoreTabs ? "▲" : "▼"}
+              <span>더보기</span> {showMoreTabs ? "▲" : "▼"}
             </MoreTabsButton>
           )}
         </HeaderContainer>
@@ -61,7 +61,7 @@ const TabContent = styled.div`
 
 const MoreTabsButton = styled.button`
   border: none;
-  padding: 10px;
+  padding: 10px 0 10px 10px;
   cursor: pointer;
   border-radius: 20px;
   color: #333;
@@ -70,6 +70,14 @@ const MoreTabsButton = styled.button`
   align-items: center;
   justify-content: center;
   margin: 0;
+
+  @media (max-width: 490px) {
+    span {
+      display: none;
+    }
+    font-size: 20px;
+    padding-bottom: 20px;
+  }
 `;
 
 const fadeIn = keyframes`
@@ -156,7 +164,11 @@ const MoreTabButton = styled(Link)<TabButtonProps>`
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
+
+  @media (min-width: 480px) {
+    align-items: center;
+  }
 `;
 
 const Title = styled.h1`

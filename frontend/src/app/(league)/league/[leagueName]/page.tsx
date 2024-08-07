@@ -64,6 +64,9 @@ export default function LeaguePage({
     MentionChannelBoardList[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isDesktop, setIsDesktop] = useState<boolean>(
+    window.matchMedia("(min-width: 768px)").matches
+  );
 
   // 팝업
   const [showNoCarPopup, setShowNoCarPopup] = useState(false);
@@ -83,6 +86,15 @@ export default function LeaguePage({
   // 검색
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<LeagueBoardItem[]>([]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleMediaChange = (e: MediaQueryListEvent) =>
+      setIsDesktop(e.matches);
+
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
 
   useEffect(() => {
     const loadLeagues = async () => {
@@ -276,13 +288,14 @@ export default function LeaguePage({
         ) : (
           <div />
         )}
-        <SearchBar onSearch={handleSearch} />
+        {isDesktop && <SearchBar onSearch={handleSearch} />}
       </TopComponent>
       <MoreBrandTab
         activeTab={activeTab}
         moreTabs={brandLeagueList}
         activeTabName={leagueName}
       />
+      {!isDesktop && <SearchBar onSearch={handleSearch} />}
       <FilterSection>
         <DropdownButton onClick={handleDropdownToggle} onBlur={handleBlur}>
           {selectedSort}
@@ -344,16 +357,28 @@ const Container = styled.div``;
 
 const TopComponent = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-top: 30px;
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const FilterSection = styled.div`
   display: flex;
+  /* flex-direction: column; */
   align-items: center;
   margin: 20px 0 20px 0;
   position: relative;
+
+  /* @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  } */
 
   .setPosition {
     display: flex;
@@ -362,31 +387,44 @@ const FilterSection = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  padding: 8px;
+  padding: 6px;
   border-radius: 5px;
   border: 1px solid #ddd;
   background-color: white;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   color: #969696;
-  width: 110px;
-  height: 37px;
+  width: 90px;
+  height: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (min-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+    width: 110px;
+    height: 37px;
+  }
 `;
 
 const DropdownMenu = styled.div`
   position: absolute;
   padding: 5px 0px;
-  top: 45px;
-  width: 110px;
-  font-size: 14px;
+  top: 40px;
+  width: 90px;
+  font-size: 12px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 100;
+
+  @media (min-width: 768px) {
+    width: 110px;
+    font-size: 14px;
+    top: 45px;
+  }
 `;
 
 const DropdownItem = styled.div`
@@ -399,17 +437,25 @@ const DropdownItem = styled.div`
 `;
 
 const StyledButton = styled.button`
-  padding: 10px;
+  padding: 6px;
   background: none;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
+  align-items: center;
+  height: 35px;
   color: #333;
   white-space: nowrap;
 
   &:hover {
     color: #f97316;
+  }
+
+  @media (min-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+    height: 40px;
   }
 `;
 
