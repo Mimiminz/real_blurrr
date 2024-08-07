@@ -78,7 +78,7 @@ public class ChannelBoardController {
     })
     @GetMapping
     public ResponseEntity<Result<PaginatedResponse<ChannelBoardListDto>>> getChannelBoards(
-            @PathVariable(name = "channelId")UUID channelId,
+            @PathVariable(name = "channelId") UUID channelId,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria

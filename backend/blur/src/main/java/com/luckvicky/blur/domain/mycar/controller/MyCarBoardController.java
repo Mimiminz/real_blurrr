@@ -5,6 +5,7 @@ import static com.luckvicky.blur.global.constant.Number.ALARM_PAGE_SIZE;
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateRequest;
 import com.luckvicky.blur.domain.mycar.service.MyCarBoardService;
+import com.luckvicky.blur.global.annotation.custom.ValidEnum;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
@@ -51,10 +52,15 @@ public class MyCarBoardController {
 
     @Operation(summary = "내 차 자랑 리스트 조회")
     @GetMapping
-    public ResponseEntity findMyCars(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
+    public ResponseEntity findMyCars(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria")
+            @ValidEnum(enumClass = SortingCriteria.class)
+            String criteria) {
         Pageable pageable = PageRequest.of(pageNo, 20,
-                Sort.by(Direction.DESC, SortingCriteria.valueOf("VIEW").getCriteria()));
-        return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable)));
+                Sort.by(Direction.DESC, SortingCriteria.convertToEnum(criteria).getCriteria()));
+        return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable, keyword)));
     }
 
     @Operation(summary = "차 자랑 상세 조회")

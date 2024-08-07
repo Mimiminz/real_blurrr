@@ -81,7 +81,6 @@ public class Board extends BaseEntity {
         }
     }
 
-
     public void increaseCommentCount()  {
         this.commentCount++;
     }
