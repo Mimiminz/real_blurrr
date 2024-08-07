@@ -34,7 +34,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "boards")
 public class Board extends BaseEntity {
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 35)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")

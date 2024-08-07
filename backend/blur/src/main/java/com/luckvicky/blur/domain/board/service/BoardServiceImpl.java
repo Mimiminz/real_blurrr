@@ -9,6 +9,9 @@ import com.luckvicky.blur.domain.board.factory.BoardFactory;
 import com.luckvicky.blur.domain.board.model.dto.BoardDetailDto;
 import com.luckvicky.blur.domain.board.model.dto.BoardDto;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
+import com.luckvicky.blur.domain.board.model.dto.response.BoardListResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.LikeBoardListResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.MyBoardListResponse;
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
@@ -16,19 +19,17 @@ import com.luckvicky.blur.domain.board.repository.MyCarRepository;
 import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
-import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
-import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import java.util.List;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -84,7 +85,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardDto> findLikeBoardsByMember(UUID id, int pageNumber, String criteria) {
+    public PaginatedResponse<LikeBoardListResponse> findLikeBoardsByMember(UUID id, int pageNumber, String criteria) {
 
         SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
 
@@ -95,17 +96,23 @@ public class BoardServiceImpl implements BoardService {
         );
 
         Member member = memberRepository.getOrThrow(id);
-        List<Board> likeBoards = boardRepository.findLikeBoardListByMember(member, ActivateStatus.ACTIVE, pageable);
+        Page<Board> likeBoards = boardRepository.findLikeBoardListByMember(member, ActivateStatus.ACTIVE, pageable);
 
-        return likeBoards.stream()
-                .map(likeBoard -> mapper.map(likeBoard, BoardDto.class))
-                .collect(Collectors.toList());
+        return PaginatedResponse.of(
+                likeBoards.getNumber(),
+                likeBoards.getSize(),
+                likeBoards.getTotalElements(),
+                likeBoards.getTotalPages(),
+                likeBoards.stream()
+                        .map(LikeBoardListResponse::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardDto> findBoardsByMember(UUID memberId, int pageNumber, String criteria) {
+    public PaginatedResponse<MyBoardListResponse> findMyBoard(UUID memberId, int pageNumber, String criteria) {
 
         SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
         Pageable pageable = PageRequest.of(
@@ -115,11 +122,17 @@ public class BoardServiceImpl implements BoardService {
         );
 
         Member member = memberRepository.getOrThrow(memberId);
-        List<Board> boards = boardRepository.findAllByMember(member, pageable).getContent();
+        Page<Board> boards = boardRepository.findAllByMember(member, pageable);
 
-        return boards.stream()
-                .map(board -> mapper.map(board,  BoardDto.class))
-                .collect(Collectors.toList());
+        return PaginatedResponse.of(
+                boards.getNumber(),
+                boards.getSize(),
+                boards.getTotalElements(),
+                boards.getTotalPages(),
+                boards.stream()
+                        .map(MyBoardListResponse::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 

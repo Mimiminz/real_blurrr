@@ -32,32 +32,16 @@ export default function LeagueMainPage() {
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        if (isLoggedIn && !isLoadUserLeagues) {
-          if (user?.isAuth) {
-            const userLeagues: UserLeague[] = await fetchUserLeagueList();
-            const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
-              id: userLeague.league.id,
-              name: userLeague.league.name,
-              type: userLeague.league.type,
-              peopleCount: userLeague.league.peopleCount,
-            }));
-            setUserLeagueList(userTabs);
-            const userMentionTabs: LeagueList[] = userLeagues.map(
-              (userLeague) => ({
-                id: `mention${userLeague.league.id}`,
-                name:userLeague.league.name,
-                type: userLeague.league.type,
-                peopleCount: userLeague.league.peopleCount,
-              })
-            );
-            setMentionTabs(userMentionTabs);
-          } else {
-            const userTabs: LeagueList[] = [];
-            setUserLeagueList(userTabs);
-            const userMentionTabs: LeagueList[] = [];
-            setMentionTabs(userMentionTabs);
-          }
-
+        if (isLoggedIn && user?.isAuth && mentionTabs.length === 0) {
+          const userMentionTabs: LeagueList[] = userLeagueList.map(
+            (league) => ({
+              id: `mention${league.id}`,
+              name: league.name,
+              type: league.type,
+              peopleCount: league.peopleCount,
+            })
+          );
+          setMentionTabs(userMentionTabs);
           setIsLoadUserLeagues(true);
         }
 

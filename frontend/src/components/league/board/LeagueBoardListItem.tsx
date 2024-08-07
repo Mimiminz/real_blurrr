@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
-import { LiaCommentDots } from "react-icons/lia";
-import { MdAccessTime } from "react-icons/md";
+import { BiTimeFive } from "react-icons/bi";
+import { FaRegComment } from "react-icons/fa6";
+import { FaRegEye } from "react-icons/fa";
 import { LeagueBoardListItemProps } from "@/types/leagueTypes";
 import { formatPostDate } from "@/utils/formatPostDate";
 
@@ -25,21 +26,19 @@ function LeagueBoardListItem({
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
-          <Icon>
-            <MdAccessTime />
-          </Icon>
+          <BiTimeFive />
           {formatPostDate(createdAt)}
         </LikeSection>
         <LikeSection>
-          <Icon>
-            <FaRegHeart />
-          </Icon>
+          <FaRegHeart />
           {likeCount}
         </LikeSection>
         <LikeSection>
-          <Icon>
-            <LiaCommentDots />
-          </Icon>
+          <FaRegComment />
+          {commentCount}
+        </LikeSection>
+        <LikeSection>
+          <FaRegEye />
           {commentCount}
         </LikeSection>
       </LikeAndComment>
@@ -91,36 +90,29 @@ const Title = styled.p`
   font-weight: bold;
 `;
 
-const Text = styled.p`
-  color: black;
-  font-size: 13px;
-  margin: 10;
-  margin-bottom: 8px;
-`;
-
 const LikeAndComment = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: auto;
 `;
 
 const LikeSection = styled.span`
   display: flex;
   align-items: center;
-  margin-left: 20px;
-  margin-bottom: 8px;
-  margin-top: auto;
-  color: ${({ theme }) => theme.colors.subDiscription};
-  font-size: 14px;
-`;
-
-const Icon = styled.span`
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 16px;
-  vertical-align: middle;
+  margin-top: auto;
+
+  /* width: 100%; */
+  color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 13.5px;
+
+  svg {
+    margin-right: 4px;
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 export default LeagueBoardListItem;

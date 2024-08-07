@@ -45,20 +45,26 @@ export default function UserTab({
 const TabList = styled.div`
   display: flex;
   align-items: center;
-  padding-bottom: 5px;
+  gap: 5px;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    gap: 10px;
+  }
 `;
 
 const TabButton = styled(Link)<TabButtonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 5px;
-  min-width: 100px;
+  padding: 8px 5px;
+  min-width: 55px;
+  max-height: 30px;
   cursor: pointer;
   background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
   border: none;
-  border-radius: 20px;
-  font-size: 16px;
+  border-radius: 15px;
+  font-size: 12px;
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#F97316" : "#333")};
   text-decoration: none;
@@ -69,5 +75,13 @@ const TabButton = styled(Link)<TabButtonProps>`
 
   svg {
     margin-right: 5px;
+  }
+
+  @media (min-width: 425px) {
+    padding: 10px 5px;
+    min-width: 80px;
+    max-height: 40px;
+    font-size: 14px;
+    border-radius: 20px;
   }
 `;

@@ -101,11 +101,11 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         List<ChannelBoardListDto> channelBoardListDtos = channelBoardMapper.toChannelBoardListDtoList(channelBoards, mentionList);
 
         return PaginatedResponse.of(
-                channelBoardListDtos,
                 channelBoardPage.getNumber(),
                 channelBoardPage.getSize(),
                 channelBoardPage.getTotalElements(),
-                channelBoardPage.getTotalPages()
+                channelBoardPage.getTotalPages(),
+                channelBoardListDtos
         );
 
     }

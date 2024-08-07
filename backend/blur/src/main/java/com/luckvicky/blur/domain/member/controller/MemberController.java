@@ -1,29 +1,24 @@
 package com.luckvicky.blur.domain.member.controller;
 
-import com.luckvicky.blur.domain.board.model.dto.BoardDto;
-import com.luckvicky.blur.domain.board.model.dto.response.MemberBoardListResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.LikeBoardListResponse;
+import com.luckvicky.blur.domain.board.model.dto.response.MyBoardListResponse;
 import com.luckvicky.blur.domain.board.service.BoardService;
-import com.luckvicky.blur.domain.like.model.dto.response.LikeBoardListResponse;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,25 +72,6 @@ public class MemberController {
             summary = "좋아요 게시글 조회 API",
             description = "사용자가 좋아요 누른 게시글 목록을 조회한다."
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "조회 완료",
-                    content = @Content(schema = @Schema(implementation = LikeBoardListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "조회 완료 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "토큰에 대한 문제가 있음"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 사용자"
-            ),
-    })
     @Parameters({
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
@@ -110,28 +86,21 @@ public class MemberController {
             ),
     })
     @GetMapping("/likes/boards")
-    public ResponseEntity findLikeBoardsByMember(
+    public ResponseEntity<Result<PaginatedResponse<LikeBoardListResponse>>> findLikeBoardsByMember(
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        List<BoardDto> likeBoards = boardService.findLikeBoardsByMember(
+        PaginatedResponse<LikeBoardListResponse> response = boardService.findLikeBoardsByMember(
                 member.getId(), pageNumber, criteria
         );
 
-        if (Objects.isNull(likeBoards) || likeBoards.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder()
-                            .build()
-            );
+        if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(LikeBoardListResponse.of(likeBoards))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(response));
 
     }
 
@@ -139,61 +108,22 @@ public class MemberController {
             summary = "작성 게시글 조회 API",
             description = "사용자가 작성한 게시글 목록을 조회한다."
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "조회 완료",
-                    content = @Content(schema = @Schema(implementation = LikeBoardListResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "조회 완료 (단, 데이터 없음)"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "토큰에 대한 문제가 있음"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "사용자 정보 없음"
-            )
-    })
-    @Parameters({
-            @Parameter(name = "pageNumber", description = "페이지 번호"),
-            @Parameter(
-                    name = "criteria",
-                    description = "정렬 기준",
-                    examples = {
-                            @ExampleObject(name = "최신", value = "TIME"),
-                            @ExampleObject(name = "좋아요", value = "LIKE"),
-                            @ExampleObject(name = "조회수", value = "VIEW"),
-                            @ExampleObject(name = "댓글", value = "COMMENT"),
-                    }
-            ),
-    })
     @GetMapping("/boards")
-    public ResponseEntity findBoardsByMember(
+    public ResponseEntity<Result<PaginatedResponse<MyBoardListResponse>>> findBoardsByMember(
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        List<BoardDto> boards = boardService.findBoardsByMember(
+        PaginatedResponse<MyBoardListResponse> boards = boardService.findMyBoard(
                 member.getId(), pageNumber, criteria
         );
 
-        if (Objects.isNull(boards) || boards.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.builder()
-                            .build()
-            );
+        if (Objects.isNull(boards.getContent()) || boards.getContent().isEmpty()) {
+            return ResponseUtil.noContent(Result.empty());
         }
 
-        return ResponseUtil.ok(
-                Result.builder()
-                        .data(MemberBoardListResponse.of(boards))
-                        .build()
-        );
+        return ResponseUtil.ok(Result.of(boards));
 
     }
 

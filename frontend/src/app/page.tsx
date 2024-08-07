@@ -115,6 +115,7 @@ export default function Home() {
     user,
     setUserLeagueList,
   ]);
+
   const handleMoreClickLeage = () => {
     router.push("/league");
   };
@@ -130,7 +131,7 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (!hotBoards) {
+  if (!hotBoards.length) {
     return <Loading />;
   }
 

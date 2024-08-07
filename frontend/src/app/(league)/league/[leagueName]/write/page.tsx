@@ -63,6 +63,9 @@ export default function WritePage({
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) return; // 빈 댓글은 제출하지 않음
+    if (title.length > 35) {
+      return;
+    }
 
     try {
       const write = await fetchBoardWrite(
@@ -114,7 +117,7 @@ export default function WritePage({
         <PopupContainer onClick={closeLoginPopup}>
           <PopupContent onClick={(e) => e.stopPropagation()}>
             <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
-            <LoginForm />
+            <LoginForm closeLoginModal={closeLoginPopup} />
           </PopupContent>
         </PopupContainer>
       )}

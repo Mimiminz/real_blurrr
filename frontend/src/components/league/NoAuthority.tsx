@@ -1,6 +1,6 @@
 import { useLeagueStore } from "@/store/leagueStore";
 import { useRouter } from "next/navigation";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const NoAuthority = ({ closePopup }: { closePopup: () => void }) => {
   const router = useRouter();
@@ -36,6 +36,28 @@ const NoAuthority = ({ closePopup }: { closePopup: () => void }) => {
   );
 };
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+`;
+
 const PopupContainer = styled.div`
   position: fixed;
   top: 0;
@@ -63,6 +85,12 @@ const PopupContent = styled.div`
   align-items: center;
   @media (max-width: 768px) {
     padding: 20px;
+  }
+
+  animation: ${fadeIn} 300ms ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 300ms ease-in-out;
   }
 `;
 
