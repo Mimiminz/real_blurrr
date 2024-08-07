@@ -3,13 +3,16 @@ import styled from 'styled-components';
 import MyHeartListItem from './MyHeartListItem';
 import { MyHeartItem } from '@/types/myPageTypes';
 import { useAuthStore } from '@/store/authStore';
-import { getMyHeartList } from '@/api/mypage';
+import { getMyHeartChannelList, getMyHeartLeagueList } from '@/api/mypage';
+
+type Tab = 'league' | 'channel';
 
 const MyHeartList = () => {
   const [heartBoards, setHeartBoards] = useState<MyHeartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [pageNumber, setPageNumber] = useState<number>(0); 
+  const [pageNumber, setPageNumber] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<string>('league');
   const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
@@ -21,10 +24,15 @@ const MyHeartList = () => {
       }
 
       try {
-        const data = await getMyHeartList(accessToken, pageNumber); 
-        setHeartBoards(data || []); 
+        let data: MyHeartItem[] = [];
+        if (selectedTab === 'league') {
+          data = await getMyHeartLeagueList(accessToken, pageNumber);
+        } else if (selectedTab === 'channel') {
+          data = await getMyHeartChannelList(accessToken, pageNumber);
+        }
+        setHeartBoards(data || []);
       } catch (err) {
-        setError('좋아요 목록을 불러오는 데 실패했습니다.');
+        setError('목록을 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -48,6 +56,10 @@ const MyHeartList = () => {
   return (
     <Container>
       <Title>내 좋아요 목록 ({heartBoards.length})</Title>
+      <TabContainer>
+        <Tab active={selectedTab === 'leagues'} onClick={() => setSelectedTab('leagues')}>리그</Tab>
+        <Tab active={selectedTab === 'channels'} onClick={() => setSelectedTab('channels')}>채널</Tab>
+      </TabContainer>
       {heartBoards.length > 0 ? (
         heartBoards.map((item) => (
           <MyHeartListItem
@@ -75,6 +87,24 @@ const MyHeartList = () => {
 };
 
 export default MyHeartList;
+
+const TabContainer = styled.div`
+  display: flex;
+  margin-bottom: 1em;
+`;
+
+const Tab = styled.button<{ active: boolean }>`
+  margin-right: 1em;
+  padding: 0.5em 1em;
+  background-color: ${(props) => (props.active ? '#FFB55E' : 'transparent')};
+  border: ${(props) => (props.active ? '1px solid #000000' : '1px solid #ddd')};
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #efefef;
+  }
+`;
 
 const Container = styled.div`
   display: flex;
