@@ -122,7 +122,7 @@ const CommentSection = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 0px 16px 20px;
+  padding: 0px 20px 20px;
   height: 500px;
   margin-top: 16px;
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
