@@ -17,3 +17,17 @@ export interface Member {
   export interface MyHeartListResponse {
     boards: MyHeartItem[];
   }
+
+  export interface MyPostItem {
+    id: string;
+    member: Member;
+    title: string;
+    createdAt: string;
+    commentCount: number;
+    likeCount: number;
+    totalPages: number;
+  }
+  
+  export interface MyPostListResponse {
+    boards: MyHeartItem[];
+  }
