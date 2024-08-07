@@ -7,6 +7,7 @@ import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
+import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
@@ -19,7 +20,7 @@ public interface MemberService {
     MemberProfile findMember(UUID memberId);
     JwtDto reissueToken(ReissueDto reissue);
     Boolean checkNickname(String nickname);
-    MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
+    MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
 
     boolean modifyPassword(ChangePassword changePassword);
     boolean createEmailAuthCode(String email);

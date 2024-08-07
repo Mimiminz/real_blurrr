@@ -6,6 +6,7 @@ import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
+import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
@@ -55,8 +56,8 @@ public class MemberController {
 
     @Operation(description = "정보 수정")
     @PutMapping("")
-    public ResponseEntity<MemberProfile> modifyMember(@AuthUser ContextMember member,
-                                                      @Valid @RequestBody MemberProfileUpdate update)
+    public ResponseEntity<MemberProfileUpdateResp> modifyMember(@AuthUser ContextMember member,
+                                                                @Valid @RequestBody MemberProfileUpdate update)
             throws MalformedURLException {
         return ResponseEntity.ok(memberService.modifyMember(member.getId(), update));
     }
