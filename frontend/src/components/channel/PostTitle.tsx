@@ -15,6 +15,7 @@ interface PostInfo {
   owner: string;
   followCount: number;
   tags: Mentioned[];
+  isFollowed: boolean;
 }
 
 interface PostTitleProps {
@@ -48,6 +49,8 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
       setChannelId(actualChannelId);
 
       const info: PostInfo = await fetchChannelInfo(actualChannelId);
+      setIsFollowing(info.isFollowed);
+
       if (info && info.name) {
         setChannelName(info.name);
       } else {
@@ -60,8 +63,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
 
   useEffect(() => {
     getChannelInfo(channelType);
-    setIsFollowing(isLoggedIn ? true : false);
-  }, [channelType, getChannelInfo, isLoggedIn]);
+  }, [channelType, getChannelInfo]);
 
   const handleCreatePost = () => {
     if (channelId) {
@@ -75,6 +77,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
 
   const handleFollowChannel = async () => {
     if (!channelId) return;
+
     try {
       if (isFollowing) {
         await unfollowChannel(channelId);
@@ -103,9 +106,9 @@ const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChan
         <h1>{channelName || 'Channel Title'}</h1> {/* 실제 채널 이름을 표시 */}
         <SideSection>
           {isLoggedIn && (
-            <button className="setButton" onClick={handleFollowChannel}>
+            <SetButton isFollowing={isFollowing} onClick={handleFollowChannel}>
               {isFollowing ? '언팔로우 -' : '팔로우 +'}
-            </button>
+            </SetButton>
           )}
           <SearchBar onSearch={onSearch} />
         </SideSection>
@@ -162,21 +165,21 @@ const TitleSection = styled.div`
     margin: 5px 0;
   }
 
-  .setButton {
-    padding: 10px 20px;
-    background-color: #f1f1f1;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    white-space: nowrap;
-  }
-
   .setPosition {
     display: flex;
     margin-left: auto;
   }
+`;
+
+const SetButton = styled.button<{ isFollowing: boolean }>`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: ${({ isFollowing }) => (isFollowing ? '#f1f1f1' : '#333')};
+  color: ${({ isFollowing }) => (isFollowing ? '#333' : '#f1f1f1')};
+  white-space: nowrap;
 `;
 
 const FilterSection = styled.div`
