@@ -1,24 +1,21 @@
 package com.luckvicky.blur.domain.channelboard.service;
 
-import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
-import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
-import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
-import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
-import java.util.List;
-import java.util.UUID;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotDashCamListResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotMyCarListResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.TodayMyCarResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotBoardListResponse;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
+import org.springframework.data.domain.Page;
 
 public interface ChannelBoardRetrieveService {
 
 
-    List<HotBoardDto> getHotBoard();
+    PaginatedResponse<HotBoardListResponse> getHotBoard();
 
-    List<HotDashcamDto> getHotDashcamBoard();
+    PaginatedResponse<HotDashCamListResponse> getHotDashcamBoard();
 
-    MyCarDto getTodayMyCarBoard();
+    TodayMyCarResponse getTodayMyCarBoard();
 
-    List<MyCarDto> getHotMyCarBoard();
+    PaginatedResponse<HotMyCarListResponse> getHotMyCarBoard();
 
 }

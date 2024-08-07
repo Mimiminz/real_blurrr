@@ -5,18 +5,19 @@ import static com.luckvicky.blur.global.constant.Number.HOT_DASHCAM_BOARD_PAGE_S
 import static com.luckvicky.blur.global.constant.Number.HOT_MYCAR_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 
-import com.luckvicky.blur.domain.board.model.dto.HotBoardDto;
-import com.luckvicky.blur.domain.board.model.dto.HotDashcamDto;
-import com.luckvicky.blur.domain.board.model.entity.Board;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotDashCamListResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotMyCarListResponse;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.TodayMyCarResponse;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
-import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channelboard.model.dto.MyCarDto;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.HotBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
+import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.util.ClockUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,7 +41,7 @@ public class ChannelBoardRetrieveServiceImpl implements ChannelBoardRetrieveServ
     private final DashcamRepository dashcamRepository;
 
     @Override
-    public List<HotBoardDto> getHotBoard() {
+    public PaginatedResponse<HotBoardListResponse> getHotBoard() {
 
         Pageable pageable = PageRequest.of(
                 ZERO,
@@ -48,18 +50,23 @@ public class ChannelBoardRetrieveServiceImpl implements ChannelBoardRetrieveServ
         );
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<ChannelBoard> boards = channelBoardRepository
-                .findAllByAndStatusAndCreatedAtBetween(pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
+        Page<ChannelBoard> boards = channelBoardRepository
+                .findAllByAndStatusAndCreatedAtBetween(pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now);
 
-        return boards.stream()
-                .map(board -> mapper.map(board, HotBoardDto.class))
-                .collect(Collectors.toList());
+        return PaginatedResponse.of(
+                boards.getNumber(),
+                boards.getSize(),
+                boards.getTotalElements(),
+                boards.getTotalPages(),
+                boards.stream()
+                        .map(HotBoardListResponse::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 
     @Override
-    public List<HotDashcamDto> getHotDashcamBoard() {
+    public PaginatedResponse<HotDashCamListResponse> getHotDashcamBoard() {
 
         Pageable pageable = PageRequest.of(
                 ZERO,
@@ -68,18 +75,23 @@ public class ChannelBoardRetrieveServiceImpl implements ChannelBoardRetrieveServ
         );
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<DashCam> boards = dashcamRepository
-                .findByStatusAndCreatedAtBetween(pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
+        Page<DashCam> boards = dashcamRepository
+                .findByStatusAndCreatedAtBetween(pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now);
 
-        return boards.stream()
-                .map(board -> mapper.map(board, HotDashcamDto.class))
-                .collect(Collectors.toList());
+        return PaginatedResponse.of(
+                boards.getNumber(),
+                boards.getSize(),
+                boards.getTotalElements(),
+                boards.getTotalPages(),
+                boards.stream()
+                        .map(HotDashCamListResponse::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 
     @Override
-    public MyCarDto getTodayMyCarBoard() {
+    public TodayMyCarResponse getTodayMyCarBoard() {
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
 
@@ -95,12 +107,12 @@ public class ChannelBoardRetrieveServiceImpl implements ChannelBoardRetrieveServ
             return null;
         }
 
-        return mapper.map(board, MyCarDto.class);
+        return TodayMyCarResponse.of(board);
 
     }
 
     @Override
-    public List<MyCarDto> getHotMyCarBoard() {
+    public PaginatedResponse<HotMyCarListResponse> getHotMyCarBoard() {
 
         Pageable pageable = PageRequest.of(
                 ZERO,
@@ -109,13 +121,18 @@ public class ChannelBoardRetrieveServiceImpl implements ChannelBoardRetrieveServ
         );
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
-        List<ChannelBoard> boards = channelBoardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.MYCAR, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now)
-                .getContent();
+        Page<ChannelBoard> boards = channelBoardRepository
+                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.MYCAR, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now);
 
-        return boards.stream()
-                .map(board -> mapper.map(board, MyCarDto.class))
-                .collect(Collectors.toList());
+        return PaginatedResponse.of(
+                boards.getNumber(),
+                boards.getSize(),
+                boards.getTotalElements(),
+                boards.getTotalPages(),
+                boards.stream()
+                        .map(HotMyCarListResponse::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 
