@@ -33,6 +33,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18",
     "@types/react-transition-group": "^4.4.10",
+    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "styled-components": "^6.1.12",

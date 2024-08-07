@@ -80,7 +80,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 600px;
+  height: 800px;
 `;
 
 const Title = styled.h2`
