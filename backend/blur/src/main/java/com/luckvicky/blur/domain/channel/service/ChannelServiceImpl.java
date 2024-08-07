@@ -121,12 +121,8 @@ public class ChannelServiceImpl implements ChannelService {
 
 
     @Override
-    public SliceResponse<ChannelDto> searchChannelsByKeywords(String keyword, ContextMember nullableMember, int pageNumber) {
-        if (keyword.isEmpty()) {
-            return new SliceResponse<>(Collections.emptyList(), pageNumber, true, false);
-        }
+    public SliceResponse<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember, Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
 
         Slice<Channel> channelSlice = channelRepository.findByKeyword(keyword, pageable);
 

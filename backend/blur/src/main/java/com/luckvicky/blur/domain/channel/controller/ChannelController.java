@@ -1,5 +1,7 @@
 package com.luckvicky.blur.domain.channel.controller;
 
+import static com.luckvicky.blur.global.constant.Number.CHANNEL_PAGE_SIZE;
+
 import com.luckvicky.blur.domain.channel.exception.KeywordLimitExceededException;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.TagDto;
@@ -28,6 +30,8 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -175,9 +179,10 @@ public class ChannelController {
             @NullableAuthUser ContextMember nullableMember,
             @RequestParam(defaultValue = "0") int pageNumber) {
 
+        Pageable pageable = PageRequest.of(pageNumber, CHANNEL_PAGE_SIZE);
 
 
-        SliceResponse<ChannelDto> response = channelService.searchChannelsByKeywords(keyword, nullableMember, pageNumber);
+        SliceResponse<ChannelDto> response = channelService.searchChannelsByKeyword(keyword, nullableMember, pageable);
 
         if (Objects.isNull(response) || response.getContent().isEmpty()) {
             return ResponseUtil.noContent(

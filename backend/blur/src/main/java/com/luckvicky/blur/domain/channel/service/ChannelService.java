@@ -7,16 +7,16 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.SliceResponse;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 
 public interface ChannelService {
     ChannelDto createChannel(ChannelCreateRequest request, UUID memberId);
     SliceResponse<ChannelDto> getAllChannels(ContextMember nullableMember, int pageNumber);
     List<ChannelDto> getFollowedChannels(UUID memberId);
     List<ChannelDto> getCreatedChannels(UUID memberId);
-    SliceResponse<ChannelDto> searchChannelsByKeywords(String keyword, ContextMember nullableMember, int pageNumber);
+    SliceResponse<ChannelDto> searchChannelsByKeyword(String keyword, ContextMember nullableMember, Pageable pageNumber);
     ChannelDto getChannelById(UUID channelId, ContextMember nullableMember);
     boolean createFollow(UUID memberId, UUID channelId);
     boolean deleteFollow(UUID memberId, UUID channelId);
-
     List<TagDto> searchTagsByKeyword(String keyword);
 }
