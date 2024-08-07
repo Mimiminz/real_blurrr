@@ -8,7 +8,7 @@ export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
     if (!response.data.data) {
       return [];
     }
-    return response.data.data.boards;
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;

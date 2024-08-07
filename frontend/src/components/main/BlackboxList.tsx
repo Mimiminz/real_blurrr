@@ -10,8 +10,8 @@ const HotArticleList = () => {
           key={index}
           title={article.title}
           totalVotes={article.totalVotes}
-          optionA={article.optionA}
-          optionB={article.optionB}
+          optionNumber={article.optionNumber}
+          options={article.options}
         />
       ))}
     </ArticleList>
