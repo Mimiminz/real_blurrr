@@ -9,7 +9,8 @@ import {
   PostInfo,
   Option,
   Video,
-  ChannelInfo
+  ChannelInfo,
+  BoastInfo
 } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
@@ -50,6 +51,7 @@ export const fetchChannels = async (): Promise<ChannelInfo> => {
     const response = await api.get('/v1/channels');
 
     return response.data.data;
+
   } catch (error) {
     console.error('Error fetching channels data:', error);
     throw error;
@@ -287,19 +289,21 @@ export const videoPresigned = async ( fileName: string ) => {
 }
 
 // 내 차 자랑 목록 데이터를 가져오는 함수
-export const fetchBoast = async (keyword: string, pageNumber: number, criteria: string): Promise<DashCamList> => {
+export const fetchBoast = async (keyword: string, page: number, criteria: string): Promise<BoastInfo> => {
   try {
-    const response = await api.get('/v1/channels/dashcams/boards', {
+    const response = await api.get('/v1/channels/mycar/boards', {
       params: {
         keyword,
-        pageNumber, 
+        page, 
         criteria,   
       },
     });
+
+    console.log(`mycar : ${response.data}`);
     
-    return response.data.data;
+    return response.data;
   } catch (error) {
-    console.error('Error fetching dash cam data:', error);
+    console.error('Error fetching boast data:', error);
     throw error;
   }
 };

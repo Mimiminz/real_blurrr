@@ -37,7 +37,8 @@ const PostTitle: React.FC<PostTitleProps> = ({
   const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedSort, setSelectedSort] = useState("게시글 정렬");
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null); // Initial value set to null
+  const [title, setTitle] = useState("");
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID as string;
@@ -60,6 +61,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
 
         const info: PostInfo = await fetchChannelInfo(actualChannelId);
         setIsFollowing(info.isFollowed);
+        setTitle(info.name);
 
         if (info && info.name) {
           setChannelName(info.name);
@@ -115,10 +117,10 @@ const PostTitle: React.FC<PostTitleProps> = ({
   return (
     <Container>
       <TitleSection>
-        <h1>{channelName || "Channel Title"}</h1> {/* 실제 채널 이름을 표시 */}
+        <h1>{title}</h1> {/* 실제 채널 이름을 표시 */}
         <SideSection>
-          {isLoggedIn && (
-            <SetButton isFollowing={isFollowing} onClick={handleFollowChannel}>
+          {isLoggedIn && isFollowing !== null && (
+            <SetButton $isFollowing={isFollowing} onClick={handleFollowChannel}>
               {isFollowing ? "언팔로우 -" : "팔로우 +"}
             </SetButton>
           )}
@@ -142,7 +144,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
             </DropdownMenu>
           )}
           {isLoggedIn && (
-            <CreateButton onClick={handleCreatePost}>글 작성 +</CreateButton>
+            <StyledButton onClick={handleCreatePost}>글 작성 +</StyledButton>
           )}
         </FilterSection>
       </TitleSection>
@@ -176,21 +178,39 @@ const TitleSection = styled.div`
   }
 `;
 
-const SetButton = styled.button<{ isFollowing: boolean }>`
+const SetButton = styled.button<{ $isFollowing: boolean }>`
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  background-color: ${({ isFollowing }) => (isFollowing ? "#f1f1f1" : "#333")};
-  color: ${({ isFollowing }) => (isFollowing ? "#333" : "#f1f1f1")};
+  background-color: ${({ $isFollowing }) => ($isFollowing ? "#f1f1f1" : "#333")};
+  color: ${({ $isFollowing }) => ($isFollowing ? "#333" : "#f1f1f1")};
   white-space: nowrap;
 `;
 
-const CreateButton = styled(SetButton)`
-  background-color: #f1f1f1;
+const StyledButton = styled.button`
+  padding: 6px;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  align-items: center;
+  height: 35px;
   color: #333;
+  white-space: nowrap;
   margin-left: auto;
+
+  &:hover {
+    color: #f97316;
+  }
+
+  @media (min-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+    height: 40px;
+  }
 `;
 
 const FilterSection = styled.div`

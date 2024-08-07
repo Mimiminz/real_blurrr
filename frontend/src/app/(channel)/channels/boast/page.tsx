@@ -5,11 +5,12 @@ import styled from 'styled-components';
 import { useRouter } from "next/navigation";
 import BoastCard from '@/components/channel/boast/BoastCard';
 import PostTitle from '@/components/channel/PostTitle';
-import { fetchPosts } from '@/api/channel';
-import { PostData } from '@/types/channelType';
+import { fetchBoast } from '@/api/channel';
+import { Boasts } from '@/types/channelType';
+import Loading from "@/components/common/UI/Loading";
 
 const Boast: React.FC = () => {
-   const [posts, setPosts] = useState<PostData[]>([]);
+   const [boasts, setBoasts] = useState<Boasts[]>([]);
    const [keyword, setKeyword] = useState('');
    const [sortCriteria, setSortCriteria] = useState('TIME');
    const router = useRouter();
@@ -40,8 +41,8 @@ const Boast: React.FC = () => {
    useEffect(() => {
       const loadData = async () => {
          try {
-            const data = await fetchPosts(boastId, keyword, 0, sortCriteria);
-            setPosts(data);
+            const data = await fetchBoast(keyword, 0, sortCriteria);
+            setBoasts(data.content);
          } catch (error) {
             console.error('Failed to load boast list data:', error);
          }
@@ -50,6 +51,10 @@ const Boast: React.FC = () => {
       loadData();
    }, [boastId, keyword, sortCriteria]);
 
+   if (!boasts?.length) {
+      return <Loading />;
+   }
+
    return (
       <>
          <PostTitle
@@ -57,18 +62,18 @@ const Boast: React.FC = () => {
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />
-         {posts.length === 0 ? (
+         {boasts.length === 0 ? (
             <CenteredMessage>
                게시글이 없습니다. 게시글을 작성해보세요!
             </CenteredMessage>
          ) : (
             <CardGrid>
-               {posts.map((post) => (
-                  <div key={post.board.id} onClick={() => handleCardClick(post.board.id)}>
+               {boasts.map((boast) => (
+                  <div key={boast.id} onClick={() => handleCardClick(boast.id)}>
                      <BoastCard
-                        thumbnail={post.board.content}
-                        viewer={post.board.viewCount}
-                        likes={post.board.likeCount}
+                        thumbnail={boast.thumbNail}
+                        viewer={boast.viewCnt}
+                        likes={boast.likeCnt}
                      />
                   </div>
                ))}
@@ -82,6 +87,22 @@ const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(1, minmax(200px, 1fr));
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
+  }
 `;
 
 const CenteredMessage = styled.div`
