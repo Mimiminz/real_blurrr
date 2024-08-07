@@ -5,40 +5,68 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from '@/store/authStore';
 import { followChannel, unfollowChannel, fetchChannelInfo } from '@/api/channel';
 import { useChannelStore } from '@/store/channelStore'; // Ensure you have the correct path
+import { Mentioned } from '@/types/channelType';
+
+interface PostInfo {
+  id: string;
+  name: string;
+  imgUrl: string;
+  info: string;
+  owner: string;
+  followCount: number;
+  tags: Mentioned[];
+}
 
 interface PostTitleProps {
+  channelType: string;
   onSearch: (keyword: string) => void;
   onSortChange: (sort: string) => void;
 }
 
-const PostTitle: React.FC<PostTitleProps> = ({ onSearch, onSortChange }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ channelType, onSearch, onSortChange }) => {
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedSort, setSelectedSort] = useState('게시글 정렬');
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const { setChannelName, setChannelId } = useChannelStore();
+  const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID as string;
 
-  const getChannelInfo = useCallback(async (channelId: string) => {
+  const { setChannelName, setChannelId, channelName, channelId } = useChannelStore();
+
+  const getChannelInfo = useCallback(async (channelType: string) => {
     try {
-      const info = await fetchChannelInfo(channelId);
-      setChannelName(info.name);
-      setChannelId(channelId);
+      let actualChannelId = '';
+      if (channelType === "dashcam") {
+        actualChannelId = dashcamId;
+      } else if (channelType === "boast") {
+        actualChannelId = boastId;
+      } else {
+        actualChannelId = channelType;
+      }
+      setChannelId(actualChannelId);
+
+      const info: PostInfo = await fetchChannelInfo(actualChannelId);
+      if (info && info.name) {
+        setChannelName(info.name);
+      } else {
+        throw new Error('Invalid channel info received');
+      }
     } catch (error) {
       console.error('Error fetching channel info:', error);
     }
-  }, [setChannelName, setChannelId]);
+  }, [dashcamId, boastId, setChannelName, setChannelId]);
 
   useEffect(() => {
-    const channelId = 'your-channel-id'; // Replace with the actual channelId you are working with
-    getChannelInfo(channelId);
+    getChannelInfo(channelType);
     setIsFollowing(isLoggedIn ? true : false);
-  }, [getChannelInfo, isLoggedIn]);
+  }, [channelType, getChannelInfo, isLoggedIn]);
 
   const handleCreatePost = () => {
-    const channel = 'your-channel'; // Replace with the actual channel
-    router.push(`/channels/${channel}/write`);
+    if (channelId) {
+      router.push(`/channels/${channelId}/write`);
+    }
   };
 
   const handleDropdownToggle = () => {
@@ -46,12 +74,12 @@ const PostTitle: React.FC<PostTitleProps> = ({ onSearch, onSortChange }) => {
   };
 
   const handleFollowChannel = async () => {
-    const channel = 'your-channel'; // Replace with the actual channel
+    if (!channelId) return;
     try {
       if (isFollowing) {
-        await unfollowChannel(channel);
+        await unfollowChannel(channelId);
       } else {
-        await followChannel(channel);
+        await followChannel(channelId);
       }
       setIsFollowing(!isFollowing); // 팔로우 상태 토글
     } catch (error) {
@@ -72,7 +100,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ onSearch, onSortChange }) => {
   return (
     <Container>
       <TitleSection>
-        <h1>Channel Title</h1> {/* Replace with the actual title */}
+        <h1>{channelName || 'Channel Title'}</h1> {/* 실제 채널 이름을 표시 */}
         <SideSection>
           {isLoggedIn && (
             <button className="setButton" onClick={handleFollowChannel}>

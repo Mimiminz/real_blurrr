@@ -36,6 +36,7 @@ const ChannelBoardPage: React.FC<PageProps> = ({ params }) => {
    return (
       <>
          <PostTitle
+            channelType={channelId}
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />
