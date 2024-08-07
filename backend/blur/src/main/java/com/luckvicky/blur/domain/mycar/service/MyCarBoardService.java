@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface MyCarBoardService {
-    Page<MyCarSimple> findMyCars(Pageable page);
+    Page<MyCarSimple> findMyCars(Pageable page, String keyword);
     Boolean createMyCarBoard(BoardCreateRequest request, UUID memberId);
     MyCarDetail findMyCarDetail(UUID boardId, ContextMember memberId);
 }

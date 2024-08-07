@@ -46,11 +46,11 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
     }
 
     @Override
-    public Page<MyCarSimple> findMyCars(Pageable page) {
+    public Page<MyCarSimple> findMyCars(Pageable page, String keyword) {
         Channel channel = channelRepository
                 .findByNameIs(BoardType.MYCAR.getName())
                 .orElseThrow(NotExistChannelException::new);
-        return myCarRepository.findAllByChannel(channel, page).map(MyCarSimple::of);
+        return myCarRepository.findAllByKeywordAndChannel(page, keyword, channel).map(MyCarSimple::of);
     }
 
     @Transactional
@@ -81,7 +81,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
         myCarBoard.increaseViewCount();
 
         boolean isLiked = false;
-        if(Objects.nonNull(nullableMember)){
+        if (Objects.nonNull(nullableMember)) {
             isLiked = isLike(nullableMember.getId(), myCarBoard);
         }
 
