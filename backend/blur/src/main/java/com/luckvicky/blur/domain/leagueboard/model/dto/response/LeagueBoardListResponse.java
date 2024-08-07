@@ -21,6 +21,9 @@ public record LeagueBoardListResponse(
         @Schema(description = "제목")
         String title,
 
+        @Schema(description = "조회수")
+        Long viewCount,
+
         @Schema(description = "좋아요 개수")
         Long likeCount,
 
@@ -37,6 +40,7 @@ public record LeagueBoardListResponse(
                 .id(board.getId())
                 .member(SimpleMemberDto.of(board.getMember()))
                 .title(board.getTitle())
+                .viewCount(board.getViewCount())
                 .likeCount(board.getLikeCount())
                 .commentCount(board.getCommentCount())
                 .createdAt(board.getCreatedAt())
