@@ -66,7 +66,7 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
       {showLogin && (
         <ModalOverlay onClick={closeLoginPopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm />
+            <LoginForm closeLoginModal={closeLoginPopup} />
             <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>

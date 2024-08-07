@@ -106,7 +106,8 @@ export const fetchLeagueDetail = async (
 ): Promise<BoardDetail> => {
   try {
     const response = await api.get(`/v1/leagues/boards/${boardId}`);
-    return response.data.data.boardDetail;
+    console.log(response.data);
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;
