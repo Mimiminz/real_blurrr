@@ -1,9 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FaRegHeart } from 'react-icons/fa6';
-import { LiaCommentDots } from 'react-icons/lia';
-import { MdAccessTime } from 'react-icons/md';
-import { Mentioned, Posts } from '@/types/channelType';
+import React from "react";
+import styled from "styled-components";
+import { FaRegHeart } from "react-icons/fa6";
+import { BiTimeFive } from "react-icons/bi";
+import { FaRegComment } from "react-icons/fa6";
+import { FaRegEye } from "react-icons/fa";
+import { Mentioned, Posts } from "@/types/channelType";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 interface ChannelBoardListItemProps {
   post: Posts;
@@ -11,24 +13,12 @@ interface ChannelBoardListItemProps {
   onClick: () => void;
 }
 
-function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemProps) { // post를 props로 사용
-
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      // 만약 작성 시간이 당일이면 시간으로 표시
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      // 당일이 아니면 날짜만 표시
-      return postDate.toISOString().split('T')[0].replace(/-/g, '.');
-    }
-  };
+function ChannelBoardListItem({
+  post,
+  mentions,
+  onClick,
+}: ChannelBoardListItemProps) {
+  // post를 props로 사용
 
   const mentionArray = mentions.map((mention, index) => (
     <Channel key={index}>{mention.name}</Channel>
@@ -37,9 +27,7 @@ function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemP
   return (
     <ArticleDetail onClick={onClick}>
       <ArticleInfo>
-        <ChannelContainer>
-          {mentionArray}
-        </ChannelContainer>
+        <ChannelContainer>{mentionArray}</ChannelContainer>
         <Title>{post.title}</Title>
         <UserContainer>
           <UserName>{post.member.nickname}</UserName>
@@ -49,21 +37,19 @@ function ChannelBoardListItem({ post, mentions, onClick }: ChannelBoardListItemP
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
-          <Icon>
-            <MdAccessTime />
-          </Icon>
+          <BiTimeFive />
           {formatPostDate(post.createdAt)}
         </LikeSection>
         <LikeSection>
-          <Icon>
-            <FaRegHeart />
-          </Icon>
+          <FaRegHeart />
           {post.likeCount}
         </LikeSection>
         <LikeSection>
-          <Icon>
-            <LiaCommentDots />
-          </Icon>
+          <FaRegComment />
+          {post.commentCount}
+        </LikeSection>
+        <LikeSection>
+          <FaRegEye />
           {post.commentCount}
         </LikeSection>
       </LikeAndComment>
@@ -108,7 +94,7 @@ const ChannelContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom:5px;
+  margin-bottom: 5px;
 `;
 
 const Channel = styled.p`
@@ -140,26 +126,25 @@ const Text = styled.p`
 const LikeAndComment = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: auto;
 `;
 
 const LikeSection = styled.span`
   display: flex;
   align-items: center;
-  margin-left: 20px;
-  margin-bottom: 8px;
-  margin-top: auto;
-  color: ${({ theme }) => theme.colors.subDiscription};
-  font-size: 14px;
-`;
-
-const Icon = styled.span`
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 16px;
-  vertical-align: middle;
+  margin-top: auto;
+
+  color: ${({ theme }) => theme.colors.subDiscription};
+  font-size: 13px;
+
+  svg {
+    margin-right: 4px;
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 export default ChannelBoardListItem;

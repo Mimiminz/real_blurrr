@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useRouter } from "next/navigation";
 import LeagueBoardListItem from "./LeagueBoardListItem";
 import { fetchLeagueBoardList } from "@/api/league";
@@ -64,12 +64,12 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
       </BoardList>
       {showPopup && <NoCarPopup closePopup={closePopup} />}
       {showLogin && (
-        <PopupContainer onClick={closeLoginPopup}>
-          <PopupContent onClick={(e) => e.stopPropagation()}>
-            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+        <ModalOverlay onClick={closeLoginPopup}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm />
-          </PopupContent>
-        </PopupContainer>
+            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+          </ModalContent>
+        </ModalOverlay>
       )}
       {showNoAuthority && <NoAuthority closePopup={closePopup} />}
     </>
@@ -80,33 +80,53 @@ const BoardList = styled.div`
   // 스타일 정의
 `;
 
-const PopupContainer = styled.div`
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+`;
+
+const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 `;
 
-const PopupContent = styled.div`
+const ModalContent = styled.div`
+  background: #ffffff;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  text-align: center;
-  max-width: 400px;
-  width: 60%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  @media (max-width: 768px) {
-    padding: 20px;
+  max-width: 50%;
+  width: 100%;
+  animation: ${fadeIn} 300ms ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 300ms ease-in-out;
   }
 `;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useRouter } from "next/navigation";
 import SearchBar from "@/components/common/UI/SearchBar";
 import LeagueBoardList from "@/components/league/board/LeagueBoardList";
@@ -87,23 +87,17 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        if (isLoggedIn && !isLoadUserLeagues) {
-          if (user?.isAuth) {
-            const userMentionTabs: LeagueList[] = userLeagueList.map(
-              (league) => ({
-                id: `mention${league.id}`,
-                name: league.name,
-                type: league.type,
-                peopleCount: league.peopleCount,
-              })
-            );
-            setMentionTabs(userMentionTabs);
-          } else {
-            const userTabs: LeagueList[] = [];
-            setUserLeagueList(userTabs);
-            const userMentionTabs: LeagueList[] = [];
-            setMentionTabs(userMentionTabs);
-          }
+        if (isLoggedIn && user?.isAuth && mentionTabs.length === 0) {
+          const userMentionTabs: LeagueList[] = userLeagueList.map(
+            (league) => ({
+              id: `mention${league.id}`,
+              name: league.name,
+              type: league.type,
+              peopleCount: league.peopleCount,
+            })
+          );
+          setMentionTabs(userMentionTabs);
+
           setIsLoadUserLeagues(true);
         }
 
@@ -123,6 +117,9 @@ export default function LeaguePage({
 
     loadLeagues();
   }, [
+    userLeagueList,
+    user,
+    mentionTabs,
     leagueName,
     criteria,
     isLoggedIn,
@@ -331,12 +328,12 @@ export default function LeaguePage({
 
       {showNoCarPopup && <NoCarPopup closePopup={closeNoCarPopup} />}
       {showLoginPopup && (
-        <PopupContainer onClick={closeLoginPopup}>
-          <PopupContent onClick={(e) => e.stopPropagation()}>
+        <ModalOverlay onClick={closeLoginPopup}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <LoginForm closeLoginModal={closeLoginPopup} />
             <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
-            <LoginForm />
-          </PopupContent>
-        </PopupContainer>
+          </ModalContent>
+        </ModalOverlay>
       )}
       {showNoAuthority && <NoAuthority closePopup={closeNoCarPopup} />}
     </Container>
@@ -355,7 +352,7 @@ const TopComponent = styled.div`
 const FilterSection = styled.div`
   display: flex;
   align-items: center;
-  margin: 30px 0 20px 0;
+  margin: 20px 0 20px 0;
   position: relative;
 
   .setPosition {
@@ -365,7 +362,7 @@ const FilterSection = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
   border: 1px solid #ddd;
   background-color: white;
@@ -373,6 +370,7 @@ const DropdownButton = styled.button`
   font-size: 14px;
   color: #969696;
   width: 110px;
+  height: 37px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -406,7 +404,7 @@ const StyledButton = styled.button`
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
   white-space: nowrap;
 
@@ -415,33 +413,53 @@ const StyledButton = styled.button`
   }
 `;
 
-const PopupContainer = styled.div`
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+`;
+
+const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 `;
 
-const PopupContent = styled.div`
+const ModalContent = styled.div`
+  background: #ffffff;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  text-align: center;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  @media (max-width: 768px) {
-    padding: 20px;
+  max-width: 50%;
+  width: 100%;
+  animation: ${fadeIn} 300ms ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 300ms ease-in-out;
   }
 `;
 
