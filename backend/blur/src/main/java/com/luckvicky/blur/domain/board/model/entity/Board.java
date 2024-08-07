@@ -20,7 +20,6 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -34,7 +33,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "boards")
 public class Board extends BaseEntity {
 
-    @Column(nullable = false, length = 35)
+    @Column(nullable = false, columnDefinition = "VARCHAR(105)")
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
