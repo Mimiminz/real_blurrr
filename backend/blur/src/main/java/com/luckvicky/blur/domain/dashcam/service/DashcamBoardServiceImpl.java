@@ -151,11 +151,11 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         List<DashcamBoardListDto> dashcamBoardListDtos = dashcamBoardMapper.toDashcamBoardListDtos(dashCamBoards);
 
         return PaginatedResponse.of(
-                dashcamBoardListDtos,
                 dashCamBoardPage.getNumber(),
                 dashCamBoardPage.getSize(),
                 dashCamBoardPage.getTotalElements(),
-                dashCamBoardPage.getTotalPages()
+                dashCamBoardPage.getTotalPages(),
+                dashcamBoardListDtos
         );
     }
 

@@ -29,32 +29,32 @@ public class PaginatedResponse<T> {
     private List<T> content;
 
     @Builder
-    private PaginatedResponse(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages) {
-        this.content = content;
+    private PaginatedResponse(int pageNumber, int pageSize, long totalElements, int totalPages, List<T> content) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
+        this.content = content;
     }
 
-    public static <T> PaginatedResponse<T> of(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPage) {
+    public static <T> PaginatedResponse<T> of(int pageNumber, int pageSize, long totalElements, int totalPage, List<T> content) {
         return PaginatedResponse.<T>builder()
-                .content(content)
                 .pageNumber(pageNumber)
                 .pageSize(pageSize)
                 .totalElements(totalElements)
                 .totalPages(totalPage)
+                .content(content)
                 .build();
-        
+
     }
 
     public static <T> PaginatedResponse<T> of(Page<T> page) {
         return PaginatedResponse.<T>builder()
-                .content(page.getContent())
                 .pageNumber(page.getNumber())
                 .pageSize(page.getSize())
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
+                .content(page.getContent())
                 .build();
 
     }
