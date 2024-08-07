@@ -34,6 +34,9 @@ public class DashcamBoardDetailDto {
     @Schema(description = "좋아요 개수")
     private Long  likeCount;
 
+    @Schema(description = "투표 제목")
+    private String voteTitle;
+
     @Schema(description = "게시물 투표 수")
     private Long voteCount;
 

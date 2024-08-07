@@ -25,6 +25,9 @@ public class DashCam extends Board {
     @JoinColumn(name = "channel_id", columnDefinition = "BINARY(16)")
     Channel channel;
 
+    @Column(length = 35)
+    private String voteTitle;
+
     @OneToMany(mappedBy = "dashCam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
 

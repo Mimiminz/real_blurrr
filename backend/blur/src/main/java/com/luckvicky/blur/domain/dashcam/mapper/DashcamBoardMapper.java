@@ -67,6 +67,7 @@ public class DashcamBoardMapper {
                 .likeCount(dashcam.getLikeCount())
                 .createdAt(dashcam.getCreatedAt())
                 .voteCount(dashcam.getTotalVoteCount())
+                .voteTitle(dashcam.getVoteTitle())
                 .videoUrl(videoUrls)
                 .content(dashcam.getContent())
                 .mentionedLeagues(mentionedLeagues)
