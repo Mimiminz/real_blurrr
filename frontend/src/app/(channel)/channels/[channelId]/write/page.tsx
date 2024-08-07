@@ -6,10 +6,6 @@ import styled from 'styled-components';
 import QuillEditor from '@/components/channel/board/QuillEditor';
 import { fetchPostWrite } from "@/api/channel";
 
-interface PageProps {
-  title: string;
-}
-
 export default function WritePage({
   params,
 }: {
@@ -31,7 +27,10 @@ export default function WritePage({
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !content.trim()) return; // 빈 제목이나 내용은 제출하지 않음
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 입력해주세요.");
+      return;
+    }
 
     try {
       await fetchPostWrite(channelId, title, content);
@@ -54,10 +53,12 @@ export default function WritePage({
         value={tags}
         onChange={handleTagsChange}
       />
-      <EditorContainer>
-        <QuillEditor content={content} setContent={setContent} />
-      </EditorContainer>
-      <SubmitButton onClick={handleSubmit}>작성</SubmitButton>
+      <EditorAndButtonContainer>
+        <EditorContainer>
+          <QuillEditor content={content} setContent={setContent} />
+        </EditorContainer>
+        <SubmitButton onClick={handleSubmit}>작성</SubmitButton>
+      </EditorAndButtonContainer>
     </Container>
   );
 };
@@ -85,25 +86,32 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-const EditorContainer = styled.div`
+const EditorAndButtonContainer = styled.div`
   width: 100%;
   max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const EditorContainer = styled.div`
+  width: 100%;
   margin-bottom: 16px;
   box-sizing: border-box;
 `;
 
 const SubmitButton = styled.button`
-  width: 10%;
-  max-width: 800px;
+  width: 100px;
   padding: 12px;
-  background-color: #ffa600; /* 녹색 배경으로 변경 */
-  color: white; /* 흰색 글씨 */
+  background-color: #ffa600;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 16px;
 
   &:hover {
-    background-color: #FF900D; /* hover 상태 */
+    background-color: #FF900D;
   }
 `;
