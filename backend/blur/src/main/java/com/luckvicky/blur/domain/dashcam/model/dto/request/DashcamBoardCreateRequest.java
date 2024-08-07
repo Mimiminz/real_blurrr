@@ -30,6 +30,12 @@ public record DashcamBoardCreateRequest(
         String content,
 
         @Schema(
+                description = "투표 제목",
+                example = "누가 더 잘못했을까요?"
+        )
+        String voteTitle,
+
+        @Schema(
                 description = "옵션 리스트 (최대 4개, 선택적)",
                 example = "[{\"optionOrder\": 1, \"content\": \"아반떼가 잘못했다.\"}, {\"optionOrder\": 2, \"content\": \"모닝이 잘못했다.\"}]"
         )
@@ -67,6 +73,7 @@ public record DashcamBoardCreateRequest(
                 .member(member)
                 .title(this.title)
                 .content(this.content)
+                .voteTitle(this.voteTitle)
                 .type(BoardType.DASHCAM)
                 .viewCount(0L)
                 .commentCount(0L)
