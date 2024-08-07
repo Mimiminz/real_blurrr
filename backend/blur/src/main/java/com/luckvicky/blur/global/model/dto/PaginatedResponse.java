@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -45,6 +46,17 @@ public class PaginatedResponse<T> {
                 .totalPages(totalPage)
                 .build();
         
+    }
+
+    public static <T> PaginatedResponse<T> of(Page<T> page) {
+        return PaginatedResponse.<T>builder()
+                .content(page.getContent())
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+
     }
 
 }
