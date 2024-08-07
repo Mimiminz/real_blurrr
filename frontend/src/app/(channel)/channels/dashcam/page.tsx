@@ -7,6 +7,7 @@ import DashCamCard from '@/components/channel/dashcam/DashCamCard';
 import PostTitle from '@/components/channel/PostTitle';
 import { fetchDashCams } from '@/api/channel';
 import { DashCamList } from '@/types/channelType';
+import Loading from "@/components/common/UI/Loading";
 
 const DashCamPage: React.FC = () => {
    const [dashCams, setDashCams] = useState<DashCamList>();
@@ -48,11 +49,14 @@ const DashCamPage: React.FC = () => {
       router.push(`/channels/dashcam/${dashCamDetailId}`);
    };
 
+   if (!dashCams?.content.length) {
+      return <Loading />;
+   }
+
    return (
       <Container>
          <PostTitle
-            channel="dashcam"
-            title="다양한 블랙박스 영상을 보고 직접 투표하자"
+            channelType="dashcam"
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />

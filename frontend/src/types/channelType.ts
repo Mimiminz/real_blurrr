@@ -96,6 +96,7 @@ export interface PostInfo {
   owner: string;
   followCount: number;
   tags: Mentioned[];
+  isFollowed: boolean;
 }
 
 export interface PostDetailData {

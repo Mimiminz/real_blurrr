@@ -53,8 +53,7 @@ const Boast: React.FC = () => {
    return (
       <>
          <PostTitle
-            channel="boast"
-            title="내 차를 자랑해보자"
+            channelType="boast"
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />
