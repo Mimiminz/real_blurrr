@@ -34,4 +34,10 @@ public class BoardDto {
     @Schema(description = "좋아요 개수")
     private Long  likeCount;
 
+    @Schema(description = "조회수")
+    private Long viewCount;
+
+    @Schema(description = "본문 미리보기")
+    private String simpleContent;
+
 }
