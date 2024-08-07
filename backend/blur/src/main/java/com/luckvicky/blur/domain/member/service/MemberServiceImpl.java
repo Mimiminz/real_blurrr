@@ -14,6 +14,7 @@ import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
+import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -153,7 +154,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberProfile modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException {
+    public MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException {
         Member member = memberRepository.getOrThrow(memberId);
         member.updateNickname(updateInfo.nickname());
 
@@ -163,18 +164,16 @@ public class MemberServiceImpl implements MemberService {
         }
 
         //이미지 변경 시
-        Map<String, String> imgUrl = new HashMap<>();
+        Map<String, String> imgUrl;
+        String profileUrl = member.getProfileUrl();
+
         if (updateInfo.imgChange()) {
             imgUrl = s3ImageService.getPresignedUrl("images", updateInfo.fileName());
-            member.updateImg(imgUrl.get("fullUrl"));
-        }
-
-        MemberProfile reuslt = MemberProfile.of(member);
-        if (updateInfo.imgChange()) {
+            profileUrl = imgUrl.get("fullUrl");
             member.updateImg(imgUrl.get("noQueryParamUrl"));
         }
 
-        return reuslt;
+        return new MemberProfileUpdateResp(profileUrl, member.getNickname());
     }
 
     @Override

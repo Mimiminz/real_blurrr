@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 import Breadcrumb from "@/components/common/UI/BreadCrumb";
 import LeagueDetailTitle from "@/components/league/detail/LeagueDetailTitle";
 
@@ -161,7 +162,7 @@ export default function BoardDetailPage({
       return (
         <ModalOverlay onClick={closePopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm />
+            <LoginForm closeLoginModal={closePopup} />
             <CloseIcon onClick={closePopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
@@ -205,7 +206,9 @@ export default function BoardDetailPage({
             )}
           </HeartButton>
           {user?.nickname === boardDetail.member.nickname && (
-            <WriterButton onClick={handleDelete}>삭제</WriterButton>
+            <WriterButton onClick={handleDelete}>
+              <FaRegTrashAlt />
+            </WriterButton>
           )}
         </WriterContainer>
         <CommentList
@@ -221,7 +224,7 @@ export default function BoardDetailPage({
       {showLogin && (
         <ModalOverlay onClick={closePopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm />
+            <LoginForm closeLoginModal={closePopup} />
             <CloseIcon onClick={closePopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
@@ -259,7 +262,7 @@ const WriterContainer = styled.div`
 
 const WriterButton = styled.p`
   padding: 0px;
-  font-size: 14px;
+  font-size: 17px;
   background-color: white;
   margin: 5px 10px 20px 0;
   cursor: pointer;

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
 import { BoardDetailProps } from "@/types/leagueTypes";
 import { formatPostDate } from "@/utils/formatPostDate";
+import { BiTimeFive } from "react-icons/bi";
 
 const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   title,
@@ -18,8 +19,14 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
       <Title>{title}</Title>
       <InfoRow>
         <Infoleft>
-          <Date>{formatPostDate(createdAt)}</Date>
+          <Date>
+          </Date>
           <Icons>
+            <BiTimeFive />
+            <Views> 
+
+            {formatPostDate(createdAt)}
+            </Views>
             <FaEye />
             <Views>{viewCount}</Views>
             <FaHeart />
@@ -31,7 +38,7 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
             <Avatar src={authorprofileUrl} alt={`${username}'s avatar`} />
             <Username>{username}</Username>
           </Author>
-          <CarInfo>{authorCarTitle}</CarInfo>
+          <CarInfo>GV70</CarInfo>
         </AuthorInfo>
       </InfoRow>
     </Container>
@@ -82,17 +89,18 @@ const AuthorInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: end;
-  color: #888;
+  color: #333;
 `;
 
 const Author = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  /* margin-bottom: 4px; */
 `;
 
 const CarInfo = styled.span`
   color: #888;
+  font-size: 12px;
 `;
 
 const Infoleft = styled.div`
@@ -109,4 +117,5 @@ const Avatar = styled.img`
 
 const Username = styled.span`
   font-weight: bold;
+  font-size: 14px;
 `;
