@@ -32,7 +32,10 @@ function BlackboxListItem({
   const sortedOptions = [...optionPercentage].sort(
     (a, b) => b.percentage! - a.percentage!
   );
-  const colors = ["#FF900D", "#ecb277", "#e0e0e0"];
+  const colors =
+    optionNumber === 2
+      ? ["#FF900D", "#e5e7eb"]
+      : ["#FF900D", "#f5d8b2", "#e5e7eb"];
 
   // 원래 순서대로 색상을 매핑합니다.
   const coloredOptions = optionPercentage.map((option) => {
@@ -108,7 +111,7 @@ const Bar = styled.div<{ width?: number; color?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.color === "#e0e0e0" ? "#000" : "#fff")};
+  color: ${(props) => (props.color !== "#FF900D" ? "#000" : "#fff")};
   font-size: 12px;
   font-weight: bold;
   text-align: center;
