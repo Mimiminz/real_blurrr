@@ -62,13 +62,6 @@ export interface DashCamDetail {
    liked: boolean;
  }
 
- export interface Option {
-  id: string;
-  optionOrder: number;
-  content: string;
-  voteCount: number;
- }
- 
 export interface Channels {
    id: string;
    name: string;
@@ -137,3 +130,11 @@ export interface Vote {
   selectedOptionId: string;
   options: Option[];
 }
+
+export interface Option {
+  id: string;
+  optionOrder: number;
+  content: string;
+  voteCount: number;
+ }
+ 

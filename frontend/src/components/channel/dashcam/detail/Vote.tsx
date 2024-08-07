@@ -1,38 +1,50 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { fetchVote } from '@/api/channel';
+import { fetchVote, addVote } from '@/api/channel';
 import { Option } from '@/types/channelType';
+import { useAuthStore } from "@/store/authStore";
+import LoginForm from "@/components/login/LoginForm";
 
 interface VoteProps {
   voteId: string;
 }
 
 interface PollOption {
-  id: number;
+  orderId: number;
   text: string;
   votes: number;
   percentage?: number;
+  id: string;
 }
 
 const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
   const [voteData, setVoteData] = useState<PollOption[]>([]);
   const [question, setQuestion] = useState<string>('');
   const [hasVoted, setHasVoted] = useState<boolean>(false);
-  const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+
+  const { isLoggedIn } = useAuthStore();
 
   const loadVoteData = useCallback(async () => {
     try {
       const data = await fetchVote(voteId); // API 호출
 
+      const totalVotes = data.options.reduce((sum: number, option: Option) => sum + option.voteCount, 0);
       const transformedData: PollOption[] = data.options.map((option: Option) => ({
-        id: option.optionOrder,
+        orderId: option.optionOrder,
         text: option.content,
         votes: option.voteCount,
+        percentage: totalVotes ? Math.round((option.voteCount / totalVotes) * 100) : 0,
+        id: option.id
       }));
 
       setVoteData(transformedData);
       setQuestion('누가누가 잘못했을까요'); // 질문을 여기에 설정하세요
       setHasVoted(data.hasVoted);
+      setSelectedOptionId(data.selectedOptionId);
     } catch (error) {
       console.error('Failed to load vote data:', error);
     }
@@ -42,10 +54,15 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
     loadVoteData();
   }, [loadVoteData]);
 
-  const handleVote = (optionId: number) => {
+  const handleVote = async (orderId: number, optionId: string) => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
+
     if (!hasVoted) {
       const updatedData = voteData.map(option =>
-        option.id === optionId ? { ...option, votes: option.votes + 1 } : option
+        option.orderId === orderId ? { ...option, votes: option.votes + 1 } : option
       );
 
       const totalVotes = updatedData.reduce((sum, option) => sum + option.votes, 0);
@@ -58,44 +75,84 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
       setHasVoted(true);
       setSelectedOptionId(optionId);
 
-      // 여기에 실제 API 호출을 추가하여 투표 결과를 서버에 전송하세요.
-      console.log(`Voted for option ${optionId}`);
+      try {
+        const voteSuccess = await addVote(voteId, optionId);
+        if (voteSuccess) {
+          console.log(`Successfully voted for option ${orderId}`);
+        } else {
+          console.error('Failed to register vote');
+        }
+      } catch (error) {
+        console.error('Error while voting:', error);
+      }
     }
   };
 
   return (
-    <Container>
-      <Question>{question}</Question>
-      <Options>
-        {voteData.map((option) => (
-          <OptionItem
-            key={option.id}
-            onClick={() => handleVote(option.id)}
-            $isSelected={option.id === selectedOptionId}
-            $hasVoted={hasVoted}
-            percentage={option.percentage || 0}
-          >
-            <OptionText>{option.text}</OptionText>
-            {hasVoted && (
-              <VoteInfo>
-                <VotePercentage>{option.percentage}%</VotePercentage>
-              </VoteInfo>
-            )}
-          </OptionItem>
-        ))}
-      </Options>
-    </Container>
+    <>
+      <Container>
+        <Question>{question}</Question>
+        <Options>
+          {voteData.map((option) => (
+            <OptionItem
+              key={option.orderId}
+              onClick={() => handleVote(option.orderId, option.id)}
+              data-isselected={option.id === selectedOptionId}
+              data-hasvoted={hasVoted}
+              percentage={option.percentage || 0}
+            >
+              <OptionText>{option.text}</OptionText>
+              {hasVoted && (
+                <VoteInfo>
+                  <VotePercentage>{option.percentage}%</VotePercentage>
+                </VoteInfo>
+              )}
+            </OptionItem>
+          ))}
+        </Options>
+      </Container>
+      {isLoginModalOpen && (
+        <ModalOverlay onClick={closeLoginModal}>
+          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+            <LoginForm />
+            <CloseButton onClick={closeLoginModal}>×</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+    </>
   );
 };
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+`;
+
 const Container = styled.div`
-  padding: 20px;
+  padding: 10px 20px 20px;
   background-color: #f8f8f8;
   border-radius: 10px;
 `;
 
 const Question = styled.h2`
-  margin-bottom: 20px;
+  font-size: 21px;
   color: #333;
 `;
 
@@ -113,19 +170,17 @@ const grow = (percentage: number) => keyframes`
   }
 `;
 
-const OptionItem = styled.div.attrs<{ $isSelected: boolean; $hasVoted: boolean; percentage: number }>(
-  ({ $isSelected, $hasVoted, percentage }) => ({
-    isSelected: $isSelected,
-    hasVoted: $hasVoted,
+const OptionItem = styled.div.attrs<{ percentage: number }>(
+  ({ percentage }) => ({
     percentage,
   })
-) <{ $isSelected: boolean; $hasVoted: boolean; percentage: number }>`
+) <{ percentage: number }>`
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: #fff;
   color: #333;
-  cursor: ${(props) => (props.$hasVoted ? 'default' : 'pointer')};
+  cursor: ${(props) => (props['data-hasvoted'] ? 'default' : 'pointer')};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -133,9 +188,6 @@ const OptionItem = styled.div.attrs<{ $isSelected: boolean; $hasVoted: boolean; 
   overflow: hidden;
   position: relative;
 
-  /* &:hover {
-    background-color: ${(props) => (props.$hasVoted ? (props.$isSelected ? '#00B87B' : '#fff') : '#f0f0f0')};
-  } */
 
   &::before {
     content: '';
@@ -143,9 +195,9 @@ const OptionItem = styled.div.attrs<{ $isSelected: boolean; $hasVoted: boolean; 
     top: 0;
     left: 0;
     height: 100%;
-    background-color: ${(props) => (props.$isSelected ? '#ff8e5a' : '#ddd')};
-    width: ${(props) => (props.$hasVoted ? props.percentage : 0)}%;
-    animation: ${(props) => (props.$hasVoted ? grow(props.percentage) : 'none')} 1s forwards;
+    background-color: ${(props) => (props['data-isselected'] ? '#ff8e5a' : '#ddd')};
+    width: ${(props) => (props['data-hasvoted'] ? `${props.percentage}%` : 0)};
+    animation: ${(props) => (props['data-hasvoted'] ? grow(props.percentage) : 'none')} 1s forwards;
   }
 `;
 
@@ -161,14 +213,47 @@ const VoteInfo = styled.div`
   z-index: 1;
 `;
 
-const VoteCount = styled.span`
-  font-size: 0.9em;
-  color: #666;
-`;
-
 const VotePercentage = styled.span`
   font-size: 0.8em;
   color: #999;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+`;
+
+const ModalContent = styled.div`
+  background: #ffffff;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  max-width: 50%;
+  width: 100%;
+  animation: ${fadeIn} 300ms ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 300ms ease-in-out;
+  }
 `;
 
 export default PollComponent;

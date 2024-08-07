@@ -230,3 +230,22 @@ export const fetchVote = async ( boardId: string): Promise<Vote> => {
     throw error;
   }
 }
+
+// 블랙박스 투표
+export const addVote = async ( boardId: string, optionId: string)  => {
+  try {
+    const response = await api.post(`/v1/channels/board/${boardId}/votes/${optionId}`);
+    if(response.data.state == 201){
+      console.log(`vote success`);
+      return true;
+    }else if(response.data.state == 400){
+      console.log(`이미 투표함`);
+      return true;
+    }
+    console.log(`vote fail`);
+    return false;
+  } catch (error) {
+    console.error('Error fetching vote:', error);
+    throw error;
+  }
+}

@@ -1,29 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import SearchBar from '@/components/common/UI/SearchBar';
 import { useRouter } from "next/navigation";
 import { useAuthStore } from '@/store/authStore';
-import { followChannel, unfollowChannel } from '@/api/channel';
+import { followChannel, unfollowChannel, fetchChannelInfo } from '@/api/channel';
+import { useChannelStore } from '@/store/channelStore'; // Ensure you have the correct path
 
 interface PostTitleProps {
-  channel: string;
-  title: string;
   onSearch: (keyword: string) => void;
   onSortChange: (sort: string) => void;
 }
 
-const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortChange }) => {
+const PostTitle: React.FC<PostTitleProps> = ({ onSearch, onSortChange }) => {
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedSort, setSelectedSort] = useState('게시글 정렬');
   const [isFollowing, setIsFollowing] = useState(false);
 
+  const { setChannelName, setChannelId } = useChannelStore();
+
+  const getChannelInfo = useCallback(async (channelId: string) => {
+    try {
+      const info = await fetchChannelInfo(channelId);
+      setChannelName(info.name);
+      setChannelId(channelId);
+    } catch (error) {
+      console.error('Error fetching channel info:', error);
+    }
+  }, [setChannelName, setChannelId]);
+
   useEffect(() => {
+    const channelId = 'your-channel-id'; // Replace with the actual channelId you are working with
+    getChannelInfo(channelId);
     setIsFollowing(isLoggedIn ? true : false);
-  }, []);
+  }, [getChannelInfo, isLoggedIn]);
 
   const handleCreatePost = () => {
+    const channel = 'your-channel'; // Replace with the actual channel
     router.push(`/channels/${channel}/write`);
   };
 
@@ -32,6 +46,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortC
   };
 
   const handleFollowChannel = async () => {
+    const channel = 'your-channel'; // Replace with the actual channel
     try {
       if (isFollowing) {
         await unfollowChannel(channel);
@@ -57,7 +72,7 @@ const PostTitle: React.FC<PostTitleProps> = ({ channel, title, onSearch, onSortC
   return (
     <Container>
       <TitleSection>
-        <h1>{title}</h1>
+        <h1>Channel Title</h1> {/* Replace with the actual title */}
         <SideSection>
           {isLoggedIn && (
             <button className="setButton" onClick={handleFollowChannel}>
@@ -186,8 +201,6 @@ const SideSection = styled.div`
   align-items: center;
   gap: 10px;
   margin-top: 10px;
-
-  
 `;
 
 export default PostTitle;
