@@ -8,6 +8,8 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueMentionListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
 import com.luckvicky.blur.domain.leagueboard.service.ViewCounterService;
@@ -24,6 +26,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -96,7 +99,7 @@ public class LeagueBoardController {
             ),
     })
     @GetMapping("/{leagueId}/boards")
-    public ResponseEntity<Result<PaginatedResponse<LeagueBoardDto>>> getLeagueBoards(
+    public ResponseEntity<Result<PaginatedResponse<LeagueBoardListResponse>>> getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @NullableAuthUser ContextMember contextMember,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
@@ -104,7 +107,7 @@ public class LeagueBoardController {
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        PaginatedResponse<LeagueBoardDto> response = leagueBoardService.getLeagueBoards(
+        PaginatedResponse<LeagueBoardListResponse> response = leagueBoardService.getLeagueBoards(
                 contextMember,
                 leagueId,
                 leagueType,
@@ -136,14 +139,14 @@ public class LeagueBoardController {
     })
     @CertificationMember
     @GetMapping("/{leagueId}/mentions")
-    public ResponseEntity<Result<PaginatedResponse<ChannelBoardDto>>> getModelLeagueBoards(
+    public ResponseEntity<Result<PaginatedResponse<LeagueMentionListResponse>>> getModelLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        PaginatedResponse<ChannelBoardDto> response = leagueBoardService.getMentionLeagueBoards(
+        PaginatedResponse<LeagueMentionListResponse> response = leagueBoardService.getMentionLeagueBoards(
                 leagueId,
                 member.getId(),
                 pageNumber,
@@ -168,8 +171,7 @@ public class LeagueBoardController {
     ) {
 
         LeagueBoardDetailResponse response = leagueBoardService.getLeagueBoardDetail(member.getId(), boardId);
-
-        viewCounterService.increase(response.boardDetail().getId());
+        viewCounterService.increase(response.id());
 
         return ResponseUtil.ok(
                 Result.of(response)

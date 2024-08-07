@@ -31,7 +31,6 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @Query("SELECT b "
             + "FROM Board b "
             + "LEFT JOIN FETCH b.comments c "
-//            + "LEFT JOIN FETCH b.member m "
             + "WHERE b.id = :id ")
     Optional<Board> findByIdWithCommentAndReply(@Param("id") UUID id);
 
@@ -40,11 +39,10 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
 
     @Query("SELECT b "
             + "FROM Board b "
-            + "INNER JOIN Like l ON b = l.board "
-            + "INNER JOIN Member m ON m = :member "
+            + "INNER JOIN Like l ON b = l.board AND l.member = :member "
             + "WHERE b.status = :status"
     )
-    List<Board> findLikeBoardListByMember(
+    Page<Board> findLikeBoardListByMember(
             @Param("member") Member member,
             @Param("status") ActivateStatus status,
             Pageable pageable

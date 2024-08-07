@@ -23,6 +23,7 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreate
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueMentionListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.MentionLeagueListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
@@ -36,6 +37,7 @@ import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,8 +66,9 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private final LeagueMemberRepository leagueMemberRepository;
 
     @Override
-    public LeagueBoardCreateResponse createLeagueBoard(UUID memberId, UUID leagueId, String leagueType,
-                                                       LeagueBoardCreateRequest request) {
+    public LeagueBoardCreateResponse createLeagueBoard(
+            UUID memberId, UUID leagueId, String leagueType, LeagueBoardCreateRequest request
+    ) {
 
         Member member = memberRepository.getOrThrow(memberId);
         League league = leagueRepository.getOrThrow(leagueId);
@@ -83,7 +86,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     }
 
     @Override
-    public PaginatedResponse<LeagueBoardDto> getLeagueBoards(
+    public PaginatedResponse<LeagueBoardListResponse> getLeagueBoards(
             ContextMember contextMember, UUID leagueId, String leagueType, int pageNumber, String criteria
     ) {
 
@@ -110,7 +113,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 paginatedResult.getTotalElements(),
                 paginatedResult.getTotalPages(),
                 paginatedResult.getContent().stream()
-                        .map(LeagueBoardDto::of)
+                        .map(LeagueBoardListResponse::of)
                         .toList()
         );
 
@@ -132,7 +135,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public PaginatedResponse<ChannelBoardDto> getMentionLeagueBoards(
+    public PaginatedResponse<LeagueMentionListResponse> getMentionLeagueBoards(
             UUID leagueId, UUID memberId, int pageNumber, String criteria
     ) {
 
@@ -157,7 +160,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 paginatedResult.getTotalElements(),
                 paginatedResult.getTotalPages(),
                 paginatedResult.stream()
-                        .map(board -> mapper.map(board, ChannelBoardDto.class))
+                        .map(LeagueMentionListResponse::of)
                         .collect(Collectors.toList())
         );
 
