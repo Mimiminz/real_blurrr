@@ -45,7 +45,6 @@ export default function UserTab({
 const TabList = styled.div`
   display: flex;
   align-items: center;
-  padding-bottom: 5px;
 `;
 
 const TabButton = styled(Link)<TabButtonProps>`
@@ -53,12 +52,13 @@ const TabButton = styled(Link)<TabButtonProps>`
   justify-content: center;
   align-items: center;
   padding: 10px 5px;
-  min-width: 100px;
+  min-width: 80px;
+  max-height: 40px;
   cursor: pointer;
   background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
   border: none;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
   color: ${(props) => (props.$isActive ? "#F97316" : "#333")};
   text-decoration: none;
