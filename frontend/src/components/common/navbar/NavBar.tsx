@@ -269,9 +269,9 @@ const MenuItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  margin: 0 20px;
-  font-weight: 400;
+  font-size: 15px;
+  margin: 0 10px;
+  font-weight: 700;
   text-align: left;
   a {
     color: black;
@@ -284,11 +284,11 @@ const Image = styled.img`
   height: auto;
 
   @media (min-width: 480px) {
-    width: 60px;
+    width: 80px;
   }
 
   @media (min-width: 768px) {
-    width: 60px;
+    width: 80px;
   }
 
   @media (min-width: 1024px) {
@@ -296,7 +296,7 @@ const Image = styled.img`
   }
 
   @media (min-width: 1440px) {
-    width: 100px;
+    width: 80px;
   }
 `;
 
