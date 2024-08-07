@@ -65,6 +65,7 @@ const NavBar = () => {
     setIsLoadUserLeagues(false);
     alert("로그아웃되었습니다.");
     router.push("/");
+    setMenuOpen(false);
   };
 
   return (
@@ -73,22 +74,26 @@ const NavBar = () => {
       <Image
         src="/images/logo/logo.png"
         alt="로고"
-        onClick={() => router.push("/")}
+        onClick={() => {
+          router.push("/");
+          setMenuOpen(false);
+        }}
+        
       />
       <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </MenuToggleBtn>
       <Menu className={menuOpen ? "open" : ""}>
-        <MenuItem onClick={() => router.push("/")}>홈</MenuItem>
-        <MenuItem onClick={() => router.push(`/league`)}>리그</MenuItem>
-        <MenuItem onClick={() => router.push("/channels")}>채널</MenuItem>
+        <MenuItem onClick={() => {router.push("/"); setMenuOpen(false);}}>홈</MenuItem>
+        <MenuItem onClick={() => {router.push(`/league`); setMenuOpen(false); }}>리그</MenuItem>
+        <MenuItem onClick={() => {router.push("/channels"); setMenuOpen(false);}}>채널</MenuItem>
 
         {clientIsLoggedIn === null ? (
           <Spinner />
         ) : clientIsLoggedIn ? (
           <>
-            <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem>
-            <MenuItem><CgProfile onClick={() => router.push("/mypage")} /></MenuItem>
+            {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
+            <MenuItem><CgProfile onClick={() => {router.push("/mypage"); setMenuOpen(false);}} /></MenuItem>
             <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
     
           </>

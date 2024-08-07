@@ -11,6 +11,7 @@ export interface Member {
     createdAt: string;
     commentCount: number;
     likeCount: number;
+    totalPages: number;
   }
   
   export interface MyHeartListResponse {
