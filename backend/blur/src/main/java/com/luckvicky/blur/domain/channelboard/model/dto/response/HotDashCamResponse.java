@@ -7,7 +7,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(name = "인기 블랙박스 게시물 정보")
-public record HotDashCamListResponse(
+public record HotDashCamResponse(
 
         @Schema(description = "고유 식별값")
         UUID id,
@@ -20,8 +20,8 @@ public record HotDashCamListResponse(
 
 ) {
 
-        public static HotDashCamListResponse of(DashCam dashCam) {
-                return HotDashCamListResponse.builder()
+        public static HotDashCamResponse of(DashCam dashCam) {
+                return HotDashCamResponse.builder()
                         .id(dashCam.getId())
                         .title(dashCam.getTitle())
                         .voteCount(dashCam.getTotalVoteCount())

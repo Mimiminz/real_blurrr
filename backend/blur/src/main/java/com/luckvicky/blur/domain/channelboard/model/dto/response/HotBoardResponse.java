@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(name = "핫 게시글 목록 조회 응답")
-public record HotBoardListResponse(
+public record HotBoardResponse(
 
         @Schema(description = "고유 식별값")
         UUID id,
@@ -27,8 +27,8 @@ public record HotBoardListResponse(
 
 ) {
 
-    public static HotBoardListResponse of(ChannelBoard board) {
-        return HotBoardListResponse.builder()
+    public static HotBoardResponse of(ChannelBoard board) {
+        return HotBoardResponse.builder()
                 .id(board.getId())
                 .channel(SimpleChannelDto.of(board.getChannel()))
                 .title(board.getTitle())
