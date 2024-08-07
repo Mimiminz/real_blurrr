@@ -107,7 +107,7 @@ const NavBar = () => {
     {isLoginModalOpen && (
       <ModalOverlay onClick={closeLoginModal}>
         <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
-          <LoginForm />
+          <LoginForm closeLoginModal={closeLoginModal} />
           <CloseButton onClick={closeLoginModal}>×</CloseButton>
         </ModalContent>
       </ModalOverlay>

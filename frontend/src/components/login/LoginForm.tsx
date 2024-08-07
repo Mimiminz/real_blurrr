@@ -17,7 +17,13 @@ interface LoginFormValues {
   rememberMe: boolean;
 }
 
-const LoginForm = () => {
+interface LoginFormProps {
+  closeLoginModal: () => void;
+  
+}
+
+
+const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
   const router = useRouter();
   const { setAccessToken, setRefreshToken, setUser } = useAuthStore(
     (state) => ({
@@ -62,6 +68,7 @@ const LoginForm = () => {
         setUserLeagueList(userTabs);
       }
 
+      closeLoginModal();
       router.push("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
