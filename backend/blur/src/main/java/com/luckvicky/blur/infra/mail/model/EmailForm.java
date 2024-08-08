@@ -11,7 +11,17 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class EmailForm {
     private String to;
-    protected String subject;
-    protected String content;
-    protected boolean isHtml;
+    private String subject;
+    private String content;
+    private boolean isHtml;
+
+    public EmailForm() {
+    }
+
+    public EmailForm(String to, String subject, String content, boolean isHtml) {
+        this.to = to;
+        this.subject = subject;
+        this.content = content;
+        this.isHtml = isHtml;
+    }
 }

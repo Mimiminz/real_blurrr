@@ -5,19 +5,20 @@ import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.util.ResourceUtil;
+import com.luckvicky.blur.infra.mail.model.EmailForm;
 import com.luckvicky.blur.infra.mail.service.MailService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
-    private final AuthCodeFacade authCodeFacade;
+    private final AuthCodeService authCodeService;
     private final ResourceUtil resourceUtil;
     private final MailService mailService;
 
 
-    public AuthServiceImpl(AuthCodeFacade authCodeFacade, ResourceUtil resourceUtil, MailService mailService) {
-        this.authCodeFacade = authCodeFacade;
+    public AuthServiceImpl(AuthCodeService authCodeService, ResourceUtil resourceUtil, MailService mailService) {
+        this.authCodeService = authCodeService;
         this.resourceUtil = resourceUtil;
         this.mailService = mailService;
     }
@@ -34,7 +35,11 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public boolean createEmailAuthCode(String email, AuthCodeType authCodeType) {
-        String code = authCodeFacade.createAuthCode(email, authCodeType);
+        String code = authCodeService.createAuthCode(email, authCodeType);
+
+        EmailForm emailForm = authCodeService.getAuthEmailForm(email, code, authCodeType);
+
+        mailService.sendEmail(emailForm.getTo(), emailForm.getSubject(), emailForm.getContent(), emailForm.isHtml());
         return true;
     }
 

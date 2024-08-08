@@ -11,6 +11,10 @@ import com.luckvicky.blur.domain.member.strategy.AuthCodeStrategy;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
 import com.luckvicky.blur.domain.member.strategy.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.strategy.SingInAuthStrategy;
+import com.luckvicky.blur.global.util.ResourceUtil;
+import com.luckvicky.blur.infra.mail.model.EmailFormType;
+import com.luckvicky.blur.infra.mail.service.AuthCodeEmailFormFactory;
+import com.luckvicky.blur.infra.mail.service.EmailFormFactory;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +25,16 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class CustomFactoryConfig {
+
+    @Bean
+    public Map<EmailFormType, EmailFormFactory> emailFormFactoryMap(
+            AuthCodeEmailFormFactory authCodeEmailFormFactory
+    ) {
+        HashMap<EmailFormType, EmailFormFactory> emailFormFactoryMap = new HashMap<>();
+        emailFormFactoryMap.put(EmailFormType.SIGNIN_AUTH, authCodeEmailFormFactory);
+        emailFormFactoryMap.put(EmailFormType.PASSWORD_CHANGE_AUTH, authCodeEmailFormFactory);
+        return emailFormFactoryMap;
+    }
 
     @Bean
     public Map<BoardType, BoardFactory> boardFactoryMap() {
@@ -59,6 +73,11 @@ public class CustomFactoryConfig {
             MemberRepository memberRepository
     ) {
         return new PasswordAuthStrategy(redisAuthCodeAdapter, memberRepository);
+    }
+
+    @Bean
+    public AuthCodeEmailFormFactory authCodeEmailFormFactory(ResourceUtil resourceUtil) {
+        return new AuthCodeEmailFormFactory(resourceUtil);
     }
 
     @Bean
