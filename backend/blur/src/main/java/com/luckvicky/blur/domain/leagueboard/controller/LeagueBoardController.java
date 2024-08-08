@@ -2,13 +2,12 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 
-import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDto;
+import com.luckvicky.blur.domain.board.model.dto.response.LikeBoardListResponse;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
-import com.luckvicky.blur.domain.leagueboard.model.dto.LeagueBoardDto;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardDetailResponse;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardListResponse;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueMentionListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
@@ -26,7 +25,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -99,7 +97,7 @@ public class LeagueBoardController {
             ),
     })
     @GetMapping("/{leagueId}/boards")
-    public ResponseEntity<Result<PaginatedResponse<LeagueBoardListResponse>>> getLeagueBoards(
+    public ResponseEntity<Result<PaginatedResponse<LeagueBoardResponse>>> getLeagueBoards(
             @PathVariable(name = "leagueId") UUID leagueId,
             @NullableAuthUser ContextMember contextMember,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
@@ -107,7 +105,7 @@ public class LeagueBoardController {
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        PaginatedResponse<LeagueBoardListResponse> response = leagueBoardService.getLeagueBoards(
+        PaginatedResponse<LeagueBoardResponse> response = leagueBoardService.getLeagueBoards(
                 contextMember,
                 leagueId,
                 leagueType,
@@ -201,58 +199,5 @@ public class LeagueBoardController {
         return ResponseUtil.ok(Result.of(response));
 
     }
-
-    @Operation(summary = "리그 게시글 검색 API", description = "리그에 대한 게시물에 대하여 검색한다.")
-    @Parameters({
-            @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
-            @Parameter(
-                    name = "leagueType", description = "리그 유형",
-                    examples = {
-                            @ExampleObject(name = "브랜드", value = "BRAND"),
-                            @ExampleObject(name = "모델", value = "MODEL")
-                    }
-            ),
-            @Parameter(
-                    name = "condition",
-                    description = "검색 조건",
-                    examples = {
-                            @ExampleObject(name = "제목", value = "TITLE"),
-                            @ExampleObject(name = "작성자", value = "NICKNAME"),
-                    }
-            ),
-            @Parameter(name = "pageNumber", description = "페이지 번호"),
-            @Parameter(
-                    name = "criteria",
-                    description = "정렬 기준",
-                    examples = {
-                            @ExampleObject(name = "최신", value = "TIME"),
-                            @ExampleObject(name = "좋아요", value = "LIKE"),
-                            @ExampleObject(name = "조회수", value = "VIEW"),
-                            @ExampleObject(name = "댓글", value = "COMMENT"),
-                    }
-            ),
-    })
-    @GetMapping("/{leagueId}/boards/search")
-    public ResponseEntity<Result<PaginatedResponse<LeagueBoardDto>>> search(
-            @PathVariable("leagueId") UUID leagueId,
-            @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
-            @RequestParam(value = "keyword") String keyword,
-            @RequestParam(required = false, defaultValue = "TITLE", value = "condition") String condition,
-            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
-    ) {
-
-        PaginatedResponse<LeagueBoardDto> response = leagueBoardService.search(
-                leagueId, leagueType, keyword, condition, pageNumber, criteria
-        );
-
-        if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {
-            return ResponseUtil.noContent(Result.empty());
-        }
-
-        return ResponseUtil.ok(Result.of(response));
-
-    }
-
 
 }
