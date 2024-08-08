@@ -16,7 +16,7 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
     <Card>
       <ThumbnailContainer>
         <Thumbnail
-          src={videoUrl[0]}
+          src={`/images/eg_img.png`}
           alt={title}
           onError={(e) => (e.currentTarget.style.display = "none")}
         />
