@@ -1,6 +1,5 @@
 import { MyHeartItem, MyPostItem } from '@/types/myPageTypes';
 import api from '../api/index'
-import axios from 'axios';
   
 export const checkPassword = async (password: string, accessToken: string): Promise<boolean> => {
 try {
@@ -15,6 +14,20 @@ try {
     throw new Error('Failed to check password');
 }
 };
+
+export const ChangeMyPassword = async (email: string, password: string, passwordCheck: string, accessToken: string): Promise<boolean> => {
+    try {
+        const response = await api.put('/v1/auth/password', { password }, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Password check failed:', error);
+        throw new Error('Failed to check password');
+    }
+    };
 
 export const getMyHeartLeagueList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyHeartItem[]> => {
     try {

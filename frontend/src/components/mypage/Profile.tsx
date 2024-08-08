@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import { useAuthStore } from '@/store/authStore';
+import { debounce } from '../../utils/debounce';
+import { checkNicknameAvailability } from '../../api/index';
 
 
 interface SignupFormValues {
@@ -30,8 +32,10 @@ const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers
 };
 
 const Profile = (): JSX.Element => {
-  const [profileImage, setProfileImage] = useState<string>('images/profile.jpg');
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
+  const [nicknameError, setNicknameError] = useState<string>('');
   const user = useAuthStore(state => state.user);
+  const [profileImage, setProfileImage] = useState<string>(user ? user.profileUrl : "");
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
@@ -44,12 +48,27 @@ const Profile = (): JSX.Element => {
     }
   };
 
+  const debouncedCheckNickname = debounce(async (nickname: string) => {
+    if (nickname) {
+      try {
+        const isAvailable = await checkNicknameAvailability(nickname);
+        setIsNicknameAvailable(isAvailable);
+        setNicknameError(isAvailable ? '' : '이미 사용 중인 닉네임입니다.');
+      } catch (error) {
+        setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
+      }
+    } else {
+      setIsNicknameAvailable(null);
+      setNicknameError('');
+    }
+  }, 500);
+
   return (
     <Container>
       <Title>프로필 정보</Title>
       <UserContainer>
         <ImageContainer>
-          <UserImage src={user ? user.profileUrl : "" } alt='User Profile Image' />
+          <UserImage src={profileImage} alt='User Profile Image' />
           <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
           <ImageUploadInput 
             id='imageUpload' 
@@ -68,7 +87,7 @@ const Profile = (): JSX.Element => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <StyledForm>
             <InputContainer>
               <StyledField
@@ -83,15 +102,19 @@ const Profile = (): JSX.Element => {
 
             <InputContainer>
               <StyledField
-                name="nickname"
-                type="text"
-                placeholder={user ? user.nickname : ""}
-                className={touched.nickname ? (errors.nickname ? 'error' : 'valid') : ''}
-              />
-              <StyledErrorMessage name="nickname" component="div" />
-              {touched.nickname && !errors.nickname && (
-                <SuccessMessage>사용 가능한 닉네임입니다.</SuccessMessage>
-              )}
+              name="nickname"
+              type="text"
+              placeholder= {user ? user.nickname : ""}
+              className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                setFieldValue('nickname', value);
+                debouncedCheckNickname(value);
+              }}
+            />
+
+            <StyledErrorMessage name="nickname" component="div" />
+              {nicknameError && <SuccessMessage>{nicknameError}</SuccessMessage>}
             </InputContainer>
 
             <Button type="submit">저장</Button>
@@ -220,7 +243,7 @@ const StyledErrorMessage = styled(ErrorMessage)`
 
 const SuccessMessage = styled.div`
   color: green;
-  font-size: 0.875em;
+  font-size: 0.8em;
   height: 24px;
   margin-bottom: 0.5em;
 `;
