@@ -14,7 +14,7 @@ public record LeagueBoardCreateRequest(
         @Schema(
                 description = "제목",
                 example = "제목입니다.",
-                maxLength = 20
+                maxLength = 35
         )
         String title,
 
