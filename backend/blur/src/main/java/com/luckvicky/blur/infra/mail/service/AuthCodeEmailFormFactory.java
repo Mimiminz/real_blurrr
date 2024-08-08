@@ -20,12 +20,12 @@ public class AuthCodeEmailFormFactory implements EmailFormFactory {
         }
 
         var d = (AuthEmailFormData) formData;
-        String body = getMailForm().replace("{{authCode}}", d.getCode());
+        String body = getMailForm().replace("{{authCode}}", d.getCode()).replace("{{type}}", d.getAuthCodeType().getEmailFormType().getPurpose());
         String subject = getSubject(d.getAuthCodeType());
         return new EmailForm(to, subject, body, isHtml);
     }
     private String getSubject(AuthCodeType authCodeType) {
-        return authCodeType.getEmailFormType().getPurpose() + "이메일 입니다";
+        return authCodeType.getEmailFormType().getPurpose() + " 이메일 입니다";
     }
 
     private String getMailForm() {

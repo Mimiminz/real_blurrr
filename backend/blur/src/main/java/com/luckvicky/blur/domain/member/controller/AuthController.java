@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +57,7 @@ public class AuthController {
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<JwtDto> tokenReissue(@Valid @RequestBody ReissueDto reissue) {
-        return ResponseEntity.ok(memberService.reissueToken(reissue));
+        return ResponseEntity.ok(authService.reissueToken(reissue));
     }
 
     @Operation(summary = "닉네임 중복 체크")
@@ -65,7 +66,7 @@ public class AuthController {
             @Schema(description = "닉네임")
             @PathVariable(name = "nickname")
             String nickname) {
-        return ResponseEntity.ok(!memberService.checkNickname(nickname));
+        return ResponseEntity.ok(!authService.checkNickname(nickname));
     }
 
 //    @GetMapping("/aws/test")
@@ -77,38 +78,13 @@ public class AuthController {
 //    }
 
 
-    @Operation(summary = "이메일 인증번호 생성 API")
-    @Parameter(name = "email", example = "teamluckyvickyblurrr@gmail.com")
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> createEmailAuth(@PathVariable("email") String email) {
-        return ResponseEntity.ok(memberService.createEmailAuthCode(email));
-    }
-
-    @Operation(summary = "이메일 인증번호 확인")
-    @PostMapping("/email")
-    public ResponseEntity<Boolean> validEmailAuth(@Valid @RequestBody EmailAuth emailAuth) {
-        return ResponseEntity.ok(memberService.validEmailAuth(emailAuth));
-    }
-
-    @Operation(summary = "비밀번호 찾기 이메일 인증 요청")
-    @GetMapping("/passwrod/email/{email}")
-    public ResponseEntity<Boolean> createPaaswordChangeAuthcode(@PathVariable String email){
-        return ResponseEntity.ok(memberService.createPasswordAuthCode(email));
-    }
-
-    @Operation(summary = "비밀번호 찾기 이메일 인증 코드 확인")
-    @PostMapping("/password/email")
-    public ResponseEntity<Boolean> validPasswordAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
-        return ResponseEntity.ok(memberService.validPasswordAuthCode(emailAuth));
-    }
-
     @Operation(summary = "비밀번호 변경")
     @PutMapping("/password")
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangeFindPassword changeFindPassword) {
         return ResponseEntity.ok(memberService.modifyPassword(changeFindPassword));
     }
 
-    @Operation(summary = "이메일 인증", description = "회원가입, 비밀번호 변경 시 등 이메일 인증 시 코드 생성 요청 API")
+    @Operation(summary = "이메일 인증 코드 생성", description = "회원가입, 비밀번호 변경 시 등 이메일 인증 시 코드 생성 요청 API")
     @GetMapping("/email/code/{email}")
     public ResponseEntity<Boolean> createEmailAuthCode(
             @PathVariable(name = "email")
@@ -119,5 +95,11 @@ public class AuthController {
             String type
     ) {
         return ResponseEntity.ok(authService.createEmailAuthCode(email, AuthCodeType.of(type)));
+    }
+
+    @Operation(summary = "이메일 인증 코드 검증", description = "회원가입, 비밀번호 변경 시 등 이메일 인증 시 코드 검증 API")
+    @PostMapping("/email/code")
+    public ResponseEntity<Boolean> validEmailAuthCode(@Valid @RequestBody EmailAuth emailAuth) {
+        return ResponseEntity.ok(authService.validAuthCode(emailAuth, AuthCodeType.of(emailAuth.type())));
     }
 }

@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum EmailFormType {
-    SIGNIN_AUTH("회원가입 인증"),
-    PASSWORD_CHANGE_AUTH("패스워드 찾기 인증");
+    SIGNIN_AUTH("회원가입"),
+    PASSWORD_CHANGE_AUTH("비밀번호 찾기");
 
     private final String purpose;
 
