@@ -116,10 +116,6 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         Member member = memberRepository.getOrThrow(id);
 
-        if (leagueMemberRepository.existsByMember(member)) {
-            throw new NotAllocatedLeagueException();
-        }
-
         Pageable pageable = PageRequest.of(
                 pageNumber,
                 GENERAL_PAGE_SIZE,

@@ -90,7 +90,7 @@ public class MemberController {
     }
 
     @Operation(summary = "좋아요 채널 게시글 조회 API", description = "사용자가 좋아요 누른 게시글 목록을 조회한다.")
-    @GetMapping("/likes/channel/boards")
+    @GetMapping("/likes/channels/boards")
     public ResponseEntity<Result<PaginatedResponse<com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardResponse>>> findLikeChannelBoards(
             @AuthUser ContextMember member,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber
