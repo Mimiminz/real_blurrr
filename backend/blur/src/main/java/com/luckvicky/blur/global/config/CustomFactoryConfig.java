@@ -16,8 +16,10 @@ import com.luckvicky.blur.infra.mail.model.EmailFormType;
 import com.luckvicky.blur.infra.mail.service.AuthCodeEmailFormFactory;
 import com.luckvicky.blur.infra.mail.service.EmailFormFactory;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,14 +42,15 @@ public class CustomFactoryConfig {
     public Map<BoardType, BoardFactory> boardFactoryMap() {
         HashMap<BoardType, BoardFactory> factoryHashMap = new HashMap<>();
         factoryHashMap.put(BoardType.MYCAR, new MyCarBoardFactory());
-
         return factoryHashMap;
     }
 
     @Bean
-    public Map<String, NotificationFactory> factoryMap() {
-        Map<String, NotificationFactory> factoryMap = new HashMap<>();
-        factoryMap.put(AlarmType.ADD_COMMENT.getType(), commentNotificationFactory());
+    public Map<AlarmType, NotificationFactory> factoryMap(
+            CommentNotificationFactory commentNotificationFactory
+    ) {
+        Map<AlarmType, NotificationFactory> factoryMap = new HashMap<>();
+        factoryMap.put(AlarmType.ADD_COMMENT, commentNotificationFactory);
         return factoryMap;
     }
 
@@ -62,9 +65,11 @@ public class CustomFactoryConfig {
         return authCodeStrategyMap;
 
     }
+
     @Bean
-    public SingInAuthStrategy singInAuthStrategy(RedisAuthCodeAdapter redisAuthCodeAdapter) {
-        return new SingInAuthStrategy(redisAuthCodeAdapter);
+    public SingInAuthStrategy singInAuthStrategy(
+            RedisAuthCodeAdapter redisAuthCodeAdapter, MemberRepository memberRepository) {
+        return new SingInAuthStrategy(redisAuthCodeAdapter, memberRepository);
     }
 
     @Bean

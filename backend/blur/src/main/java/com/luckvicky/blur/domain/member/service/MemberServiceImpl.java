@@ -1,10 +1,7 @@
 package com.luckvicky.blur.domain.member.service;
 
-import com.luckvicky.blur.domain.member.exception.DuplicateEmailException;
-import com.luckvicky.blur.domain.member.exception.ExpiredEmailAuthException;
-import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
-import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
-import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
+import com.luckvicky.blur.domain.member.exception.*;
+import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
 import com.luckvicky.blur.domain.member.strategy.SingInAuthStrategy;
 import com.luckvicky.blur.domain.member.strategy.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
@@ -46,49 +43,32 @@ public class MemberServiceImpl implements MemberService {
     private final JwtProvider jwtProvider;
     private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
     private final S3ImageService s3ImageService;
-
-    private final MailService mailService;
-
-    private final ResourceUtil resourceUtil;
-    private final PasswordAuthStrategy passwordAuthStrategy;
-    private final SingInAuthStrategy singInAuthStrategy;
-    private final RedisAuthCodeAdapter redisAuthCodeAdapter;
-
+    private final AuthCodeService authCodeService;
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
-                             S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
-                             PasswordAuthStrategy passwordAuthStrategy,
-                             SingInAuthStrategy singInAuthStrategy,
-                             RedisAuthCodeAdapter redisAuthCodeAdapter) {
+                             S3ImageService s3ImageService, AuthCodeService authCodeService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.s3ImageService = s3ImageService;
-        this.mailService = mailService;
-        this.resourceUtil = resourceUtil;
-        this.passwordAuthStrategy = passwordAuthStrategy;
-        this.singInAuthStrategy = singInAuthStrategy;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
-        this.redisAuthCodeAdapter = redisAuthCodeAdapter;
+        this.authCodeService = authCodeService;
     }
 
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
-
-//        redisAuthCodeAdapter.getValue(emailAuthStrategy.generateAvailableKey(signupDto.email()))
-//                .orElseThrow(InvalidEmailVerificationException::new);
+        authCodeService.checkAvailable(signupDto.email(), AuthCodeType.SIGNIN);
 
         signupDto.valid();
 
-        if (memberRepository.existsByEmail(signupDto.email())) {
-            throw new DuplicateEmailException();
-        }
+        if (memberRepository.existsByNickname(signupDto.nickname())) throw new DuplicateNickName();
+
         Member member = Member.builder()
                 .nickname(signupDto.nickname())
                 .email(signupDto.email())
                 .password(passwordEncoder.encode(signupDto.password()))
-                .profileUrl("img url")
+                .profileUrl("https://blurrr-img-bucket.s3.ap-northeast-2.amazonaws.com/images/user_default.png")
                 .role(Role.ROLE_BASIC_USER)
                 .build();
 
@@ -115,39 +95,6 @@ public class MemberServiceImpl implements MemberService {
         return MemberProfile.of(memberRepository.getOrThrow(memberId));
     }
 
-    @Transactional
-    @Override
-    public JwtDto reissueToken(ReissueDto reissue) {
-        //유효성 검증
-        if (!jwtProvider.validation(reissue.refreshToken())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-
-        String email = jwtProvider.getEmail(reissue.refreshToken());
-
-        // 유저 조회
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(NotExistMemberException::new);
-
-        // Redis에서 Refresh Token 검증
-        String storedRefreshToken = redisRefreshTokenAdapter.getValue(member.getId().toString())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
-
-        if (!storedRefreshToken.equals(reissue.refreshToken())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-
-        String accessToken = jwtProvider.createAccessToken(member.getEmail(), member.getRole().name());
-        String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
-
-        redisRefreshTokenAdapter.saveOrUpdate(member.getId().toString(), refreshToken);
-        return new JwtDto(accessToken, refreshToken);
-    }
-
-    @Override
-    public Boolean checkNickname(String nickname) {
-        return memberRepository.existsByNickname(nickname);
-    }
 
     @Transactional
     @Override
@@ -181,9 +128,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
+    @Transactional
     public boolean modifyPassword(ChangeFindPassword changeFindPassword) {
-//        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changeFindPassword.email()))
-//                .orElseThrow(InvalidEmailVerificationException::new);
+        authCodeService.checkAvailable(changeFindPassword.email(), AuthCodeType.PASSWORD_CHANGE);
 
         if (!changeFindPassword.password().equals(changeFindPassword.passwordCheck())) {
             throw new PasswordMismatchException();
@@ -191,56 +138,6 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findByEmail(changeFindPassword.email()).orElseThrow(NotExistMemberException::new);
         member.updatePassword(passwordEncoder.encode(changeFindPassword.password()));
-        return true;
-    }
-
-    @Transactional
-    @Override
-    public boolean createEmailAuthCode(String email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException();
-        }
-
-        String authCode = singInAuthStrategy.saveAuthCode(email);
-
-        sendAuthCodeEmail(email, authCode);
-
-        return true;
-    }
-
-    private void sendAuthCodeEmail(String email, String authCode) {
-        String htmlContent = resourceUtil.getHtml("classpath:templates/auth_email.html");
-
-        htmlContent = htmlContent.replace("{{authCode}}", authCode);
-        mailService.sendEmail(email, "이메일 인증 안내 | blurr", htmlContent, true);
-    }
-
-    @Override
-
-    public boolean validEmailAuth(EmailAuth emailAuth) {
-//        if (!checkAuthCode(singInAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
-//            return false;
-//        }
-        singInAuthStrategy.pushAvailableEmail(emailAuth.email());
-        return true;
-    }
-
-    @Override
-    public boolean createPasswordAuthCode(String email) {
-        if (!memberRepository.existsByEmail(email)) {
-            throw new NotExistMemberException();
-        }
-
-        passwordAuthStrategy.saveAuthCode(email);
-        return true;
-    }
-
-    @Override
-    public boolean validPasswordAuthCode(EmailAuth emailAuth) {
-//        if (!checkAuthCode(passwordAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
-//            return false;
-//        }
-        passwordAuthStrategy.pushAvailableEmail(emailAuth.email());
         return true;
     }
 
@@ -256,14 +153,6 @@ public class MemberServiceImpl implements MemberService {
         redisRefreshTokenAdapter.delete(member.getId().toString());
     }
 
-    private boolean checkAuthCode(String key, String code) {
-        String getCode = redisAuthCodeAdapter.getValue(key).orElseThrow(ExpiredEmailAuthException::new);
-
-        if (!getCode.equals(code)) {
-            return false;
-        }
-        return true;
-    }
 
     private void matchPassword(String plain, String enc) {
         if (!passwordEncoder.matches(plain, enc)) {
