@@ -117,6 +117,8 @@ export interface BoardDetailProps {
   username: string;
   authorprofileUrl: string;
   authorCarTitle: string;
+  boardId: string;
+  leagueName: string;
 }
 
 export interface UserLeague {
