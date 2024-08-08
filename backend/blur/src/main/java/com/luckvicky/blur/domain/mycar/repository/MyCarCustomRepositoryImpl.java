@@ -1,10 +1,12 @@
 package com.luckvicky.blur.domain.mycar.repository;
 
-import com.luckvicky.blur.domain.channel.model.entity.Channel;
-import com.luckvicky.blur.domain.channel.model.entity.QChannel;
-import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
+import static com.luckvicky.blur.domain.channelboard.model.entity.QMyCarBoard.myCarBoard;
+import static com.luckvicky.blur.domain.member.model.entity.QMember.member;
 
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
+import com.luckvicky.blur.global.util.DslUtil;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -15,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-
-import static com.luckvicky.blur.domain.channelboard.model.entity.QMyCarBoard.myCarBoard;
-import static com.luckvicky.blur.domain.member.model.entity.QMember.member;
 
 @Repository
 public class MyCarCustomRepositoryImpl implements MyCarCustomRepository {
@@ -38,7 +37,7 @@ public class MyCarCustomRepositoryImpl implements MyCarCustomRepository {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(getOrderSpec(pageable))
+                .orderBy(DslUtil.getSearchOrderSpec(pageable))
                 .fetch();
 
         JPAQuery<Long> count = queryFactory.select(myCarBoard.count())
@@ -56,20 +55,4 @@ public class MyCarCustomRepositoryImpl implements MyCarCustomRepository {
                 .or(myCarBoard.content.like(likeKeyword));
     }
 
-    private OrderSpecifier<?> getOrderSpec(Pageable pageable) {
-        for (Order order : pageable.getSort()) {
-            com.querydsl.core.types.Order dir =
-                    order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC;
-            if (order.getProperty().equals(SortingCriteria.COMMENT.getCriteria())) {
-                return new OrderSpecifier<>(dir, myCarBoard.commentCount);
-            } else if (order.getProperty().equals(SortingCriteria.TIME.getCriteria())) {
-                return new OrderSpecifier<>(dir, myCarBoard.createdAt);
-            } else if (order.getProperty().equals(SortingCriteria.LIKE.getCriteria())) {
-                return new OrderSpecifier<>(dir, myCarBoard.likeCount);
-            } else if (order.getProperty().equals(SortingCriteria.VIEW.getCriteria())) {
-                return new OrderSpecifier<>(dir, myCarBoard.viewCount);
-            }
-        }
-        return null;
-    }
 }
