@@ -7,11 +7,11 @@ import {
   DashCamDetail,
   PostDetail,
   PostInfo,
-  Option,
-  Video,
+  CreateOption,
   ChannelInfo,
   BoastInfo,
-  Mentioned
+  Mentioned,
+  Video
 } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
@@ -163,7 +163,7 @@ export const fetchPostWrite = async (
   channelId: string,
   title: string,
   content: string,
-  mentionedLeagueNames: Mentioned[]
+  mentionedLeagueNames: string[]
 ) => {
   try {
     const response = await api.post(`/v1/channels/${channelId}/boards`, {
@@ -181,9 +181,9 @@ export const fetchPostWrite = async (
 // 채널 게시글 생성 시 태그 검색 함수
 export const fetchTags = async ( keyword: string ) => {
   try {
-    const response = await api.get(`/v1/channels/check/tags/${keyword}`);
-    console.log(response.data.data.tags);
-    return response.data.data.tags;
+    const response = await api.get(`/v1/leagues/check/${keyword}`);
+    console.log(response.data.data.leagues);
+    return response.data.data.leagues;
   } catch (error) {
     console.log(error);
     throw error;
@@ -279,19 +279,23 @@ export const addVote = async (boardId: string, optionId: string) => {
   }
 };
 
-// 채널 게시글 생성 함수
+// 블랙박스 채널 게시글 생성 함수
 export const fetchDashCamWrite = async (
   title: string,
   content: string,
-  option: Option,
-  videos: Video
+  voteTitle: string,
+  option: CreateOption[],
+  videos: Video[],
+  mentionedLeagueNames: string[]
 ) => {
   try {
     const response = await api.post(`/v1/channels/dashcams/boards`, {
       title: title,
       content: content,
+      voteTitle: voteTitle,
       options: option,
       videos: videos,
+      mentionedLeagueNames: mentionedLeagueNames
     });
     return response.data;
   } catch (error) {
@@ -300,7 +304,8 @@ export const fetchDashCamWrite = async (
   }
 };
 
-export const videoPresigned = async (fileName: string) => {
+// 동영상 presigned url 받는 함수
+export const videoPresigned = async (fileName: string): Promise<{ noQueryParamUrl: string; fullUrl: string }> => {
   try {
     const response = await api.get(`/v1/channels/dashcams/boards/aws`, {
       params: { fileName },
@@ -308,12 +313,35 @@ export const videoPresigned = async (fileName: string) => {
 
     console.log(response.data);
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching video url:", error);
     throw error;
   }
 };
+
+// S3에 동영상 업로드 하는 함수
+export const S3UploadVideo = async (uploadUrl: string, file: File): Promise<void> => {
+  try {
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload video to S3');
+    }
+
+    console.log('Successfully uploaded video to S3');
+  } catch (error) {
+    console.error('Error uploading video:', error);
+    throw error;
+  }
+};
+
 
 // 내 차 자랑 목록 데이터를 가져오는 함수
 export const fetchBoast = async (
