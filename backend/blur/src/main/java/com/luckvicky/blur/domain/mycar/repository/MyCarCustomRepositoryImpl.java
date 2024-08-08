@@ -5,16 +5,13 @@ import static com.luckvicky.blur.domain.member.model.entity.QMember.member;
 
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
-import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.util.DslUtil;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
