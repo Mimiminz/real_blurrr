@@ -54,11 +54,11 @@ public class MyCarBoardController {
     @GetMapping
     public ResponseEntity findMyCars(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+            @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria")
             @ValidEnum(enumClass = SortingCriteria.class)
             String criteria) {
-        Pageable pageable = PageRequest.of(pageNo, 20,
+        Pageable pageable = PageRequest.of(pageNumber, 20,
                 Sort.by(Direction.DESC, SortingCriteria.convertToEnum(criteria).getCriteria()));
         return ResponseEntity.ok(PaginatedResponse.of(myCarBoardService.findMyCars(pageable, keyword)));
     }
