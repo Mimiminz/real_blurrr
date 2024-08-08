@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
 import { HiEllipsisVertical } from "react-icons/hi2";
@@ -6,6 +6,8 @@ import { BiTimeFive } from "react-icons/bi";
 import { BoardDetailProps } from "@/types/leagueTypes";
 import { formatPostDate } from "@/utils/formatPostDate";
 import { useAuthStore } from "@/store/authStore";
+import { fetchBoardDelete } from "@/api/league";
+import { useRouter } from "next/navigation";
 
 const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   title,
@@ -15,27 +17,60 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
   username,
   authorprofileUrl,
   authorCarTitle,
+  boardId,
+  leagueName,
 }) => {
+  const router = useRouter();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const { user } = useAuthStore();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDropdownToggle = () => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-  const handleDelete = () => {
-    // 삭제 로직을 추가하세요
-    console.log("삭제됨");
+  const handleDelete = async () => {
+    try {
+      const isDelete = confirm("정말 삭제하실건가요?");
+      if (!isDelete) {
+        return;
+      }
+      await fetchBoardDelete(boardId);
+      router.push(`/league/${leagueName}`);
+    } catch (error) {
+      console.log(error);
+    }
     setDropdownVisible(false);
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDropdownVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownVisible]);
 
   return (
     <Container>
       <TitleRow>
         <Title>{title}</Title>
         {user?.nickname === username && (
-          <DropdownContainer onClick={handleDropdownToggle}>
-            <HiEllipsisVertical />
+          <DropdownContainer ref={dropdownRef}>
+            <HiEllipsisVertical onClick={handleDropdownToggle} />
             {isDropdownVisible && (
               <DropdownMenu>
                 <DropdownItem onClick={handleDelete}>삭제</DropdownItem>
@@ -49,7 +84,6 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
           <Avatar src={authorprofileUrl} alt={`${username}'s avatar`} />
           <AuthorInfo>
             <Username>{username}</Username>
-            {/* <CarInfo>{authorCarTitle}</CarInfo> */}
             <CarInfo>벤츠 GLS 600 4MATIC MANUFAKTUR 2024</CarInfo>
           </AuthorInfo>
         </Author>
@@ -89,10 +123,6 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0 0 10px 0;
 
-  /* @media (min-width: 480px) {
-    font-size: 24px;
-    margin: 0 0 10px 0;
-  } */
   @media (min-width: 768px) {
     font-size: 24px;
     margin: 0 0 10px 0;
@@ -143,9 +173,6 @@ const DropdownMenu = styled.div`
     }
   }
 
-  /* @media (min-width: 480px) {
-    min-width: 120px;
-  } */
   @media (min-width: 768px) {
     min-width: 120px;
   }
@@ -212,12 +239,9 @@ const AuthorInfo = styled.div`
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  /* max-width: 200px; */
 
   @media (min-width: 768px) {
     justify-content: start;
-    /* align-items: flex-end; */
-    /* text-align: left; */
   }
 `;
 
@@ -239,7 +263,6 @@ const CarInfo = styled.p`
     font-size: 11px;
   }
   @media (min-width: 768px) {
-    /* align-items: flex-end; */
     text-align: left;
   }
 `;

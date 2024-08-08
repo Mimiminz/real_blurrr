@@ -134,19 +134,6 @@ export default function BoardDetailPage({
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const isDelete = confirm("정말 삭제하실건가요?");
-      if (!isDelete) {
-        return;
-      }
-      await fetchBoardDelete(boardId);
-      router.push(`/league/${leagueName}`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const closePopup = () => {
     setShowPopup(false);
     setShowLogin(false);
@@ -194,11 +181,13 @@ export default function BoardDetailPage({
         username={boardDetail.member.nickname}
         authorprofileUrl={boardDetail.member.profileUrl}
         authorCarTitle={boardDetail.member.carTitle}
+        boardId={boardId}
+        leagueName={leagueName}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
       <CommentContainer>
         <WriterContainer>
-          <HeartButton onClick={toggleLike} isLiked={isLiked}>
+          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
           </HeartButton>
         </WriterContainer>
@@ -268,20 +257,20 @@ const WriterButton = styled.p`
   }
 `;
 
-const HeartButton = styled.button<{ isLiked: boolean }>`
+const HeartButton = styled.button<{ $isLiked: boolean }>`
   margin: 5px 0px 2px 0px;
   padding: 0;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 18px;
-  color: ${({ isLiked }) => (isLiked ? "#d60606" : "#333")};
+  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
   justify-content: center;
   align-items: center;
 
   &:hover {
-    color: ${({ isLiked }) => (isLiked ? "#ff6666" : "#d60606")};
+    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
   }
 
   @media (min-width: 768px) {
