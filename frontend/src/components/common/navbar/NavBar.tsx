@@ -64,7 +64,6 @@ const NavBar = () => {
     setMentionTabs([]);
     setIsLoadUserLeagues(false);
     alert("로그아웃되었습니다.");
-    router.push("/");
     setMenuOpen(false);
   };
 
@@ -81,7 +80,7 @@ const NavBar = () => {
         
       />
       <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        {menuOpen ? <FiX size={24}/> : <FiMenu size={24} />}
       </MenuToggleBtn>
       <Menu className={menuOpen ? "open" : ""}>
         <MenuItem onClick={() => {router.push("/"); setMenuOpen(false);}}>홈</MenuItem>
@@ -91,18 +90,24 @@ const NavBar = () => {
         {clientIsLoggedIn === null ? (
           <Spinner />
         ) : clientIsLoggedIn ? (
-          <>
-            {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
-            <MenuItem><CgProfile onClick={() => {router.push("/mypage"); setMenuOpen(false);}} /></MenuItem>
-            <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
-    
-          </>
-        ) : (
-          <>
-            <MenuItem onClick={openLoginModal}>로그인</MenuItem>
-            <MenuItem onClick={openSignupModal}>회원가입</MenuItem>
-          </>
-        )}
+        <>
+          {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
+          {menuOpen ? (
+              <MenuItem>마이페이지</MenuItem>
+            ) : (
+              <MenuItem>
+                <CgProfile onClick={() => {router.push("/mypage"); setMenuOpen(false);}} />
+              </MenuItem>
+          )}
+          <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+  
+        </>
+      ) : (
+        <>
+          <MenuItem onClick={openLoginModal}>로그인</MenuItem>
+          <MenuItem onClick={openSignupModal}>회원가입</MenuItem>
+        </>
+      )}
       </Menu>
       {showNotifications && (
         <Notifications onClose={handleCloseNotifications} />
@@ -197,7 +202,7 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 10px 30px;
   background-color: #ffffff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   color: black;
@@ -234,7 +239,7 @@ const Menu = styled.div`
   font-size: 1rem;
   font-weight: bold;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   align-items: center;
   gap: 20px;
 
@@ -272,32 +277,47 @@ const Menu = styled.div`
 const MenuItem = styled.div`
   cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
   font-size: 15px;
-  margin: 0 10px;
-  font-weight: 700;
+  margin: 5px 10px;
+  font-weight: 500;
   text-align: left;
   a {
     color: black;
     text-decoration: none;
   }
+
+  @media (max-width: 480px) {
+    width: 85%;
+  }
+
+  @media (max-width: 768px) {
+    width: 85%;
+  }
+
+  @media (max-width: 1024px) {
+  }
+
+  @media (max-width: 1440px) {
+  }
+
 `;
 
 const Image = styled.img`
-  width: 80px;
+  width: 60px;
   height: auto;
 
   @media (min-width: 480px) {
-    width: 80px;
+    width: 60px;
   }
 
   @media (min-width: 768px) {
-    width: 80px;
+    width: 60px;
   }
 
   @media (min-width: 1024px) {
-    width: 80px;
+    width: 60px;
   }
 
   @media (min-width: 1440px) {

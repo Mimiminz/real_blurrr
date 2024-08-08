@@ -37,17 +37,6 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
     @EntityGraph(attributePaths = "member")
     Page<Board> findAllByMember(Member member, Pageable pageable);
 
-    @Query("SELECT b "
-            + "FROM Board b "
-            + "INNER JOIN Like l ON b = l.board AND l.member = :member "
-            + "WHERE b.status = :status"
-    )
-    Page<Board> findLikeBoardListByMember(
-            @Param("member") Member member,
-            @Param("status") ActivateStatus status,
-            Pageable pageable
-    );
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM Board b WHERE b.id = :id")
     Optional<Board> findByIdForUpdate(@Param("id") UUID id);

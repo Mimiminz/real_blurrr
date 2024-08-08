@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { LiaCommentDots } from "react-icons/lia";
+import { FaRegComment } from "react-icons/fa6";
 
 import { CommentListProps } from "@/types/commentTypes";
 
@@ -18,18 +18,19 @@ export default function CommentList({
   isLeague,
   onCommentAdded,
   commentCount,
+  boardAuthor,
 }: CommentListProps) {
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
   const handleLoginRedirect = () => {
-    router.push('/login'); // 로그인 페이지 경로로 이동
+    router.push("/login"); // 로그인 페이지 경로로 이동
   };
 
   return (
     <CommentContainer>
       <CommentNumber>
-        <LiaCommentDots />
+        <FaRegComment />
         {commentCount}
       </CommentNumber>
       {isLoggedIn ? (
@@ -58,6 +59,7 @@ export default function CommentList({
                       onCommentAdded={onCommentAdded}
                       isLeague={isLeague}
                       leagueId={leagueId}
+                      boardAuthor={boardAuthor}
                     />
                   ) : (
                     <NoComment isReply={false} />
@@ -78,6 +80,7 @@ export default function CommentList({
                           onCommentAdded={onCommentAdded}
                           isLeague={isLeague}
                           leagueId={leagueId}
+                          boardAuthor={boardAuthor}
                         />
                       ) : (
                         <NoComment isReply={true} />
@@ -106,12 +109,16 @@ const CommentContainer = styled.div`
 
 const CommentNumber = styled.div`
   margin-top: 10px;
-  font-size: 17px;
+  font-size: 16px;
   display: flex;
   align-items: center;
 
   svg {
     margin-right: 5px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 17px;
   }
 `;
 

@@ -1,13 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
-// import dummy from "@/db/mainPageData.json";
 import { GoArrowUpRight } from "react-icons/go";
 import { LeagueList } from "@/types/leagueTypes";
 import { useAuthStore } from "@/store/authStore";
-
-// const userInfo = dummy.userInfo;
-// const userLeague = dummy.leagueMembers;
 
 interface UserCarProps {
   userLeagueList: LeagueList[];
@@ -30,26 +26,25 @@ const UserCarInfo: React.FC<UserCarProps> = ({ userLeagueList }) => {
   return (
     <Container>
       <ProfileSection>
-        <ProfileImage src={"/"} alt="User Profile" />
+        <ProfileImage src={user?.profileUrl} alt="User Profile" />
         <CarInfo>
-          <CarModel>“{userCarType.name}” 오너</CarModel>
-          <UserName>{user?.nickname}님! 어서오세요~</UserName>
+          {/* <CarModel>“{userCarType.name}” 오너</CarModel> */}
+          <CarModel>“벤츠 GLS 600 4MATIC MANUFAKTUR 2024” 오너</CarModel>
+          <UserName>{user?.nickname}님!</UserName>
         </CarInfo>
       </ProfileSection>
-      <ButtonSection>
+      {/* <ButtonSection>
         <LeagueButton
-          onClick={() => handleUserLeagueClick(userLeagueList[0].name)}
+          onClick={() => handleUserLeagueClick(userLe`agueList[0].name)}
         >
-          {userLeagueList[0].name} <br />
-          리그 <GoArrowUpRight />
+          {userLeagueList[0].name} 리그 <GoArrowUpRight />
         </LeagueButton>
         <LeagueButton
           onClick={() => handleUserLeagueClick(userLeagueList[1].name)}
         >
-          {userLeagueList[1].name} <br />
-          리그 <GoArrowUpRight />
+          {userLeagueList[1].name} 리그 <GoArrowUpRight />
         </LeagueButton>
-      </ButtonSection>
+      </ButtonSection> */}
     </Container>
   );
 };
@@ -60,28 +55,31 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 28px;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
-  margin-left: 10px;
+  padding: 10px 14px;
+  /* border: 2px solid #00000039; */
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9c1;
+  margin: 0 10px;
 
   @media (min-width: 480px) {
-    width: 70%;
+    /* width: 70%; */
+    padding: 28px;
   }
 
   @media (min-width: 768px) {
     margin-right: 30px;
-    width: 48%;
+    padding: 10px 16px;
+
+    /* width: 48%; */
   }
 
   @media (min-width: 1024px) {
-    width: 50%;
+    /* width: 50%; */
   }
 
   @media (min-width: 1440px) {
-    width: 70%;
+    /* width: 70%; */
     padding: 28px 20px;
   }
 `;
@@ -90,15 +88,16 @@ const ProfileSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 `;
 
 const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 30px;
+  /* margin-right: 30px; */
+  margin-right: 18px;
 `;
 
 const CarInfo = styled.div`
@@ -108,14 +107,14 @@ const CarInfo = styled.div`
 `;
 
 const CarModel = styled.h2`
-  font-size: 18px;
+  font-size: 16px;
   color: #333;
   margin: 0;
   padding-top: 10px;
 `;
 
 const UserName = styled.p`
-  font-size: 18px;
+  font-size: 15px;
   color: #333;
   margin-top: 10px;
 `;
@@ -129,7 +128,7 @@ const LeagueButton = styled.button`
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   margin: 0 10px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

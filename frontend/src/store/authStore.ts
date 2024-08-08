@@ -5,7 +5,9 @@ interface User {
   email: string;
   profileUrl: string;
   nickname: string;
+  carTitle: string;
   isAuth: boolean;
+  
 }
 
 interface AuthState {

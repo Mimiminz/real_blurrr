@@ -13,6 +13,10 @@ import TopCarCard from "@/components/main/aside/TopCarCard";
 import { LuTrophy } from "react-icons/lu";
 import { IoArrowForward } from "react-icons/io5";
 import { FaCarTunnel } from "react-icons/fa6";
+import { BsFire } from "react-icons/bs";
+import { FaCrown } from "react-icons/fa6";
+import { PiRanking } from "react-icons/pi";
+
 import LeagueRanking from "@/components/main/aside/LeageRanking";
 import UserCarInfo from "@/components/main/user/UserCarInfo";
 import FollowChannelInfo from "@/components/main/user/FollowChannelInfo";
@@ -158,7 +162,10 @@ export default function Home() {
             </UserInfoContainer>
           )}
           <ArticleSection>
-            <SectionTitle>Hot</SectionTitle>
+            <SectionTitle>
+              <BsFire />
+              Hot
+            </SectionTitle>
             <HotArticleList hotBoards={hotBoards} />
           </ArticleSection>
           <ArticleSection>
@@ -166,9 +173,7 @@ export default function Home() {
               <SectionTitle>브랜드 리그</SectionTitle>
               <MoreButton onClick={handleMoreClickLeage}>
                 더보기
-                <MoreButtonIcon>
-                  <IoArrowForward />
-                </MoreButtonIcon>
+                <IoArrowForward />
               </MoreButton>
             </SectionHeader>
             <LeagueList />
@@ -178,9 +183,7 @@ export default function Home() {
               <SectionTitle>블랙박스</SectionTitle>
               <MoreButton onClick={handleMoreClickDashcam}>
                 더보기
-                <MoreButtonIcon>
-                  <IoArrowForward />
-                </MoreButtonIcon>
+                <IoArrowForward />
               </MoreButton>
             </SectionHeader>
             <BlackboxList />
@@ -190,9 +193,7 @@ export default function Home() {
               <SectionTitle>차 자랑</SectionTitle>
               <MoreButton onClick={handleMoreClickBoast}>
                 더보기
-                <MoreButtonIcon>
-                  <IoArrowForward />
-                </MoreButtonIcon>
+                <IoArrowForward />
               </MoreButton>
             </SectionHeader>
             <CarPictureList />
@@ -200,16 +201,17 @@ export default function Home() {
         </Main>
         <Aside>
           <AsideSection>
-            <AsideSectionTitle>
-              <Icon>
-                <LuTrophy />
-              </Icon>
+            <AsideSectionTitle className="today">
+              <FaCrown />
               오늘의 차
             </AsideSectionTitle>
             <TopCarCard />
           </AsideSection>
           <AsideSection>
-            <AsideSectionTitle>주간 리그 순위</AsideSectionTitle>
+            <AsideSectionTitle>
+              <PiRanking />
+              주간 리그 순위
+            </AsideSectionTitle>
             <LeagueRanking leaugeRanking={leaugeRanking} />
           </AsideSection>
         </Aside>
@@ -223,22 +225,25 @@ const PageContainer = styled.div`
 `;
 
 const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
 
   @media (min-width: 1024px) {
-    grid-template-columns: repeat(12, 1fr);
-    gap: 40px;
+    flex-direction: row;
+    border-top: none;
     width: 100%;
   }
 `;
 
 const Main = styled.main`
-  grid-column: span 12;
+  /* display: block; */
   padding: 10px;
+  width: 100%;
+  flex-shrink: 1; /* 크기가 줄어들 수 있음 */
 
   @media (min-width: 1024px) {
-    grid-column: span 9;
+    /* width: 736px; */
+
+    width: 70%;
   }
 `;
 
@@ -247,19 +252,31 @@ const Aside = styled.aside`
 
   @media (min-width: 1024px) {
     display: block;
-    grid-column: span 3;
+    width: 300px;
+    margin-left: 64px;
+    /* flex-shrink: 0; */
   }
 `;
 
 const SectionTitle = styled.h1`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-top: 40px;
-  margin-bottom: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 5px;
+  }
 `;
 
 const ArticleSection = styled.div`
-  margin: 20px;
+  margin: 0 10px 50px;
+
+  @media (min-width: 768px) {
+    margin: 0 20px 50px;
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -269,30 +286,38 @@ const SectionHeader = styled.div`
 `;
 
 const AsideSection = styled.div`
-  padding: 20px;
-  padding-top: 10px;
-  margin-top: 40px;
+  padding: 16px 24px;
+  margin: 20px 0px;
 
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* background-color: #f9f9f9; */
+  background-color: #f8f8f8;
+  /* border: 2px solid #e5e7eb; */
+  border-radius: 8px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   align-items: center;
 `;
 
 const AsideSectionTitle = styled.h2`
-  font-size: 18px;
-  margin-top: 10px;
+  font-size: 16px;
+  margin-top: 2px;
   margin-bottom: 10px;
-`;
+  display: flex;
+  align-items: center;
 
-const Icon = styled.span`
-  margin-right: 4px;
+  &.today {
+    svg{
+      color: #fbc02d;
+    }
+  }
+
+  svg {
+    margin-right: 5px;
+    /* color: #fbc02d; */
+  }
 `;
 
 const UserInfoContainer = styled.div`
-  margin-top: 40px;
+  margin: 40px 0;
   display: flex;
   justify-content: center;
 `;
@@ -301,17 +326,18 @@ const MoreButton = styled.button`
   background: none;
   border: none;
   color: gray;
+  font-size: 12px;
   cursor: pointer;
-  font-size: 14px;
-  margin-top: 40px;
-`;
-
-const MoreButtonIcon = styled.span`
-  margin-left: 4px;
+  display: felx;
   align-items: center;
-  justify-content: center;
-  font-size: 14px; /* 아이콘 크기 조정 */
-  vertical-align: middle;
+
+  svg {
+    margin-left: 4px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 13px;
+  }
 `;
 
 const NoAuth = styled.div`

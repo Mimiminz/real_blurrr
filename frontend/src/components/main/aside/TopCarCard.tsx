@@ -25,7 +25,8 @@ const TopCarCard: React.FC = () => {
       </ImageContainer>
       <InfoContainer>
         <Owner>{topCar.name}</Owner>
-        <Description>{topCar.description}</Description>
+        {/* <Description>{topCar.description}</Description> */}
+        <Description>GV70</Description>
       </InfoContainer>
     </CardContainer>
   );
@@ -34,16 +35,22 @@ const TopCarCard: React.FC = () => {
 export default TopCarCard;
 
 const CardContainer = styled.div`
-  border-radius: 12px;
-  width: 100%;
+  overflow: hidden;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  margin-top: 5px;
+  border-radius: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
+
+  /* &:hover {
+    background-color: #ebebeb6a;
+  } */
 `;
 
 const ImageContainer = styled.div`
-  width: 100%;
-  padding-top: 75%;
   position: relative;
   border-radius: 15px;
+  padding-top: 75%; /* Aspect ratio 4:3 */
   overflow: hidden;
 `;
 
@@ -53,43 +60,45 @@ const Image = styled.img`
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
 `;
 
 const LikeContainer = styled.div`
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 20%;
-  background: rgba(255, 255, 255, 0.705);
-  color: black;
+  bottom: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 8px;
-  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.712);
+  border-radius: 15px;
+  padding: 4px 8px;
+  color: white;
 `;
 
 const LikeCount = styled.span`
-  font-size: 16px;
-  color: black;
-  padding-left: 6px;
+  font-size: 12px;
+  margin-left: 4px;
 `;
 
 const InfoContainer = styled.div`
-  margin-top: 12px;
+  padding: 4px 6px 8px 6px;
   text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
 `;
 
 const Owner = styled.p`
   font-size: 14px;
   font-weight: bold;
-  color: black;
-  margin: 0;
+  margin: 6px 0 4px 0;
 `;
 
 const Description = styled.p`
-  font-size: 12px;
+  font-size: 11.5px;
   color: ${({ theme }) => theme.colors.subDiscription};
-  margin: 0;
+  margin: 6px 4px 0 8px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 `;

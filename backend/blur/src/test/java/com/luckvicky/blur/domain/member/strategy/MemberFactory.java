@@ -1,8 +1,7 @@
-package com.luckvicky.blur.domain.member.factory;
+package com.luckvicky.blur.domain.member.strategy;
 
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
-import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.util.UuidUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 

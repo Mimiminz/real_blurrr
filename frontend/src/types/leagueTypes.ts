@@ -106,7 +106,7 @@ export interface BoardDetail {
   likeCount: number;
   commentCount: number;
   member: Member;
-  like: boolean;
+  isLike: boolean;
 }
 
 export interface BoardDetailProps {
@@ -117,6 +117,8 @@ export interface BoardDetailProps {
   username: string;
   authorprofileUrl: string;
   authorCarTitle: string;
+  boardId: string;
+  leagueName: string;
 }
 
 export interface UserLeague {

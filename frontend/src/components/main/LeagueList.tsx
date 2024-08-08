@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LeagueListItem from "./LeagueListItem";
 import { useLeagueStore } from "@/store/leagueStore";
@@ -6,9 +6,24 @@ import dummy from "@/db/mainPageData.json";
 
 const LeagueList: React.FC = () => {
   const { brandLeagueList } = useLeagueStore();
+  const [displayList, setDisplyList] = useState(brandLeagueList);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setDisplyList(brandLeagueList.slice(0, 5));
+      } else {
+        setDisplyList(brandLeagueList.slice(0, 12));
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [brandLeagueList]);
   return (
     <ListContainer>
-      {brandLeagueList.slice(0, 12).map((league) => (
+      {displayList.map((league) => (
         <LeagueListItem
           key={league.id}
           id={league.id}
