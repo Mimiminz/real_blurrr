@@ -169,6 +169,7 @@ public class MemberServiceImpl implements MemberService {
         return new MemberProfileUpdateResp(profileUrl, member.getNickname());
     }
 
+    @Transactional
     @Override
     public boolean modifyPassword(ChangePassword changePassword, UUID memberId) {
         Member member = memberRepository.getOrThrow(memberId);
@@ -179,6 +180,7 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean modifyPassword(ChangeFindPassword changeFindPassword) {
         redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changeFindPassword.email()))
