@@ -10,7 +10,6 @@ import CarPictureList from "@/components/main/CarPictureList";
 import LeagueList from "@/components/main/LeagueList";
 import TopCarCard from "@/components/main/aside/TopCarCard";
 
-import { LuTrophy } from "react-icons/lu";
 import { IoArrowForward } from "react-icons/io5";
 import { FaCarTunnel } from "react-icons/fa6";
 import { BsFire } from "react-icons/bs";
@@ -135,7 +134,7 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (!hotBoards.length) {
+  if (!hotBoards) {
     return <Loading />;
   }
 
@@ -166,7 +165,11 @@ export default function Home() {
               <BsFire />
               Hot
             </SectionTitle>
-            <HotArticleList hotBoards={hotBoards} />
+            {hotBoards.length ? (
+              <HotArticleList hotBoards={hotBoards} />
+            ) : (
+              <div>loading...</div>
+            )}
           </ArticleSection>
           <ArticleSection>
             <SectionHeader>
@@ -272,7 +275,7 @@ const SectionTitle = styled.h1`
 `;
 
 const ArticleSection = styled.div`
-  margin: 0 10px 50px;
+  margin: 0 0 50px;
 
   @media (min-width: 768px) {
     margin: 0 20px 50px;
@@ -289,11 +292,10 @@ const AsideSection = styled.div`
   padding: 16px 24px;
   margin: 20px 0px;
 
-  /* background-color: #f9f9f9; */
-  background-color: #f8f8f8;
-  /* border: 2px solid #e5e7eb; */
+  /* background-color: #dfe0df4c; */
+  background-color: #f7f8f9;
+  /* background-color: #f8f8f8; */
   border-radius: 8px;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   align-items: center;
 `;
 
@@ -305,7 +307,7 @@ const AsideSectionTitle = styled.h2`
   align-items: center;
 
   &.today {
-    svg{
+    svg {
       color: #fbc02d;
     }
   }
@@ -319,7 +321,7 @@ const AsideSectionTitle = styled.h2`
 const UserInfoContainer = styled.div`
   margin: 40px 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 const MoreButton = styled.button`
