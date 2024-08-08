@@ -84,7 +84,7 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
           <Avatar src={authorprofileUrl} alt={`${username}'s avatar`} />
           <AuthorInfo>
             <Username>{username}</Username>
-            <CarInfo>벤츠 GLS 600 4MATIC MANUFAKTUR 2024</CarInfo>
+            <CarInfo>{authorCarTitle || "뚜벅이"}</CarInfo>
           </AuthorInfo>
         </Author>
         <Infoleft>

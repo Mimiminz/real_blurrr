@@ -10,10 +10,8 @@ import { fetchComment } from "@/types/commentTypes";
 import { fetchChannelPostDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
-import {
-  fetchChannelLike,
-  fetchChannelLikeDelete,
-} from "@/api/board";
+import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 export default function ChannelBoardDetailPage({
   params,
@@ -42,20 +40,6 @@ export default function ChannelBoardDetailPage({
       setIsLiked(likeData.isLike);
     }
     // setIsLiked((prevIsLiked) => !prevIsLiked);
-  };
-
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
   };
 
   const loadBoardDetail = useCallback(async () => {
@@ -112,16 +96,15 @@ export default function ChannelBoardDetailPage({
         likeCount={likeCount}
         member={boardDetail.member}
         tags={boardDetail.mentionedLeagues}
+        boardId={boardDetail.id}
+        channelId={channelId}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
       <CommentContainer>
         <WriterContainer>
-          <HeartButton onClick={toggleLike}>
+          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
           </HeartButton>
-          {user?.nickname === boardDetail.member.nickname && (
-            <WriterButton onClick={handleDelete}>삭제</WriterButton>
-          )}
         </WriterContainer>
         <CommentList
           comments={commentList?.comments || []}
@@ -130,6 +113,7 @@ export default function ChannelBoardDetailPage({
           leagueId=""
           isLeague={false}
           onCommentAdded={loadCommentDetail}
+          boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
     </>
@@ -171,18 +155,23 @@ const WriterButton = styled.p`
   }
 `;
 
-const HeartButton = styled.button`
-  margin: 5px 0px 20px 0px;
-  min-width: 30px;
+const HeartButton = styled.button<{ $isLiked: boolean }>`
+  margin: 5px 0px 2px 0px;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  color: #666;
+  font-size: 18px;
+  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
   justify-content: center;
+  align-items: center;
 
   &:hover {
-    color: #666;
+    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+  }
+
+  @media (min-width: 768px) {
+    font-size: 20px;
   }
 `;
