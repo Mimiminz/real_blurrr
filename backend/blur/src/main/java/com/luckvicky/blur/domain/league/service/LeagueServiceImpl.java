@@ -6,6 +6,7 @@ import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
 
 import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
+import com.luckvicky.blur.domain.league.model.dto.SimpleLeagueDto;
 import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;
@@ -60,6 +61,19 @@ public class LeagueServiceImpl implements LeagueService {
                         .collect(Collectors.toList())
         );
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SimpleLeagueDto> searchLeaguesByKeyword(String keyword) {
+
+        List<League> leagues = leagueRepository.findAllByNameContainingIgnoreCase(keyword);
+
+
+        return leagues.stream()
+                .limit(5)
+                .map(SimpleLeagueDto::of)
+                .collect(Collectors.toList());
     }
 
     @Override

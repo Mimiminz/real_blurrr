@@ -31,4 +31,6 @@ public interface LeagueRepository extends JpaRepository<League, UUID> {
 
     List<League> findAllByNameIn(List<String> names);
 
+    List<League> findAllByNameContainingIgnoreCase(String keyword);
+
 }
