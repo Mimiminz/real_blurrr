@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class LeagueSearchServiceImpl implements LeagueSearchService {
+public class LeagueBoardSearchServiceImpl implements LeagueBoardSearchService {
 
     private final LeagueRepository leagueRepository;
     private final LeagueBoardRepository leagueBoardRepository;

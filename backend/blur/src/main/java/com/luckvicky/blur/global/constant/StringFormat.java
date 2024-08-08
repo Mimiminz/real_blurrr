@@ -70,6 +70,7 @@ public class StringFormat {
     // 리그 URI
     public static final String[] GUEST_URI_OF_LEAGUE = {
             "/v1/leagues",
+            "/v1/leagues/search",
             "/v1/leagues/*/boards",
             "/v1/leagues/*/boards/search"
     };
