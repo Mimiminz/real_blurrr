@@ -61,7 +61,6 @@ public class ChannelBoardMapper {
     }
 
     public ChannelBoardDetailDto toChannelBoardDto(ChannelBoard channelBoard) {
-        BoardDto boardDto = toBoardDto(channelBoard);
         List<MentionDto> mentionedLeagues = mentionRepository.findAllByBoard(channelBoard).stream()
                 .map(MentionDto::of)
                 .collect(Collectors.toList());
