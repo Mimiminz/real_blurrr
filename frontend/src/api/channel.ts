@@ -10,7 +10,8 @@ import {
   Option,
   Video,
   ChannelInfo,
-  BoastInfo
+  BoastInfo,
+  Mentioned
 } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
@@ -156,12 +157,14 @@ export const fetchChannelPostDetail = async (
 export const fetchPostWrite = async (
   channelId: string,
   title: string,
-  content: string
+  content: string,
+  mentionedLeagueNames: Mentioned[]
 ) => {
   try {
     const response = await api.post(`/v1/channels/${channelId}/boards`, {
       title: title,
       content: content,
+      mentionedLeagueNames: mentionedLeagueNames
     });
     return response.data;
   } catch (error) {
@@ -170,8 +173,20 @@ export const fetchPostWrite = async (
   }
 };
 
+// 채널 게시글 생성 시 태그 검색 함수
+export const fetchTags = async ( keyword: string ) => {
+  try {
+    const response = await api.get(`/v1/channels/check/tags/${keyword}`);
+    console.log(response.data.data.tags);
+    return response.data.data.tags;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 // 채널 팔로우 / 언팔로우 하는 함수
-export const followChannel = async (channelId: string) => {
+export const followChannel = async (channelId: string): Promise<Mentioned[]> => {
   try {
     const response = await api.post(`/v1/channels/${channelId}/followers`);
     return response.data;
