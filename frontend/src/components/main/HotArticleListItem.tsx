@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
-import { LiaCommentDots } from "react-icons/lia";
+import { FaRegComment } from "react-icons/fa6";
 import { HotBoardItem } from "@/types/mainPageTypes";
 import { useRouter } from "next/navigation";
 
@@ -24,19 +24,18 @@ function HotArticleListItem({
     <ArticleDetail onClick={handleClick}>
       <ArticleInfo>
         <Channel>{channel.name}</Channel>
-        <Title>{title}</Title>
+        <Title>
+          {title.slice(0, 7)}
+          {title.length > 7 && " ..."}
+        </Title>
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
-          <Icon>
-            <FaRegHeart />
-          </Icon>
+          <FaRegHeart />
           {likeCount}
         </LikeSection>
         <LikeSection>
-          <Icon>
-            <LiaCommentDots />
-          </Icon>
+          <FaRegComment />
           {commentCount}
         </LikeSection>
       </LikeAndComment>
@@ -48,7 +47,7 @@ const ArticleDetail = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 6px 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
   cursor: pointer;
 
@@ -64,16 +63,16 @@ const ArticleInfo = styled.div`
 
 const Channel = styled.p`
   color: ${({ theme }) => theme.colors.main};
-  margin-bottom: 8px;
-  margin-top: 10px;
+  margin-bottom: 4px;
+  margin-top: 3px;
   font-size: 12px;
 `;
 
 const Title = styled.p`
   color: black;
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
-  margin-bottom: 8px;
+  margin-bottom: 3px;
 `;
 
 const LikeAndComment = styled.div`
@@ -82,22 +81,18 @@ const LikeAndComment = styled.div`
   margin-top: auto;
 `;
 
-const LikeSection = styled.span`
+const LikeSection = styled.div`
   display: flex;
   align-items: center;
   margin-left: 20px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   margin-top: auto;
   color: ${({ theme }) => theme.colors.subDiscription};
-  font-size: 14px; /* 아이콘과 텍스트 크기 조정 */
+  font-size: 12px;
+
+  svg {
+    margin-right: 4px;
+  }
 `;
 
-const Icon = styled.span`
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px; /* 아이콘 크기 조정 */
-  vertical-align: middle;
-`;
 export default HotArticleListItem;

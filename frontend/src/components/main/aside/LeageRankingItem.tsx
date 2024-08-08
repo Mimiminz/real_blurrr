@@ -38,11 +38,12 @@ const ItemContainer = styled.div`
 const Rank = styled.div`
   width: 20px;
   font-weight: bold;
+  font-size: 13px;
 `;
 
 const Name = styled.div`
   flex: 1;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
 `;
 
@@ -56,9 +57,10 @@ const Icon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px; /* 아이콘 크기 조정 */
+  font-size: 12px;
   vertical-align: middle;
 `;
 
 const Count = styled.span`
-font-size: 12px;`;
+  font-size: 12px;
+`;
