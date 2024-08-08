@@ -106,7 +106,7 @@ export interface BoardDetail {
   likeCount: number;
   commentCount: number;
   member: Member;
-  like: boolean;
+  isLike: boolean;
 }
 
 export interface BoardDetailProps {

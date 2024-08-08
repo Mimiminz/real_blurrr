@@ -53,7 +53,7 @@ export default function BoardDetailPage({
     try {
       const details = await fetchLeagueDetail(boardId);
       setBoardDetail(details);
-      setIsLiked(details.like);
+      setIsLiked(details.isLike);
       setLikeCount(details.likeCount);
     } catch (error) {
       console.log(error);
@@ -198,18 +198,9 @@ export default function BoardDetailPage({
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
       <CommentContainer>
         <WriterContainer>
-          <HeartButton onClick={toggleLike}>
-            {isLiked ? (
-              <FaHeart color="#d60606" />
-            ) : (
-              <FaRegHeart color="#333" />
-            )}
+          <HeartButton onClick={toggleLike} isLiked={isLiked}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
           </HeartButton>
-          {user?.nickname === boardDetail.member.nickname && (
-            <WriterButton onClick={handleDelete}>
-              <FaRegTrashAlt />
-            </WriterButton>
-          )}
         </WriterContainer>
         <CommentList
           comments={commentList.comments}
@@ -218,6 +209,7 @@ export default function BoardDetailPage({
           leagueId={activeTab.id}
           isLeague={true}
           onCommentAdded={handleCommentAdded}
+          boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
       {showPopup && <NoCarPopup closePopup={closePopup} />}
@@ -240,12 +232,16 @@ const BreadcrumbContainer = styled.div`
 `;
 
 const Content = styled.div`
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.5;
   color: #333;
-  padding: 20px;
-  padding-bottom: 50px;
+  padding: 16px 16px 40px 16px;
   border-top: 1px solid #bebebe;
+
+  @media (min-width: 480px) {
+    font-size: 17px;
+    padding: 20px 20px 50px 20px;
+  }
 `;
 
 const CommentContainer = styled.div`
@@ -272,19 +268,24 @@ const WriterButton = styled.p`
   }
 `;
 
-const HeartButton = styled.button`
-  margin: 5px 0px 20px 0px;
-  min-width: 30px;
+const HeartButton = styled.button<{ isLiked: boolean }>`
+  margin: 5px 0px 2px 0px;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  color: #ff0000;
+  font-size: 18px;
+  color: ${({ isLiked }) => (isLiked ? "#d60606" : "#333")};
   display: flex;
   justify-content: center;
+  align-items: center;
 
   &:hover {
-    color: #ff0000;
+    color: ${({ isLiked }) => (isLiked ? "#ff6666" : "#d60606")};
+  }
+
+  @media (min-width: 768px) {
+    font-size: 20px;
   }
 `;
 

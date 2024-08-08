@@ -21,6 +21,7 @@ export interface CommentListProps {
   isLeague: boolean;
   commentCount: number;
   onCommentAdded: () => void;
+  boardAuthor: string;
 }
 
 export interface CreateCommentProps {
@@ -43,6 +44,7 @@ export interface CommentListItemProps {
   onCommentAdded: () => void;
   isLeague: boolean;
   leagueId: string;
+  boardAuthor: string;
 }
 
 export interface NoCommentProps {
