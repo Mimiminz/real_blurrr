@@ -157,12 +157,14 @@ export const fetchChannelPostDetail = async (
 export const fetchPostWrite = async (
   channelId: string,
   title: string,
-  content: string
+  content: string,
+  mentionedLeagueNames: Mentioned[]
 ) => {
   try {
     const response = await api.post(`/v1/channels/${channelId}/boards`, {
       title: title,
       content: content,
+      mentionedLeagueNames: mentionedLeagueNames
     });
     return response.data;
   } catch (error) {

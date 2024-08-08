@@ -92,7 +92,7 @@ export default function WritePage() {
     }
 
     try {
-      await fetchPostWrite(channelId, title, content);
+      await fetchPostWrite(channelId, title, content, tags);
       router.push(`/channels/${channelId}`);
     } catch (error) {
       console.error("Error submitting post:", error);
