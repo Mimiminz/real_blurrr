@@ -52,6 +52,7 @@ public record ChannelBoardResponse(
                         .trim()
                         .substring(0, Math.min(30, channelBoard.getContent().length()))
                         + (channelBoard.getContent().length() > 30 ? "..." : ""))
+                .mentionedLeagues(mentionedLeagues)
                 .createdAt(channelBoard.getCreatedAt())
                 .commentCount(channelBoard.getCommentCount())
                 .likeCount(channelBoard.getLikeCount())
