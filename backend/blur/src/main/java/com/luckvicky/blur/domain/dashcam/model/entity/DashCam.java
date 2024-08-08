@@ -31,6 +31,9 @@ public class DashCam extends Board {
     @OneToMany(mappedBy = "dashCam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
 
+    @Column
+    private String thumbNail;
+
     @ElementCollection
     @CollectionTable(
             name = "videos",
