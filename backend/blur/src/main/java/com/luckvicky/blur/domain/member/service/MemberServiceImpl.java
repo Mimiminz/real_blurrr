@@ -5,8 +5,8 @@ import com.luckvicky.blur.domain.member.exception.ExpiredEmailAuthException;
 import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
-import com.luckvicky.blur.domain.member.factory.EmailAuthStrategy;
-import com.luckvicky.blur.domain.member.factory.PasswordAuthStrategy;
+import com.luckvicky.blur.domain.member.strategy.SingInAuthStrategy;
+import com.luckvicky.blur.domain.member.strategy.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
@@ -35,7 +35,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -52,14 +51,14 @@ public class MemberServiceImpl implements MemberService {
 
     private final ResourceUtil resourceUtil;
     private final PasswordAuthStrategy passwordAuthStrategy;
-    private final EmailAuthStrategy emailAuthStrategy;
+    private final SingInAuthStrategy singInAuthStrategy;
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, MailService mailService, ResourceUtil resourceUtil,
                              PasswordAuthStrategy passwordAuthStrategy,
-                             EmailAuthStrategy emailAuthStrategy,
+                             SingInAuthStrategy singInAuthStrategy,
                              RedisAuthCodeAdapter redisAuthCodeAdapter) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
@@ -68,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
         this.mailService = mailService;
         this.resourceUtil = resourceUtil;
         this.passwordAuthStrategy = passwordAuthStrategy;
-        this.emailAuthStrategy = emailAuthStrategy;
+        this.singInAuthStrategy = singInAuthStrategy;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
         this.redisAuthCodeAdapter = redisAuthCodeAdapter;
     }
@@ -181,8 +180,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean modifyPassword(ChangeFindPassword changeFindPassword) {
-        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changeFindPassword.email()))
-                .orElseThrow(InvalidEmailVerificationException::new);
+//        redisAuthCodeAdapter.getValue(passwordAuthStrategy.generateAvailableKey(changeFindPassword.email()))
+//                .orElseThrow(InvalidEmailVerificationException::new);
 
         if (!changeFindPassword.password().equals(changeFindPassword.passwordCheck())) {
             throw new PasswordMismatchException();
@@ -200,7 +199,7 @@ public class MemberServiceImpl implements MemberService {
             throw new DuplicateEmailException();
         }
 
-        String authCode = emailAuthStrategy.saveAuthCode(email);
+        String authCode = singInAuthStrategy.saveAuthCode(email);
 
         sendAuthCodeEmail(email, authCode);
 
@@ -215,11 +214,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+
     public boolean validEmailAuth(EmailAuth emailAuth) {
-        if (!checkAuthCode(emailAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
-            return false;
-        }
-        emailAuthStrategy.pushAvailableEmail(emailAuth.email());
+//        if (!checkAuthCode(singInAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
+//            return false;
+//        }
+        singInAuthStrategy.pushAvailableEmail(emailAuth.email());
         return true;
     }
 
@@ -235,9 +235,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean validPasswordAuthCode(EmailAuth emailAuth) {
-        if (!checkAuthCode(passwordAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
-            return false;
-        }
+//        if (!checkAuthCode(passwordAuthStrategy.generateKey(emailAuth.email()), emailAuth.authCode())) {
+//            return false;
+//        }
         passwordAuthStrategy.pushAvailableEmail(emailAuth.email());
         return true;
     }

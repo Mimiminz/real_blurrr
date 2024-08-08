@@ -5,6 +5,8 @@ import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
 import com.luckvicky.blur.domain.member.service.MemberService;
+import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
+import com.luckvicky.blur.global.annotation.custom.ValidEnum;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -99,5 +102,16 @@ public class AuthController {
     @PutMapping("/password")
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody ChangeFindPassword changeFindPassword) {
         return ResponseEntity.ok(memberService.modifyPassword(changeFindPassword));
+    }
+
+    @Operation(summary = "이메일 인증", description = "회원가입, 비밀번호 변경 시 등 이메일 인증 시 코드 생성 요청 API")
+    @GetMapping("/email/code/{email}")
+    public ResponseEntity<Boolean> createEmailAuthCode(
+            @Schema(description = "인증 코드 타입(password_change, signin)")
+            @RequestParam(name = "type")
+            @ValidEnum(enumClass = AuthCodeType.class)
+            String type
+    ) {
+        return null;
     }
 }
