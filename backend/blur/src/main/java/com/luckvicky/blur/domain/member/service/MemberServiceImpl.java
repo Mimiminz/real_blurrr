@@ -128,7 +128,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    @Transactional
     public boolean modifyPassword(ChangeFindPassword changeFindPassword) {
         authCodeService.checkAvailable(changeFindPassword.email(), AuthCodeType.PASSWORD_CHANGE);
 
