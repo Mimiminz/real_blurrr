@@ -31,10 +31,9 @@ const Container = styled.div`
   padding: 18px;
   padding-bottom: 8px;
   border-radius: 12px;
-  /* border-left: 2px solid ${({ theme }) => theme.colors.articleDivider}; */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  /* background: #ffffff; */
+  /* border: 2px solid #00000039; */
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9c1;
 
   @media (max-width: 768px) {
     display: none;

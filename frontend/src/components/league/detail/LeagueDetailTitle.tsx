@@ -247,20 +247,22 @@ const AuthorInfo = styled.div`
 
 const Author = styled.div`
   display: flex;
+  font-size: 14.5px;
   align-items: center;
   flex-wrap: nowrap;
   margin-bottom: 20px;
   @media (min-width: 768px) {
     margin-bottom: 0;
+    font-size: 14.5px;
   }
 `;
 
 const CarInfo = styled.p`
   color: #888;
   margin: 0;
-  font-size: 10px;
+  font-size: 11px;
   @media (min-width: 480px) {
-    font-size: 11px;
+    font-size: 13px;
   }
   @media (min-width: 768px) {
     text-align: left;

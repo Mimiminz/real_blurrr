@@ -44,7 +44,7 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
       if (!isDelete) {
         return;
       }
-      console.log('삭제')
+      console.log("삭제");
       await fetchChannelBoardDelete(boardId);
       router.push(`/channels/${channelId}`);
     } catch (error) {
@@ -285,6 +285,7 @@ const Author = styled.div`
   align-items: center;
   flex-wrap: nowrap;
   margin-bottom: 20px;
+  font-size: 14.5px;
   @media (min-width: 768px) {
     margin-bottom: 0;
   }
@@ -295,7 +296,7 @@ const CarInfo = styled.p`
   margin: 0;
   font-size: 10px;
   @media (min-width: 480px) {
-    font-size: 11px;
+    font-size: 13px;
   }
   @media (min-width: 768px) {
     text-align: left;

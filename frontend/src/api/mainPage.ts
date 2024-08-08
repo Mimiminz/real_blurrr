@@ -8,6 +8,7 @@ export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
     if (!response.data.data) {
       return [];
     }
+    console.log(response.data);
     return response.data.data;
   } catch (error) {
     console.log(error);

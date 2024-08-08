@@ -22,10 +22,8 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
     <CardContainer onClick={handleClick}>
       <Title>{name}</Title>
       <CountContainer>
-        <Icon>
-          <MdPeopleAlt />
-        </Icon>
-        <Count>{peopleCount}</Count>
+        <MdPeopleAlt />
+        {peopleCount}
       </CountContainer>
     </CardContainer>
   );
@@ -34,46 +32,56 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
 export default LeagueListItem;
 
 const CardContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.articleDivider};
-  width: 64px;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;  
+  border-radius: 5px;
+  padding: 14px 20px;
+  text-align: center;
+  align-items: center;
+  transition: transform 0.3s;
+
+  background: #fff;
+  cursor: pointer;
 
   &:hover {
-    background: #ffedd5;
+    background: #ffcc80;
     transition: 0.3s ease-in-out;
-    border: none;
+    transform: translateY(-5px) scale(1.05);
+  }
+
+  @media (min-width: 768px) {
+    width: 64px;
+    flex-direction: column;
+    border: 1px solid ${({ theme }) => theme.colors.articleDivider};
+    justify-content: left;
+    border-radius: 8px;
+    padding: 14px 10px;
   }
 `;
 
 const Title = styled.h3`
-  font-size: 14px;
+  font-size: 13px;
   color: #000;
-  margin-bottom: 8px;
-  margin-top: 0px;
+  margin: 0px;
+
+  @media (min-width: 768px) {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
 `;
 
 const CountContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.subDiscription};
-`;
 
-const Icon = styled.span`
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px; /* 아이콘 크기 조정 */
-  vertical-align: middle;
-`;
-
-const Count = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.subDiscription};
+  svg {
+    margin-right: 4px;
+  }
 `;

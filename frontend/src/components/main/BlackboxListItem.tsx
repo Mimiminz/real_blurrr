@@ -51,7 +51,10 @@ function BlackboxListItem({
   return (
     <Container>
       <ArticleInfo>
-        <Title>{title}</Title>
+        <Title>
+          {title.slice(0, 5)}
+          {title.length > 5 && " ..."}
+        </Title>
         <Participants>{totalVotes}명 참여</Participants>
       </ArticleInfo>
       <BarContainer>
@@ -74,6 +77,11 @@ const Container = styled.div`
   padding: 10px;
   width: 100%;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
 `;
 
 const ArticleInfo = styled.div`
@@ -82,22 +90,21 @@ const ArticleInfo = styled.div`
 `;
 
 const Title = styled.p`
-  font-size: 18px;
-  color: black;
-  margin-bottom: 8px;
-  margin-top: 12px;
+  font-size: 15px;
+  margin: 0;
+  margin: 3px 0 4px;
 `;
 
 const Participants = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.subDiscription};
-  margin-bottom: 8px;
+  font-size: 11px;
+  color: #5a5959;
+  /* margin-bottom: 8px; */
 `;
 
 const BarContainer = styled.div`
   display: flex;
   align-items: center;
-  height: 24px;
+  height: 20px;
   width: 50%;
   background-color: #fff3e0;
   border-radius: 12px;
@@ -112,9 +119,13 @@ const Bar = styled.div<{ width?: number; color?: string }>`
   align-items: center;
   justify-content: center;
   color: ${(props) => (props.color !== "#FF900D" ? "#000" : "#fff")};
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
+
+  @media (min-width: 768px) {
+    font-size: 11px;
+  }
 `;
