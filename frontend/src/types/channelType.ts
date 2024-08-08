@@ -135,7 +135,7 @@ export interface PostDataInfo {
 }
 
 export interface BoastInfo {
-  totalPage: number;
+  totalPages: number;
   totalElements: number;
   pageNumber: number;
   pageSize: number;

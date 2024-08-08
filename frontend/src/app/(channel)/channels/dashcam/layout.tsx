@@ -4,10 +4,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Breadcrumb from '@/components/common/UI/BreadCrumb';
 
-const LayoutContainer = styled.div`
-  padding: 10px 16px;  // 패딩 추가
-`;
-
 const BreadcrumbContainer = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -20,12 +16,12 @@ interface LayoutProps {
 
 const DashCamLayout: React.FC<LayoutProps> = ({ children }) => {
    return (
-      <LayoutContainer>
+      <>
          <BreadcrumbContainer>
             <Breadcrumb channel="채널" subChannel="블랙박스" channelUrl="/channels" />
          </BreadcrumbContainer>
          {children}
-      </LayoutContainer>
+      </>
    );
 };
 

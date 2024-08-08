@@ -15,4 +15,6 @@ public interface LeagueMemberRepository extends JpaRepository<LeagueMember, Long
 
    Boolean existsByLeagueAndMember(League league, Member member);
 
+   Boolean existsByMember(Member member);
+
 }

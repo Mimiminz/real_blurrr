@@ -5,10 +5,6 @@ import styled from 'styled-components';
 import Breadcrumb from '@/components/common/UI/BreadCrumb';
 import { useChannelStore } from '@/store/channelStore'; // zustand 상태 가져오기
 
-const LayoutContainer = styled.div`
-  padding: 10px 16px;  // 패딩 추가
-`;
-
 const BreadcrumbContainer = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -30,7 +26,7 @@ const ChannelLayout: React.FC<LayoutProps> = ({ children }) => {
    }, []);
 
    return (
-      <LayoutContainer>
+      <>
          <BreadcrumbContainer>
             {isClient ? (
                <Breadcrumb
@@ -49,7 +45,7 @@ const ChannelLayout: React.FC<LayoutProps> = ({ children }) => {
             )}
          </BreadcrumbContainer>
          {children}
-      </LayoutContainer>
+      </>
    );
 };
 
