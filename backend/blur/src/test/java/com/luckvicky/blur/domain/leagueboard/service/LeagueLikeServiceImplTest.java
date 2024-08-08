@@ -14,7 +14,7 @@ import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
 import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
-import com.luckvicky.blur.domain.member.factory.MemberFactory;
+import com.luckvicky.blur.domain.member.strategy.MemberFactory;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.Optional;

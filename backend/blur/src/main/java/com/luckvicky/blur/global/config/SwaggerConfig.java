@@ -14,6 +14,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.List;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
@@ -29,16 +31,27 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+
+        Server devServer = new Server();
+        devServer.setDescription("dev");
+        devServer.setUrl("https://i11a307.p.ssafy.io");
+
+        Server localServer = new Server();
+        localServer.setDescription("local");
+        localServer.setUrl("http://localhost:8080");
+
         return new OpenAPI()
                 .info(apiInfo())
-                .components(new Components()
-                        .addSecuritySchemes(
+                .servers(List.of(devServer, localServer))
+                .components(
+                        new Components().addSecuritySchemes(
                                 TOKEN_PREFIX,
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme(TOKEN_PREFIX)
-                                        .bearerFormat(JWT)))
-                ;
+                                        .bearerFormat(JWT))
+                );
+
     }
 
     private Info apiInfo() {

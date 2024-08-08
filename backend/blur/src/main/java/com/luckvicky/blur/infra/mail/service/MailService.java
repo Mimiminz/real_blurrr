@@ -26,11 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private final ResourceLoader resourceLoader;
 
-    public MailService(JavaMailSender javaMailSender, ResourceLoader resourceLoader) {
+    public MailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
-        this.resourceLoader = resourceLoader;
     }
 
     @Async
@@ -50,11 +48,4 @@ public class MailService {
             throw new RuntimeException(e);
         }
     }
-
-    public String todayDate(){
-        ZonedDateTime todayDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).atZone(ZoneId.of("Asia/Seoul"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일");
-        return todayDate.format(formatter);
-    }
-
 }

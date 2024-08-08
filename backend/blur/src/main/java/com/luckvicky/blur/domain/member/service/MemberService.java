@@ -18,16 +18,9 @@ public interface MemberService {
     void createMember(SignupDto signupDto);
     JwtDto login(SignInDto signInDto);
     MemberProfile findMember(UUID memberId);
-    JwtDto reissueToken(ReissueDto reissue);
-    Boolean checkNickname(String nickname);
     MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
-
     boolean modifyPassword(ChangePassword changePassword, UUID memberId);
     boolean modifyPassword(ChangeFindPassword changeFindPassword);
-    boolean createEmailAuthCode(String email);
-    boolean validEmailAuth(EmailAuth emailAuth);
-    boolean createPasswordAuthCode(String email);
-    boolean validPasswordAuthCode(EmailAuth emailAuth);
     boolean checkPassword(UUID memberId, CheckPassword checkPassword);
     void logout(UUID memberId);
 }

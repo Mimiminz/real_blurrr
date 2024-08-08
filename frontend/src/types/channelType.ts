@@ -28,41 +28,6 @@ export interface Mentioned {
    name: string;
  }
 
-export interface DashCamList {
-  totalPages: number;
-  totalElements: number;
-  pageNumber: number;
-  pageSize: number;
-  content: DashCam[];
-}
-
-export interface DashCam {
-  id: string;
-  member: SimpleMember;
-  title: string;
-  viewCount: number;
-  commentCount: number;
-  likeCount: number;
-  createdAt: string;
-  videoUrl: string[];
-  mentionedLeagues: Mentioned[];
-}
-
-export interface DashCamDetail {
-   id: string;
-   member: SimpleMember;
-   title: string;
-   viewCount: number;
-   commentCount: number;
-   likeCount: number;
-   voteCount: number;
-   createdAt: string; // ISO 날짜 문자열을 가리킴
-   videoUrl: string[];
-   content: string;
-   mentionedLeagues: Mentioned[];
-   liked: boolean;
- }
-
 export interface ChannelInfo {
   content: Channels[];
   currentPage: number;
@@ -151,6 +116,41 @@ export interface Boasts {
   simpleMemberDto: SimpleMember;
 }
 
+export interface DashCamList {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: DashCam[];
+}
+
+export interface DashCam {
+  id: string;
+  member: SimpleMember;
+  title: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  createdAt: string;
+  videoUrl: string[];
+  mentionedLeagues: Mentioned[];
+}
+
+export interface DashCamDetail {
+   id: string;
+   member: SimpleMember;
+   title: string;
+   viewCount: number;
+   commentCount: number;
+   likeCount: number;
+   voteCount: number;
+   createdAt: string; // ISO 날짜 문자열을 가리킴
+   videoUrl: string[];
+   content: string;
+   mentionedLeagues: Mentioned[];
+   liked: boolean;
+ }
+
 export interface Vote { 
   hasVoted: boolean;
   selectedOptionId: string;
@@ -163,8 +163,12 @@ export interface Option {
   content: string;
   voteCount: number;
  }
- 
-export interface Video {
-  videoUrl: string[];
 
+export interface CreateOption{
+  optionOrder: number;
+  content: string;
+}
+
+export interface Video{
+  videoUrl: string;
 }

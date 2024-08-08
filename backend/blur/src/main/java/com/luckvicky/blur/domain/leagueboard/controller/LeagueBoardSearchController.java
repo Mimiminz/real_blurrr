@@ -1,7 +1,7 @@
 package com.luckvicky.blur.domain.leagueboard.controller;
 
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
-import com.luckvicky.blur.domain.leagueboard.service.LeagueSearchService;
+import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardSearchService;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/leagues")
 @RequiredArgsConstructor
-public class LeagueSearchController {
+public class LeagueBoardSearchController {
 
-    private final LeagueSearchService leagueSearchService;
+    private final LeagueBoardSearchService leagueBoardSearchService;
 
     @Operation(summary = "리그 게시글 검색 API", description = "리그에 대한 게시물에 대하여 검색한다.")
     @Parameters({
@@ -69,7 +69,7 @@ public class LeagueSearchController {
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
-        PaginatedResponse<LeagueBoardResponse> response = leagueSearchService.search(
+        PaginatedResponse<LeagueBoardResponse> response = leagueBoardSearchService.search(
                 leagueId, leagueType, keyword, condition, pageNumber, criteria
         );
 

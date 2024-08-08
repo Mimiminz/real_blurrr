@@ -1,8 +1,14 @@
 package com.luckvicky.blur.domain.member.service;
 
-import org.springframework.stereotype.Service;
+import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
+import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
+import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
+import com.luckvicky.blur.global.jwt.model.JwtDto;
+import com.luckvicky.blur.global.jwt.model.ReissueDto;
 
-@Service
-public class AuthService {
-
+public interface AuthService {
+    JwtDto reissueToken(ReissueDto reissue);
+    boolean createEmailAuthCode(String email, AuthCodeType authCodeType);
+    boolean validAuthCode(EmailAuth emailAuth, AuthCodeType authCodeType);
+    Boolean checkNickname(String nickname);
 }

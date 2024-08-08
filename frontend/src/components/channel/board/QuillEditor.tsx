@@ -77,7 +77,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
           [{ color: [] }, { background: [] }],
-          ["link", "image", "video"],
+          ["link", "image"],
           ["vote"],
         ],
         handlers: {
@@ -104,7 +104,6 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
     "background",
     "link",
     "image",
-    "video",
     'height',
     'width',
   ];

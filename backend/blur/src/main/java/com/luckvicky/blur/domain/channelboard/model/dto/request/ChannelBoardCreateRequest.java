@@ -17,7 +17,7 @@ public class ChannelBoardCreateRequest {
     @Schema(
             description = "제목",
             example = "GV70 구매 예정입니다.",
-            maxLength = 20
+            maxLength = 35
     )
     String title;
 

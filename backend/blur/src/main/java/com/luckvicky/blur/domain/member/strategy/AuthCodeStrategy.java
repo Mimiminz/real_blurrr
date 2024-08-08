@@ -1,4 +1,4 @@
-package com.luckvicky.blur.domain.member.factory;
+package com.luckvicky.blur.domain.member.strategy;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -6,8 +6,7 @@ import java.security.SecureRandom;
 public interface AuthCodeStrategy {
     default String saveAuthCode(String email) {
         String code = createCode();
-
-        saveToRedis(generateKey(email), code);
+        save(email, code);
         return code;
     }
 
@@ -28,7 +27,9 @@ public interface AuthCodeStrategy {
             throw new RuntimeException(e);
         }
     }
+    void save(String key, String code);
 
-    void saveToRedis(String key, String code);
-    String generateKey(String email);
+    boolean validAuthCode(String email, String code);
+    void pushAvailableEmail(String email);
+    void checkAvailableEmail(String email);
 }
