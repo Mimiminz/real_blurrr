@@ -85,7 +85,7 @@ export default function CreateComment({
           onBlur={handleBlur}
           ref={inputRef}
         />
-        {isFocused && <CharCount>{comment.length}/200</CharCount>}
+        <CharCount>{comment.length}/200</CharCount>
       </InputContainer>
       <Button type="submit" disabled={!comment.trim()}>
         작성
@@ -104,12 +104,17 @@ const Container = styled.form`
 `;
 
 const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background-color: #c4c4c4;
   margin-top: 3px;
   margin-right: 8px;
+
+  @media (min-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -128,17 +133,25 @@ const Input = styled.input`
 
 const CharCount = styled.div`
   align-self: flex-end;
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
   margin-right: 8px;
+
+  @media (min-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const Button = styled.button<{ disabled: boolean }>`
   background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fbc02d")};
   border: none;
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 8px 10px;
   color: #fff;
   font-weight: bold;
   cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+
+  @media (min-width: 768px) {
+    padding: 8px 16px;
+  }
 `;

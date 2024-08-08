@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
 import { CommentListItemProps } from "@/types/commentTypes";
+import { formatPostDate } from "@/utils/formatPostDate";
 
 const Container = styled.div`
   display: flex;
@@ -14,12 +15,17 @@ const Container = styled.div`
 `;
 
 const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background-color: #c4c4c4;
   margin-top: 3px;
   margin-right: 8px;
+
+  @media (min-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Content = styled.div`
@@ -29,36 +35,77 @@ const Content = styled.div`
 
 const UsernameWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
   margin-bottom: 6px;
+  justify-content: flex-start;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const Username = styled.span`
   font-weight: bold;
-  font-size: 16px;
-  color: #f57c00;
+  font-size: 14px;
+  color: #333;
+
+  &.author {
+    color: #f57c00;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 15px;
+  }
 `;
 
 const UserDetail = styled.span`
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
-  margin-left: 8px;
+
+  &.long {
+    font-size: 11px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 13px;
+
+    &.long {
+      font-size: 12px;
+    }
+
+    &::before {
+      content: "ㆍ";
+      display: inline;
+    }
+  }
 `;
 
 const Text = styled.span`
   font-size: 14px;
   color: #333;
   margin-bottom: 2px;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
 `;
+
 const ActionRow = styled.div`
   display: flex;
   align-items: center;
   margin-top: 8px;
 `;
+
 const Delete = styled.span`
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const Time = styled.span`
@@ -88,21 +135,9 @@ const Reply: React.FC<CommentListItemProps> = ({
   onCommentAdded,
   isLeague,
   leagueId,
+  boardAuthor,
 }) => {
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
-
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } else {
-      return postDate.toISOString().split("T")[0].replace(/-/g, ".");
-    }
-  };
+  const [isLong, setIsLong] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -117,14 +152,25 @@ const Reply: React.FC<CommentListItemProps> = ({
       console.error("Error submitting comment:", error);
     }
   };
+
+  useEffect(() => {
+    if (userDetail && userDetail.length > 10) {
+      setIsLong(true);
+    }
+  }, [userDetail]);
+
   return (
     <Container>
       <DotLine />
       <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />
       <Content>
         <UsernameWrapper>
-          <Username>{userName}</Username>
-          <UserDetail>· {userDetail || "뚜벅이"}</UserDetail>
+          <Username className={boardAuthor === userName ? "author" : ""}>
+            {userName}
+          </Username>
+          <UserDetail className={isLong ? "long" : ""}>
+            {userDetail || "뚜벅이"}
+          </UserDetail>
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>
