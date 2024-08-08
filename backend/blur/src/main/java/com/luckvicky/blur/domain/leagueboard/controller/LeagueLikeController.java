@@ -1,13 +1,5 @@
 package com.luckvicky.blur.domain.leagueboard.controller;
 
-import static com.luckvicky.blur.global.constant.ErrorMessage.FAIL_TO_CREATE_LIKE_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.FAIL_TO_DELETE_LIKE_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_ALLOCATED_LEAGUE_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_EXIST_BOARD_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_EXIST_LIKE_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.NOT_EXIST_MEMBER_MESSAGE;
-import static com.luckvicky.blur.global.constant.ErrorMessage.UNAUTHORIZED_ACCESS_MESSAGE;
-
 import com.luckvicky.blur.domain.leagueboard.service.LeagueLikeService;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
@@ -18,10 +10,6 @@ import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

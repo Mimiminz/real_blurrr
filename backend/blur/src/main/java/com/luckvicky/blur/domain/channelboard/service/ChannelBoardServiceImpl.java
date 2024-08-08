@@ -11,6 +11,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
+import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardResponse;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
@@ -22,6 +23,8 @@ import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
+import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -36,10 +39,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.luckvicky.blur.global.constant.Number.CHANNEL_BOARD_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +54,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChannelBoardServiceImpl implements ChannelBoardService {
-
 
     private final ModelMapper mapper;
     private final ChannelBoardMapper channelBoardMapper;
@@ -170,6 +175,66 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
         }
 
         return channelBoardMapper.toChannelBoardDto(channelBoard);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PaginatedResponse<ChannelBoardResponse> findChannelBoardByLike(UUID id, int pageNumber) {
+
+        Member member = memberRepository.getOrThrow(id);
+
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                GENERAL_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.TIME.getCriteria())
+        );
+
+        Page<ChannelBoard> likeBoards = channelBoardRepository.findAllByMemberAndLike(member, pageable, ActivateStatus.ACTIVE);
+
+        return PaginatedResponse.of(
+                likeBoards.getNumber(),
+                likeBoards.getSize(),
+                likeBoards.getTotalElements(),
+                likeBoards.getTotalPages(),
+                likeBoards.stream()
+                        .map(channelBoard ->
+                            ChannelBoardResponse.of(
+                                    channelBoard, MentionDto.of(mentionRepository.findAllByBoard(channelBoard))
+                            )
+                        )
+                        .collect(Collectors.toList())
+        );
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PaginatedResponse<ChannelBoardResponse> findMyBoard(UUID memberId, int pageNumber) {
+
+        Member member = memberRepository.getOrThrow(memberId);
+
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                LEAGUE_BOARD_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.TIME.getCriteria())
+        );
+
+        Page<ChannelBoard> myBoards = channelBoardRepository.findAllByMemberAndStatus(member, ActivateStatus.ACTIVE, pageable);
+
+        return PaginatedResponse.of(
+                myBoards.getNumber(),
+                myBoards.getSize(),
+                myBoards.getTotalElements(),
+                myBoards.getTotalPages(),
+                myBoards.stream()
+                        .map(channelBoard ->
+                                ChannelBoardResponse.of(
+                                        channelBoard, MentionDto.of(mentionRepository.findAllByBoard(channelBoard))
+                                )
+                        )
+                        .collect(Collectors.toList())
+        );
+
     }
 
     private boolean isLike(UUID memberId, Board board) {
