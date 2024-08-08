@@ -23,7 +23,9 @@ const initialValues: SignupFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string().email('이메일은 필수 입력 항목입니다.'),
-  nickname: Yup.string().required('닉네임은 필수 입력 항목입니다.'),
+  nickname: Yup.string()
+  .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
+  .required('닉네임은 필수 입력 항목입니다.'),
 });
 
 const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {

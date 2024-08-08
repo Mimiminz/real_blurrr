@@ -3,56 +3,63 @@ import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import { useAuthStore } from '@/store/authStore';
+import { ChangeMyPassword } from '../../api/mypage';
 
-
-interface SignupFormValues {
-  email: string;
-  nickname: string;
-  password: string;
-  passwordCheck: string;
+interface ChangePasswordFormValues {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordCheck: string;
 }
 
-const initialValues: SignupFormValues = {
-  email: '',
-  nickname: '',
-  password: '',
-  passwordCheck: '',
+const initialValues: ChangePasswordFormValues = {
+  oldPassword: '',
+  newPassword: '',
+  newPasswordCheck: '',
 };
 
 const validationSchema = Yup.object({
-  email: Yup.string().email('이메일은 필수 입력 항목입니다.'),
-  nickname: Yup.string().required('닉네임은 필수 입력 항목입니다.'),
-  password: Yup.string()
-    .required('비밀번호는 필수 입력 항목입니다.')
+  oldPassword: Yup.string()
+    .required('현재 비밀번호는 필수 입력 항목입니다.'),
+  newPassword: Yup.string()
+    .required('새 비밀번호는 필수 입력 항목입니다.')
     .matches(
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/,
       '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.'
     ),
-  passwordCheck: Yup.string()
+  newPasswordCheck: Yup.string()
     .required('비밀번호 확인은 필수 입력 항목입니다.')
-    .oneOf([Yup.ref('password'), ''], '비밀번호가 일치하지 않습니다.'),
+    .oneOf([Yup.ref('newPassword'), ''], '비밀번호가 일치하지 않습니다.'),
 });
 
-const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
-  console.log(values);
+const handleSubmit = async (
+  values: ChangePasswordFormValues, 
+  { setSubmitting, setErrors }: FormikHelpers<ChangePasswordFormValues>
+) => {
+  const { accessToken } = useAuthStore.getState();
+  if (accessToken) {
+    try {
+      const success = await ChangeMyPassword(
+        values.oldPassword,
+        values.newPassword,
+        values.newPasswordCheck,
+        accessToken
+      );
+      console.log('API 응답:', success);
+      if (success) {
+        alert('비밀번호가 성공적으로 변경되었습니다.');
+      } else {
+        alert('비밀번호 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      setErrors({ oldPassword: '비밀번호 변경 중 오류가 발생했습니다.' });
+    }
+  } else {
+    setErrors({ oldPassword: '사용자 정보가 없습니다.' });
+  }
   setSubmitting(false);
 };
 
 const ChangePassword = (): JSX.Element => {
-  const [profileImage, setProfileImage] = useState<string>('images/profile.jpg');
-  const user = useAuthStore(state => state.user);
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target) {
-          setProfileImage(e.target.result as string);
-        }
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  };
-
   return (
     <Container>
       <Title>비밀번호 변경</Title>
@@ -66,43 +73,32 @@ const ChangePassword = (): JSX.Element => {
           <StyledForm>
             <InputContainer>
               <StyledField
-                name="password"
+                name="oldPassword"
                 type="password"
                 placeholder="현재 비밀번호"
-                className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
+                className={touched.oldPassword ? (errors.oldPassword ? 'error' : 'valid') : ''}
               />
-              <StyledErrorMessage name="password" component="div" />
-              {touched.password && !errors.password && (
-                <SuccessMessage>올바른 비밀번호입니다.</SuccessMessage>
-              )}
+              <StyledErrorMessage name="oldPassword" component="div" />
             </InputContainer>
-
-        
 
             <InputContainer>
               <StyledField
-                name="password"
+                name="newPassword"
                 type="password"
                 placeholder="새 비밀번호"
-                className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
+                className={touched.newPassword ? (errors.newPassword ? 'error' : 'valid') : ''}
               />
-              <StyledErrorMessage name="password" component="div" />
-              {touched.password && !errors.password && (
-                <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
-              )}
+              <StyledErrorMessage name="newPassword" component="div" />
             </InputContainer>
 
             <InputContainer>
               <StyledField
-                name="passwordCheck"
+                name="newPasswordCheck"
                 type="password"
                 placeholder="비밀번호 확인"
-                className={touched.passwordCheck ? (errors.passwordCheck ? 'error' : 'valid') : ''}
+                className={touched.newPasswordCheck ? (errors.newPasswordCheck ? 'error' : 'valid') : ''}
               />
-              <StyledErrorMessage name="passwordCheck" component="div" />
-              {touched.passwordCheck && !errors.passwordCheck && (
-                <SuccessMessage>새 비밀번호가 일치합니다.</SuccessMessage>
-              )}
+              <StyledErrorMessage name="newPasswordCheck" component="div" />
             </InputContainer>
 
             <Button type="submit">저장</Button>
