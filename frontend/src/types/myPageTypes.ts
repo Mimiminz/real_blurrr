@@ -29,5 +29,5 @@ export interface Member {
   }
   
   export interface MyPostListResponse {
-    boards: MyHeartItem[];
+    boards: MyPostItem[];
   }

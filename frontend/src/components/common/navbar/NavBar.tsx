@@ -64,7 +64,6 @@ const NavBar = () => {
     setMentionTabs([]);
     setIsLoadUserLeagues(false);
     alert("로그아웃되었습니다.");
-    router.push("/");
     setMenuOpen(false);
   };
 
