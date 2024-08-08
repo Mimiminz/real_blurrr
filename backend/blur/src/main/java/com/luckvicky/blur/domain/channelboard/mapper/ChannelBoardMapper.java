@@ -36,12 +36,7 @@ public class ChannelBoardMapper {
                 .commentCount(channelBoard.getCommentCount())
                 .likeCount(channelBoard.getLikeCount())
                 .viewCount(channelBoard.getViewCount())
-                .simpleContent(channelBoard.getContent()
-                        .replaceAll("<[^>]*>", "")
-                        .replaceAll("\\s+", " ")
-                        .trim()
-                        .substring(0, Math.min(30, channelBoard.getContent().length()))
-                        + (channelBoard.getContent().length() > 30 ? "..." : ""))
+                .simpleContent(channelBoard.getContent())
                 .build();
     }
 
