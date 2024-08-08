@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, KeyboardEvent } from "react";
+import React, { useState, useRef, useEffect, KeyboardEvent, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import styled from 'styled-components';
 import QuillEditor from '@/components/channel/board/QuillEditor';
@@ -37,7 +37,7 @@ export default function WritePage() {
     setTitle(e.target.value);
   };
 
-  const handleTagInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagInput(e.target.value);
 
     if (e.target.value.trim()) {
@@ -54,7 +54,7 @@ export default function WritePage() {
       setTagSuggestions([]);
       setShowSuggestions(false);
     }
-  };
+  }, []);
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -80,9 +80,9 @@ export default function WritePage() {
     }
   };
 
-  const handleTagRemove = (tagToRemove: Mentioned) => {
+  const handleTagRemove = useCallback((tagToRemove: Mentioned) => {
     setTags(tags.filter(tag => tag.name !== tagToRemove.name));
-  };
+  }, [tags]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,13 +99,13 @@ export default function WritePage() {
     }
   };
 
-  const handleTagClick = (suggestion: Mentioned) => {
+  const handleTagClick = useCallback((suggestion: Mentioned) => {
     if (tags.length < 3 && !tags.some(tag => tag.name === suggestion.name)) {
       setTags([...tags, suggestion]);
       setTagInput("");
       setShowSuggestions(false);
     }
-  };
+  }, [tags]);
 
   return (
     <Container>
