@@ -88,7 +88,7 @@ export default function Home() {
 
     initailizeTabs();
     setIsLeagueLoading(false);
-  });
+  }, []);
 
   const handleMoreClickLeage = () => {
     router.push("/league");
