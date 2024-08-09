@@ -32,8 +32,7 @@ const UserCarInfo: React.FC = () => {
   return (
     <Container>
       <ProfileSection>
-        {/* <ProfileImage src={user?.profileUrl} alt="User Profile" /> */}
-        <ProfileImage />
+        <ProfileImage src={user?.profileUrl} alt="User Profile" />
 
         <InfoSection>
           <UserName>{user?.nickname}</UserName>
@@ -88,7 +87,7 @@ const Container = styled.div`
   padding: 20px;
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1); */
 
   @media (min-width: 768px) {
     margin-left: 20px;
@@ -157,6 +156,7 @@ const ClickableLeagueName = styled.p`
   display: flex;
   align-items: center;
   cursor: pointer;
+  font-weight: bold;
   color: black;
 
   &:hover {

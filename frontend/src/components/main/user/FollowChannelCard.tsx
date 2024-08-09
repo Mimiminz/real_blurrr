@@ -49,6 +49,12 @@ const CardContainer = styled.div`
   padding-bottom: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  transition: transform 0.3s;
+
+  &:hover {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-5px) scale(1.05);
+  }
 `;
 
 const ChannelImage = styled.img`
@@ -108,7 +114,7 @@ const Tooltip = styled.div`
     border-color: transparent transparent black transparent;
   }
 
-  ${TitleContainer}:hover & {
+  ${CardContainer}:hover & {
     visibility: visible;
   }
 `;
