@@ -2,7 +2,6 @@ package com.luckvicky.blur.domain.channel.controller;
 
 import static com.luckvicky.blur.global.constant.Number.CHANNEL_PAGE_SIZE;
 
-import com.luckvicky.blur.domain.channel.exception.KeywordLimitExceededException;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
@@ -29,11 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +53,7 @@ public class ChannelController {
     @PostMapping
     public ResponseEntity<Result<ChannelDto>> createChannel(
             @Valid @RequestBody ChannelCreateRequest request, @AuthUser ContextMember contextMember) {
+
         ChannelDto createdChannel = channelService.createChannel(request, contextMember.getId());
         return ResponseUtil.created(
                 Result.<ChannelDto>builder()
