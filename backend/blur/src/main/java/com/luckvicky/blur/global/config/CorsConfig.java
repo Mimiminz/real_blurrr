@@ -16,10 +16,10 @@ public class CorsConfig {
 
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "https://www.teamblurrr.com",
-                "https://i11a307.p.ssafy.io",
-                "http://localhost:8080"
+                        "http://localhost:3000",
+                        "https://www.teamblurrr.com",
+                        "https://i11a307.p.ssafy.io",
+                        "http://localhost:8080"
                 )
         );
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

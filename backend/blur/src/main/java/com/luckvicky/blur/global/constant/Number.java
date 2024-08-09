@@ -16,6 +16,7 @@ public class Number {
     public static final int CHANNEL_PAGE_SIZE = 40;
     public static final int FOLLOW_CHANNEL_PAGE_SIZE = 10;
     public static final int CREATE_CHANNEL_PAGE_SIZE = 10;
+    public static final int MENTION_LEAGUE_SEARCH_PAGE_SIZE = 5;
 
 
 
