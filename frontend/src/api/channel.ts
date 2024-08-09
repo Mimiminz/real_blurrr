@@ -379,6 +379,28 @@ export const fetchBoastDetail = async (
   }
 };
 
+// 내 차 자랑 채널 게시글 생성 함수
+export const fetchBoastWrite = async (
+  title: string,
+  content: string,
+  thumbNail: string,
+  mentionedLeagueNames: string[]
+) => {
+  try {
+    const response = await api.post(`/v1/channels/mycar/boards`, {
+      title: title,
+      content: content,
+      boardType: "MYCAR",
+      thumbNail: thumbNail,
+      mentionedLeagueNames: mentionedLeagueNames
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const fetchChannelBoardDelete = async (boardId: string) => {
   try {
     const response = await api.delete(`/v1/boards/${boardId}`);

@@ -4,10 +4,11 @@ import React, { useState, useRef, useEffect, KeyboardEvent, useCallback } from "
 import { useRouter, useParams } from "next/navigation";
 import styled from 'styled-components';
 import QuillEditor from '@/components/channel/board/QuillEditor';
-import { fetchPostWrite, fetchTags } from '@/api/channel';
+import { fetchPostWrite, fetchTags, fetchBoastWrite } from '@/api/channel';
 import { Mentioned } from '@/types/channelType';
 
 export default function WritePage() {
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
   const { channelId } = useParams<{ channelId: string }>();
   const router = useRouter();
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -19,6 +20,7 @@ export default function WritePage() {
   const [tagSuggestions, setTagSuggestions] = useState<Mentioned[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [thumbNail, setThumbNail] = useState<string>("");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,8 +94,13 @@ export default function WritePage() {
     }
 
     try {
-      await fetchPostWrite(channelId, title, content, tags);
-      router.push(`/channels/${channelId}`);
+      if (boastId === channelId) {
+        await fetchBoastWrite(title, content, thumbNail, tags);
+        router.push(`/channels/boast`);
+      } else {
+        await fetchPostWrite(channelId, title, content, tags);
+        router.push(`/channels/${channelId}`);
+      }
     } catch (error) {
       console.error("Error submitting post:", error);
     }
@@ -149,7 +156,7 @@ export default function WritePage() {
         </TagInputContainer>
         <EditorAndButtonContainer>
           <EditorContainer>
-            <QuillEditor content={content} setContent={setContent} />
+            <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
           </EditorContainer>
           <SubmitButton type="submit">작성</SubmitButton>
         </EditorAndButtonContainer>

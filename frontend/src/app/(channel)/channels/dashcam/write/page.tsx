@@ -34,6 +34,7 @@ export default function WritePage() {
    const [uploadProgress, setUploadProgress] = useState(0);
    const [isUploading, setIsUploading] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
+   const [thumbNail, setThumbNail] = useState<string | null>(null);
 
    const [showPopup, setShowPopup] = useState(false);
    const [voteOptions, setVoteOptions] = useState<CreateOption[]>([]);
@@ -110,7 +111,6 @@ export default function WritePage() {
       }
 
       try {
-         console.log(noQueryParamURLs);
          await fetchDashCamWrite(title, content, "투표 제목", voteOptions, noQueryParamURLs, tags);
          router.push(`/channels/dashcam`);
       } catch (error) {
@@ -143,8 +143,11 @@ export default function WritePage() {
          await S3UploadVideo(uploadURL, file);
 
          // Set video URL for rendering
-         setVideoFiles([...videoFiles, file]);
-         setNoQueryParamURLs([...noQueryParamURLs, { videoUrl: noQueryParamUrl }]);
+         setVideoFiles(prevFiles => [...prevFiles, file]);
+         setNoQueryParamURLs(prevUrls => [
+            ...prevUrls,
+            { videoOrder: prevUrls.length + 1, videoUrl: noQueryParamUrl }
+         ]);
 
          // Add noQueryParamUrl to videos
          setIsUploading(true);
@@ -171,8 +174,6 @@ export default function WritePage() {
    const togglePopup = () => {
       setShowPopup(!showPopup);
    };
-
-   const isClient = typeof window !== "undefined";
 
    return (
       <Container>
@@ -215,7 +216,7 @@ export default function WritePage() {
                </TagsContainer>
             </TagInputContainer>
             <EditorContainer>
-               <QuillEditor content={content} setContent={setContent} />
+               <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
             </EditorContainer>
             {isLoading ? (
                <>
