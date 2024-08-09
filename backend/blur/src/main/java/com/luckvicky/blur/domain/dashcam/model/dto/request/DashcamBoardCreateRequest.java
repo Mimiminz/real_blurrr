@@ -45,12 +45,12 @@ public record DashcamBoardCreateRequest(
 
         @Schema(
                 description = "비디오 URL 리스트 (최대 2개, 선택적)",
-                example = "[{\"videoUrl\": \"http://example.com/video1.mp4\"}, {\"videoUrl\": \"http://example.com/video2.mp4\"}]"
+                example = "[{\"videoOrder\": 1, \"videoUrl\": \"http://example.com/video1.mp4\"}, {\"videoOrder\": 2, \"videoUrl\": \"http://example.com/video2.mp4\"}]"
         )
 
         @Size(max = 2, message = "비디오 URL은 최대 2개까지만 가능합니다.")
         @Valid
-        List<Video> videos,
+        List<VideoCreateRequest> videos,
 
         @Schema(
                 description = "멘션된 리그 이름 리스트 (최대 4개, 선택적)",
@@ -79,7 +79,6 @@ public record DashcamBoardCreateRequest(
                 .commentCount(0L)
                 .likeCount(0L)
                 .totalVoteCount(0L)
-                .videos(this.videos)
                 // TODO : 썸네일 만들어야함.
                 .thumbNail("https://blurrr-img-bucket.s3.ap-northeast-2.amazonaws.com/videos/bbcc4b76-2661-4-dashcam_test.png")
                 .build();

@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -31,15 +32,13 @@ public class DashCam extends Board {
     @OneToMany(mappedBy = "dashCam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
 
+    @Setter
+    @OneToMany(mappedBy = "dashCam", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Video> videos = new ArrayList<>();
+
     @Column
     private String thumbNail;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "videos",
-            joinColumns = @JoinColumn(name = "id", columnDefinition = "BINARY(16)")
-    )
-    private List<Video> videos = new ArrayList<>();
 
     @Column(nullable = false)
     private Long totalVoteCount;
@@ -54,10 +53,6 @@ public class DashCam extends Board {
 
     public void setOption(List<Option> options) {
         this.options = options;
-    }
-
-    public void setVideos(List<Video> videos) {
-        this.videos = videos;
     }
 
     public void increaseVoteCount() {this.totalVoteCount++;}
