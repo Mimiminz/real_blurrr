@@ -1,107 +1,33 @@
 "use client";
 
-import React, { useState, useRef, useEffect, KeyboardEvent, useCallback } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import styled from 'styled-components';
-// import QuillEditor from '@/components/channel/board/QuillEditor';
-import { fetchDashCamWrite, fetchTags, videoPresigned, S3UploadVideo } from '@/api/channel';
-import { Mentioned, CreateOption, Video } from '@/types/channelType';
-import DraggableVotePopup from '@/components/channel/dashcam/DraggableVotePopup';
-import { GoPaperclip } from "react-icons/go";
+import styled from "styled-components";
+import dynamic from "next/dynamic";
+import { fetchDashCamWrite } from "@/api/channel";
+import FindTags from "@/components/channel/board/FindTags";
+import VideoUpload from "@/components/channel/board/VideoUpload";
+import DraggableVotePopup from "@/components/channel/dashcam/DraggableVotePopup";
+import { CreateOption, Video } from "@/types/channelType";
 
-import dynamic from 'next/dynamic'; // dynamic import 추가
-
-// QuillEditor를 동적으로 로드 (클라이언트에서만 로드됨)
 const QuillEditor = dynamic(() => import('@/components/channel/board/QuillEditor'), { ssr: false });
-
 
 export default function WritePage() {
    const router = useRouter();
-   const suggestionsRef = useRef<HTMLDivElement>(null);
-   const fileInputRef = useRef<HTMLInputElement>(null);
 
    const [title, setTitle] = useState("");
    const [content, setContent] = useState("");
    const [tags, setTags] = useState<string[]>([]);
-   const [tagInput, setTagInput] = useState("");
-   const [tagSuggestions, setTagSuggestions] = useState<Mentioned[]>([]);
-   const [showSuggestions, setShowSuggestions] = useState(false);
-   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
    const [videoFiles, setVideoFiles] = useState<File[]>([]);
    const [noQueryParamURLs, setNoQueryParamURLs] = useState<Video[]>([]);
-
-   const [uploadProgress, setUploadProgress] = useState(0);
-   const [isUploading, setIsUploading] = useState(false);
-   const [isLoading, setIsLoading] = useState(false);
-   const [thumbNail, setThumbNail] = useState<string | null>(null);
-
    const [showPopup, setShowPopup] = useState(false);
    const [voteOptions, setVoteOptions] = useState<CreateOption[]>([]);
-
-   useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-         if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
-            setShowSuggestions(false);
-         }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-         document.removeEventListener("mousedown", handleClickOutside);
-      };
-   }, []);
+   const [thumbNail, setThumbNail] = useState<string | null>(null);
+   const [voteTitle, setVoteTitle] = useState<string>("");
 
    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setTitle(e.target.value);
    };
-
-   const handleTagInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-      setTagInput(e.target.value);
-
-      if (e.target.value.trim()) {
-         try {
-            const suggestions = await fetchTags(e.target.value.trim());
-            setTagSuggestions(suggestions || []);
-            setShowSuggestions(true);
-            console.log("Tag suggestions:", suggestions);
-         } catch (error) {
-            console.error("Error fetching tag suggestions:", error);
-            setTagSuggestions([]);
-         }
-      } else {
-         setTagSuggestions([]);
-         setShowSuggestions(false);
-      }
-   }, []);
-
-   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-         e.preventDefault();
-         if (highlightedIndex >= 0 && tagSuggestions.length > 0) {
-            const selectedTag = tagSuggestions[highlightedIndex];
-            if (tags.length < 3 && !tags.some(tag => tag === selectedTag.name)) {
-               setTags([...tags, selectedTag.name]);
-               setTagInput("");
-               setShowSuggestions(false);
-            }
-         } else if (tagInput.trim() && tags.length < 3 && !tags.some(tag => tag === tagInput.trim())) {
-            setTags([...tags, tagInput.trim()]);
-            setTagInput("");
-            setShowSuggestions(false);
-         }
-      } else if (e.key === "ArrowDown") {
-         e.preventDefault();
-         setHighlightedIndex((prevIndex) => (prevIndex + 1) % tagSuggestions.length);
-      } else if (e.key === "ArrowUp") {
-         e.preventDefault();
-         setHighlightedIndex((prevIndex) => (prevIndex + tagSuggestions.length - 1) % tagSuggestions.length);
-      }
-   };
-
-   const handleTagRemove = useCallback((tagToRemove: string) => {
-      setTags(tags.filter(tag => tag !== tagToRemove));
-   }, [tags]);
 
    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -115,59 +41,6 @@ export default function WritePage() {
          router.push(`/channels/dashcam`);
       } catch (error) {
          console.error("Error submitting post:", error);
-      }
-   };
-
-   const handleTagClick = useCallback((suggestion: Mentioned) => {
-      if (tags.length < 3 && !tags.some(tag => tag === suggestion.name)) {
-         setTags([...tags, suggestion.name]);
-         setTagInput("");
-         setShowSuggestions(false);
-      }
-   }, [tags]);
-
-   const onFileUpload = async (file: File) => {
-      if (videoFiles.length >= 3) {
-         alert("최대 3개의 비디오만 업로드할 수 있습니다.");
-         return;
-      }
-
-      setIsLoading(true);
-      try {
-         // Get presigned URL
-         const presignedData = await videoPresigned(file.name);
-         const uploadURL = presignedData.fullUrl;
-         const noQueryParamUrl = presignedData.noQueryParamUrl;
-
-         // Upload video to S3
-         await S3UploadVideo(uploadURL, file);
-
-         // Set video URL for rendering
-         setVideoFiles(prevFiles => [...prevFiles, file]);
-         setNoQueryParamURLs(prevUrls => [
-            ...prevUrls,
-            { videoOrder: prevUrls.length + 1, videoUrl: noQueryParamUrl }
-         ]);
-
-         // Add noQueryParamUrl to videos
-         setIsUploading(true);
-      } catch (error) {
-         console.error('Error uploading video:', error);
-      } finally {
-         setIsLoading(false);
-         setUploadProgress(0);
-      }
-   };
-
-   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-         onFileUpload(e.target.files[0]);
-      }
-   };
-
-   const triggerFileInput = () => {
-      if (fileInputRef.current) {
-         fileInputRef.current.click();
       }
    };
 
@@ -185,87 +58,37 @@ export default function WritePage() {
                value={title}
                onChange={handleTitleChange}
             />
-            <TagInputContainer ref={suggestionsRef}>
-               <Input
-                  name="tagInput"
-                  placeholder="리그를 입력 후 엔터키를 눌러 추가하세요. 최대 3개까지 가능합니다."
-                  value={tagInput}
-                  onChange={handleTagInputChange}
-                  onKeyDown={handleTagKeyDown}
-               />
-               {showSuggestions && tagSuggestions.length > 0 && (
-                  <SuggestionsContainer>
-                     {tagSuggestions.map((suggestion, index) => (
-                        <Suggestion
-                           key={suggestion.name}
-                           onMouseDown={() => handleTagClick(suggestion)}
-                           highlighted={index === highlightedIndex ? 1 : 0}
-                        >
-                           {suggestion.name}
-                        </Suggestion>
-                     ))}
-                  </SuggestionsContainer>
-               )}
-               <TagsContainer>
-                  {tags.map(tag => (
-                     <Tag key={tag}>
-                        {tag}
-                        <RemoveTagButton onClick={() => handleTagRemove(tag)}>x</RemoveTagButton>
-                     </Tag>
-                  ))}
-               </TagsContainer>
-            </TagInputContainer>
+            <FindTags tags={tags} setTags={setTags} />
             <EditorContainer>
                <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
             </EditorContainer>
-            {isLoading ? (
-               <>
-                  <div>업로드 중입니다...</div>
-                  <div>{uploadProgress}%</div>
-               </>
-            ) : (
-               <VideoUploadBox>
-                  {videoFiles.map((file, index) => (
-                     <VideoFile key={index}>
-                        <FileInfo>
-                           <StyledPaperclip size={14} />
-                           {file.name}
-                        </FileInfo>
-                        <RemoveButton onClick={() => {
-                           const newFiles = videoFiles.filter((_, i) => i !== index);
-                           setVideoFiles(newFiles);
-                           setNoQueryParamURLs(noQueryParamURLs.filter((_, i) => i !== index));
-                        }}>✕</RemoveButton>
-                     </VideoFile>
-                  ))}
-                  <AddVideoButton type="button" onClick={triggerFileInput}>+ 동영상</AddVideoButton>
-                  <input
-                     id="file-upload"
-                     type="file"
-                     ref={fileInputRef}
-                     style={{ display: 'none' }}
-                     accept="video/*"
-                     onChange={handleFileChange}
-                  />
-               </VideoUploadBox>
-            )}
+            <VideoUpload
+               videoFiles={videoFiles}
+               setVideoFiles={setVideoFiles}
+               noQueryParamURLs={noQueryParamURLs}
+               setNoQueryParamURLs={setNoQueryParamURLs}
+            />
             <EditorAndButtonContainer>
                {voteOptions.length > 0 ? (
-                  <SubmitButton type="submit">작성</SubmitButton>
+                  <VoteButton type="button" onClick={togglePopup}>투표 변경</VoteButton>
                ) : (
-                  <SubmitButton type="button" onClick={togglePopup}>투표 생성</SubmitButton>
+                  <VoteButton type="button" onClick={togglePopup}>투표 생성</VoteButton>
                )}
+               <SubmitButton type="submit" disabled={voteOptions.length > 0}>
+                  작성
+               </SubmitButton>
             </EditorAndButtonContainer>
-            <div>
-               {showPopup && (
-                  <DraggableVotePopup
-                     title="드래그 앤 드롭 팝업"
-                     content={<div>이 팝업은 드래그 앤 드롭 가능합니다.</div>}
-                     onClose={togglePopup}
-                     onOptionsChange={(newOptions: CreateOption[]) => setVoteOptions(newOptions)}
-                  />
-               )}
-            </div>
+            {showPopup && (
+               <DraggableVotePopup
+                  title="투표 생성"
+                  content={<div>원하는 옵션의 투표를 생성해보세요.</div>}
+                  onClose={togglePopup}
+                  onOptionsChange={(newOptions: CreateOption[]) => setVoteOptions(newOptions)}
+                  onVoteTitleChange={(newTitle: string) => setVoteTitle(newTitle)}
+                  initialOptions={voteOptions}
+                  initialVoteTitle={voteTitle}
+               />
+            )}
          </form>
       </Container>
    );
@@ -294,63 +117,14 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-const TagInputContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 16px;
-  position: relative;
-`;
-
-const SuggestionsContainer = styled.div`
-  position: absolute;
-  font-size: 14px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  max-height: 150px;
-  overflow-y: auto;
-  width: 100%;
-  z-index: 1000;
-  top: 40px; /* Adjust this value if needed */
-`;
-
-const Suggestion = styled.div<{ highlighted: number }>`
-  padding: 10px;
-  background-color: ${({ highlighted }) => (highlighted === 1 ? '#eee' : 'white')};
-  cursor: pointer;
-
-  &:hover {
-    background-color: #eee;
-  }
-`;
-
-const TagsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const Tag = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #eee;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-size: 15px;
-`;
-
-const RemoveTagButton = styled.span`
-  margin-left: 5px;
-  cursor: pointer;
-  color: #888;
-`;
-
 const EditorAndButtonContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  flex-direction: row;
   align-items: center;
   max-width: 800px;
+  gap: 15px;
 `;
 
 const EditorContainer = styled.div`
@@ -359,7 +133,7 @@ const EditorContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SubmitButton = styled.button`
+const VoteButton = styled.button`
   width: 100px;
   padding: 12px;
   background-color: #ffa600;
@@ -375,51 +149,18 @@ const SubmitButton = styled.button`
   }
 `;
 
-const VideoUploadBox = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-`;
-
-const VideoFile = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  margin-right: 8px;
-`;
-
-const RemoveButton = styled.button`
-  background: none;
+const SubmitButton = styled.button<{ disabled: boolean }>`
+  width: 100px;
+  padding: 12px;
+  background-color: ${({ disabled }) => (disabled ? "#FF900D" : "#cccccc")};
+  color: white;
   border: none;
-  font-size: 14px;
-  margin-left: 8px;
-  cursor: pointer;
-`;
-
-const AddVideoButton = styled.button`
-  background: #f0f0f0;
-  border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 5px 10px;
-  margin-left: auto;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  font-size: 16px;
+  margin-top: 16px;
 
   &:hover {
-    background: #e0e0e0;
+    background-color: ${({ disabled }) => (disabled ? "#FF900D" : "#bbbbbb")};
   }
-`;
-
-const FileInfo = styled.div`
-  display: flex;
-  align-items: center;
-  margin-right: 5px;
-`;
-
-const StyledPaperclip = styled(GoPaperclip)`
-  font-size: 16px;
-  margin-right: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
 `;

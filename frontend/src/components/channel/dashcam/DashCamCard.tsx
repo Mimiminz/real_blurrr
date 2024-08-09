@@ -19,11 +19,13 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
         />
       </ThumbnailContainer>
       <Content>
-        <Tags>
-          {dashCam.mentionedLeagues.map((mention, index) => (
-            <span key={index}>@ {mention.name}</span>
-          ))}
-        </Tags>
+        <TagContainer>
+          <Tags>
+            {dashCam.mentionedLeagues.map((mention, index) => (
+              <span key={index}>@ {mention.name}</span>
+            ))}
+          </Tags>
+        </TagContainer>
         <TitleContainer suppressHydrationWarning={true}>
           <Title>{dashCam.title}</Title>
         </TitleContainer>
@@ -42,7 +44,7 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
 };
 
 const Card = styled.div`
-  width: 100%;
+  width: 100%;;
   border: 1px solid #eaeaea;
   border-radius: 4px;
   overflow: hidden;
@@ -51,7 +53,7 @@ const Card = styled.div`
 
 const ThumbnailContainer = styled.div`
   width: 100%;
-  height: 200px; /* 고정된 높이 설정 */
+  height: 180px; /* 고정된 높이 설정 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,11 +67,15 @@ const Thumbnail = styled.img`
 `;
 
 const Content = styled.div`
-  padding: 16px;
+  padding: 12px 16px;
 `;
 
+const TagContainer = styled.div`
+  min-height: 20px;
+`
+
 const Tags = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 
   span {
     display: inline-block;
