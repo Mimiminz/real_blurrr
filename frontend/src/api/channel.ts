@@ -272,6 +272,14 @@ export const fetchDashCamWrite = async (
   mentionedLeagueNames: string[]
 ) => {
   try {
+    // console.log({
+    //   title: title,
+    //   content: content,
+    //   voteTitle: voteTitle,
+    //   options: option,
+    //   videos: videos,
+    //   mentionedLeagueNames: mentionedLeagueNames
+    // });
     const response = await api.post(`/v1/channels/dashcams/boards`, {
       title: title,
       content: content,

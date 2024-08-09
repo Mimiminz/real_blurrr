@@ -5,39 +5,36 @@ import { FaRegHeart } from "react-icons/fa6";
 import { DashCam } from "@/types/channelType";
 import { formatPostDate } from "@/utils/formatPostDate";
 interface DashCamCardProps {
-  dashCamTitle: DashCam;
+  dashCam: DashCam;
 }
 
-const DashCamCard: React.FC<DashCamCardProps> = ({ dashCamTitle }) => {
-  const { videoUrl, mentionedLeagues, title, viewCount, likeCount, createdAt } =
-    dashCamTitle;
-
+const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
   return (
     <Card>
       <ThumbnailContainer>
         <Thumbnail
-          src={`/images/eg_img.png`}
-          alt={title}
+          src={dashCam.thumbNail}
+          alt={dashCam.title}
           onError={(e) => (e.currentTarget.style.display = "none")}
         />
       </ThumbnailContainer>
       <Content>
         <Tags>
-          {mentionedLeagues.map((league, index) => (
-            <span key={index}>@ {league.name}</span>
+          {dashCam.mentionedLeagues.map((mention, index) => (
+            <span key={index}>@ {mention.name}</span>
           ))}
         </Tags>
         <TitleContainer suppressHydrationWarning={true}>
-          <Title>{title}</Title>
+          <Title>{dashCam.title}</Title>
         </TitleContainer>
         <Meta>
           <span>
-            <FaRegEye /> {viewCount}
+            <FaRegEye /> {dashCam.viewCount}
           </span>
           <span>
-            <FaRegHeart /> {likeCount}
+            <FaRegHeart /> {dashCam.likeCount}
           </span>
-          <span className="created">{formatPostDate(createdAt)}</span>
+          <span className="created">{formatPostDate(dashCam.createdAt)}</span>
         </Meta>
       </Content>
     </Card>
@@ -55,10 +52,10 @@ const Card = styled.div`
 const ThumbnailContainer = styled.div`
   width: 100%;
   height: 200px; /* 고정된 높이 설정 */
-  background-color: #f1f1f1; /* 이미지가 없을 때 배경색 */
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 `;
 
 const Thumbnail = styled.img`

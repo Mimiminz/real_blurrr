@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { MdPeopleAlt } from "react-icons/md";
 
 interface UserChannelCardProps {
   name: string;
@@ -13,7 +14,12 @@ const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, im
     <CardContainer onClick={onClick}>
       <ImageContainer img={img == "" ? 'images/eg_img.png' : img} />
       <Title>{name}</Title>
-      <Followers>{followCount} Followers</Followers>
+      <IconContainer>
+        <Icon>
+          <MdPeopleAlt />
+        </Icon>
+        <Count>{followCount} 팔로워</Count>
+      </IconContainer>
     </CardContainer>
   );
 };
@@ -39,12 +45,30 @@ const ImageContainer = styled.div<{ img: string }>`
 `;
 
 const Title = styled.h3`
-  margin: 12px 0;
+  margin: 20px 0 15px;
   font-size: 17px;
 `;
 
-const Followers = styled.p`
+const IconContainer = styled.div`
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #6b7280;
+`;
+
+const Icon = styled.span`
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  vertical-align: middle;
+`;
+
+const Count = styled.span`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.subDiscription};
 `;
 
 export default UserChannelCard;

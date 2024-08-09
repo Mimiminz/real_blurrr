@@ -84,9 +84,7 @@ const Boast: React.FC = () => {
                {boasts.map((boast) => (
                   <div key={boast.id} onClick={() => handleCardClick(boast.id)}>
                      <BoastCard
-                        thumbnail={boast.thumbNail}
-                        viewer={boast.viewCnt}
-                        likes={boast.likeCnt}
+                        boast={boast}
                      />
                   </div>
                ))}

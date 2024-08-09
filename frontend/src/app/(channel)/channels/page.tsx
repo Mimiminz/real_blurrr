@@ -109,13 +109,13 @@ const ChannelPage: React.FC = () => {
     loadChannelsByKeywords(newKeywords);
   };
 
+  // <ButtonContainer>
+  //   <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
+  // </ButtonContainer>
   return (
     <>
       {isLoggedIn && (
         <>
-          <ButtonContainer>
-            <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
-          </ButtonContainer>
 
           <SectionTitle>내가 생성한 채널</SectionTitle>
           {CreatedChannels.length === 0 ? (
@@ -158,7 +158,7 @@ const ChannelPage: React.FC = () => {
                   name={channel.name}
                   followCount={channel.followCount}
                   tags={channel.tags}
-                  img={channel.img}
+                  img={channel.imgUrl}
                 />
               </div>
             ))}
