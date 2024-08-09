@@ -37,16 +37,10 @@ import Loading from "@/components/common/UI/Loading";
 
 export default function Home() {
   const router = useRouter();
-  const {
-    userLeagueList,
-    setUserLeagueList,
-    brandLeagueList,
-    setBrandLeagueTab,
-    initialized,
-    setInitialized,
-  } = useLeagueStore();
+  const { userLeagueList } = useLeagueStore();
   const { isLoggedIn, user } = useAuthStore();
 
+  const [isBoardLoading, setIsBoardLoading] = useState(true);
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
   const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
   const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
@@ -78,46 +72,8 @@ export default function Home() {
     };
 
     fetchMainProps();
+    setIsBoardLoading(false);
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    const initailizeTabs = async () => {
-      if (!initialized) {
-        try {
-          const leagues = await fetchBrandLeagues();
-          setBrandLeagueTab(leagues);
-          if (isLoggedIn) {
-            if (user?.isAuth) {
-              const userLeagues: UserLeague[] = await fetchUserLeagueList();
-              const userTabs: LeagueListType[] = userLeagues.map(
-                (userLeague) => ({
-                  id: userLeague.league.id,
-                  name: userLeague.league.name,
-                  type: userLeague.league.type,
-                  peopleCount: userLeague.league.peopleCount,
-                })
-              );
-              setUserLeagueList(userTabs);
-            } else {
-              const userTabs: LeagueListType[] = [];
-              setUserLeagueList(userTabs);
-            }
-          }
-          setInitialized(true);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    initailizeTabs();
-  }, [
-    isLoggedIn,
-    initialized,
-    setBrandLeagueTab,
-    setInitialized,
-    user,
-    setUserLeagueList,
-  ]);
 
   const handleMoreClickLeage = () => {
     router.push("/league");
@@ -134,64 +90,47 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (!hotBoards) {
+  if (isBoardLoading && !hotBoards.length) {
     return <Loading />;
   }
 
   return (
     <PageContainer>
-      <GridContainer>
-        <Main>
-          {isLoggedIn && (
-            <UserInfoContainer>
-              {userLeagueList.length > 0 ? (
-                <UserCarInfo userLeagueList={userLeagueList} />
-              ) : (
-                <NoAuth>
-                  <NoAuthTitle>
-                    등록된 차가 없습니다. <br /> 차를 등록해주세요
-                  </NoAuthTitle>
-                  <CarCerficationButton onClick={handleCarCertification}>
-                    <FaCarTunnel />
-                    등록하러 가기
-                  </CarCerficationButton>
-                </NoAuth>
-              )}
-              <FollowChannelInfo followChannels={followChannels} />
-            </UserInfoContainer>
-          )}
-          <ArticleSection>
-            <SectionTitle>
-              <BsFire />
-              Hot
-            </SectionTitle>
-            {hotBoards.length ? (
-              <HotArticleList hotBoards={hotBoards} />
-            ) : (
-              <div>loading...</div>
-            )}
-          </ArticleSection>
-          <ArticleSection>
-            <SectionHeader>
-              <SectionTitle>브랜드 리그</SectionTitle>
-              <MoreButton onClick={handleMoreClickLeage}>
-                더보기
-                <IoArrowForward />
-              </MoreButton>
-            </SectionHeader>
-            <LeagueList />
-          </ArticleSection>
-          <ArticleSection>
-            <SectionHeader>
-              <SectionTitle>블랙박스</SectionTitle>
-              <MoreButton onClick={handleMoreClickDashcam}>
-                더보기
-                <IoArrowForward />
-              </MoreButton>
-            </SectionHeader>
-            <BlackboxList />
-          </ArticleSection>
-          <ArticleSection>
+      <Main>
+        {isLoggedIn && (
+          <UserInfoContainer>
+            <UserCarInfo />
+            {/* <FollowChannelInfo followChannels={followChannels} /> */}
+          </UserInfoContainer>
+        )}
+        <ArticleSection>
+          <SectionTitle>
+            <BsFire />
+            Hot
+          </SectionTitle>
+          <HotArticleList hotBoards={hotBoards} />
+        </ArticleSection>
+        <ArticleSection>
+          <SectionHeader>
+            <SectionTitle>브랜드 리그</SectionTitle>
+            <MoreButton onClick={handleMoreClickLeage}>
+              더보기
+              <IoArrowForward />
+            </MoreButton>
+          </SectionHeader>
+          <LeagueList />
+        </ArticleSection>
+        <ArticleSection>
+          <SectionHeader>
+            <SectionTitle>블랙박스</SectionTitle>
+            <MoreButton onClick={handleMoreClickDashcam}>
+              더보기
+              <IoArrowForward />
+            </MoreButton>
+          </SectionHeader>
+          <BlackboxList />
+        </ArticleSection>
+        <ArticleSection>
             <SectionHeader>
               <SectionTitle>차 자랑</SectionTitle>
               <MoreButton onClick={handleMoreClickBoast}>
@@ -201,34 +140,43 @@ export default function Home() {
             </SectionHeader>
             <CarPictureList />
           </ArticleSection>
-        </Main>
-        <Aside>
-          <AsideSection>
-            <AsideSectionTitle className="today">
-              <FaCrown />
-              오늘의 차
-            </AsideSectionTitle>
-            <TopCarCard />
-          </AsideSection>
-          <AsideSection>
-            <AsideSectionTitle>
-              <PiRanking />
-              주간 리그 순위
-            </AsideSectionTitle>
-            <LeagueRanking leaugeRanking={leaugeRanking} />
-          </AsideSection>
-        </Aside>
-      </GridContainer>
+      </Main>
+      <Aside>
+        <AsideSection>
+          <AsideSectionTitle className="today">
+            <FaCrown />
+            오늘의 차
+          </AsideSectionTitle>
+          <TopCarCard />
+        </AsideSection>
+        <AsideSection>
+          <AsideSectionTitle>
+            <PiRanking />
+            주간 리그 순위
+          </AsideSectionTitle>
+          <LeagueRanking leaugeRanking={leaugeRanking} />
+        </AsideSection>
+      </Aside>
     </PageContainer>
   );
 }
 
 const PageContainer = styled.div`
   padding-top: 20px;
+
+  display: flex;
+  width: 100%;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    border-top: none;
+    width: 100%;
+  }
 `;
 
 const GridContainer = styled.div`
   display: flex;
+  width: 100%;
 
   @media (min-width: 1024px) {
     flex-direction: row;
@@ -241,11 +189,9 @@ const Main = styled.main`
   /* display: block; */
   padding: 10px;
   width: 100%;
-  flex-shrink: 1; /* 크기가 줄어들 수 있음 */
 
   @media (min-width: 1024px) {
     /* width: 736px; */
-
     width: 70%;
   }
 `;
@@ -275,7 +221,7 @@ const SectionTitle = styled.h1`
 `;
 
 const ArticleSection = styled.div`
-  margin: 0 0 50px;
+  margin-bottom: 40px;
 
   @media (min-width: 768px) {
     margin: 0 20px 50px;
