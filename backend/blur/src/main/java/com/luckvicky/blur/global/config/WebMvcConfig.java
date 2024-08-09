@@ -1,7 +1,5 @@
 package com.luckvicky.blur.global.config;
 
-import static com.luckvicky.blur.global.constant.StringFormat.GUEST_URI_OF_LEAGUE;
-
 import com.luckvicky.blur.global.security.AuthArgumentResolver;
 import com.luckvicky.blur.global.security.NullableAuthArgumentResolver;
 import java.util.List;

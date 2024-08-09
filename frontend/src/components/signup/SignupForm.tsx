@@ -7,6 +7,7 @@ import { SignupFormValues } from '@/types/authTypes';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
 import { useRouter } from "next/navigation";
+import { signup } from '@/api/signup';
 
 const initialValues: SignupFormValues = {
   email: '',
@@ -18,7 +19,10 @@ const initialValues: SignupFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .email('유효한 이메일 형식을 입력하세요.')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      '유효한 이메일 형식을 입력하세요.'
+    )
     .required('이메일은 필수 입력 항목입니다.'),
   emailVerification: Yup.string()
     .required('인증번호는 필수 입력 항목입니다.'),
@@ -106,12 +110,7 @@ const SignupForm = () => {
 
   const handleSubmit = async (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
     try {
-      const response = await api.post('/v1/auth/signup', {
-        email: values.email,
-        nickname: values.nickname,
-        password: values.password,
-        passwordCheck: values.passwordCheck,
-      });
+      const response = await signup(values.email, values.nickname, values.password, values.passwordCheck);
 
       if (response.data === true) {
         alert('회원가입이 완료되었습니다.');
@@ -120,7 +119,6 @@ const SignupForm = () => {
       }
 
     } catch (error) {
-      console.error('회원가입 중 오류가 발생했습니다.', error);
       alert('회원가입 중 오류가 발생했습니다.');
     } finally {
       setSubmitting(false);
@@ -403,6 +401,7 @@ const StyledField = styled(Field)`
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
   margin-bottom: 1em;
+  font-size: 0.8em;
 `;
 
 interface PasswordFeedbackProps {

@@ -69,6 +69,8 @@ public class SecurityConfig {
                         // 프리플라이트 관련 설정
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/v1/leagues/save")).permitAll()
+
                         // todo: 추후에 삭제
                         .requestMatchers(antMatcher(HttpMethod.POST, "/v1/leagues/members")).permitAll()
 

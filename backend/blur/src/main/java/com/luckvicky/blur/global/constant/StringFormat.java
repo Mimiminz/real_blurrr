@@ -70,6 +70,7 @@ public class StringFormat {
     // 리그 URI
     public static final String[] GUEST_URI_OF_LEAGUE = {
             "/v1/leagues",
+            "/v1/leagues/search",
             "/v1/leagues/*/boards",
             "/v1/leagues/*/boards/search"
     };
@@ -79,7 +80,8 @@ public class StringFormat {
             "/v1/alarm/**",
             "/v1/members/**",
             "/v1/boards/*/comments",
-            "/v1/channels/check/tags/*"
+            "/v1/channels/check/tags/*",
+            "/v1/leagues/check/*"
     };
 
     // 차량 인증 허용 URI (회원가입 O)
