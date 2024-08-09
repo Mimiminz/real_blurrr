@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FiEye, FiHeart } from 'react-icons/fi';
+import { Boasts } from '@/types/channelType';
 
 interface BoastCardProps {
-  thumbnail: string;
-  viewer: number;
-  likes: number;
+  boast: Boasts;
 }
 
 const Card = styled.div`
@@ -52,13 +51,13 @@ const HoverOverlay = styled.div`
   }
 `;
 
-const BoastCard: React.FC<BoastCardProps> = ({ thumbnail, viewer, likes }) => {
+const BoastCard: React.FC<BoastCardProps> = ({ boast }) => {
   return (
     <Card>
-      <Thumbnail src={thumbnail} alt="thumbnail" />
+      <Thumbnail src={boast.thumbNail} alt="thumbnail" />
       <HoverOverlay>
-        <span><FiEye /> {viewer}</span>
-        <span><FiHeart /> {likes}</span>
+        <span><FiEye /> {boast.viewCnt}</span>
+        <span><FiHeart /> {boast.likeCnt}</span>
       </HoverOverlay>
     </Card>
   );

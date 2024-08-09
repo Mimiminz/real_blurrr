@@ -83,7 +83,7 @@ const DashCamPage: React.FC = () => {
         <CardGrid>
           {dashCams.map((dashCam) => (
             <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
-              <DashCamCard dashCamTitle={dashCam} />
+              <DashCamCard dashCam={dashCam} />
             </div>
           ))}
         </CardGrid>

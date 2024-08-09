@@ -158,7 +158,7 @@ const ChannelPage: React.FC = () => {
                   name={channel.name}
                   followCount={channel.followCount}
                   tags={channel.tags}
-                  img={channel.img}
+                  img={channel.imgUrl}
                 />
               </div>
             ))}
