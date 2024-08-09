@@ -1,3 +1,4 @@
+import { NumberLengthEquals2 } from 'aws-sdk/clients/paymentcryptographydata';
 import { likeState } from './boardType';
 export type DashCamContentData = Pick<DashCamDetail, 'id' | 'member' | 'title' | 'createdAt' | 'videoUrl' | 'content' | 'mentionedLeagues'>;
 
@@ -180,5 +181,6 @@ export interface CreateOption{
 }
 
 export interface Video{
+  videoOrder: number;
   videoUrl: string;
 }
