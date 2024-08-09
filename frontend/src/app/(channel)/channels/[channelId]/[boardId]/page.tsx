@@ -7,7 +7,7 @@ import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
 import { useAuthStore } from "@/store/authStore";
 import { PostDetail } from "@/types/channelType";
 import { fetchComment } from "@/types/commentTypes";
-import { fetchChannelPostDetail } from "@/api/channel";
+import { fetchChannelPostDetail, fetchBoastDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
@@ -18,6 +18,7 @@ export default function ChannelBoardDetailPage({
 }: {
   params: { channelId: string; boardId: string };
 }) {
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
   const channelId = params.channelId;
   const boardId = params.boardId;
 
@@ -43,7 +44,13 @@ export default function ChannelBoardDetailPage({
 
   const loadBoardDetail = useCallback(async () => {
     try {
-      const details = await fetchChannelPostDetail(boardId, channelId);
+      let details;
+      if (boastId === channelId) {
+        details = await fetchBoastDetail(boardId);
+      } else {
+        details = await fetchChannelPostDetail(boardId, channelId);
+      }
+
       setBoardDetail(details);
       setLikeCount(details.likeCount);
       setIsLiked(details.liked);
@@ -119,14 +126,6 @@ export default function ChannelBoardDetailPage({
   );
 }
 
-const Content = styled.div`
-  font-size: 17px;
-  line-height: 1.5;
-  color: #333;
-  padding: 20px;
-  padding-bottom: 50px;
-  border-top: 1px solid #bebebe;
-`;
 
 const CommentContainer = styled.div`
   display: flex;
@@ -158,5 +157,18 @@ const HeartButton = styled.button<{ $isLiked: boolean }>`
 
   @media (min-width: 768px) {
     font-size: 20px;
+  }
+`;
+
+const Content = styled.div`
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  padding: 16px 16px 40px 16px;
+  border-top: 1px solid #bebebe;
+
+  @media (min-width: 480px) {
+    font-size: 17px;
+    padding: 20px 20px 50px 20px;
   }
 `;

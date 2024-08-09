@@ -31,11 +31,7 @@ const BreadcrumbContainer = styled.nav`
     color: ${({ theme }) => theme.colors.main};
     margin-right: 5px;
 
-    &:before {
-      content: ">";
-      margin-right: 5px;
-      color: #888;
-    }
+
   }
 `;
 
@@ -47,14 +43,15 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   return (
     <BreadcrumbContainer>
-      <Link href={channelUrl} legacyBehavior>
-        <a>{channel}</a>
+      <Link href={channelUrl}>
+        {channel}
       </Link>
+      <span>&gt;</span>
       {channel === "리그" || !subChannelUrl ? (
-        <a className="breadcrumb-link">{subChannel}</a>
+        <span className="breadcrumb-link">{subChannel}</span>
       ) : (
-        <Link href={subChannelUrl} legacyBehavior>
-          <a className="breadcrumb-link">{subChannel}</a>
+        <Link href={subChannelUrl}>
+          {subChannel}
         </Link>
       )}
     </BreadcrumbContainer>

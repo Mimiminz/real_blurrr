@@ -6,14 +6,15 @@ import { useRouter } from "next/navigation";
 import DashCamCard from "@/components/channel/dashcam/DashCamCard";
 import PostTitle from "@/components/channel/PostTitle";
 import { fetchDashCams } from "@/api/channel";
-import { DashCamList } from "@/types/channelType";
+import { DashCamList, DashCam } from "@/types/channelType";
 import Loading from "@/components/common/UI/Loading";
 import PaginationComponent from "@/components/common/UI/Pagination";
 
 const DashCamPage: React.FC = () => {
-  const [dashCams, setDashCams] = useState<DashCamList>();
+  const [dashCams, setDashCams] = useState<DashCam[]>([]);
   const [keyword, setKeyword] = useState('');
   const [sortCriteria, setSortCriteria] = useState('TIME');
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
@@ -37,19 +38,27 @@ const DashCamPage: React.FC = () => {
     setKeyword(newKeyword);
   };
 
-  const loadData = useCallback(async () => {
-    try {
-      const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
-      setDashCams(data);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Failed to load dash cam data:", error);
-    }
-  }, [keyword, sortCriteria]);
-
   useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
+        if (data) {
+          setDashCams(data.content);
+          setTotalPages(data.totalPages);
+        } else {
+          setDashCams([]);
+        }
+      } catch (error) {
+        console.error("Failed to load dash cam data:", error);
+        setDashCams([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     loadData();
-  }, []);
+  }, [keyword, sortCriteria, currentPage]);
 
   const handleCardClick = (dashCamDetailId: string) => {
     router.push(`/channels/dashcam/${dashCamDetailId}`);
@@ -59,10 +68,6 @@ const DashCamPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  if (!dashCams?.content.length) {
-    return <Loading />;
-  }
-
   return (
     <Container>
       <PostTitle
@@ -70,15 +75,13 @@ const DashCamPage: React.FC = () => {
         onSearch={handleSearch}
         onSortChange={handleSortChange}
       />
-      {!dashCams ? (
-        <CenteredMessage>로딩 중...</CenteredMessage>
-      ) : dashCams.content.length === 0 ? (
-        <CenteredMessage>
-          게시글이 없습니다. 게시글을 작성해보세요!
-        </CenteredMessage>
+      {isLoading ? (
+        <Loading />
+      ) : dashCams && dashCams.length === 0 ? (
+        <EmptyMessage>채널이 없습니다.</EmptyMessage>
       ) : (
         <CardGrid>
-          {dashCams.content.map((dashCam) => (
+          {dashCams.map((dashCam) => (
             <div key={dashCam.id} onClick={() => handleCardClick(dashCam.id)}>
               <DashCamCard dashCamTitle={dashCam} />
             </div>
@@ -90,7 +93,7 @@ const DashCamPage: React.FC = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-    </Container>
+    </Container >
   );
 };
 
@@ -120,13 +123,12 @@ const CardGrid = styled.div`
   }
 `;
 
-const CenteredMessage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+const EmptyMessage = styled.p`
+  padding: 100px;
+  text-align: center;
   font-size: 18px;
-  color: #555;
+  color: #333;
 `;
+
 
 export default DashCamPage;

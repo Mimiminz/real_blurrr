@@ -7,13 +7,6 @@ export interface SimpleMember {
   carTitle: string;
 }
 
-export interface PostMember {
-  id: string;
-  profileUrl: string;
-  nickname: string;
-  carTitle: string;
-}
-
 export interface Member {
   id: string;
   email: string;
@@ -52,7 +45,7 @@ export interface Channels {
 
  export interface Posts {
   id: string;
-  member: PostMember;
+  member: SimpleMember;
   title: string;
   viewCount: number;
   commentCount: number;
@@ -79,16 +72,17 @@ export interface PostDetailData {
 
 export interface PostDetail {
   id: string;
-  member: PostMember;
+  member: SimpleMember;
   title: string;
   content: string;
-  createdAt: string;
   viewCount: number;
   commentCount: number;
   likeCount: number;
-  mentionedLeagues: Mentioned[];
+  createdAt: string;
   comments: Comment[];
+  mentionedLeagues: Mentioned[];
   liked: boolean;
+  thumbNail?: string;
 }
 
 export interface PostDataInfo {
@@ -115,6 +109,21 @@ export interface Boasts {
   viewCnt: number;
   simpleMemberDto: SimpleMember;
 }
+
+export interface BoastDetail {
+  id: string;
+  member: SimpleMember;
+  title: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  createdAt: string;
+  content: string;
+  mentionedLeagues: Mentioned[];
+  thumbNail: string;
+  liked: boolean;
+}
+
 
 export interface DashCamList {
   totalPages: number;
