@@ -45,20 +45,22 @@ const CardContainer = styled.div`
 const ImageContainer = styled.div<{ img: string }>`
   width: 100%;
   height: 120px;
-  background-color: #e5e7eb;
   border-radius: 8px;
+  background-color: #f3f3f3;
   background-size: cover;
   background-position: center;
   background-image: url(${props => props.img});
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   overflow: hidden;
+  box-shadow: 1px 3px 3px rgba(141, 141, 141, 0.1);
 `;
 
 const TagsContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   min-height: 25px;
+  animation: aniScroll 15s linear infinite;
 `;
 
 const Tag = styled.span`
@@ -73,7 +75,7 @@ const Tag = styled.span`
   text-overflow: ellipsis; /* 텍스트가 넘치면 "..." 처리 */
   display: block; /* 애니메이션을 위해 블록 요소로 설정 */
   position: relative;
-  animation: scroll 10s linear infinite; /* 애니메이션 적용 */
+  /* animation: scroll 10s linear infinite;  */
   
   @keyframes scroll {
     from {
@@ -95,6 +97,7 @@ const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: #6b7280;
+  margin-bottom: 10px;
 `;
 
 const Icon = styled.span`
