@@ -1,8 +1,11 @@
 package com.luckvicky.blur.domain.mycar.model.resp;
 
+import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
+import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 
