@@ -3,11 +3,17 @@
 import React, { useState, useRef, useEffect, KeyboardEvent, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styled from 'styled-components';
-import QuillEditor from '@/components/channel/board/QuillEditor';
+// import QuillEditor from '@/components/channel/board/QuillEditor';
 import { fetchDashCamWrite, fetchTags, videoPresigned, S3UploadVideo } from '@/api/channel';
 import { Mentioned, CreateOption, Video } from '@/types/channelType';
 import DraggableVotePopup from '@/components/channel/dashcam/DraggableVotePopup';
 import { GoPaperclip } from "react-icons/go";
+
+import dynamic from 'next/dynamic'; // dynamic import 추가
+
+// QuillEditor를 동적으로 로드 (클라이언트에서만 로드됨)
+const QuillEditor = dynamic(() => import('@/components/channel/board/QuillEditor'), { ssr: false });
+
 
 export default function WritePage() {
    const router = useRouter();
@@ -165,6 +171,8 @@ export default function WritePage() {
    const togglePopup = () => {
       setShowPopup(!showPopup);
    };
+
+   const isClient = typeof window !== "undefined";
 
    return (
       <Container>
