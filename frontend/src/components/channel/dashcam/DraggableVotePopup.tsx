@@ -1,15 +1,19 @@
 import React, { useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { CreateOption } from '@/types/channelType';
+import { FiMinusSquare } from "react-icons/fi";
 
 interface DraggableVotePopupProps {
    title: string;
    content: React.ReactNode;
    onClose: () => void;
    onOptionsChange: (options: CreateOption[]) => void;
+   onVoteTitleChange: (title: string) => void;
+   initialOptions: CreateOption[];
+   initialVoteTitle: string;
 }
 
-const DraggableVotePopup: React.FC<DraggableVotePopupProps> = ({ title, content, onClose, onOptionsChange }) => {
+const DraggableVotePopup: React.FC<DraggableVotePopupProps> = ({ title, content, onClose, onOptionsChange, onVoteTitleChange, initialOptions, initialVoteTitle }) => {
    const [isDragging, setIsDragging] = useState(false);
    const [position, setPosition] = useState({ x: 0, y: 0 });
    const popupRef = useRef<HTMLDivElement>(null);
@@ -48,18 +52,33 @@ const DraggableVotePopup: React.FC<DraggableVotePopupProps> = ({ title, content,
                <CloseButton onClick={onClose}>x</CloseButton>
             </Header>
             <Content>{content}</Content>
-            <VoteForm onOptionsChange={onOptionsChange} onClose={onClose} />
+            <VoteForm
+               onOptionsChange={onOptionsChange}
+               onClose={onClose}
+               onVoteTitleChange={onVoteTitleChange}
+               initialOptions={initialOptions}
+               initialVoteTitle={initialVoteTitle} />
          </Popup>
       </Overlay>
    );
 };
 
-const VoteForm: React.FC<{ onOptionsChange: (options: CreateOption[]) => void, onClose: () => void }> = ({ onOptionsChange, onClose }) => {
-   const [voteTitle, setVoteTitle] = useState('');
-   const [options, setOptions] = useState<CreateOption[]>([{ optionOrder: 1, content: '' }, { optionOrder: 2, content: '' }]);
+interface VoteFormProps {
+   onOptionsChange: (options: CreateOption[]) => void;
+   onVoteTitleChange: (title: string) => void;
+   onClose: () => void;
+   initialOptions: CreateOption[]; // Add initialOptions prop
+   initialVoteTitle: string;
+}
+
+const VoteForm: React.FC<VoteFormProps> = ({ onOptionsChange, onVoteTitleChange, onClose, initialOptions, initialVoteTitle }) => {
+   const [voteTitle, setVoteTitle] = useState(initialVoteTitle);
+   const [options, setOptions] = useState<CreateOption[]>(initialOptions.length > 0 ? initialOptions : [{ optionOrder: 1, content: '' }, { optionOrder: 2, content: '' }]);
 
    const handleVoteTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setVoteTitle(e.target.value);
+      const newTitle = e.target.value;
+      setVoteTitle(newTitle);
+      onVoteTitleChange(newTitle);
    };
 
    const handleOptionChange = (index: number, value: string) => {
@@ -109,7 +128,7 @@ const VoteForm: React.FC<{ onOptionsChange: (options: CreateOption[]) => void, o
                   onChange={(e) => handleOptionChange(index, e.target.value)}
                />
                {options.length > 2 && (
-                  <RemoveOptionButton onClick={() => removeOption(index)}>x</RemoveOptionButton>
+                  <RemoveOptionButton onClick={() => removeOption(index)}><FiMinusSquare /></RemoveOptionButton>
                )}
             </OptionContainer>
          ))}
@@ -127,7 +146,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,6 +219,7 @@ const RemoveOptionButton = styled.button`
   font-size: 18px;
   cursor: pointer;
   margin-left: 10px;
+  color: #868686;
 `;
 
 const AddOptionButton = styled.button`

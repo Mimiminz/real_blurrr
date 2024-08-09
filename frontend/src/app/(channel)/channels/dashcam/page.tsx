@@ -78,7 +78,7 @@ const DashCamPage: React.FC = () => {
       {isLoading ? (
         <Loading />
       ) : dashCams && dashCams.length === 0 ? (
-        <EmptyMessage>채널이 없습니다.</EmptyMessage>
+        <EmptyMessage>게시물이 없습니다.<br />직접 글을 작성해보세요!</EmptyMessage>
       ) : (
         <CardGrid>
           {dashCams.map((dashCam) => (
