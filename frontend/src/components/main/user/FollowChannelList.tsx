@@ -1,97 +1,107 @@
-import React from "react";
+import React, { useRef } from "react";
+import Slider from "react-slick";
 import styled from "styled-components";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { MdArrowBackIos } from "react-icons/md";
+import { LuDot } from "react-icons/lu";
+
 import FollowChannelCard from "./FollowChannelCard";
-import dummy from "@/db/mainPageData.json";
-import { FaArrowCircleLeft } from "react-icons/fa";
 import { Channels } from "@/types/channelType";
 
 interface ChannelsProp {
   followChannels: Channels[];
 }
 
-const SwiperContainer = styled.div`
-  position: relative;
-
-  .swiper-button-next::after,
-  .swiper-button-prev::after {
-    display: none;
-  }
-
-  .swiper-button-prev {
-    background: url("/images/carousel_arrow_prev.png") no-repeat;
-    background-size: 70% auto;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 100%;
-    background-position: center;
-  }
-
-  .swiper-button-next {
-    background: url("/images/carousel_arrow_next.png") no-repeat;
-    background-size: 70% auto;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 100%;
-    background-position: center;
-  }
-
-  .swiper-slide {
-    display: flex;
-    justify-content: center;
-  }
-
-  .swiper-pagination {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .swiper-pagination-bullet {
-    background: #000;
-    opacity: 0.5;
-  }
-
-  .swiper-pagination-bullet-active {
-    background: ${({ theme }) => theme.colors.main};
-    opacity: 1;
-  }
-`;
-
 const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
-  const channels = dummy.ChannelFollowList;
+  console.log(followChannels);
+  const settings = {
+    dots: true,
+    infinite: true,
+    centerPadding: "60px",
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+  };
 
   return (
-    <SwiperContainer>
-      <Swiper
-        modules={[Navigation, Pagination]}
-        spaceBetween={0}
-        slidesPerView={1}
-        navigation
-        pagination={{ clickable: true }}
-        loop
-        breakpoints={{
-          1440: {
-            slidesPerView: 2,
-            spaceBetween: 4,
-          },
-        }}
-      >
-        {followChannels.map((channel, index) => (
-          <SwiperSlide key={index}>
+    <Container>
+      <CarouselContainer>
+        <Slider {...settings}>
+          {followChannels.map((channel, index) => (
             <FollowChannelCard
+              key={index}
               title={channel.name}
               followers={channel.followCount}
-              img={channel.img}
+              img={channel.imgUrl}
+              id={channel.id}
             />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </SwiperContainer>
+          ))}
+        </Slider>
+      </CarouselContainer>
+    </Container>
   );
 };
 
 export default FollowChannelList;
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+`;
+
+const CarouselContainer = styled.div`
+  .slick-list {
+    z-index: 10;
+  }
+  .slick-slider {
+    display: flex;
+    flex-direction: column;
+  }
+  .slick-list {
+    width: 200px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .slick-prev:before,
+  .slick-next:before {
+    display: none;
+    color: black; /* 화살표 색상 */
+    font-size: 20px;
+  }
+
+  .slick-next:before {
+    content: "";
+  }
+  .slick-dots {
+    position: relative;
+    height: 20px;
+    bottom: 0px;
+    z-index: 0;
+  }
+
+  .slick-dots li button:before {
+    color: #4b574b;
+    font-size: 10px;
+  }
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .slick-list {
+      width: 390px;
+    }
+  }
+`;
