@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "메인 페이지 API")
 @RestController
-@RequestMapping("/v1/channels")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class MainPageController {
 

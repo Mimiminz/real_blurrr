@@ -7,7 +7,7 @@ public class Number {
     public static final int RANKING_PAGE_SIZE = 10;
     public static final int LEAGUE_BOARD_PAGE_SIZE = 10;
     public static final int CHANNEL_BOARD_PAGE_SIZE = 10;
-    public static final int HOT_BOARD_PAGE_SIZE = 10;
+    public static final int HOT_BOARD_PAGE_SIZE = 6;
     public static final int DASHCAM_BOARD_PAGE_SIZE = 12;
     public static final int ALARM_PAGE_SIZE = 10;
     public static final int HOT_DASHCAM_BOARD_PAGE_SIZE = 5;
