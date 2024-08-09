@@ -98,7 +98,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public MyCarDetail findMyCarDetail(UUID boardId, ContextMember nullableMember) {
         MyCarBoard myCarBoard = myCarRepository.findById(boardId)
                 .orElseThrow(NotExistBoardException::new);
