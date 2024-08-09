@@ -31,7 +31,7 @@ export interface Mentioned {
 export interface ChannelInfo {
   content: Channels[];
   currentPage: number;
-  first: number;
+  first: boolean;
   hasNext: boolean;
 }
 
