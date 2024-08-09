@@ -112,7 +112,7 @@ export default function WritePage() {
       try {
          console.log(noQueryParamURLs);
          await fetchDashCamWrite(title, content, "투표 제목", voteOptions, noQueryParamURLs, tags);
-         router.push(`/channels/dashcams`);
+         router.push(`/channels/dashcam`);
       } catch (error) {
          console.error("Error submitting post:", error);
       }

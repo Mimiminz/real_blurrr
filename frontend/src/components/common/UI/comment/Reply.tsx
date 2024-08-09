@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
@@ -18,7 +18,6 @@ const Avatar = styled.img`
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background-color: #c4c4c4;
   margin-top: 3px;
   margin-right: 8px;
 

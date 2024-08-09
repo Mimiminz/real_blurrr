@@ -69,71 +69,71 @@ const NavBar = () => {
 
   return (
     <>
-    <Nav>
-      <Image
-        src="/images/logo/logo.png"
-        alt="로고"
-        onClick={() => {
-          router.push("/");
-          setMenuOpen(false);
-        }}
-        
-      />
-      <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? <FiX size={24}/> : <FiMenu size={24} />}
-      </MenuToggleBtn>
-      <Menu className={menuOpen ? "open" : ""}>
-        <MenuItem onClick={() => {router.push("/"); setMenuOpen(false);}}>홈</MenuItem>
-        <MenuItem onClick={() => {router.push(`/league`); setMenuOpen(false); }}>리그</MenuItem>
-        <MenuItem onClick={() => {router.push("/channels"); setMenuOpen(false);}}>채널</MenuItem>
+      <Nav>
+        <Image
+          src="/images/logo/logo.png"
+          alt="로고"
+          onClick={() => {
+            router.push("/");
+            setMenuOpen(false);
+          }}
 
-        {clientIsLoggedIn === null ? (
-          <Spinner />
-        ) : clientIsLoggedIn ? (
-        <>
-          {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
-          {menuOpen ? (
-              <MenuItem>마이페이지</MenuItem>
-            ) : (
-              <MenuItem>
-                <CgProfile onClick={() => {router.push("/mypage"); setMenuOpen(false);}} />
-              </MenuItem>
+        />
+        <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        </MenuToggleBtn>
+        <Menu className={menuOpen ? "open" : ""}>
+          <MenuItem onClick={() => { router.push("/"); setMenuOpen(false); }}>홈</MenuItem>
+          <MenuItem onClick={() => { router.push(`/league`); setMenuOpen(false); }}>리그</MenuItem>
+          <MenuItem onClick={() => { router.push("/channels"); setMenuOpen(false); }}>채널</MenuItem>
+
+          {clientIsLoggedIn === null ? (
+            <Spinner />
+          ) : clientIsLoggedIn ? (
+            <>
+              {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
+              {menuOpen ? (
+                <MenuItem>마이페이지</MenuItem>
+              ) : (
+                <MenuItem>
+                  <CgProfile onClick={() => { router.push("/mypage"); setMenuOpen(false); }} />
+                </MenuItem>
+              )}
+              <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={openLoginModal}>로그인</MenuItem>
+              <MenuItem onClick={openSignupModal}>회원가입</MenuItem>
+            </>
           )}
-          <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
-  
-        </>
-      ) : (
-        <>
-          <MenuItem onClick={openLoginModal}>로그인</MenuItem>
-          <MenuItem onClick={openSignupModal}>회원가입</MenuItem>
-        </>
-      )}
-      </Menu>
-      {showNotifications && (
-        <Notifications onClose={handleCloseNotifications} />
-      )}
-    </Nav>
+        </Menu>
+        {showNotifications && (
+          <Notifications onClose={handleCloseNotifications} />
+        )}
+      </Nav>
 
-    {isLoginModalOpen && (
-      <ModalOverlay onClick={closeLoginModal}>
-        <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
-          <LoginForm closeLoginModal={closeLoginModal} />
-          <CloseButton onClick={closeLoginModal}>×</CloseButton>
-        </ModalContent>
-      </ModalOverlay>
-    )}
+      {isLoginModalOpen && (
+        <ModalOverlay onClick={closeLoginModal}>
+          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+            <LoginForm closeLoginModal={closeLoginModal} />
+            <CloseButton onClick={closeLoginModal}>×</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
 
-    {isSignupModalOpen && (
-      <ModalOverlay onClick={closeSignupModal}>
-        <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
-          <SignupForm />
-          <CloseButton onClick={closeSignupModal}>×</CloseButton>
-        </ModalContent>
-      </ModalOverlay>
-    )}
+      {isSignupModalOpen && (
+        <ModalOverlay onClick={closeSignupModal}>
+          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+            <SignupForm />
+            <CloseButton onClick={closeSignupModal}>×</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </>
   );
-  
+
 };
 
 export default NavBar;
@@ -307,6 +307,7 @@ const MenuItem = styled.div`
 const Image = styled.img`
   width: 60px;
   height: auto;
+  cursor: pointer;
 
   @media (min-width: 480px) {
     width: 60px;
