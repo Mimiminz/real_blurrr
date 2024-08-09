@@ -3,9 +3,6 @@ package com.luckvicky.blur.domain.board.factory;
 
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
-import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
-import com.luckvicky.blur.domain.channel.model.entity.Channel;
-import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateRequest;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.member.model.entity.Member;

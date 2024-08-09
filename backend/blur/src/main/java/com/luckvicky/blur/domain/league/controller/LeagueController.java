@@ -9,6 +9,7 @@ import com.luckvicky.blur.domain.league.model.dto.response.SimpleLeagueListRespo
 import com.luckvicky.blur.domain.league.service.LeagueService;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -34,6 +35,7 @@ public class LeagueController {
 
     private final LeagueService leagueService;
 
+    @Hidden
     @Operation(summary = "리그 생성 API", description = "리그 이름, 유형을 받아 생성한다.")
     @PostMapping
     public ResponseEntity<Result<Boolean>> createLeague(
