@@ -69,7 +69,7 @@ frontend-deploy:
     - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_HOST:$DEPLOY_PATH
     - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_HOST:$DEPLOY_PATH
     - echo "complete file send"
-    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+    - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
 
   needs: ["frontend-build"]
 
