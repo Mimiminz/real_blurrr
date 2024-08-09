@@ -17,7 +17,6 @@ const ChannelBoardPage: React.FC<PageProps> = ({ params }) => {
    const [sortCriteria, setSortCriteria] = useState('TIME');
 
    const handleSortChange = (newSort: string) => {
-      // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환
       const criteriaMap: { [key: string]: string } = {
          '최신순': 'TIME',
          '댓글수': 'COMMENT',

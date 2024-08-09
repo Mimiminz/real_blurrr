@@ -22,8 +22,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    const targetEndpoints = ['/v1/channels', '/v1/league'];
-    if (targetEndpoints.some(endpoint => response.config.url?.includes(endpoint))) {
+    // 정규 표현식 패턴을 RegExp 객체로 정의
+    const targetEndpoints = [/^\/v1\/channels/, /^\/v1\/leagues/];
+
+    // 정규 표현식으로 경로 매칭
+    if (targetEndpoints.some(endpoint => endpoint.test(response.config.url || ''))) {
       if (response.status === 204) {
         response.data = {
           totalPages: 0,
@@ -69,6 +72,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;
 
