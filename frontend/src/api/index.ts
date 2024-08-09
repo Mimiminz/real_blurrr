@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { refreshAccessToken } from './auth';
 
@@ -21,7 +21,31 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response: AxiosResponse) => {
+    const targetEndpoints = ['/v1/channels', '/v1/league'];
+    if (targetEndpoints.some(endpoint => response.config.url?.includes(endpoint))) {
+      if (response.status === 204) {
+        response.data = {
+          totalPages: 0,
+          totalElements: 0,
+          pageNumber: 0,
+          pageSize: 0,
+          content: [],
+        };
+      }
+      if (!response.data || !response.data.data) {
+        console.log("Unexpected response structure:", response);
+        response.data = {
+          totalPages: 0,
+          totalElements: 0,
+          pageNumber: 0,
+          pageSize: 0,
+          content: [],
+        };
+      }
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
