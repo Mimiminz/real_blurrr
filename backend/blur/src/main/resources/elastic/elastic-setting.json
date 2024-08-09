@@ -5,7 +5,7 @@
         "suggest_filter": {
           "type": "edge_ngram",
           "min_gram": 1,
-          "max_gram": 10
+          "max_gram": 5
         }
       },
       "tokenizer": {

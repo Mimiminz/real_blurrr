@@ -8,6 +8,9 @@
       "store":true,
       "analyzer": "suggest_index_analyzer",
       "search_analyzer": "suggest_search_analyzer"
+    },
+    "peopleCount": {
+      "type": "keyword"
     }
   }
 }
