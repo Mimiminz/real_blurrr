@@ -2,7 +2,6 @@ package com.luckvicky.blur.domain.channel.controller;
 
 import static com.luckvicky.blur.global.constant.Number.CHANNEL_PAGE_SIZE;
 
-import com.luckvicky.blur.domain.channel.exception.TagLimitExceededException;
 import com.luckvicky.blur.domain.channel.model.dto.ChannelDto;
 import com.luckvicky.blur.domain.channel.model.dto.TagDto;
 import com.luckvicky.blur.domain.channel.model.dto.request.ChannelCreateRequest;
@@ -54,10 +53,6 @@ public class ChannelController {
     @PostMapping
     public ResponseEntity<Result<ChannelDto>> createChannel(
             @Valid @RequestBody ChannelCreateRequest request, @AuthUser ContextMember contextMember) {
-
-        if(request.tags()==null || request.tags().isEmpty() || request.tags().size()>3){
-            throw new TagLimitExceededException();
-        }
 
         ChannelDto createdChannel = channelService.createChannel(request, contextMember.getId());
         return ResponseUtil.created(
