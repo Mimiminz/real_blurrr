@@ -18,9 +18,11 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
   const handleClick = () => {
     router.push(`/league/${name}`);
   };
+
+  const isLongName = name.length > 6;
   return (
     <CardContainer onClick={handleClick}>
-      <Title>{name}</Title>
+      <Title isLongName={isLongName}>{name}</Title>
       <CountContainer>
         <MdPeopleAlt />
         {peopleCount}
@@ -66,14 +68,13 @@ const CardContainer = styled.div`
     padding: 14px 10px;
   }
 `;
-
-const Title = styled.h3`
-  font-size: 13px;
+const Title = styled.h3<{ isLongName: boolean }>`
+  font-size: ${({ isLongName }) => (isLongName ? "9px" : "13px")};
   color: #000;
   margin: 0px;
 
   @media (min-width: 768px) {
-    font-size: 12px;
+    font-size: ${({ isLongName }) => (isLongName ? "10px" : "12px")};
     margin-bottom: 6px;
   }
 `;
