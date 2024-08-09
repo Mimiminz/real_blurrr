@@ -14,6 +14,7 @@ function LeagueBoardListItem({
   createdAt,
   likeCount,
   commentCount,
+  viewCount,
 }: LeagueBoardListItemProps) {
   return (
     <ArticleDetail>
@@ -39,7 +40,7 @@ function LeagueBoardListItem({
         </LikeSection>
         <LikeSection>
           <FaRegEye />
-          {commentCount}
+          {viewCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>

@@ -58,6 +58,7 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
               createdAt={item.createdAt}
               likeCount={item.likeCount}
               commentCount={item.commentCount}
+              viewCount={item.viewCount}
             />
           </div>
         ))}
