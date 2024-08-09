@@ -329,19 +329,40 @@ export const S3UploadVideo = async (uploadUrl: string, file: File): Promise<void
 // 내 차 자랑 목록 데이터를 가져오는 함수
 export const fetchBoast = async (
   keyword: string,
-  page: number,
+  pageNumber: number,
   criteria: string
 ): Promise<BoastInfo> => {
   try {
     const response = await api.get("/v1/channels/mycar/boards", {
       params: {
         keyword,
-        page,
+        pageNumber,
         criteria,
       },
     });
 
-    console.log(`mycar : ${response.data}`);
+    console.log(response.data);
+    console.log(`mycar : ${response.data.content}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching boast data:", error);
+    throw error;
+  }
+};
+
+// 내 차 자랑 상세 데이터를 가져오는 함수
+export const fetchBoastDetail = async (
+  id: string
+): Promise<PostDetail> => {
+  try {
+    const response = await api.get(`/v1/channels/mycar/boards/${id}`, {
+      params: {
+        id,
+      },
+    });
+
+    console.log(`mycar detail: ${response.data}`);
 
     return response.data;
   } catch (error) {

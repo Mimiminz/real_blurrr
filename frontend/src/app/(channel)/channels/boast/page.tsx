@@ -7,6 +7,7 @@ import BoastCard from '@/components/channel/boast/BoastCard';
 import PostTitle from '@/components/channel/PostTitle';
 import { fetchBoast } from '@/api/channel';
 import { Boasts } from '@/types/channelType';
+import PaginationComponent from "@/components/common/UI/Pagination";
 import Loading from "@/components/common/UI/Loading";
 
 const Boast: React.FC = () => {
@@ -14,6 +15,11 @@ const Boast: React.FC = () => {
    const [keyword, setKeyword] = useState('');
    const [sortCriteria, setSortCriteria] = useState('TIME');
    const router = useRouter();
+
+   // 페이지네이션 상태
+   const [currentPage, setCurrentPage] = useState<number>(1);
+   const [totalPages, setTotalPages] = useState<number>(1);
+   const [isLoading, setIsLoading] = useState(true);
 
    const boastId = process.env.NEXT_PUBLIC_BOAST_ID as string;
 
@@ -38,22 +44,29 @@ const Boast: React.FC = () => {
       router.push(`/channels/${boastId}/${id}`);
    };
 
+   const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+   };
+
    useEffect(() => {
       const loadData = async () => {
+         setIsLoading(true);
          try {
-            const data = await fetchBoast(keyword, 0, sortCriteria);
-            setBoasts(data.content);
+            const data = await fetchBoast(keyword, currentPage - 1, sortCriteria);
+            if (data) {
+               setBoasts(data.content);
+            } else {
+               setBoasts([]);
+            }
          } catch (error) {
             console.error('Failed to load boast list data:', error);
+         } finally {
+            setIsLoading(false);
          }
       };
 
       loadData();
    }, [boastId, keyword, sortCriteria]);
-
-   if (!boasts?.length) {
-      return <Loading />;
-   }
 
    return (
       <>
@@ -62,10 +75,10 @@ const Boast: React.FC = () => {
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />
-         {boasts.length === 0 ? (
-            <CenteredMessage>
-               게시글이 없습니다. 게시글을 작성해보세요!
-            </CenteredMessage>
+         {isLoading ? (
+            <Loading />
+         ) : boasts && boasts.length === 0 ? (
+            <EmptyMessage>게시글이 없습니다.</EmptyMessage>
          ) : (
             <CardGrid>
                {boasts.map((boast) => (
@@ -79,6 +92,11 @@ const Boast: React.FC = () => {
                ))}
             </CardGrid>
          )}
+         <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+         />
       </>
    );
 };
@@ -105,13 +123,11 @@ const CardGrid = styled.div`
   }
 `;
 
-const CenteredMessage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; // 화면의 세로 중앙에 배치
+const EmptyMessage = styled.p`
+  padding: 100px;
+  text-align: center;
   font-size: 18px;
-  color: #555;
+  color: #333;
 `;
 
 export default Boast;

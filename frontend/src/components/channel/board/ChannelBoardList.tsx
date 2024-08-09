@@ -77,7 +77,6 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
             onClick={() => handlePostClick(channelId, post.board.id)}
           />
         ))
-
       )}
       <PaginationComponent
         currentPage={currentPage}

@@ -36,7 +36,7 @@ api.interceptors.response.use(
           content: [],
         };
       }
-      if (!response.data || !response.data.data) {
+      if (!response.data) {
         console.log("Unexpected response structure:", response);
         response.data = {
           totalPages: 0,
