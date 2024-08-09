@@ -7,7 +7,7 @@ import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
 import { useAuthStore } from "@/store/authStore";
 import { PostDetail } from "@/types/channelType";
 import { fetchComment } from "@/types/commentTypes";
-import { fetchChannelPostDetail } from "@/api/channel";
+import { fetchChannelPostDetail, fetchBoastDetail } from "@/api/channel";
 import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
@@ -18,6 +18,7 @@ export default function ChannelBoardDetailPage({
 }: {
   params: { channelId: string; boardId: string };
 }) {
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
   const channelId = params.channelId;
   const boardId = params.boardId;
 
@@ -39,12 +40,17 @@ export default function ChannelBoardDetailPage({
       setLikeCount(likeData.likeCount);
       setIsLiked(likeData.isLike);
     }
-    // setIsLiked((prevIsLiked) => !prevIsLiked);
   };
 
   const loadBoardDetail = useCallback(async () => {
     try {
-      const details = await fetchChannelPostDetail(boardId, channelId);
+      let details;
+      if (boastId === channelId) {
+        details = await fetchBoastDetail(boardId);
+      } else {
+        details = await fetchChannelPostDetail(boardId, channelId);
+      }
+
       setBoardDetail(details);
       setLikeCount(details.likeCount);
       setIsLiked(details.liked);
@@ -65,16 +71,16 @@ export default function ChannelBoardDetailPage({
     }
   }, [boardId, isLoggedIn]);
 
-  const handleDelete = async () => {
+  const handleCommentAdded = async () => {
     try {
-      // await fetchBoardDelete(boardId);
-      // const isDelete = confirm("정말 삭제하실건가요?");
-      // if (!isDelete) {
-      //   return;
-      // }
-      // router.push(`/league/${leagueName}`);
+      // 새로운 댓글을 가져와서 업데이트합니다.
+      const fetchCommentsList = await fetchCommentList(boardId);
+      if (fetchCommentsList) {
+        // 새 댓글이 추가될 때 기존 댓글 리스트에 추가합니다.
+        setCommentList(fetchCommentsList);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update comment list:", error);
     }
   };
 
@@ -108,11 +114,11 @@ export default function ChannelBoardDetailPage({
         </WriterContainer>
         <CommentList
           comments={commentList?.comments || []}
-          commentCount={boardDetail.commentCount}
+          commentCount={commentList?.commentCount || 0}
           boardId={boardId}
           leagueId=""
           isLeague={false}
-          onCommentAdded={loadCommentDetail}
+          onCommentAdded={handleCommentAdded}
           boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
@@ -120,14 +126,6 @@ export default function ChannelBoardDetailPage({
   );
 }
 
-const Content = styled.div`
-  font-size: 17px;
-  line-height: 1.5;
-  color: #333;
-  padding: 20px;
-  padding-bottom: 50px;
-  border-top: 1px solid #bebebe;
-`;
 
 const CommentContainer = styled.div`
   display: flex;
@@ -139,20 +137,6 @@ const WriterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-`;
-
-const WriterButton = styled.p`
-  padding: 0px;
-  /* border-radius: 40px; */
-  /* border: 1px solid #ddd; */
-  font-size: 14px;
-  background-color: white;
-  margin: 5px 10px 20px 0;
-  cursor: pointer;
-
-  &:hover {
-    color: #666;
-  }
 `;
 
 const HeartButton = styled.button<{ $isLiked: boolean }>`
@@ -173,5 +157,18 @@ const HeartButton = styled.button<{ $isLiked: boolean }>`
 
   @media (min-width: 768px) {
     font-size: 20px;
+  }
+`;
+
+const Content = styled.div`
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  padding: 16px 16px 40px 16px;
+  border-top: 1px solid #bebebe;
+
+  @media (min-width: 480px) {
+    font-size: 17px;
+    padding: 20px 20px 50px 20px;
   }
 `;

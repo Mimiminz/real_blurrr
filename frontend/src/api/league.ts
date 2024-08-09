@@ -13,7 +13,6 @@ import {
 export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
   try {
     const response = await api.get(`/v1/leagues/members`);
-    console.log(response.data);
     if (!response.data.data) {
       return [];
     }
@@ -53,7 +52,6 @@ export const fetchLeagueBoardList = async (
   pageNumber: number
 ): Promise<LeagueBoardList> => {
   try {
-    console.log(leagueType);
     const response = await api.get(`/v1/leagues/${leagueId}/boards`, {
       params: { leagueType, criteria, pageNumber },
     });

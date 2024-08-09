@@ -25,10 +25,13 @@ public class LeagueDocument {
 
     private String name;
 
+    private Long peopleCount;
+
     public static LeagueDocument of(League league) {
         return LeagueDocument.builder()
                 .id(league.getId())
                 .name(league.getName())
+                .peopleCount(league.getPeopleCount())
                 .build();
     }
 

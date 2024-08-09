@@ -30,10 +30,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class AlarmFacade {
     private final SseService sseService;
     private final AlarmService alarmService;
-    private final Map<String, NotificationFactory> factoryMap;
+    private final Map<AlarmType, NotificationFactory> factoryMap;
     private final MemberRepository memberRepository;
 
-    public AlarmFacade(SseService sseService, AlarmService alarmService, @Lazy Map<String, NotificationFactory> factoryMap,
+    public AlarmFacade(SseService sseService, AlarmService alarmService, Map<AlarmType, NotificationFactory> factoryMap,
                        MemberRepository memberRepository) {
 
         log.info("{}",factoryMap);
@@ -55,7 +55,7 @@ public class AlarmFacade {
         }
         Member member = memberRepository.getOrThrow(memberId);
 
-        NotificationFactory factory = factoryMap.get(alarmType.getType());
+        NotificationFactory factory = factoryMap.get(alarmType);
 
         AlarmEvent alarmEvent = new AlarmEvent(memberId, alarmType, factory.createNotification(args));
         Alarm alarm = alarmService.createAlarm(alarmEvent, member);

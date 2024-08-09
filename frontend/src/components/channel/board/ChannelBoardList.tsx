@@ -25,9 +25,11 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       try {
         const data = await fetchPosts(
           channelId,
@@ -35,11 +37,17 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
           currentPage - 1,
           criteria
         );
-        setPosts(data.content);
-        setTotalPages(data.totalPages);
+        if (data) {
+          setPosts(data.content);
+          setTotalPages(data.totalPages);
+        } else {
+          setPosts([]);
+        }
         console.log("Posts loaded:", data);
       } catch (error) {
         console.error("Failed to load channel board list data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -54,20 +62,22 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
     setCurrentPage(page);
   };
 
-  if (!Posts?.length) {
-    return <Loading />;
-  }
-
   return (
     <ChannelList>
-      {Posts.map((post) => (
-        <ChannelBoardListItem
-          key={post.board.id}
-          post={post.board}
-          mentions={post.mentionedLeagues}
-          onClick={() => handlePostClick(channelId, post.board.id)}
-        />
-      ))}
+      {isLoading ? (
+        <Loading />
+      ) : Posts && Posts.length === 0 ? (
+        <EmptyMessage>게시글이 없습니다.</EmptyMessage>
+      ) : (
+        Posts.map((post) => (
+          <ChannelBoardListItem
+            key={post.board.id}
+            post={post.board}
+            mentions={post.mentionedLeagues}
+            onClick={() => handlePostClick(channelId, post.board.id)}
+          />
+        ))
+      )}
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
@@ -77,5 +87,12 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
   );
 };
 const ChannelList = styled.div``;
+
+const EmptyMessage = styled.p`
+  padding: 100px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+`;
 
 export default ChannelBoardList;

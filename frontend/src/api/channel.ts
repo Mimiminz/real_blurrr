@@ -7,11 +7,11 @@ import {
   DashCamDetail,
   PostDetail,
   PostInfo,
-  Option,
-  Video,
+  CreateOption,
   ChannelInfo,
   BoastInfo,
-  Mentioned
+  Mentioned,
+  Video
 } from '@/types/channelType';
 
 // 팔로잉한 채널 목록 데이터를 가져오는 함수
@@ -47,9 +47,13 @@ export const fetchCreatedChannels = async (): Promise<Channels[]> => {
 };
 
 // 전체 채널 목록 데이터를 가져오는 함수
-export const fetchChannels = async (): Promise<ChannelInfo> => {
+export const fetchChannels = async (): Promise<ChannelInfo | null> => {
   try {
     const response = await api.get("/v1/channels");
+
+    if (response.status === 204) {
+      return null; // 데이터가 없을 때 null 반환
+    }
 
     return response.data.data;
   } catch (error) {
@@ -106,35 +110,13 @@ export const fetchPosts = async (
     const response = await api.get(`/v1/channels/${channelId}/boards`, {
       params: {
         keyword,
-        pageNumber, // 페이지 번호
-        criteria, // 정렬 기준
+        pageNumber, 
+        criteria,
       },
     });
-    console.log("channelPost call");
-
-    if (response.status === 204) {
-      return {
-        totalPages: 0,
-        totalElements: 0,
-        pageNumber: 0,
-        pageSize: 0,
-        content: [],
-      }; // 검색 결과가 없는 경우 빈 배열 반환
-    }
-
-    // 응답 데이터가 정의되어 있는지 확인
-    if (response.data && response.data.data) {
-      return response.data.data;
-    } else {
-      console.error("Unexpected response structure:", response);
-      return {
-        totalPages: 0,
-        totalElements: 0,
-        pageNumber: 0,
-        pageSize: 0,
-        content: [],
-      };
-    }
+    
+    return response.data.data;
+    
   } catch (error) {
     console.error("Error fetching channel post list:", error);
     throw error;
@@ -163,7 +145,7 @@ export const fetchPostWrite = async (
   channelId: string,
   title: string,
   content: string,
-  mentionedLeagueNames: Mentioned[]
+  mentionedLeagueNames: string[]
 ) => {
   try {
     const response = await api.post(`/v1/channels/${channelId}/boards`, {
@@ -181,9 +163,9 @@ export const fetchPostWrite = async (
 // 채널 게시글 생성 시 태그 검색 함수
 export const fetchTags = async ( keyword: string ) => {
   try {
-    const response = await api.get(`/v1/channels/check/tags/${keyword}`);
-    console.log(response.data.data.tags);
-    return response.data.data.tags;
+    const response = await api.get(`/v1/leagues/check/${keyword}`);
+    console.log(response.data.data.leagues);
+    return response.data.data.leagues;
   } catch (error) {
     console.log(error);
     throw error;
@@ -227,6 +209,7 @@ export const fetchDashCams = async (
     });
 
     return response.data.data;
+    
   } catch (error) {
     console.error("Error fetching dash cam data:", error);
     throw error;
@@ -279,19 +262,31 @@ export const addVote = async (boardId: string, optionId: string) => {
   }
 };
 
-// 채널 게시글 생성 함수
+// 블랙박스 채널 게시글 생성 함수
 export const fetchDashCamWrite = async (
   title: string,
   content: string,
-  option: Option,
-  videos: Video
+  voteTitle: string,
+  option: CreateOption[],
+  videos: Video[],
+  mentionedLeagueNames: string[]
 ) => {
   try {
+    // console.log({
+    //   title: title,
+    //   content: content,
+    //   voteTitle: voteTitle,
+    //   options: option,
+    //   videos: videos,
+    //   mentionedLeagueNames: mentionedLeagueNames
+    // });
     const response = await api.post(`/v1/channels/dashcams/boards`, {
       title: title,
       content: content,
+      voteTitle: voteTitle,
       options: option,
       videos: videos,
+      mentionedLeagueNames: mentionedLeagueNames
     });
     return response.data;
   } catch (error) {
@@ -300,7 +295,8 @@ export const fetchDashCamWrite = async (
   }
 };
 
-export const videoPresigned = async (fileName: string) => {
+// 동영상 presigned url 받는 함수
+export const videoPresigned = async (fileName: string): Promise<{ noQueryParamUrl: string; fullUrl: string }> => {
   try {
     const response = await api.get(`/v1/channels/dashcams/boards/aws`, {
       params: { fileName },
@@ -308,33 +304,99 @@ export const videoPresigned = async (fileName: string) => {
 
     console.log(response.data);
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching video url:", error);
     throw error;
   }
 };
 
+// S3에 동영상 업로드 하는 함수
+export const S3UploadVideo = async (uploadUrl: string, file: File): Promise<void> => {
+  try {
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload video to S3');
+    }
+
+    console.log('Successfully uploaded video to S3');
+  } catch (error) {
+    console.error('Error uploading video:', error);
+    throw error;
+  }
+};
+
+
 // 내 차 자랑 목록 데이터를 가져오는 함수
 export const fetchBoast = async (
   keyword: string,
-  page: number,
+  pageNumber: number,
   criteria: string
 ): Promise<BoastInfo> => {
   try {
     const response = await api.get("/v1/channels/mycar/boards", {
       params: {
         keyword,
-        page,
+        pageNumber,
         criteria,
       },
     });
 
-    console.log(`mycar : ${response.data}`);
+    console.log(response.data);
+    console.log(`mycar : ${response.data.content}`);
 
     return response.data;
   } catch (error) {
     console.error("Error fetching boast data:", error);
+    throw error;
+  }
+};
+
+// 내 차 자랑 상세 데이터를 가져오는 함수
+export const fetchBoastDetail = async (
+  id: string
+): Promise<PostDetail> => {
+  try {
+    const response = await api.get(`/v1/channels/mycar/boards/${id}`, {
+      params: {
+        id,
+      },
+    });
+
+    console.log(`mycar detail: ${response.data}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching boast data:", error);
+    throw error;
+  }
+};
+
+// 내 차 자랑 채널 게시글 생성 함수
+export const fetchBoastWrite = async (
+  title: string,
+  content: string,
+  thumbNail: string,
+  mentionedLeagueNames: string[]
+) => {
+  try {
+    const response = await api.post(`/v1/channels/mycar/boards`, {
+      title: title,
+      content: content,
+      boardType: "MYCAR",
+      thumbNail: thumbNail,
+      mentionedLeagueNames: mentionedLeagueNames
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

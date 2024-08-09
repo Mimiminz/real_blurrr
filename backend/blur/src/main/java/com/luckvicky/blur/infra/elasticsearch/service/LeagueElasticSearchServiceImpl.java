@@ -1,11 +1,12 @@
 package com.luckvicky.blur.infra.elasticsearch.service;
 
-import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.Number.MENTION_LEAGUE_SEARCH_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueSearchResponse;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.util.ConsonantExtractUtil;
 import com.luckvicky.blur.infra.elasticsearch.document.LeagueDocument;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -45,14 +48,14 @@ public class LeagueElasticSearchServiceImpl implements LeagueElasticSearchServic
 
         Pageable pageable = PageRequest.of(
                 ZERO,
-                GENERAL_PAGE_SIZE
+                MENTION_LEAGUE_SEARCH_PAGE_SIZE,
+                Sort.by(Direction.DESC, SortingCriteria.PEOPLE.getCriteria())
         );
 
-        name = ConsonantExtractUtil.extract(name);
-        log.info("추출 결과 {}", name);
-
         Page<LeagueDocument> leagues =
-                leagueElasticSearchRepository.findAllByNameContainingIgnoreCase(name, pageable);
+                leagueElasticSearchRepository.findAllByNameContainingIgnoreCase(
+                        ConsonantExtractUtil.extract(name), pageable
+                );
 
         return PaginatedResponse.of(
                 leagues.getNumber(),

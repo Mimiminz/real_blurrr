@@ -1,24 +1,22 @@
 import { LeagueList } from "@/types/leagueTypes";
 import api from "./index";
-import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
 
 export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
   try {
-    const response = await api.get(`/v1/channels/hot`);
+    const response = await api.get(`/v1/hot`);
     if (!response.data.data) {
       return [];
     }
-    console.log(response.data);
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
 export const fetchTodayCar = async (): Promise<TodayCarItem> => {
   try {
-    const response = await api.get(`/v1/channels/today/mycar`);
+    const response = await api.get(`/v1/today/mycar`);
     return response.data.data.myCar;
   } catch (error) {
     console.log(error);
@@ -28,7 +26,7 @@ export const fetchTodayCar = async (): Promise<TodayCarItem> => {
 
 export const fetchMyCars = async (): Promise<TodayCarItem[]> => {
   try {
-    const response = await api.get(`/v1/channels/mycar`);
+    const response = await api.get(`/v1/mycar`);
     return response.data.data.boards;
   } catch (error) {
     console.log(error);
@@ -36,10 +34,11 @@ export const fetchMyCars = async (): Promise<TodayCarItem[]> => {
   }
 };
 
-export const fetchDashCams = async (): Promise<TodayCarItem[]> => {
+export const fetchDashCams = async (): Promise<DashCamItem[]> => {
   try {
-    const response = await api.get(`/v1/channels/dashcam`);
-    return response.data.data.boards;
+    const response = await api.get(`/v1/dashcam`);
+    console.log(response.data);
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LeagueListItem from "./LeagueListItem";
 import { useLeagueStore } from "@/store/leagueStore";
-import dummy from "@/db/mainPageData.json";
 
 const LeagueList: React.FC = () => {
   const { brandLeagueList } = useLeagueStore();
@@ -40,6 +39,7 @@ const LeagueList: React.FC = () => {
 export default LeagueList;
 
 const ListContainer = styled.div`
+  width: 10;
   display: flex;
   flex-wrap: wrap;
   gap: 18px;

@@ -36,8 +36,8 @@ public class DashcamBoardListDto{
     @Schema(description = "게시물 생성 시간")
     private LocalDateTime createdAt;
 
-    @Schema(description = "블랙박스 영상 url")
-    private List<String> videoUrl;
+    @Schema(description = "썸네일 url")
+    private String thumbNail;
 
     @Schema(description = "멘션된 리그 목록")
     private List<MentionDto> mentionedLeagues;

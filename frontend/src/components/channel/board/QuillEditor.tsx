@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ImageActions } from '@xeger/quill-image-actions';
@@ -11,12 +11,14 @@ const CLOUD_FRONT_URL = process.env.NEXT_PUBLIC_CLOUD_FRONT_URL;
 interface QuillEditorProps {
   content: string;
   setContent: (content: string) => void;
+  setThumbNail: (url: string) => void;
 }
 
 Quill.register('modules/imageActions', ImageActions);
 
-const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
+const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumbNail }) => {
   const quillRef = useRef<ReactQuill | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   const imageHandler = async () => {
     const input = document.createElement("input");
@@ -52,13 +54,19 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
         });
         const result = await upload.promise();
         const url_key = result.Key;
+        const fullUrl = CLOUD_FRONT_URL + url_key;
 
         if (quillRef.current) {
           const editor = quillRef.current.getEditor();
           const range = editor.getSelection();
           if (range) {
-            editor.insertEmbed(range.index, "image", CLOUD_FRONT_URL + url_key);
+            editor.insertEmbed(range.index, "image", fullUrl);
           }
+        }
+
+        if (!isSaved) {
+          setThumbNail(fullUrl);
+          setIsSaved(true);
         }
       } catch (error) {
         console.log("Error uploading image: ", error);
@@ -77,7 +85,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
           [{ color: [] }, { background: [] }],
-          ["link", "image", "video"],
+          ["link", "image"],
           ["vote"],
         ],
         handlers: {
@@ -104,7 +112,6 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent }) => {
     "background",
     "link",
     "image",
-    "video",
     'height',
     'width',
   ];

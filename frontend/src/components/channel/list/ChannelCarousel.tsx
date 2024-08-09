@@ -41,7 +41,7 @@ interface ChannelCarouselProps {
       id: string;
       name: string;
       followCount: number;
-      img: string;
+      imgUrl: string;
    }>;
    handleChannelClick: (channelId: string) => void;
 }
@@ -90,7 +90,7 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
                   <UserChannelCard
                      name={slide.name}
                      followCount={slide.followCount}
-                     img={slide.img}
+                     img={slide.imgUrl}
                      onClick={(e) => {
                         e.stopPropagation();
                         handleChannelClick(slide.id);

@@ -55,10 +55,10 @@ public class StringFormat {
     // 공용 URI
     public static final String[] GUEST_URI = {
             "/v1/leagues/ranking",
-            "/v1/channels/hot",
-            "/v1/channels/mycar",
-            "/v1/channels/today/mycar",
-            "/v1/channels/dashcam",
+            "/v1/hot",
+            "/v1/mycar",
+            "/v1/today/mycar",
+            "/v1/dashcam",
             "/v1/channels",
             "/v1/channels/*",
             "/v1/channels/search",

@@ -27,8 +27,9 @@ public interface AuthCodeStrategy {
             throw new RuntimeException(e);
         }
     }
-
     void save(String key, String code);
+
+    boolean validAuthCode(String email, String code);
     void pushAvailableEmail(String email);
-    void checkAvailable(String email);
+    void checkAvailableEmail(String email);
 }

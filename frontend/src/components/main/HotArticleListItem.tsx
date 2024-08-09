@@ -50,11 +50,12 @@ const ArticleDetail = styled.div`
   padding: 6px 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
   cursor: pointer;
-
+  
   &:hover {
     background-color: #f9f9f9;
   }
 `;
+
 
 const ArticleInfo = styled.div`
   display: flex;

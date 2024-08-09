@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.strategy;
 
+import com.luckvicky.blur.domain.member.exception.ExpiredEmailAuthException;
 import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -21,7 +22,13 @@ public class PasswordAuthStrategy implements AuthCodeStrategy {
         if (!memberRepository.existsByEmail(email)) {
             throw new NotExistMemberException();
         }
-        redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), code, 10);
+        redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), code, 5);
+    }
+
+    @Override
+    public boolean validAuthCode(String email, String code) {
+        String getCode = redisAuthCodeAdapter.getValue(generateSaveKey(email)).orElseThrow(ExpiredEmailAuthException::new);
+        return getCode.equals(code);
     }
 
     @Override
@@ -30,7 +37,7 @@ public class PasswordAuthStrategy implements AuthCodeStrategy {
     }
 
     @Override
-    public void checkAvailable(String email) {
+    public void checkAvailableEmail(String email) {
         redisAuthCodeAdapter.getValue(generateAvailableKey(email))
                 .orElseThrow(InvalidEmailVerificationException::new);
     }

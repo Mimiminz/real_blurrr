@@ -27,28 +27,19 @@ const FollowChannelInfo: React.FC<ChannelsProp> = ({ followChannels }) => {
 export default FollowChannelInfo;
 
 const Container = styled.div`
-  width: 32%;
-  padding: 18px;
-  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: ; */
+  /* align-items: center; */
+  flex: 1;
+  width: 100%;
+  margin-left: 20px; /* UserCarInfo와 간격 추가 */
+  padding: 18px 0;
   border-radius: 12px;
-  /* border: 2px solid #00000039; */
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9c1;
+  background-color: #ffffff;
 
-  @media (max-width: 768px) {
+  @media (max-width: 540px) {
     display: none;
-  }
-
-  @media (min-width: 768px) {
-    width: 32%;
-  }
-
-  @media (min-width: 1024px) {
-    width: 40%;
-  }
-
-  @media (min-width: 1440px) {
-    width: 45%;
   }
 `;
 
@@ -57,6 +48,7 @@ const Title = styled.h2`
   margin-bottom: 10px;
   margin-top: 0;
   padding-left: 6px;
+  font-weight: bold;
 `;
 
 const NoFollow = styled.h3`

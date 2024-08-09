@@ -80,7 +80,10 @@ const PostTitle: React.FC<PostTitleProps> = ({
   }, [channelType, getChannelInfo]);
 
   const handleCreatePost = () => {
-    if (channelId) {
+    if (channelType === "dashcam") {
+      router.push(`/channels/dashcam/write`);
+    }
+    else if (channelId) {
       router.push(`/channels/${channelId}/write`);
     }
   };

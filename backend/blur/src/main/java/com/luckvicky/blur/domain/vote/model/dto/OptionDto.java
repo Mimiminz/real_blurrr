@@ -2,6 +2,8 @@ package com.luckvicky.blur.domain.vote.model.dto;
 
 import com.luckvicky.blur.domain.vote.model.entity.Option;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,5 +37,10 @@ public class OptionDto {
                 .build();
     }
 
+    public static List<OptionDto> of(List<Option> options){
+        return options.stream()
+                .map(OptionDto::of)
+                .collect(Collectors.toList());
+    }
 
 }

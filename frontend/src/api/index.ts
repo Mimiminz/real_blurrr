@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { refreshAccessToken } from './auth';
 
@@ -21,7 +21,34 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response: AxiosResponse) => {
+    // 정규 표현식 패턴을 RegExp 객체로 정의
+    const targetEndpoints = [/^\/v1\/channels/, /^\/v1\/leagues/];
+
+    // 정규 표현식으로 경로 매칭
+    if (targetEndpoints.some(endpoint => endpoint.test(response.config.url || ''))) {
+      if (response.status === 204) {
+        response.data = {
+          totalPages: 0,
+          totalElements: 0,
+          pageNumber: 0,
+          pageSize: 0,
+          content: [],
+        };
+      }
+      if (!response.data) {
+        console.log("Unexpected response structure:", response);
+        response.data = {
+          totalPages: 0,
+          totalElements: 0,
+          pageNumber: 0,
+          pageSize: 0,
+          content: [],
+        };
+      }
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -45,6 +72,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;
 

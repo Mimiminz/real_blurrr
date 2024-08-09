@@ -1,14 +1,8 @@
+import { NumberLengthEquals2 } from 'aws-sdk/clients/paymentcryptographydata';
 import { likeState } from './boardType';
 export type DashCamContentData = Pick<DashCamDetail, 'id' | 'member' | 'title' | 'createdAt' | 'videoUrl' | 'content' | 'mentionedLeagues'>;
 
 export interface SimpleMember {
-  profileUrl: string;
-  nickname: string;
-  carTitle: string;
-}
-
-export interface PostMember {
-  id: string;
   profileUrl: string;
   nickname: string;
   carTitle: string;
@@ -28,52 +22,17 @@ export interface Mentioned {
    name: string;
  }
 
-export interface DashCamList {
-  totalPages: number;
-  totalElements: number;
-  pageNumber: number;
-  pageSize: number;
-  content: DashCam[];
-}
-
-export interface DashCam {
-  id: string;
-  member: SimpleMember;
-  title: string;
-  viewCount: number;
-  commentCount: number;
-  likeCount: number;
-  createdAt: string;
-  videoUrl: string[];
-  mentionedLeagues: Mentioned[];
-}
-
-export interface DashCamDetail {
-   id: string;
-   member: SimpleMember;
-   title: string;
-   viewCount: number;
-   commentCount: number;
-   likeCount: number;
-   voteCount: number;
-   createdAt: string; // ISO 날짜 문자열을 가리킴
-   videoUrl: string[];
-   content: string;
-   mentionedLeagues: Mentioned[];
-   liked: boolean;
- }
-
 export interface ChannelInfo {
   content: Channels[];
   currentPage: number;
-  first: number;
+  first: boolean;
   hasNext: boolean;
 }
 
 export interface Channels {
    id: string;
    name: string;
-   img: string;
+   imgUrl: string;
    info: string;
    owner: string;
    followCount: number;
@@ -87,7 +46,7 @@ export interface Channels {
 
  export interface Posts {
   id: string;
-  member: PostMember;
+  member: SimpleMember;
   title: string;
   viewCount: number;
   commentCount: number;
@@ -114,16 +73,17 @@ export interface PostDetailData {
 
 export interface PostDetail {
   id: string;
-  member: PostMember;
+  member: SimpleMember;
   title: string;
   content: string;
-  createdAt: string;
   viewCount: number;
   commentCount: number;
   likeCount: number;
-  mentionedLeagues: Mentioned[];
+  createdAt: string;
   comments: Comment[];
+  mentionedLeagues: Mentioned[];
   liked: boolean;
+  thumbNail?: string;
 }
 
 export interface PostDataInfo {
@@ -151,6 +111,57 @@ export interface Boasts {
   simpleMemberDto: SimpleMember;
 }
 
+export interface BoastDetail {
+  id: string;
+  member: SimpleMember;
+  title: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  createdAt: string;
+  content: string;
+  mentionedLeagues: Mentioned[];
+  thumbNail: string;
+  liked: boolean;
+}
+
+
+export interface DashCamList {
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  content: DashCam[];
+}
+
+export interface DashCam {
+  id: string;
+  member: SimpleMember;
+  title: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  createdAt: string;
+  videoUrl: string[];
+  thumbNail: string;
+  mentionedLeagues: Mentioned[];
+}
+
+export interface DashCamDetail {
+   id: string;
+   member: SimpleMember;
+   title: string;
+   viewCount: number;
+   commentCount: number;
+   likeCount: number;
+   voteCount: number;
+   createdAt: string; // ISO 날짜 문자열을 가리킴
+   videoUrl: string[];
+   content: string;
+   mentionedLeagues: Mentioned[];
+   liked: boolean;
+ }
+
 export interface Vote { 
   hasVoted: boolean;
   selectedOptionId: string;
@@ -163,8 +174,13 @@ export interface Option {
   content: string;
   voteCount: number;
  }
- 
-export interface Video {
-  videoUrl: string[];
 
+export interface CreateOption{
+  optionOrder: number;
+  content: string;
+}
+
+export interface Video{
+  videoOrder: number;
+  videoUrl: string;
 }
