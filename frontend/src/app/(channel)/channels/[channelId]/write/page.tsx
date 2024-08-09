@@ -14,7 +14,7 @@ export default function WritePage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [tags, setTags] = useState<Mentioned[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [tagSuggestions, setTagSuggestions] = useState<Mentioned[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -61,13 +61,13 @@ export default function WritePage() {
       e.preventDefault();
       if (highlightedIndex >= 0 && tagSuggestions.length > 0) {
         const selectedTag = tagSuggestions[highlightedIndex];
-        if (tags.length < 3 && !tags.some(tag => tag.name === selectedTag.name)) {
-          setTags([...tags, selectedTag]);
+        if (tags.length < 3 && !tags.some(tag => tag === selectedTag.name)) {
+          setTags([...tags, selectedTag.name]);
           setTagInput("");
           setShowSuggestions(false);
         }
-      } else if (tagInput.trim() && tags.length < 3 && !tags.some(tag => tag.name === tagInput.trim())) {
-        setTags([...tags, { name: tagInput.trim() }]);
+      } else if (tagInput.trim() && tags.length < 3 && !tags.some(tag => tag === tagInput.trim())) {
+        setTags([...tags, tagInput.trim()]);
         setTagInput("");
         setShowSuggestions(false);
       }
@@ -80,8 +80,8 @@ export default function WritePage() {
     }
   };
 
-  const handleTagRemove = useCallback((tagToRemove: Mentioned) => {
-    setTags(tags.filter(tag => tag.name !== tagToRemove.name));
+  const handleTagRemove = useCallback((tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
   }, [tags]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,8 +100,8 @@ export default function WritePage() {
   };
 
   const handleTagClick = useCallback((suggestion: Mentioned) => {
-    if (tags.length < 3 && !tags.some(tag => tag.name === suggestion.name)) {
-      setTags([...tags, suggestion]);
+    if (tags.length < 3 && !tags.some(tag => tag === suggestion.name)) {
+      setTags([...tags, suggestion.name]);
       setTagInput("");
       setShowSuggestions(false);
     }
@@ -140,8 +140,8 @@ export default function WritePage() {
           )}
           <TagsContainer>
             {tags.map(tag => (
-              <Tag key={tag.name}>
-                {tag.name}
+              <Tag key={tag}>
+                {tag}
                 <RemoveTagButton onClick={() => handleTagRemove(tag)}>x</RemoveTagButton>
               </Tag>
             ))}
