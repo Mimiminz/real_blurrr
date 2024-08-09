@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import React from "react";
 import styled from "styled-components";
 
@@ -7,6 +8,7 @@ interface option {
 }
 
 interface blackboxArticle {
+  id: string;
   title: string;
   totalVotes: number;
   optionNumber: number;
@@ -14,11 +16,13 @@ interface blackboxArticle {
 }
 
 function BlackboxListItem({
+  id,
   title,
   totalVotes,
   optionNumber,
   options,
 }: blackboxArticle) {
+  const router = useRouter();
   const optionPercentage = options.map((option) => ({
     ...option,
     percentage: Math.round((option.voteCount / totalVotes) * 100),
@@ -48,8 +52,12 @@ function BlackboxListItem({
     };
   });
 
+  const handleClick = () => {
+    router.push(`/channels/dashcam/${id}`);
+  };
+
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <ArticleInfo>
         <Title>
           {title.slice(0, 5)}
@@ -57,13 +65,15 @@ function BlackboxListItem({
         </Title>
         <Participants>{totalVotes}명 참여</Participants>
       </ArticleInfo>
-      <BarContainer>
-        {coloredOptions.map((option, index) => (
-          <Bar key={index} width={option.percentage} color={option.color}>
-            {option.percentage}%
-          </Bar>
-        ))}
-      </BarContainer>
+      {optionNumber > 0 && totalVotes > 0 && (
+        <BarContainer>
+          {coloredOptions.map((option, index) => (
+            <Bar key={index} width={option.percentage} color={option.color}>
+              {option.percentage}%
+            </Bar>
+          ))}
+        </BarContainer>
+      )}
     </Container>
   );
 }

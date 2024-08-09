@@ -1,16 +1,22 @@
 import styled from "styled-components";
 import BlackboxListItem from "./BlackboxListItem";
 import dummy from "@/db/mainPageData.json";
+import { DashCamItem } from "@/types/mainPageTypes";
 
-const HotArticleList = () => {
+interface DashcamBoardsListProps {
+  dashcamBoards: DashCamItem[];
+}
+
+const HotArticleList = ({ dashcamBoards }: DashcamBoardsListProps) => {
   return (
     <ArticleList>
-      {dummy.Blackbox.map((article, index) => (
+      {dashcamBoards.map((article, index) => (
         <BlackboxListItem
           key={index}
+          id={article.id}
           title={article.title}
-          totalVotes={article.totalVotes}
-          optionNumber={article.optionNumber}
+          totalVotes={article.voteCount}
+          optionNumber={article.optionCount}
           options={article.options}
         />
       ))}
