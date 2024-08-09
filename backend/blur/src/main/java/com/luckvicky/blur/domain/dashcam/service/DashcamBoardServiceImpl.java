@@ -17,7 +17,9 @@ import com.luckvicky.blur.domain.dashcam.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateRequest;
+import com.luckvicky.blur.domain.dashcam.model.dto.request.VideoCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
+import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.vote.model.dto.request.OptionCreateRequest;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
@@ -79,7 +81,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         }
 
         if (!request.videos().isEmpty()) {
-            dashcam.setVideos(request.videos());
+            dashcam.setVideos(createVideo(request.videos(), dashcam));
         }
 
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
@@ -116,6 +118,24 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
         }
 
         return options;
+
+    }
+
+    private List<Video> createVideo(List<VideoCreateRequest> requests, DashCam dashCam) {
+
+        List<Video> videos = new ArrayList<>();
+
+        for (VideoCreateRequest videoRequest : requests) {
+            videos.add(
+                    Video.builder()
+                            .dashCam(dashCam)
+                            .videoOrder(videoRequest.videoOrder())
+                            .videoUrl(videoRequest.videoUrl())
+                            .build()
+            );
+        }
+
+        return videos;
 
     }
 
