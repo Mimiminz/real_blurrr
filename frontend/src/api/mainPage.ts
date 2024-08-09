@@ -1,3 +1,4 @@
+import axios from "axios";
 import { LeagueList } from "@/types/leagueTypes";
 import api from "./index";
 import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
@@ -8,11 +9,18 @@ export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
     if (!response.data.data) {
       return [];
     }
-    console.log(response.data);
     return response.data.data;
   } catch (error) {
-    console.log(error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.status);
+      if (error.response?.status == 401) {
+        return [];
+      } else {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
   }
 };
 

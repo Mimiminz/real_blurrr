@@ -53,9 +53,13 @@ const CardContainer = styled.div`
     transform: translateY(-5px) scale(1.05);
   }
 
+  @media (min-width: 480px) {
+    flex-direction: column;
+    width: 70px;
+  }
+
   @media (min-width: 768px) {
     width: 64px;
-    flex-direction: column;
     border: 1px solid ${({ theme }) => theme.colors.articleDivider};
     justify-content: left;
     border-radius: 8px;

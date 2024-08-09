@@ -20,6 +20,7 @@ export interface LeagueBoardItem {
   createdAt: string;
   commentCount: number;
   likeCount: number;
+  viewCount: number;
 }
 
 export interface LeagueBoardList {
@@ -37,6 +38,7 @@ export interface LeagueBoardListItemProps {
   createdAt: string;
   likeCount: number;
   commentCount: number;
+  viewCount: number;
 }
 
 export interface MentionedChannel {

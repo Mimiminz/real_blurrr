@@ -75,7 +75,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  width: 100%;
+  /* width: 100%; */
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
   cursor: pointer;
 
