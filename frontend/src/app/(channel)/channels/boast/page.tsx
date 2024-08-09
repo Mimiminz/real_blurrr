@@ -78,7 +78,7 @@ const Boast: React.FC = () => {
          {isLoading ? (
             <Loading />
          ) : boasts && boasts.length === 0 ? (
-            <EmptyMessage>게시글이 없습니다.</EmptyMessage>
+            <EmptyMessage>게시글이 없습니다.<br />직접 글을 작성해보세요!</EmptyMessage>
          ) : (
             <CardGrid>
                {boasts.map((boast) => (
