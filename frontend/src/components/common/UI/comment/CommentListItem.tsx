@@ -119,7 +119,6 @@ const Avatar = styled.img`
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background-color: #c4c4c4;
   margin-top: 3px;
   margin-right: 8px;
 

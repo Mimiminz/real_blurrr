@@ -4,9 +4,8 @@ import {
   fetchLeagueReplyCreate,
   fetchReplyCreate,
 } from "@/api/comment";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
 
 import { CreateCommentProps } from "@/types/commentTypes";
 import { useAuthStore } from "@/store/authStore";
@@ -107,7 +106,6 @@ const Avatar = styled.img`
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background-color: #c4c4c4;
   margin-top: 3px;
   margin-right: 8px;
 
