@@ -48,11 +48,10 @@ public class LeagueElasticSearchServiceImpl implements LeagueElasticSearchServic
                 GENERAL_PAGE_SIZE
         );
 
-        name = ConsonantExtractUtil.extract(name);
-        log.info("추출 결과 {}", name);
-
         Page<LeagueDocument> leagues =
-                leagueElasticSearchRepository.findAllByNameContainingIgnoreCase(name, pageable);
+                leagueElasticSearchRepository.findAllByNameContainingIgnoreCase(
+                        ConsonantExtractUtil.extract(name), pageable
+                );
 
         return PaginatedResponse.of(
                 leagues.getNumber(),
