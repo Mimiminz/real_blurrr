@@ -70,15 +70,17 @@ const NavBar = () => {
   return (
     <>
     <Nav>
-      <Image
-        src="/images/logo/logo.png"
-        alt="로고"
-        onClick={() => {
-          router.push("/");
-          setMenuOpen(false);
-        }}
-        
-      />
+      <MenuItem>
+        <Image
+          src="/images/logo/logo.png"
+          alt="로고"
+          onClick={() => {
+            router.push("/");
+            setMenuOpen(false);
+          }}
+        />
+      </MenuItem>
+
       <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <FiX size={24}/> : <FiMenu size={24} />}
       </MenuToggleBtn>
@@ -93,7 +95,10 @@ const NavBar = () => {
         <>
           {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
           {menuOpen ? (
-              <MenuItem>마이페이지</MenuItem>
+              <MenuItem>
+                <div onClick={() => {router.push("/mypage"); setMenuOpen(true);}} />
+              마이페이지
+              </MenuItem>
             ) : (
               <MenuItem>
                 <CgProfile onClick={() => {router.push("/mypage"); setMenuOpen(false);}} />
@@ -325,12 +330,6 @@ const Image = styled.img`
   }
 `;
 
-const IconWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  cursor: pointer;
-`;
 
 const Spinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);

@@ -129,7 +129,8 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
               로그인
             </Button>
          
-              <Link href="#" onClick={() => router.push("/findpassword")}>
+              <Link href="#" onClick={() => router.push("/findpassword")} >
+              
                 비밀번호를 잊으셨나요?
               </Link>
               <Link href="#" onClick={() => router.push("/signup")}>
