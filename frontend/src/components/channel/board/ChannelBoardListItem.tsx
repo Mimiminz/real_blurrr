@@ -50,7 +50,7 @@ function ChannelBoardListItem({
         </LikeSection>
         <LikeSection>
           <FaRegEye />
-          {post.commentCount}
+          {post.viewCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>

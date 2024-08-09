@@ -47,9 +47,13 @@ export const fetchCreatedChannels = async (): Promise<Channels[]> => {
 };
 
 // 전체 채널 목록 데이터를 가져오는 함수
-export const fetchChannels = async (): Promise<ChannelInfo> => {
+export const fetchChannels = async (): Promise<ChannelInfo | null> => {
   try {
     const response = await api.get("/v1/channels");
+
+    if (response.status === 204) {
+      return null; // 데이터가 없을 때 null 반환
+    }
 
     return response.data.data;
   } catch (error) {
@@ -106,35 +110,13 @@ export const fetchPosts = async (
     const response = await api.get(`/v1/channels/${channelId}/boards`, {
       params: {
         keyword,
-        pageNumber, // 페이지 번호
-        criteria, // 정렬 기준
+        pageNumber, 
+        criteria,
       },
     });
-    console.log("channelPost call");
-
-    if (response.status === 204) {
-      return {
-        totalPages: 0,
-        totalElements: 0,
-        pageNumber: 0,
-        pageSize: 0,
-        content: [],
-      }; // 검색 결과가 없는 경우 빈 배열 반환
-    }
-
-    // 응답 데이터가 정의되어 있는지 확인
-    if (response.data && response.data.data) {
-      return response.data.data;
-    } else {
-      console.error("Unexpected response structure:", response);
-      return {
-        totalPages: 0,
-        totalElements: 0,
-        pageNumber: 0,
-        pageSize: 0,
-        content: [],
-      };
-    }
+    
+    return response.data.data;
+    
   } catch (error) {
     console.error("Error fetching channel post list:", error);
     throw error;
@@ -227,6 +209,7 @@ export const fetchDashCams = async (
     });
 
     return response.data.data;
+    
   } catch (error) {
     console.error("Error fetching dash cam data:", error);
     throw error;

@@ -7,7 +7,7 @@ import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경�
 import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
 import { useRouter } from 'next/navigation';
 import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchKeywords } from '@/api/channel';
-import { ChannelInfo, Channels } from '@/types/channelType';
+import { Channels } from '@/types/channelType';
 import { useAuthStore } from '@/store/authStore';
 import Loading from "@/components/common/UI/Loading";
 
@@ -17,6 +17,10 @@ const ChannelPage: React.FC = () => {
   const [CreatedChannels, setCreatedChannels] = useState<Channels[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [first, setFirst] = useState(false);
+  const [hasNext, setHasNext] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID;
@@ -29,9 +33,17 @@ const ChannelPage: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true); // 로딩 시작
       try {
         const ChannelData = await fetchChannels();
-        setChannels(ChannelData.content);
+        if (ChannelData) {
+          setChannels(ChannelData.content);
+          setCurrentPage(ChannelData.currentPage);
+          setFirst(ChannelData.first);
+          setHasNext(ChannelData.hasNext);
+        } else {
+          setChannels([]); // 204 상태일 때 빈 배열 설정
+        }
 
         if (isLoggedIn) {
           const FollowingChannelData = await fetchFollowingChannels();
@@ -41,6 +53,8 @@ const ChannelPage: React.FC = () => {
         }
       } catch (error) {
         console.error('Failed to fetch channels data:', error);
+      } finally {
+        setIsLoading(false); // 로딩 끝
       }
     };
     loadData();
@@ -64,7 +78,7 @@ const ChannelPage: React.FC = () => {
     try {
       if (newKeywords.length === 0) {
         const ChannelData = await fetchChannels();
-        setChannels(ChannelData.content);
+        setChannels(ChannelData ? ChannelData.content : []);
       } else {
         const searchResults = await fetchSearchKeywords(newKeywords);
         setChannels(searchResults);
@@ -94,10 +108,6 @@ const ChannelPage: React.FC = () => {
     setKeywords(newKeywords);
     loadChannelsByKeywords(newKeywords);
   };
-
-  if (!Channels?.length) {
-    return <Loading />;
-  }
 
   return (
     <>
@@ -136,7 +146,9 @@ const ChannelPage: React.FC = () => {
         ))}
       </KeywordContainer>
       <PageContainer>
-        {Channels.length === 0 ? (
+        {isLoading ? (
+          <Loading />
+        ) : Channels && Channels.length === 0 ? (
           <EmptyMessage>채널이 없습니다.</EmptyMessage>
         ) : (
           <GridContainer>

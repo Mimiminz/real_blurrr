@@ -96,7 +96,14 @@ public class SwaggerConfig {
 
         return GroupedOpenApi.builder()
                 .group(Channel.class.getSimpleName())
-                .pathsToMatch("/v1/channels/**")
+                .pathsToMatch(
+                        "/v1/channels/**",
+                        "/v1/hot",
+                        "/v1/mycar",
+                        "/v1/today/mycar",
+                        "/v1/dashcam",
+                        "/v1/channels"
+                )
                 .addOpenApiCustomizer(openApi
                                 -> openApi.addSecurityItem(
                                 new SecurityRequirement().addList(TOKEN_PREFIX)

@@ -12,8 +12,8 @@ import PaginationComponent from "@/components/common/UI/Pagination";
 
 const DashCamPage: React.FC = () => {
   const [dashCams, setDashCams] = useState<DashCamList>();
-  const [keyword, setKeyword] = useState("");
-  const [sortCriteria, setSortCriteria] = useState("TIME");
+  const [keyword, setKeyword] = useState('');
+  const [sortCriteria, setSortCriteria] = useState('TIME');
 
   const router = useRouter();
 
@@ -23,13 +23,13 @@ const DashCamPage: React.FC = () => {
 
   const handleSortChange = (newSort: string) => {
     const criteriaMap: { [key: string]: string } = {
-      최신순: "TIME",
-      댓글수: "COMMENT",
-      조회수: "VIEW",
-      좋아요: "LIKE",
+      '최신순': 'TIME',
+      '댓글수': 'COMMENT',
+      '조회수': 'VIEW',
+      '좋아요': 'LIKE'
     };
 
-    const newCriteria = criteriaMap[newSort] || "TIME";
+    const newCriteria = criteriaMap[newSort] || 'TIME'; // 매핑되지 않는 경우 기본값 설정
     setSortCriteria(newCriteria);
   };
 

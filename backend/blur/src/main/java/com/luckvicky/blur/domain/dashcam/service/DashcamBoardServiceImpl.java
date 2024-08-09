@@ -53,13 +53,9 @@ import static com.luckvicky.blur.global.constant.Number.DASHCAM_BOARD_PAGE_SIZE;
 @RequiredArgsConstructor
 public class DashcamBoardServiceImpl implements DashcamBoardService{
 
-    private final ModelMapper mapper;
-
     private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
     private final DashcamRepository dashcamRepository;
     private final DashcamBoardMapper dashcamBoardMapper;
-    private final CommentRepository commentRepository;
     private final LeagueRepository leagueRepository;
     private final MentionRepository mentionRepository;
     private final ChannelRepository channelRepository;

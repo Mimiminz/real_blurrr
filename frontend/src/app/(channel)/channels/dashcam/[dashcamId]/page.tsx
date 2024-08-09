@@ -76,6 +76,7 @@ export default function ChannelDashCamDetailPage({ params }: {
                         leagueId=""
                         isLeague={false}
                         onCommentAdded={loadCommentDetail}
+                        boardAuthor={dashCamDetail.member.nickname}
                      />
                   </CommentSection>
                </RightColumn>
