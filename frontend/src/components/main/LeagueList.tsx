@@ -10,8 +10,10 @@ const LeagueList: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 480) {
         setDisplyList(brandLeagueList.slice(0, 5));
+      } else if (window.innerWidth < 768) {
+        setDisplyList(brandLeagueList.slice(0, 9));
       } else {
         setDisplyList(brandLeagueList.slice(0, 12));
       }

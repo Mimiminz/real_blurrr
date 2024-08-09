@@ -97,7 +97,7 @@ const Owner = styled.p`
 const Description = styled.p`
   font-size: 11.5px;
   color: ${({ theme }) => theme.colors.subDiscription};
-  margin: 6px 4px 0 8px;
+  margin: 0 4px 4px 8px;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;

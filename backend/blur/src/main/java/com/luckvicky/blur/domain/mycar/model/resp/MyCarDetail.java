@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.mycar.model.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
+import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,7 +50,7 @@ public class MyCarDetail {
     @Schema(description = "썸네일")
     private String thumbNail;
 
-    public static MyCarDetail of(MyCarBoard myCarBoard, boolean isLiked) {
+    public static MyCarDetail of(MyCarBoard myCarBoard, List<Mention> mentionList, boolean isLiked) {
         return MyCarDetail.builder()
                 .id(myCarBoard.getId())
                 .member(SimpleMemberDto.of(myCarBoard.getMember()))
@@ -61,6 +62,7 @@ public class MyCarDetail {
                 .content(myCarBoard.getContent())
                 .thumbNail(myCarBoard.getThumbnail())
                 .createdAt(myCarBoard.getCreatedAt())
+                .mentionedLeagues(mentionList.stream().map(MentionDto::of).toList())
                 .build();
     }
 }
