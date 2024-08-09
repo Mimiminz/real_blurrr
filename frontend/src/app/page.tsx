@@ -37,10 +37,11 @@ import Loading from "@/components/common/UI/Loading";
 
 export default function Home() {
   const router = useRouter();
-  const { userLeagueList } = useLeagueStore();
+  const { userLeagueList, setBrandLeagueTab } = useLeagueStore();
   const { isLoggedIn, user } = useAuthStore();
 
   const [isBoardLoading, setIsBoardLoading] = useState(true);
+  const [isLeagueLoading, setIsLeagueLoading] = useState(true);
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
   const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
   const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
@@ -75,6 +76,20 @@ export default function Home() {
     setIsBoardLoading(false);
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    const initailizeTabs = async () => {
+      try {
+        const leagues = await fetchBrandLeagues();
+        setBrandLeagueTab(leagues);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    initailizeTabs();
+    setIsLeagueLoading(false);
+  }, []);
+
   const handleMoreClickLeage = () => {
     router.push("/league");
   };
@@ -90,7 +105,7 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (isBoardLoading && !hotBoards.length) {
+  if (isBoardLoading && !hotBoards.length && isLeagueLoading) {
     return <Loading />;
   }
 
@@ -131,15 +146,15 @@ export default function Home() {
           <BlackboxList />
         </ArticleSection>
         <ArticleSection>
-            <SectionHeader>
-              <SectionTitle>차 자랑</SectionTitle>
-              <MoreButton onClick={handleMoreClickBoast}>
-                더보기
-                <IoArrowForward />
-              </MoreButton>
-            </SectionHeader>
-            <CarPictureList />
-          </ArticleSection>
+          <SectionHeader>
+            <SectionTitle>차 자랑</SectionTitle>
+            <MoreButton onClick={handleMoreClickBoast}>
+              더보기
+              <IoArrowForward />
+            </MoreButton>
+          </SectionHeader>
+          <CarPictureList />
+        </ArticleSection>
       </Main>
       <Aside>
         <AsideSection>
@@ -268,6 +283,7 @@ const UserInfoContainer = styled.div`
   margin: 40px 0;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 `;
 
 const MoreButton = styled.button`
