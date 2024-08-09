@@ -19,7 +19,7 @@ const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
     dots: true,
     infinite: true,
     centerPadding: "60px",
-    slidesToShow: 3,
+    slidesToShow: 2,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
@@ -70,6 +70,10 @@ const CarouselContainer = styled.div`
     flex-direction: column;
     justify-content: center;
   }
+  .slick-prev,
+  .slick-next {
+    display: none;
+  }
 
   .slick-prev:before,
   .slick-next:before {
@@ -97,11 +101,12 @@ const CarouselContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 3px;
   }
 
   @media (min-width: 900px) {
     .slick-list {
-      width: 390px;
+      width: 290px;
     }
   }
 `;
