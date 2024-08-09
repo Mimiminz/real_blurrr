@@ -31,7 +31,7 @@ export interface ChannelInfo {
 export interface Channels {
    id: string;
    name: string;
-   img: string;
+   imgUrl: string;
    info: string;
    owner: string;
    followCount: number;
@@ -142,6 +142,7 @@ export interface DashCam {
   likeCount: number;
   createdAt: string;
   videoUrl: string[];
+  thumbNail: string;
   mentionedLeagues: Mentioned[];
 }
 

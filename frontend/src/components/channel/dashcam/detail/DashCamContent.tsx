@@ -63,9 +63,7 @@ const DashCamContent: React.FC<DashCamContentData> = ({
                   </VideoWrapper>
                ))}
             </VideoContainer>
-            <Content>
-               {content}
-            </Content>
+            <Content dangerouslySetInnerHTML={{ __html: content }} />
             <HeartButton onClick={toggleLike}>
                {isLiked ? <FaHeart /> : <FaRegHeart />}
             </HeartButton>
