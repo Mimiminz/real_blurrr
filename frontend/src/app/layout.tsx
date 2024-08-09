@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "blurrr",
-  description: "...",
+  description: "자동차 익명 커뮤니티",
   icons: {
-    icon: "/images/logo/logo.png",
+    icon: "/images/logo/favicon.png",
   },
 };
 
