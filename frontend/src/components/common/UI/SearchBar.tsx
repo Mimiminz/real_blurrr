@@ -32,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           </SearchIcon>
           <SearchInput
             type="text"
-            placeholder="Search"
+            placeholder="원하는 키워드로 검색해보세요"
             value={keyword}
             onChange={handleChange}
           />
