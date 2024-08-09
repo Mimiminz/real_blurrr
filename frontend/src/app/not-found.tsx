@@ -20,6 +20,6 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  max-width: 90%;
+  width: 60%;
   height: auto;
 `;

@@ -40,6 +40,9 @@ const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
     </ArticleList>
   );
 };
-const ArticleList = styled.div``;
+const ArticleList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export default HotArticleList;
