@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { FiEye, FiHeart } from 'react-icons/fi';
 
 interface BoastCardProps {
-   thumbnail: string;
-   viewer: number;
-   likes: number;
+  thumbnail: string;
+  viewer: number;
+  likes: number;
 }
 
 const Card = styled.div`
@@ -53,15 +53,15 @@ const HoverOverlay = styled.div`
 `;
 
 const BoastCard: React.FC<BoastCardProps> = ({ thumbnail, viewer, likes }) => {
-   return (
-      <Card>
-         <Thumbnail src={thumbnail} alt="thumbnail" />
-         <HoverOverlay>
-            <span><FiEye /> {viewer}</span>
-            <span><FiHeart /> {likes}</span>
-         </HoverOverlay>
-      </Card>
-   );
+  return (
+    <Card>
+      <Thumbnail src={thumbnail} alt="thumbnail" />
+      <HoverOverlay>
+        <span><FiEye /> {viewer}</span>
+        <span><FiHeart /> {likes}</span>
+      </HoverOverlay>
+    </Card>
+  );
 };
 
 export default BoastCard;
