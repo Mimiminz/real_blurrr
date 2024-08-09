@@ -39,7 +39,6 @@ export default function ChannelBoardDetailPage({
       setLikeCount(likeData.likeCount);
       setIsLiked(likeData.isLike);
     }
-    // setIsLiked((prevIsLiked) => !prevIsLiked);
   };
 
   const loadBoardDetail = useCallback(async () => {
@@ -65,16 +64,16 @@ export default function ChannelBoardDetailPage({
     }
   }, [boardId, isLoggedIn]);
 
-  const handleDelete = async () => {
+  const handleCommentAdded = async () => {
     try {
-      // await fetchBoardDelete(boardId);
-      // const isDelete = confirm("정말 삭제하실건가요?");
-      // if (!isDelete) {
-      //   return;
-      // }
-      // router.push(`/league/${leagueName}`);
+      // 새로운 댓글을 가져와서 업데이트합니다.
+      const fetchCommentsList = await fetchCommentList(boardId);
+      if (fetchCommentsList) {
+        // 새 댓글이 추가될 때 기존 댓글 리스트에 추가합니다.
+        setCommentList(fetchCommentsList);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update comment list:", error);
     }
   };
 
@@ -108,11 +107,11 @@ export default function ChannelBoardDetailPage({
         </WriterContainer>
         <CommentList
           comments={commentList?.comments || []}
-          commentCount={boardDetail.commentCount}
+          commentCount={commentList?.commentCount || 0}
           boardId={boardId}
           leagueId=""
           isLeague={false}
-          onCommentAdded={loadCommentDetail}
+          onCommentAdded={handleCommentAdded}
           boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
@@ -139,20 +138,6 @@ const WriterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-`;
-
-const WriterButton = styled.p`
-  padding: 0px;
-  /* border-radius: 40px; */
-  /* border: 1px solid #ddd; */
-  font-size: 14px;
-  background-color: white;
-  margin: 5px 10px 20px 0;
-  cursor: pointer;
-
-  &:hover {
-    color: #666;
-  }
 `;
 
 const HeartButton = styled.button<{ $isLiked: boolean }>`
