@@ -54,7 +54,7 @@ frontend-deploy:
   stage: frontend-deploy
 
   variables:
-    DEPLOY_PATH: "/home/ubuntu/blurrr/frontend"
+    DEPLOY_PATH: "/home/ubuntu/app/frontend"
 
   script:
     - echo "Deploying frontend..."
@@ -62,12 +62,12 @@ frontend-deploy:
 
     - echo "Setting up SSH key..."
     - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
+    - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
     - chmod 400 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
-    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
-    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+    - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_HOST:$DEPLOY_PATH
+    - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_HOST:$DEPLOY_PATH
     - echo "complete file send"
     - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
 
@@ -80,7 +80,9 @@ frontend-deploy:
     - deploy/frontend
 
 backend-build:
+
   stage: backend-build
+
   script:
     # YML 파일 가져오기
     - ls -al backend/blur/src/main/resources
