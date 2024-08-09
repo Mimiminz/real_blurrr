@@ -24,6 +24,7 @@ import { useLeagueStore } from "@/store/leagueStore";
 import { useAuthStore } from "@/store/authStore";
 import { fetchBrandLeagues, fetchUserLeagueList } from "@/api/league";
 import {
+  fetchDashCams,
   fetchHotArticles,
   fetchLeagueRanking,
   fetchMyCars,
@@ -32,7 +33,7 @@ import {
 import { fetchFollowingChannels } from "@/api/channel";
 import { Channels } from "@/types/channelType";
 import { UserLeague, LeagueList as LeagueListType } from "@/types/leagueTypes";
-import { HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
 import Loading from "@/components/common/UI/Loading";
 
 export default function Home() {
@@ -43,6 +44,7 @@ export default function Home() {
   const [isBoardLoading, setIsBoardLoading] = useState(true);
   const [isLeagueLoading, setIsLeagueLoading] = useState(true);
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
+  const [dashcamBoards, setDashcamBoards] = useState<DashCamItem[]>([]);
   const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
   const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
   const [followChannels, setFollowChannels] = useState<Channels[]>([]);
@@ -53,6 +55,9 @@ export default function Home() {
       try {
         const hot = await fetchHotArticles();
         setHotBoards(hot);
+
+        const dashcam = await fetchDashCams();
+        setDashcamBoards(dashcam);
 
         // const today = await fetchTodayCar();
         // setTodayCar(today);
@@ -143,7 +148,7 @@ export default function Home() {
               <IoArrowForward />
             </MoreButton>
           </SectionHeader>
-          <BlackboxList />
+          <BlackboxList dashcamBoards={dashcamBoards} />
         </ArticleSection>
         {/* <ArticleSection>
           <SectionHeader>
