@@ -115,7 +115,7 @@ export default function Home() {
         {isLoggedIn && (
           <UserInfoContainer>
             <UserCarInfo />
-            {/* <FollowChannelInfo followChannels={followChannels} /> */}
+            <FollowChannelInfo followChannels={followChannels} />
           </UserInfoContainer>
         )}
         <ArticleSection>
@@ -145,7 +145,7 @@ export default function Home() {
           </SectionHeader>
           <BlackboxList />
         </ArticleSection>
-        <ArticleSection>
+        {/* <ArticleSection>
           <SectionHeader>
             <SectionTitle>차 자랑</SectionTitle>
             <MoreButton onClick={handleMoreClickBoast}>
@@ -154,7 +154,7 @@ export default function Home() {
             </MoreButton>
           </SectionHeader>
           <CarPictureList />
-        </ArticleSection>
+        </ArticleSection> */}
       </Main>
       <Aside>
         <AsideSection>

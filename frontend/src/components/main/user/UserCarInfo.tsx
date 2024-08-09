@@ -32,7 +32,9 @@ const UserCarInfo: React.FC = () => {
   return (
     <Container>
       <ProfileSection>
-        <ProfileImage src={user?.profileUrl} alt="User Profile" />
+        {/* <ProfileImage src={user?.profileUrl} alt="User Profile" /> */}
+        <ProfileImage />
+
         <InfoSection>
           <UserName>{user?.nickname}</UserName>
           {user?.carTitle && (
@@ -77,14 +79,24 @@ const UserCarInfo: React.FC = () => {
 export default UserCarInfo;
 
 const Container = styled.div`
+  border-radius: 20px;
+  /* background-color: #c8e6c9; */
   display: flex;
   flex-direction: column;
   border-radius: 12px;
   margin: 0 10px;
+  padding: 20px;
   width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 768px) {
+    margin-left: 20px;
+    max-width: 270px;
+  }
 
   @media (min-width: 1024px) {
-    max-width: 270px;
+    width: 270px;
   }
 `;
 
@@ -102,6 +114,7 @@ const ProfileImage = styled.img`
   object-fit: cover;
   margin-bottom: 10px;
   margin-right: auto;
+  background-color: #e5e7eb;
 `;
 
 const InfoSection = styled.div`
@@ -111,7 +124,7 @@ const InfoSection = styled.div`
 const UserName = styled.h2`
   font-size: 16px;
   color: #333;
-  margin: 18px 0 10px 0;
+  margin: 6px 0 6px 0;
 `;
 
 const CarModel = styled.p<{ isLong: boolean }>`
@@ -131,13 +144,7 @@ const LeagueItem = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 15px;
-  color: #555;
   margin: 5px 0;
-
-  svg {
-    margin-left: 5px;
-    color: #000;
-  }
 `;
 
 const LeagueTitle = styled.p`
@@ -147,11 +154,17 @@ const LeagueTitle = styled.p`
 
 const ClickableLeagueName = styled.p`
   margin: 0;
-  text-decoration: underline;
+  display: flex;
+  align-items: center;
   cursor: pointer;
+  color: black;
 
   &:hover {
     color: #ff900d;
+  }
+
+  svg {
+    margin-right: 5px;
   }
 `;
 
