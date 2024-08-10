@@ -19,15 +19,11 @@ const UserCarInfo: React.FC = () => {
     router.push(`/league/${tabName}`);
   };
 
-  useEffect(() => {
-    userLeagueList.forEach((league: LeagueList) => {
-      if (league.type === "MODEL") {
-        setModelLeague(league);
-      } else if (league.type === "BRAND") {
-        setBrandLeague(league);
-      }
-    });
-  }, [userLeagueList]);
+  const handleCarCertification = () => {
+    router.push("/carcertification");
+  };
+
+  const carTitle = user?.carTitle || "";
 
   return (
     <Container>
@@ -36,38 +32,40 @@ const UserCarInfo: React.FC = () => {
 
         <InfoSection>
           <UserName>{user?.nickname}</UserName>
-          {user?.carTitle && (
-            <CarModel isLong={user?.carTitle.length > 21}>
-              {user?.carTitle}
-            </CarModel>
-          )}
+          <CarModel className={carTitle.length > 21 ? "long-title" : ""}>
+            {user?.carTitle || "뚜벅이"}
+          </CarModel>
         </InfoSection>
       </ProfileSection>
       <LeagueSection>
         <LeagueItem>
           <LeagueTitle>모델 리그</LeagueTitle>
-          {modelLeague?.name ? (
+          {userLeagueList.length > 0 ? (
             <ClickableLeagueName
-              onClick={() => handleUserLeagueClick(modelLeague.name)}
+              onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
             >
               <FaCar />
-              {modelLeague.name}
+              {userLeagueList[0]?.name}
             </ClickableLeagueName>
           ) : (
-            <NonClickableLeagueName>없음</NonClickableLeagueName>
+            <NonClickableLeagueName onClick={handleCarCertification}>
+              등록하러 가기
+            </NonClickableLeagueName>
           )}
         </LeagueItem>
         <LeagueItem>
           <LeagueTitle>브랜드 리그</LeagueTitle>
-          {brandLeague?.name ? (
+          {userLeagueList.length > 0 ? (
             <ClickableLeagueName
-              onClick={() => handleUserLeagueClick(brandLeague.name)}
+              onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
             >
               <MdFactory />
-              {brandLeague.name}
+              {userLeagueList[1]?.name}
             </ClickableLeagueName>
           ) : (
-            <NonClickableLeagueName>없음</NonClickableLeagueName>
+            <NonClickableLeagueName onClick={handleCarCertification}>
+              등록하러 가기
+            </NonClickableLeagueName>
           )}
         </LeagueItem>
       </LeagueSection>
@@ -91,7 +89,7 @@ const Container = styled.div`
 
   @media (min-width: 768px) {
     margin-left: 20px;
-    max-width: 270px;
+    width: 270px;
   }
 
   @media (min-width: 1024px) {
@@ -126,10 +124,14 @@ const UserName = styled.h2`
   margin: 6px 0 6px 0;
 `;
 
-const CarModel = styled.p<{ isLong: boolean }>`
-  font-size: ${(props) => (props.isLong ? "12px" : "14px")};
+const CarModel = styled.p`
+  font-size: 14px;
   color: #333;
   margin: 0;
+
+  &.long-title {
+    font-size: 12px;
+  }
 `;
 
 const LeagueSection = styled.div`
@@ -171,4 +173,12 @@ const ClickableLeagueName = styled.p`
 const NonClickableLeagueName = styled.p`
   margin: 0;
   color: #888;
+
+  cursor: pointer;
+  font-weight: bold;
+  color: black;
+
+  &:hover {
+    color: #ff900d;
+  }
 `;

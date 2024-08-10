@@ -1,11 +1,8 @@
-import React, { useRef } from "react";
+import React from "react";
 import Slider from "react-slick";
 import styled from "styled-components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { MdArrowBackIos } from "react-icons/md";
-import { LuDot } from "react-icons/lu";
-
 import FollowChannelCard from "./FollowChannelCard";
 import { Channels } from "@/types/channelType";
 
@@ -14,14 +11,14 @@ interface ChannelsProp {
 }
 
 const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
-  console.log(followChannels);
   const settings = {
     dots: true,
+    arrows: false,
     infinite: true,
     centerPadding: "60px",
     slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: followChannels.length > 3 ? true : false,
     autoplaySpeed: 5000,
     pauseOnHover: true,
   };
@@ -29,18 +26,18 @@ const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
   return (
     <Container>
       <CarouselContainer>
-        <Slider {...settings}>
-          {followChannels.map((channel, index) => (
-            <FollowChannelCard
-              key={index}
-              title={channel.name}
-              followers={channel.followCount}
-              img={channel.imgUrl}
-              id={channel.id}
-            />
-          ))}
-        </Slider>
-      </CarouselContainer>
+          <Slider {...settings}>
+            {followChannels.map((channel, index) => (
+              <FollowChannelCard
+                key={index}
+                title={channel.name}
+                followers={channel.followCount}
+                img={channel.imgUrl}
+                id={channel.id}
+              />
+            ))}
+          </Slider>
+          </CarouselContainer>
     </Container>
   );
 };
@@ -64,23 +61,27 @@ const CarouselContainer = styled.div`
     flex-direction: column;
   }
   .slick-list {
-    width: 200px;
+    width: 450px;
     display: flex;
     gap: 10px;
     flex-direction: column;
     justify-content: center;
   }
+  /* .slick-prev,
+  .slick-next {
+    display: none;
+  }
 
   .slick-prev:before,
   .slick-next:before {
     display: none;
-    color: black; /* 화살표 색상 */
+    color: black;
     font-size: 20px;
   }
 
   .slick-next:before {
     content: "";
-  }
+  } */
   .slick-dots {
     position: relative;
     height: 20px;
@@ -97,11 +98,24 @@ const CarouselContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 3px;
   }
 
   @media (min-width: 900px) {
     .slick-list {
       width: 390px;
     }
+  }
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  @media (min-width: 900px) {
+    justify-content: flex-start;
   }
 `;

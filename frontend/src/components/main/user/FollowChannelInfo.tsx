@@ -34,11 +34,11 @@ const Container = styled.div`
   flex: 1;
   width: 100%;
   margin-left: 20px; /* UserCarInfo와 간격 추가 */
-  padding: 18px 0;
+  padding-top: 18px;
   border-radius: 12px;
   background-color: #ffffff;
 
-  @media (max-width: 540px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;

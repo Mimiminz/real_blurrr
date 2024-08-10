@@ -26,6 +26,7 @@ const FollowChannelCard: React.FC<ChannelCardProps> = ({
   return (
     <CardContainer onClick={handleClick}>
       <ChannelImage src={img} alt="Channel Profile" />
+      {/* <ChannelImage src={"/"} alt="Channel Profile" /> */}
       {/* <ImageContainer img={img} /> */}
       <TitleContainer>
         <Title>{displayTitle}</Title>
@@ -38,7 +39,7 @@ const FollowChannelCard: React.FC<ChannelCardProps> = ({
 export default FollowChannelCard;
 
 const CardContainer = styled.div`
-  display: flex;
+  display: flex;  
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -97,7 +98,7 @@ const Tooltip = styled.div`
   padding: 5px;
   position: absolute;
   z-index: 10;
-  top: 90%; /* 툴팁이 아래에 나타나도록 조정 */
+  top: 110%; /* 툴팁이 아래에 나타나도록 조정 */
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -106,7 +107,7 @@ const Tooltip = styled.div`
   &::after {
     content: "";
     position: absolute;
-    bottom: 90%; /* 툴팁 위쪽에 화살표 추가 */
+    bottom: 100%; /* 툴팁 위쪽에 화살표 추가 */
     left: 50%;
     margin-left: -5px;
     border-width: 5px;

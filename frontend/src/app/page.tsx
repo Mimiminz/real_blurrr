@@ -36,6 +36,8 @@ import { UserLeague, LeagueList as LeagueListType } from "@/types/leagueTypes";
 import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
 import Loading from "@/components/common/UI/Loading";
 
+import Image from "next/image";
+
 export default function Home() {
   const router = useRouter();
   const { userLeagueList, setBrandLeagueTab } = useLeagueStore();
@@ -288,7 +290,8 @@ const UserInfoContainer = styled.div`
   margin: 40px 0;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  align-items: center;
 `;
 
 const MoreButton = styled.button`

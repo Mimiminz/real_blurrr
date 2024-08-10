@@ -16,14 +16,17 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
     if (!response.data.data) {
       return [];
     }
-    return response.data.data.leagueMembers;
+    const leagues = response.data.data.leagueMembers;
+    console.log(leagues)
+    
+    return leagues.sort((a: UserLeague, b: UserLeague) => (a.league.type === "MODEL" ? -1 : 1));
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response?.status);
       if (error.response?.status == 401) {
         return [];
       } else {
-        throw error;
+        throw error;    
       }
     } else {
       throw error;
