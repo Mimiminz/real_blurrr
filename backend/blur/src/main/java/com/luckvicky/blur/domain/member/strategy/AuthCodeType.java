@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum AuthCodeType {
-    SIGNIN("회원가입", EmailFormType.SIGNIN_AUTH),
+    SIGNUP("회원가입", EmailFormType.SIGNUP_AUTH),
     PASSWORD_CHANGE("비밀번호찾기", EmailFormType.PASSWORD_CHANGE_AUTH);
     private final String type;
     private final EmailFormType emailFormType;

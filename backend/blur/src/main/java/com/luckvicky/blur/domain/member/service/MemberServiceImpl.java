@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void createMember(SignupDto signupDto) {
-        authCodeService.checkAvailable(signupDto.email(), AuthCodeType.SIGNIN);
+        authCodeService.checkAvailable(signupDto.email(), AuthCodeType.SIGNUP);
 
         signupDto.valid();
 

@@ -33,7 +33,7 @@ public class CustomFactoryConfig {
             AuthCodeEmailFormFactory authCodeEmailFormFactory
     ) {
         HashMap<EmailFormType, EmailFormFactory> emailFormFactoryMap = new HashMap<>();
-        emailFormFactoryMap.put(EmailFormType.SIGNIN_AUTH, authCodeEmailFormFactory);
+        emailFormFactoryMap.put(EmailFormType.SIGNUP_AUTH, authCodeEmailFormFactory);
         emailFormFactoryMap.put(EmailFormType.PASSWORD_CHANGE_AUTH, authCodeEmailFormFactory);
         return emailFormFactoryMap;
     }
@@ -60,7 +60,7 @@ public class CustomFactoryConfig {
             SingInAuthStrategy singInAuthStrategy
     ) {
         Map<AuthCodeType, AuthCodeStrategy> authCodeStrategyMap = new HashMap<>();
-        authCodeStrategyMap.put(AuthCodeType.SIGNIN, singInAuthStrategy);
+        authCodeStrategyMap.put(AuthCodeType.SIGNUP, singInAuthStrategy);
         authCodeStrategyMap.put(AuthCodeType.PASSWORD_CHANGE, passwordAuthStrategy);
         return authCodeStrategyMap;
 
