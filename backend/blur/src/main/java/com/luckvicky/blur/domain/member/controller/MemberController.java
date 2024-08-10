@@ -4,6 +4,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardRes
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
+import com.luckvicky.blur.domain.member.model.dto.req.CarInfo;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
@@ -42,20 +43,20 @@ public class MemberController {
     private final LeagueBoardService leagueBoardService;
     private final ChannelBoardService channelBoardService;
 
-    @Operation(description = "사용자 정보 조회")
+    @Operation(summary = "사용자 정보 조회")
     @GetMapping("")
     public ResponseEntity<MemberProfile> findMember(@AuthUser ContextMember member) {
         return ResponseEntity.ok(memberService.findMember(member.getId()));
     }
 
-    @Operation(description = "비밀번호 확인")
+    @Operation(summary = "비밀번호 확인")
     @PostMapping("/password")
     public ResponseEntity<Boolean> checkPassword(@AuthUser ContextMember member,
                                                  @Valid @RequestBody CheckPassword checkPassword) {
         return ResponseEntity.ok(memberService.checkPassword(member.getId(), checkPassword));
     }
 
-    @Operation(description = "정보 수정")
+    @Operation(summary = "정보 수정")
     @PutMapping("")
     public ResponseEntity<MemberProfileUpdateResp> modifyMember(@AuthUser ContextMember member,
                                                                 @Valid @RequestBody MemberProfileUpdate update)
@@ -63,7 +64,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.modifyMember(member.getId(), update));
     }
 
-    @Operation(description = "로그아웃")
+    @Operation(summary = "로그아웃")
     @GetMapping("/logout")
     public ResponseEntity<Boolean> logout(@AuthUser ContextMember member) {
         memberService.logout(member.getId());
@@ -145,11 +146,16 @@ public class MemberController {
 
     }
 
-    @Operation(description = "마이페이지 비밀번호 변경")
+    @Operation(summary = "마이페이지 비밀번호 변경")
     @PutMapping("/password")
     public ResponseEntity<Boolean> modifyPassword(@Valid @RequestBody ChangePassword changePassword,
                                                   @AuthUser ContextMember contextMember) {
         return ResponseEntity.ok(memberService.modifyPassword(changePassword, contextMember.getId()));
     }
 
+    @Operation(summary = "자동차 정보 등록")
+    @PostMapping("/car")
+    public ResponseEntity<Boolean> addCarInfo(@Valid @RequestBody CarInfo carInfo, @AuthUser ContextMember contextMember) {
+        return ResponseEntity.ok(memberService.addCarInfo(carInfo, contextMember.getId()));
+    }
 }

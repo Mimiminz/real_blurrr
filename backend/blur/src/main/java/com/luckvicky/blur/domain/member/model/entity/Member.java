@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.member.model.entity;
 
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.member.model.dto.req.CarInfo;
 import com.luckvicky.blur.global.model.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -86,5 +87,13 @@ public class Member extends BaseEntity {
 
     public void updateIsAuth(boolean isAuth) {
         this.isAuth = isAuth;
+    }
+
+    public void setCarInfo(CarInfo carInfo) {
+        this.isAuth = true;
+        this.role = Role.ROLE_AUTH_USER;
+        this.carModel = carInfo.model();
+        this.carManufacture = carInfo.brand();
+        this.carTitle = carInfo.carTitle();
     }
 }

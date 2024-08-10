@@ -1,6 +1,12 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
+import com.luckvicky.blur.domain.league.model.entity.League;
+import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
+import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.exception.*;
+import com.luckvicky.blur.domain.member.model.dto.req.CarInfo;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
 import com.luckvicky.blur.domain.member.strategy.SingInAuthStrategy;
 import com.luckvicky.blur.domain.member.strategy.PasswordAuthStrategy;
@@ -16,6 +22,7 @@ import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.global.enums.code.ErrorCode;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
@@ -25,6 +32,8 @@ import com.luckvicky.blur.infra.mail.service.MailService;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -44,15 +53,21 @@ public class MemberServiceImpl implements MemberService {
     private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
     private final S3ImageService s3ImageService;
     private final AuthCodeService authCodeService;
+    private final LeagueRepository leagueRepository;
+    private final LeagueMemberRepository leagueMemberRepository;
+
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
-                             S3ImageService s3ImageService, AuthCodeService authCodeService) {
+                             S3ImageService s3ImageService, AuthCodeService authCodeService,
+                             LeagueRepository leagueRepository, LeagueMemberRepository leagueMemberRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.s3ImageService = s3ImageService;
         this.redisRefreshTokenAdapter = redisRefreshTokenAdapter;
         this.authCodeService = authCodeService;
+        this.leagueRepository = leagueRepository;
+        this.leagueMemberRepository = leagueMemberRepository;
     }
 
     @Transactional
@@ -62,7 +77,9 @@ public class MemberServiceImpl implements MemberService {
 
         signupDto.valid();
 
-        if (memberRepository.existsByNickname(signupDto.nickname())) throw new DuplicateNickName();
+        if (memberRepository.existsByNickname(signupDto.nickname())) {
+            throw new DuplicateNickName();
+        }
 
         Member member = Member.builder()
                 .nickname(signupDto.nickname())
@@ -98,7 +115,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException {
+    public MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo)
+            throws MalformedURLException {
         Member member = memberRepository.getOrThrow(memberId);
         member.updateNickname(updateInfo.nickname());
 
@@ -135,7 +153,8 @@ public class MemberServiceImpl implements MemberService {
             throw new PasswordMismatchException();
         }
 
-        Member member = memberRepository.findByEmail(changeFindPassword.email()).orElseThrow(NotExistMemberException::new);
+        Member member = memberRepository.findByEmail(changeFindPassword.email())
+                .orElseThrow(NotExistMemberException::new);
         member.updatePassword(passwordEncoder.encode(changeFindPassword.password()));
         return true;
     }
@@ -150,6 +169,29 @@ public class MemberServiceImpl implements MemberService {
     public void logout(UUID memberId) {
         Member member = memberRepository.getOrThrow(memberId);
         redisRefreshTokenAdapter.delete(member.getId().toString());
+    }
+
+    @Transactional
+    @Override
+    public boolean addCarInfo(CarInfo carInfo, UUID memberId) {
+        Member member = memberRepository.getOrThrow(memberId);
+
+        List<League> carLeague = new ArrayList<>();
+
+        carLeague.add(leagueRepository.findByName(carInfo.brand()).orElseThrow(() -> new InvalidCarInfoException(
+                ErrorCode.INVALID_BRAND)));
+        carLeague.add(leagueRepository.findByName(carInfo.model()).orElseThrow(() -> new InvalidCarInfoException(
+                ErrorCode.INVALID_MODEL)));
+
+        for (League league : carLeague) {
+            leagueMemberRepository.save(LeagueMember.builder()
+                            .league(league)
+                            .member(member)
+                    .build());
+        }
+
+        member.setCarInfo(carInfo);
+        return true;
     }
 
 
