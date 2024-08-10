@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -85,20 +85,41 @@ export default function BoardDetailPage({
     return userLeagueList.some((league) => league.name === leagueName);
   };
 
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     setShowLogin(true);
+  //     setLoading(false);
+  //   } else if (!user?.isAuth) {
+  //     setShowPopup(true);
+  //     setLoading(false);
+  //     return;
+  //   } else if (!checkLeagueInUserList()) {
+  //     setShowNoAuthority(true);
+  //     setLoading(false);
+  //   }
+  //   loadBoardDetail();
+  // }, [boardId, isLoggedIn, user]);
+
+  const previousBoardIdRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!isLoggedIn) {
-      setShowLogin(true);
-      setLoading(false);
-    } else if (!user?.isAuth) {
-      setShowPopup(true);
-      setLoading(false);
-      return;
-    } else if (!checkLeagueInUserList()) {
-      setShowNoAuthority(true);
-      setLoading(false);
-    }
-    loadBoardDetail();
-  }, [boardId, isLoggedIn, user]);
+    const loadDetails = async () => {
+      if (!isLoggedIn) {
+        setShowLogin(true);
+        setLoading(false);
+      } else if (!user?.isAuth) {
+        setShowPopup(true);
+        setLoading(false);
+      } else if (!checkLeagueInUserList()) {
+        setShowNoAuthority(true);
+        setLoading(false);
+      } else if (previousBoardIdRef.current !== boardId) {
+        previousBoardIdRef.current = boardId;
+        await loadBoardDetail();
+      }
+    };
+
+    loadDetails();
+  }, [boardId, isLoggedIn, user?.isAuth]);
 
   useEffect(() => {
     const loadBoardData = async () => {

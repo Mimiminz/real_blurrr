@@ -38,7 +38,7 @@ const Container = styled.div`
   border-radius: 12px;
   background-color: #ffffff;
 
-  @media (max-width: 540px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
