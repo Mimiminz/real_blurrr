@@ -12,7 +12,8 @@ public class ErrorMessage {
     public static final String INVALID_SEARCH_CONDITION_MESSAGE = "유효하지 않은 검색 조건입니다.";
     public static final String INVALID_EMAIL_CODE_MESSAGE = "유효하지 않은 인증 코드입니다. 다시 시도해 주세요.";
     public static final String INVALID_EMAIL_VERIFIED_MESSAGE = "인증되지 않은 이메일입니다.";
-
+    public static final String INVALID_BRAND_MESSAGE = "유효하지 않은 브랜드입니다.";
+    public static final String INVALID_MODEL_MESSAGE = "유효하지 않은 모델입니다.";
     public static final String FAIL_TO_VALIDATE_MESSAGE = "잘못된 요청입니다.";
 
     // 사용자 관련 요청 예외

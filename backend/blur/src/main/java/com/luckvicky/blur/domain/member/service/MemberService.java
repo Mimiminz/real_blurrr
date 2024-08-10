@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.member.model.dto.req.CarInfo;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
@@ -23,4 +24,5 @@ public interface MemberService {
     boolean modifyPassword(ChangeFindPassword changeFindPassword);
     boolean checkPassword(UUID memberId, CheckPassword checkPassword);
     void logout(UUID memberId);
+    boolean addCarInfo(CarInfo carInfo, UUID memberId);
 }

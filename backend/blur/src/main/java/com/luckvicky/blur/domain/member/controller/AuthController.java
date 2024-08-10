@@ -89,7 +89,7 @@ public class AuthController {
     public ResponseEntity<Boolean> createEmailAuthCode(
             @PathVariable(name = "email")
             String email,
-            @Schema(description = "인증 코드 타입(password_change, signin)")
+            @Schema(description = "인증 코드 타입(password_change, signup)")
             @RequestParam(name = "type")
             @ValidEnum(enumClass = AuthCodeType.class, ignoreCase = true)
             String type
