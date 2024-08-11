@@ -44,7 +44,7 @@ public class DashcamBoardDetailDto {
     private LocalDateTime createdAt;
 
     @Schema(description = "블랙박스 영상 url")
-    private List<String> videoUrl;
+    private List<VideoDto> videos;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
