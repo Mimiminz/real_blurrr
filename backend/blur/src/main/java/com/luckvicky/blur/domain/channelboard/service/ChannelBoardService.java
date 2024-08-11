@@ -11,10 +11,11 @@ import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 
 public interface ChannelBoardService {
 
-    PaginatedResponse<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria);
+    PaginatedResponse<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, Pageable pageable);
 
     ChannelBoardDetailDto getBoardDetail(UUID boardId, ContextMember nullableMember);
 
