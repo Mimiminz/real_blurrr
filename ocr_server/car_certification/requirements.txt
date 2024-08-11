@@ -9,6 +9,8 @@ greenlet==3.0.3
 h11==0.14.0
 idna==3.7
 joblib==1.4.2
+mysql==0.0.3
+mysqlclient==2.2.4
 numpy==2.0.1
 pillow==10.4.0
 pydantic==2.8.2
