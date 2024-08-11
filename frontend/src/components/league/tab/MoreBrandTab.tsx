@@ -15,8 +15,14 @@ export default function MoreBrandTab({
   const [showMoreTabs, setShowMoreTabs] = useState(false);
 
   const title = activeTabName?.includes("mention")
-    ? `채널에서 ${activeTabName.split("mention")[1]} 리그가 멘션된 글`
+    ? `${activeTabName.split("mention")[1]} 리그 멘션`
     : `${activeTabName} 리그`;
+
+  const subtitle = activeTabName?.includes("mention")
+    ? `채널에서 해당 리그가 멘션된 게시글`
+    : activeTab.type === "MODEL"
+    ? "해당 차량을 소유하지 않은 사용자는 게시글을 볼 수 없습니다"
+    : "해당 브랜드의 차량을 소유하지 않은 사용자는 게시글을 볼 수 없습니다.";
 
   const handleToggleMoreTabs = () => {
     setShowMoreTabs(!showMoreTabs);
@@ -28,10 +34,7 @@ export default function MoreBrandTab({
         <HeaderContainer>
           <TitleContainer>
             <Title>{title}</Title>
-            <Subtitle>
-              해당 브랜드의 차량을 소유하지 않은 사용자는 게시글을 볼 수
-              없습니다.
-            </Subtitle>
+            <Subtitle>{subtitle}</Subtitle>
           </TitleContainer>
           {activeTab.type === "BRAND" && (
             <MoreTabsButton onClick={handleToggleMoreTabs}>

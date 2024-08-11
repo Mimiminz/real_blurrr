@@ -1,6 +1,6 @@
 package com.luckvicky.blur.global.util;
 
-public class ConsonantExtractUtil {
+public class LetterExtractUtil {
 
     public static final String [] CHOSUNG = {
             "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ",

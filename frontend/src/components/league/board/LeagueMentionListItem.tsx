@@ -22,7 +22,7 @@ function LeagueMentionListItem({
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>{writerCar}</UserTags>
+          <UserTags>ㆍ{writerCar}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -69,7 +69,7 @@ const ArticleInfo = styled.div`
 
 const Channel = styled.p`
   color: ${({ theme }) => theme.colors.main};
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   margin-top: 10px;
   font-size: 12px;
 `;

@@ -1,0 +1,68 @@
+frontend-build:
+    stage: frontend-build
+
+    script:
+        # Node.js와 npm 설치 추가 (Node.js 18.x)
+        - apt-get install -y curl
+        - curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Node.js setup failed"; exit 1; }
+        - apt-get install -y nodejs
+        - node -v
+        - npm -v
+
+        - echo 'Install dependencies for frontend'
+        - cd frontend
+        - npm install
+
+        - echo 'Build frontend'
+        - export NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+        - export NEXT_PUBLIC_ACCESS_KEY=$NEXT_PUBLIC_ACCESS_KEY
+        - export NEXT_PUBLIC_SECRET_ACCESS_KEY=$NEXT_PUBLIC_SECRET_ACCESS_KEY
+        - export NEXT_PUBLIC_CLOUD_FRONT_URL=$NEXT_PUBLIC_CLOUD_FRONT_URL
+        - export NEXT_PUBLIC_DASHCAM_ID=$NEXT_PUBLIC_DASHCAM_ID
+        - export NEXT_PUBLIC_BOAST_ID=$NEXT_PUBLIC_BOAST_ID
+        - npm run build
+
+        # 빌드된 결과물 확인
+        - ls -al
+
+    artifacts:
+        paths:
+            - frontend/.next/standalone
+            - frontend/.next/static
+            - frontend/public
+        expire_in: 1 week
+
+    tags:
+        - blurrr-deploy
+
+    only:
+        - main
+
+frontend-deploy:
+    stage: frontend-deploy
+
+    variables:
+        DEPLOY_PATH: '/home/ubuntu/blurrr/frontend'
+
+    script:
+        - echo "Deploying frontend..."
+        - apt-get install openssh-client -y
+
+        - echo "Setting up SSH key..."
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
+        - chmod 400 ~/.ssh/id_rsa
+        - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
+
+        - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+        - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+        - echo "complete file send"
+        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+
+    needs: ['frontend-build']
+
+    tags:
+        - blurrr-deploy
+
+    only:
+        - main

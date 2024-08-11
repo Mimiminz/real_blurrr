@@ -38,11 +38,39 @@ export default function CreateComment({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
+    const newComment = e.target.value;
+
+    if (newComment.length <= 200) {
+      setComment(newComment);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 폼의 기본 동작을 막음
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newComment = e.target.value;
+
+    if (newComment.length <= 200) {
+      setComment(newComment);
+      e.target.style.height = 'auto'; // 높이를 초기화하여 내용에 맞게 재조정
+
+      if (newComment.includes('\n') || e.target.scrollHeight > e.target.clientHeight) {
+        e.target.style.height = 'auto'; // 높이를 초기화하여 내용에 맞게 재조정
+        e.target.style.height = e.target.scrollHeight + 'px'; // 줄바꿈 발생 시 높이 조정
+      } else {
+        e.target.style.height = '34px'; // 텍스트가 한 줄일 때는 높이를 기본값으로 유지
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault(); // 폼의 기본 동작을 막음
     if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
 
     if (comment.length > 200) {
@@ -75,15 +103,20 @@ export default function CreateComment({
     <Container onSubmit={handleSubmit}>
       <Avatar src={user?.profileUrl} alt={`${user?.nickname}'s avatar`} />
       <InputContainer>
-        <Input
+        <TextArea
+           value={comment}
+           onChange={handleInputChange}
+           onKeyDown={handleKeyDown}
+           placeholder="댓글을 입력하세요..."
+        />
+        {/* <Input
           type="text"
           placeholder="댓글 달기..."
           value={comment}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          ref={inputRef}
-        />
+        /> */}
         <CharCount>{comment.length}/200</CharCount>
       </InputContainer>
       <Button type="submit" disabled={!comment.trim()}>
@@ -95,7 +128,7 @@ export default function CreateComment({
 
 const Container = styled.form`
   display: flex;
-  align-items: center;
+  align-items: start;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 8px;
@@ -129,6 +162,24 @@ const Input = styled.input`
   color: #666;
 `;
 
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  resize: none; 
+  overflow: hidden;
+  font-size: 14px;
+  height: 34px;
+
+  &:focus {
+    outline: none; /* 포커스 시에도 테두리가 생기지 않도록 함 */
+  }
+`;
+
 const CharCount = styled.div`
   align-self: flex-end;
   font-size: 11px;
@@ -142,6 +193,7 @@ const CharCount = styled.div`
 
 const Button = styled.button<{ disabled: boolean }>`
   background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fbc02d")};
+  margin-top: 3px;
   border: none;
   border-radius: 8px;
   padding: 8px 10px;

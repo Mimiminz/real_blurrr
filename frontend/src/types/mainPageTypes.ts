@@ -14,10 +14,17 @@ export interface HotBoardItem {
   commentCount: number;
 }
 
+export interface Member {
+  profileUrl: string;
+  nickname: string;
+  carTitle: string;
+}
+
 export interface TodayCarItem {
   id: string;
-  title: string;
-  voteCount: number;
+  thumbnail: string;
+  member: Member;
+  viewCount: number;
 }
 
 export interface Options {

@@ -23,6 +23,7 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.domain.mycar.model.resp.MyCarDetail;
 import com.luckvicky.blur.domain.mycar.model.resp.MyCarSimple;
+import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
     @Override
     @Transactional
     public MyCarDetail findMyCarDetail(UUID boardId, ContextMember nullableMember) {
-        MyCarBoard myCarBoard = myCarRepository.findById(boardId)
+        MyCarBoard myCarBoard = myCarRepository.findByIdAndStatus(boardId, ActivateStatus.ACTIVE)
                 .orElseThrow(NotExistBoardException::new);
 
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(myCarBoard);

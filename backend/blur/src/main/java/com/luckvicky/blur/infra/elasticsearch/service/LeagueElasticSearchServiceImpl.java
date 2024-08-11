@@ -8,7 +8,7 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
-import com.luckvicky.blur.global.util.ConsonantExtractUtil;
+import com.luckvicky.blur.global.util.LetterExtractUtil;
 import com.luckvicky.blur.infra.elasticsearch.document.LeagueDocument;
 import com.luckvicky.blur.infra.elasticsearch.repository.LeagueElasticSearchRepository;
 import java.util.List;
@@ -54,7 +54,7 @@ public class LeagueElasticSearchServiceImpl implements LeagueElasticSearchServic
 
         Page<LeagueDocument> leagues =
                 leagueElasticSearchRepository.findAllByNameContainingIgnoreCase(
-                        ConsonantExtractUtil.extract(name), pageable
+                        LetterExtractUtil.extract(name), pageable
                 );
 
         return PaginatedResponse.of(

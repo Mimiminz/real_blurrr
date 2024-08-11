@@ -61,8 +61,8 @@ export default function Home() {
         const dashcam = await fetchDashCams();
         setDashcamBoards(dashcam);
 
-        // const today = await fetchTodayCar();
-        // setTodayCar(today);
+        const today = await fetchTodayCar();
+        setTodayCar(today);
 
         // const car = await fetchMyCars();
         // setMyCarBoards(car);
@@ -112,7 +112,7 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (isBoardLoading && !hotBoards.length && isLeagueLoading) {
+  if (isBoardLoading && !hotBoards.length && isLeagueLoading && todayCar) {
     return <Loading />;
   }
 
@@ -169,7 +169,7 @@ export default function Home() {
             <FaCrown />
             오늘의 차
           </AsideSectionTitle>
-          <TopCarCard />
+          <TopCarCard todayCar={todayCar} />
         </AsideSection>
         <AsideSection>
           <AsideSectionTitle>

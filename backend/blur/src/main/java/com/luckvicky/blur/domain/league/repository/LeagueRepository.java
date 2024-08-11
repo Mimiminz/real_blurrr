@@ -30,7 +30,7 @@ public interface LeagueRepository extends JpaRepository<League, UUID> {
     @Query("SELECT l FROM League l WHERE l.name = :name")
     Optional<League> findByNameForUpdate(@Param("name") String name);
 
-    List<League> findAllByType(LeagueType type);
+    List<League> findAllByTypeOrderByPeopleCountDesc(LeagueType type);
 
     List<League> findAllByNameIn(List<String> names);
 

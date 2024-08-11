@@ -29,6 +29,8 @@ export default function CommentList({
   const openLoginModal = () => setShowLogin(true);
   const closeLoginModal = () => setShowLogin(false);
 
+  console.log(comments)
+
   return (
     <CommentContainer>
       <CommentNumber>
@@ -45,7 +47,7 @@ export default function CommentList({
             isLeague={isLeague}
             onCommentAdded={onCommentAdded}
           />
-          {commentCount > 0 &&
+          {comments.length > 0 &&
             comments.map((comment) => (
               <React.Fragment key={comment.id}>
                 <CommentWrapper>

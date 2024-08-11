@@ -5,18 +5,20 @@ import static com.luckvicky.blur.global.constant.Number.HOT_DASHCAM_BOARD_PAGE_S
 import static com.luckvicky.blur.global.constant.Number.HOT_MYCAR_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 
+import com.luckvicky.blur.domain.board.repository.MyCarRepository;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.HotDashCamResponse;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.HotMyCarResponse;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.TodayMyCarResponse;
-import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.HotBoardResponse;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
+import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.channelboard.repository.ChannelBoardRepository;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.repository.DashcamRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.util.ClockUtil;
+import com.luckvicky.blur.global.util.RandomUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +37,7 @@ public class MainPageServiceImpl implements MainPageService {
 
     private final ChannelBoardRepository channelBoardRepository;
     private final DashcamRepository dashcamRepository;
+    private final MyCarRepository myCarRepository;
 
     @Override
     public List<HotBoardResponse> getHotBoard() {
@@ -79,19 +82,21 @@ public class MainPageServiceImpl implements MainPageService {
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
 
-        ChannelBoard board = channelBoardRepository
-                .findByTypeAndStatusAndCreatedAtBetween(
-                        BoardType.MYCAR,
+        List<MyCarBoard> board = myCarRepository
+                .findAllByStatusAndLikeCountGreaterThanEqualAndCreatedAtBetween(
                         Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria()),
                         ActivateStatus.ACTIVE,
+                        1L,
                         now.minusDays(1), now
                 );
 
-        if (Objects.isNull(board)) {
+        if (Objects.isNull(board) || board.isEmpty()) {
             return null;
         }
 
-        return TodayMyCarResponse.of(board);
+        return TodayMyCarResponse.of(
+                board.get(RandomUtil.getRandomIndex(board.size()))
+        );
 
     }
 
@@ -105,8 +110,8 @@ public class MainPageServiceImpl implements MainPageService {
         );
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
-        Page<ChannelBoard> boards = channelBoardRepository
-                .findAllByTypeAndStatusAndCreatedAtBetween(BoardType.MYCAR, pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now);
+        Page<MyCarBoard> boards = myCarRepository
+                .findAllByStatusAndCreatedAtBetween(pageable, ActivateStatus.ACTIVE, now.minusWeeks(1), now);
 
         return boards.stream()
                 .map(HotMyCarResponse::of)
