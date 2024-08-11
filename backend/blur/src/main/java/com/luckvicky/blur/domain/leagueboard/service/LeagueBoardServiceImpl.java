@@ -22,7 +22,6 @@ import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.leagueboard.repository.LeagueBoardRepository;
 import com.luckvicky.blur.domain.leaguemember.exception.NotAllocatedLeagueException;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
-import com.luckvicky.blur.domain.like.model.entity.Like;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -54,6 +53,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
     private final ChannelBoardRepository channelBoardRepository;
     private final LikeRepository likeRepository;
     private final LeagueMemberRepository leagueMemberRepository;
+    private final RedisViewCounterService redisViewCounterService;
 
     @Override
     public LeagueBoardCreateResponse createLeagueBoard(
@@ -104,7 +104,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 paginatedResult.getTotalElements(),
                 paginatedResult.getTotalPages(),
                 paginatedResult.getContent().stream()
-                        .map(LeagueBoardResponse::of)
+                        .map(lb ->
+                                LeagueBoardResponse.of(
+                                        lb,
+                                        redisViewCounterService.addViewCountInRedis(lb.getId(), lb.getViewCount())
+                                )
+                        )
                         .toList()
         );
 
@@ -130,7 +135,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 likeBoards.getTotalElements(),
                 likeBoards.getTotalPages(),
                 likeBoards.stream()
-                        .map(LeagueBoardResponse::of)
+                        .map(lb ->
+                                LeagueBoardResponse.of(
+                                        lb,
+                                        redisViewCounterService.addViewCountInRedis(lb.getId(), lb.getViewCount())
+                                )
+                        )
                         .collect(Collectors.toList())
         );
 
@@ -156,7 +166,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 boards.getTotalElements(),
                 boards.getTotalPages(),
                 boards.stream()
-                        .map(LeagueBoardResponse::of)
+                        .map(lb ->
+                                LeagueBoardResponse.of(
+                                        lb,
+                                        redisViewCounterService.addViewCountInRedis(lb.getId(), lb.getViewCount())
+                                )
+                        )
                         .collect(Collectors.toList())
         );
 
@@ -171,9 +186,31 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         isAllocatedLeague(board.getLeague(), member);
 
+        long viewCountInRedis = getViewCountInRedis(memberId, boardId, board);
+
         return LeagueBoardDetailResponse.of(
-                LeagueBoardDetailDto.of(board, isLike(member,  board))
+                LeagueBoardDetailDto.of(
+                        board,
+                        board.getViewCount() + viewCountInRedis,
+                        isLike(member,  board)
+                )
         );
+
+    }
+
+    private long getViewCountInRedis(UUID memberId, UUID boardId, LeagueBoard board) {
+
+        long viewCountInRedis = 0;
+
+        if (redisViewCounterService.isVisited(boardId, memberId)) {
+            viewCountInRedis = redisViewCounterService.getViewCountInRedis(boardId);
+        }
+
+        else {
+            viewCountInRedis = redisViewCounterService.increment(board.getId(), memberId);
+        }
+
+        return viewCountInRedis;
 
     }
 
@@ -204,7 +241,12 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
                 paginatedResult.getTotalElements(),
                 paginatedResult.getTotalPages(),
                 paginatedResult.stream()
-                        .map(LeagueMentionListResponse::of)
+                        .map(channelBoard ->
+                                LeagueMentionListResponse.of(
+                                        channelBoard,
+                                        redisViewCounterService.addViewCountInRedis(channelBoard.getId(), channelBoard.getViewCount())
+                                )
+                        )
                         .collect(Collectors.toList())
         );
 

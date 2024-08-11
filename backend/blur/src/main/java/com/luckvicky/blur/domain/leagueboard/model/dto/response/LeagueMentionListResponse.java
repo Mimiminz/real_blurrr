@@ -27,6 +27,9 @@ public record LeagueMentionListResponse(
         @Schema(description = "제목")
         String title,
 
+        @Schema(description = "조회수")
+        Long viewCount,
+
         @Schema(description = "댓글 개수")
         Long commentCount,
 
@@ -37,7 +40,7 @@ public record LeagueMentionListResponse(
         LocalDateTime createdAt
 
 ) {
-    public static LeagueMentionListResponse of(ChannelBoard board) {
+    public static LeagueMentionListResponse of(ChannelBoard board, Long viewCount) {
         return LeagueMentionListResponse.builder()
                 .id(board.getId())
                 .channel(SimpleChannelDto.of(board.getChannel()))
@@ -45,6 +48,7 @@ public record LeagueMentionListResponse(
                 .title(board.getTitle())
                 .likeCount(board.getLikeCount())
                 .commentCount(board.getCommentCount())
+                .viewCount(viewCount)
                 .createdAt(board.getCreatedAt())
                 .build();
     }

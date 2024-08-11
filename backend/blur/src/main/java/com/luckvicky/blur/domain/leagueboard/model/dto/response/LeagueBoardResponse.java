@@ -34,12 +34,12 @@ public record LeagueBoardResponse(
 
 ) {
 
-    public static LeagueBoardResponse of(LeagueBoard board) {
+    public static LeagueBoardResponse of(LeagueBoard board, Long viewCount) {
         return LeagueBoardResponse.builder()
                 .id(board.getId())
                 .member(SimpleMemberDto.of(board.getMember()))
                 .title(board.getTitle())
-                .viewCount(board.getViewCount())
+                .viewCount(viewCount)
                 .likeCount(board.getLikeCount())
                 .commentCount(board.getCommentCount())
                 .createdAt(board.getCreatedAt())
