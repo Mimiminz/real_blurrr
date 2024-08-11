@@ -2,60 +2,72 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
-import { DashCamContentData } from '@/types/channelType';
+import { useAuthStore } from "@/store/authStore";
+import { DashCamDetail } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
+import { formatPostDate } from "@/utils/formatPostDate";
+import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
 
-const DashCamContent: React.FC<DashCamContentData> = ({
+const DashCamContent: React.FC<DashCamDetail> = ({
   id,
   member,
   title,
   createdAt,
-  videoUrl,
+  videos,
   content,
   mentionedLeagues,
+  viewCount,
+  likeCount,
+  liked,
 }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const { isLoggedIn, user } = useAuthStore();
+
+  const [isLiked, setIsLiked] = useState(liked ?? false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
+  const [like, setLike] = useState(likeCount);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const toggleLike = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      if (isLiked) {
+        const likeData = await fetchChannelLikeDelete(id);
+        setLike(likeData.likeCount);
+        setIsLiked(likeData.isLike);
+      } else {
+        const likeData = await fetchChannelLike(id);
+        setLike(likeData.likeCount);
+        setIsLiked(likeData.isLike);
+      }
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const changeVideo = (newIndex: number, direction: 'next' | 'prev') => {
-   setIsSliding(true);
-   setSlideDirection(direction);
-   setTimeout(() => {
-     setCurrentIndex(newIndex);
-     setIsSliding(false);
-   }, 300); // 300ms 동안의 슬라이드 효과
- };
- 
- const nextVideo = () => {
-   if (currentIndex < videoUrl.length - 1) {
-     changeVideo(currentIndex + 1, 'next');
-   }
- };
- 
- const prevVideo = () => {
-   if (currentIndex > 0) {
-     changeVideo(currentIndex - 1, 'prev');
-   }
- };
+    setIsSliding(true);
+    setSlideDirection(direction);
+    setTimeout(() => {
+      setCurrentIndex(newIndex);
+      setIsSliding(false);
+    }, 300); // 300ms 동안의 슬라이드 효과
+  };
 
-  const formatPostDate = (createdAt: string) => {
-    const postDate = new Date(createdAt);
-    const today = new Date();
+  const nextVideo = () => {
+    if (currentIndex < videos.length - 1) {
+      changeVideo(currentIndex + 1, 'next');
+    }
+  };
 
-    if (postDate.toDateString() === today.toDateString()) {
-      return postDate.toLocaleTimeString([], {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } else {
-      return postDate.toISOString().split('T')[0].replace(/-/g, '.');
+  const prevVideo = () => {
+    if (currentIndex > 0) {
+      changeVideo(currentIndex - 1, 'prev');
     }
   };
 
@@ -85,29 +97,34 @@ const DashCamContent: React.FC<DashCamContentData> = ({
             ))}
           </Tags>
         )}
-        <VideoSliderContainer>
-          <ArrowButton onClick={prevVideo} disabled={currentIndex === 0}>
-            <FaArrowLeft />
-          </ArrowButton>
-          <VideoWrapper isSliding={isSliding} direction={slideDirection}>
-            <video controls autoPlay loop>
-              <source src={videoUrl[currentIndex]} type="video/mp4" />
-            </video>
-          </VideoWrapper>
-          <ArrowButton onClick={nextVideo} disabled={currentIndex === videoUrl.length - 1}>
-            <FaArrowRight />
-          </ArrowButton>
-        </VideoSliderContainer>
+        {videos && videos.length > 0 && (
+          <VideoSliderContainer>
+            <ArrowButton onClick={prevVideo} disabled={currentIndex === 0}>
+              <FaArrowLeft />
+            </ArrowButton>
+            <VideoWrapper isSliding={isSliding} direction={slideDirection}>
+              <video controls autoPlay loop>
+                <source src={videos[currentIndex].videoUrl} type="video/mp4" />
+              </video>
+            </VideoWrapper>
+            <ArrowButton onClick={nextVideo} disabled={currentIndex === videos.length - 1}>
+              <FaArrowRight />
+            </ArrowButton>
+          </VideoSliderContainer>
+        )}
         <Content dangerouslySetInnerHTML={{ __html: content }} />
-        <HeartButton onClick={toggleLike}>
-          {isLiked ? <FaHeart /> : <FaRegHeart />}
-        </HeartButton>
+        {isLoggedIn && (
+          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </HeartButton>
+        )}
       </Body>
     </Container>
   );
 };
 
-const slideIn = keyframes`
+
+const slideInFromRight = keyframes`
   from {
     transform: translateX(100%);
   }
@@ -116,12 +133,30 @@ const slideIn = keyframes`
   }
 `;
 
-const slideOut = keyframes`
+const slideInFromLeft = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOutToLeft = keyframes`
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-100%);
+  }
+`;
+
+const slideOutToRight = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
   }
 `;
 
@@ -210,12 +245,15 @@ const VideoSliderContainer = styled.div`
 
 const VideoWrapper = styled.div<{ isSliding: boolean; direction: 'next' | 'prev' }>`
   width: 100%;
-  animation: ${({ isSliding, direction }) => 
-    isSliding 
-      ? direction === 'next' 
-        ? slideOut 
-        : slideIn 
-      : 'none'} 300ms ease-in-out;
+  animation: ${({ isSliding, direction }) =>
+    isSliding
+      ? direction === 'next'
+        ? slideOutToLeft
+        : slideOutToRight
+      : direction === 'next'
+        ? slideInFromRight
+        : slideInFromLeft
+  } 300ms ease-in-out;
 
   video {
     width: 100%;
@@ -254,18 +292,24 @@ const Icon = styled.span`
   vertical-align: middle;
 `;
 
-const HeartButton = styled.button`
-  margin: 30px 0 0 auto;
+const HeartButton = styled.button<{ $isLiked: boolean }>`
+  margin: 5px 0px 2px 0px;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 22px;
-  color: #666;
+  font-size: 18px;
+  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
-    color: #ff6b6b;
+    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+  }
+
+  @media (min-width: 768px) {
+    font-size: 20px;
   }
 `;
 

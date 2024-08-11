@@ -25,12 +25,14 @@ export default function ChannelDashCamDetailPage({ params }: {
 
    const loadDetail = useCallback(async () => {
       try {
-         const data = await fetchDashCamDetail(dashCamDetailId); 
+         const data = await fetchDashCamDetail(dashCamDetailId);
          setDashCamDetail(data);
+
+         console.log(data);
       } catch (error) {
          console.error('Failed to load dash cam detail:', error);
       }
-   }, [dashCamDetailId]); 
+   }, [dashCamDetailId]);
 
    const loadCommentDetail = useCallback(async () => {
       if (!isLoggedIn) return;
@@ -62,12 +64,17 @@ export default function ChannelDashCamDetailPage({ params }: {
                      member={dashCamDetail.member}
                      title={dashCamDetail.title}
                      createdAt={dashCamDetail.createdAt}
-                     videoUrl={dashCamDetail.videoUrl}
+                     videos={dashCamDetail.videos}
                      content={dashCamDetail.content}
-                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
+                     mentionedLeagues={dashCamDetail.mentionedLeagues}
+                     viewCount={dashCamDetail.viewCount}
+                     commentCount={dashCamDetail.commentCount}
+                     likeCount={dashCamDetail.likeCount}
+                     voteCount={dashCamDetail.voteCount}
+                     liked={dashCamDetail.liked} />
                </LeftColumn>
                <RightColumn>
-               {hasOptions && (
+                  {hasOptions && (
                      <VoteSection>
                         <Vote voteId={dashCamDetail.id} onOptionsCheck={setHasOptions} />
                      </VoteSection>
