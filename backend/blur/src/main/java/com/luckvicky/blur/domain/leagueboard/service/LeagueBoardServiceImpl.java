@@ -186,7 +186,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         isAllocatedLeague(board.getLeague(), member);
 
-        long viewCountInRedis = getViewCountInRedis(memberId, boardId, board);
+        long viewCountInRedis = getViewCountInRedis(memberId, board.getId());
 
         return LeagueBoardDetailResponse.of(
                 LeagueBoardDetailDto.of(
@@ -198,19 +198,13 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     }
 
-    private long getViewCountInRedis(UUID memberId, UUID boardId, LeagueBoard board) {
+    private long getViewCountInRedis(UUID memberId, UUID boardId) {
 
-        long viewCountInRedis = 0;
-
-        if (redisViewCounterService.isVisited(boardId, memberId)) {
-            viewCountInRedis = redisViewCounterService.getViewCountInRedis(boardId);
+        if (Boolean.FALSE.equals(redisViewCounterService.isVisited(boardId, memberId))) {
+            return redisViewCounterService.getViewCountInRedis(boardId);
         }
 
-        else {
-            viewCountInRedis = redisViewCounterService.increment(board.getId(), memberId);
-        }
-
-        return viewCountInRedis;
+        return redisViewCounterService.increment(boardId, memberId);
 
     }
 
