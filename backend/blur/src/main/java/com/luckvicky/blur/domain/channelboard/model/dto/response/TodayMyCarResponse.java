@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.channelboard.model.dto.response;
 
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
+import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
@@ -18,17 +19,16 @@ public record TodayMyCarResponse(
         @Schema(description = "대표 이미지")
         String thumbnail,
 
-        @Schema(description = "조회수")
-        Long viewCount
+        @Schema(description = "좋아요수")
+        Long likeCount
 ) {
 
-    public static TodayMyCarResponse of(ChannelBoard myCarBoard) {
+    public static TodayMyCarResponse of(MyCarBoard board) {
         return TodayMyCarResponse.builder()
-                .id(myCarBoard.getId())
-                .member(SimpleMemberDto.of(myCarBoard.getMember()))
-//                 :todo 썸네일 사진 추후에 추가 필요
-//                .thumbnail(myCarBoard.getThumbnail())
-                .viewCount(myCarBoard.getViewCount())
+                .id(board.getId())
+                .member(SimpleMemberDto.of(board.getMember()))
+                .thumbnail(board.getThumbnail())
+                .likeCount(board.getLikeCount())
                 .build();
     }
 

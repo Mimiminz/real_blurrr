@@ -71,16 +71,6 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
     );
 
     @EntityGraph(attributePaths = "member")
-    ChannelBoard findByTypeAndStatusAndCreatedAtBetween(
-            BoardType type, Sort sort, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
-    );
-
-    @EntityGraph(attributePaths = "member")
-    Page<ChannelBoard> findAllByTypeAndStatusAndCreatedAtBetween(
-            BoardType type, Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
-    );
-
-    @EntityGraph(attributePaths = "member")
     Page<ChannelBoard> findAllByAndStatusAndCreatedAtBetween(
             Pageable pageable, ActivateStatus status, LocalDateTime startDate, LocalDateTime endDate
     );
