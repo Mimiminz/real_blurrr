@@ -33,6 +33,7 @@ public class LeagueBoardSearchServiceImpl implements LeagueBoardSearchService {
 
     private final LeagueRepository leagueRepository;
     private final LeagueBoardRepository leagueBoardRepository;
+    private final RedisViewCounterService redisViewCounterService;
 
     @Override
     @Transactional(readOnly = true)
@@ -81,7 +82,12 @@ public class LeagueBoardSearchServiceImpl implements LeagueBoardSearchService {
                 paginatedResult.getTotalElements(),
                 paginatedResult.getTotalPages(),
                 paginatedResult.getContent().stream()
-                        .map(LeagueBoardResponse::of)
+                        .map(lb ->
+                                LeagueBoardResponse.of(
+                                        lb,
+                                        redisViewCounterService.addViewCountInRedis(lb.getId(), lb.getViewCount())
+                                )
+                        )
                         .collect(Collectors.toList())
         );
 

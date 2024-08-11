@@ -2,7 +2,6 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 
 import static com.luckvicky.blur.global.constant.Number.ZERO;
 
-import com.luckvicky.blur.domain.board.model.dto.response.LikeBoardListResponse;
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
@@ -11,7 +10,7 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardRespo
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueMentionListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
-import com.luckvicky.blur.domain.leagueboard.service.ViewCounterService;
+import com.luckvicky.blur.domain.leagueboard.service.RedisViewCounterService;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -45,7 +44,7 @@ public class LeagueBoardController {
 
     private final LeagueBoardService leagueBoardService;
     private final LeagueCommentService leagueCommentService;
-    private final ViewCounterService viewCounterService;
+    private final RedisViewCounterService redisViewCounterService;
 
     @Operation(summary = "리그 게시글 생성 API")
     @Parameters({
@@ -169,7 +168,6 @@ public class LeagueBoardController {
     ) {
 
         LeagueBoardDetailResponse response = leagueBoardService.getLeagueBoardDetail(member.getId(), boardId);
-        viewCounterService.increase(response.id());
 
         return ResponseUtil.ok(
                 Result.of(response)

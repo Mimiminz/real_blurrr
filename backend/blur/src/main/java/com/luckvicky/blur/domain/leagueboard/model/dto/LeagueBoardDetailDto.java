@@ -42,14 +42,14 @@ public class LeagueBoardDetailDto {
     @Schema(description = "좋아요 수")
     private Long likeCount;
 
-    public static LeagueBoardDetailDto of(LeagueBoard leagueBoard, Boolean isLike) {
+    public static LeagueBoardDetailDto of(LeagueBoard leagueBoard, Long viewCount, Boolean isLike) {
         return LeagueBoardDetailDto.builder()
                 .id(leagueBoard.getId())
                 .member(SimpleMemberDto.of(leagueBoard.getMember()))
                 .title(leagueBoard.getTitle())
                 .content(leagueBoard.getContent())
                 .createdAt(leagueBoard.getCreatedAt())
-                .viewCount(leagueBoard.getViewCount())
+                .viewCount(viewCount)
                 .likeCount(leagueBoard.getLikeCount())
                 .isLike(isLike)
                 .build();
