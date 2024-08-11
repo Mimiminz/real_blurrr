@@ -27,6 +27,8 @@ export default function CommentList({
     router.push("/login"); // 로그인 페이지 경로로 이동
   };
 
+  console.log(comments)
+
   return (
     <CommentContainer>
       <CommentNumber>
@@ -43,7 +45,7 @@ export default function CommentList({
             isLeague={isLeague}
             onCommentAdded={onCommentAdded}
           />
-          {commentCount > 0 &&
+          {comments.length > 0 &&
             comments.map((comment) => (
               <React.Fragment key={comment.id}>
                 <CommentWrapper>
