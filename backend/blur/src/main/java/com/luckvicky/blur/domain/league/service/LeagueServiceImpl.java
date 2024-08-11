@@ -36,7 +36,7 @@ public class LeagueServiceImpl implements LeagueService {
     @Override
     public LeagueListResponse getLeagues(String leagueType) {
 
-        List<League> leagues = leagueRepository.findAllByType(LeagueType.convertToEnum(leagueType));
+        List<League> leagues = leagueRepository.findAllByTypeOrderByPeopleCountDesc(LeagueType.convertToEnum(leagueType));
 
         return LeagueListResponse.of(
                 leagues.stream()
