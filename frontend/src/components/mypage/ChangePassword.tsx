@@ -50,7 +50,7 @@ const handleSubmit = async (
         alert('비밀번호 변경에 실패했습니다.');
       }
     } catch (error) {
-      setErrors({ oldPassword: '비밀번호 변경 중 오류가 발생했습니다.' });
+      setErrors({ oldPassword: '비밀번호가 올바르지 않습니다.' });
     }
   } else {
     setErrors({ oldPassword: '사용자 정보가 없습니다.' });

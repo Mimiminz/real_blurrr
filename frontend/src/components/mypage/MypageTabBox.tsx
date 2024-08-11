@@ -22,6 +22,7 @@ const MypageTabBox = (): JSX.Element => {
   const [selectedTab, setSelectedTab] = useState<TabId>('enterPassword');
 
   const renderContent = (): JSX.Element => {
+    console.log('Selected Tab:', selectedTab);
     switch (selectedTab) {
       case 'enterPassword':
         return <EnterPassword onPasswordEntered={() => setSelectedTab('profile')} />;
@@ -46,7 +47,7 @@ const MypageTabBox = (): JSX.Element => {
         {tabs.map((tab) => (
           <Tab
             key={tab.id}
-            active={selectedTab === tab.id}
+            active={selectedTab === tab.id || (selectedTab === 'profile' && tab.id === 'enterPassword')}
             onClick={() => setSelectedTab(tab.id as TabId)}
           >
             {tab.label}
@@ -78,12 +79,14 @@ const Tabs = styled.div`
 const Tab = styled.div<{ active: boolean }>`
   padding: 16px;
   cursor: pointer;
-  background-color: ${(props) => (props.active ? '#e0e0e0' : 'transparent')};
+  background-color: ${(props) => {
+    console.log('Active state:', props.active);
+    return props.active ? '#F9803A' : 'transparent';
+  }};
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  border-left: ${(props) => (props.active ? '4px solid #007bff' : 'none')};
-  
+  border-radius: 0 8px 8px 0;
   &:hover {
-    background-color: #e0e0e0;
+    background-color: #efefef;
   }
 `;
 
