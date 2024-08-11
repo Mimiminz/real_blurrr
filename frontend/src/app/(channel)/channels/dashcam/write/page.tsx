@@ -74,9 +74,17 @@ export default function WritePage() {
                ) : (
                   <VoteButton type="button" onClick={togglePopup}>투표 생성</VoteButton>
                )}
-               <SubmitButton type="submit" disabled={voteOptions.length > 0}>
-                  작성
-               </SubmitButton>
+               <SubmitButton
+                  type="submit"
+                  isActive={videoFiles.length > 0}
+                  onClick={(e) => {
+                     if (videoFiles.length === 0) {
+                        e.preventDefault();  // 폼 제출 막기
+                     }
+                  }}
+               >
+               작성
+            </SubmitButton>
             </EditorAndButtonContainer>
             {showPopup && (
                <DraggableVotePopup
@@ -149,18 +157,18 @@ const VoteButton = styled.button`
   }
 `;
 
-const SubmitButton = styled.button<{ disabled: boolean }>`
+const SubmitButton = styled.button<{ isActive: boolean }>`
   width: 100px;
   padding: 12px;
-  background-color: ${({ disabled }) => (disabled ? "#FF900D" : "#cccccc")};
+  background-color: ${({ isActive }) => (isActive ? "#FF900D" : "#cccccc")};
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  cursor: ${({ isActive }) => (isActive ? "pointer" : "not-allowed")};
   font-size: 16px;
   margin-top: 16px;
 
   &:hover {
-    background-color: ${({ disabled }) => (disabled ? "#FF900D" : "#bbbbbb")};
+    background-color: ${({ isActive }) => (isActive ? "#FF900D" : "#bbbbbb")};
   }
 `;
