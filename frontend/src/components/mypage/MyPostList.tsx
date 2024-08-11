@@ -70,7 +70,7 @@ const MyPostList = () => {
             createdAt={item.createdAt}
             likeCount={item.likeCount}
             commentCount={item.commentCount}
-          />
+            viewCount={item.viewCount}           />
         ))
         
       ) : (

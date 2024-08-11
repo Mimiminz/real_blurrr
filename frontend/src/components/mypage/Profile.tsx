@@ -5,48 +5,50 @@ import styled from 'styled-components';
 import { useAuthStore } from '@/store/authStore';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
+import { updateProfile, uploadImageToS3 } from '@/api/mypage';
 
-
-interface SignupFormValues {
+interface FormValues {
   email: string;
   nickname: string;
-  password: string;
-  passwordCheck: string;
+  profileImage: File | null;
 }
 
-const initialValues: SignupFormValues = {
-  email: '',
-  nickname: '',
-  password: '',
-  passwordCheck: '',
-};
-
 const validationSchema = Yup.object({
-  email: Yup.string().email('이메일은 필수 입력 항목입니다.'),
   nickname: Yup.string()
   .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
   .required('닉네임은 필수 입력 항목입니다.'),
 });
 
-const handleSubmit = (values: SignupFormValues, { setSubmitting }: FormikHelpers<SignupFormValues>) => {
-  console.log(values);
-  setSubmitting(false);
-};
-
 const Profile = (): JSX.Element => {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
   const [nicknameError, setNicknameError] = useState<string>('');
-  const user = useAuthStore(state => state.user);
-  const [profileImage, setProfileImage] = useState<string>(user ? user.profileUrl : "");
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { user, setUser } = useAuthStore(state => ({
+    user: state.user,
+    setUser: state.setUser,
+  }));
+  const [profileImage, setProfileImage] = useState<string>(user?.profileUrl || "");
+
+  const initialValues: FormValues = {
+    email: user ? user.email : '',
+    nickname: user ? user.nickname : '',
+    profileImage: null
+  };
+  
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
     if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      console.log('Selected file:', file);
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
           setProfileImage(e.target.result as string);
         }
       };
-      reader.readAsDataURL(event.target.files[0]);
+      reader.readAsDataURL(file);
+      setFieldValue('profileImage', file);
+      
+    } else {
+      console.log('No file selected');
     }
   };
 
@@ -65,23 +67,66 @@ const Profile = (): JSX.Element => {
     }
   }, 500);
 
+  const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
+    console.log('Form values:', values);
+    setSubmitting(true);
+    try {
+      const imgChange = !!values.profileImage;
+      let profileUrl = '';
+  
+      if (values.profileImage) {
+        // 서버에 프로필 업데이트 요청
+        const response = await updateProfile(values.profileImage.name, values.nickname, imgChange);
+        profileUrl = response.profileUrl;
+  
+        // S3에 이미지 업로드
+        await uploadImageToS3(profileUrl, values.profileImage);
+      } else {
+        // 이미지 변경이 없는 경우
+        const response = await updateProfile('', values.nickname, imgChange);
+        profileUrl = user?.profileUrl || '';
+      }
+  
+      // Zustand 상태 업데이트
+      setUser({
+        ...user!,
+        nickname: values.nickname,
+        profileUrl: profileUrl,
+      });
+      alert('프로필이 성공적으로 업데이트되었습니다.');
+    } catch (error) {
+      console.error('프로필 업데이트에 실패하였습니다. 다시 시도해주세요.', error);
+    }
+    setSubmitting(false);
+  };
+
   return (
     <Container>
       <Title>프로필 정보</Title>
       <UserContainer>
-        <ImageContainer>
+      <ImageContainer>
           <UserImage src={profileImage} alt='User Profile Image' />
           <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
-          <ImageUploadInput 
-            id='imageUpload' 
-            type='file' 
-            accept='image/*' 
-            onChange={handleImageChange} 
-          />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ setFieldValue }) => (
+              <>
+                <ImageUploadInput 
+                  id='imageUpload' 
+                  type='file' 
+                  accept='image/*' 
+                  onChange={(e) => handleImageChange(e, setFieldValue)} 
+                />
+              </>
+            )}
+          </Formik>
         </ImageContainer>
         <SubUserContainer>
-          <UserCarName>{user? user.carTitle: "차량 미인증"}</UserCarName>
-          <UserName>{user? user.nickname: ""}</UserName>
+          <UserName>{user ? user.nickname : ""}</UserName>
+          <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
         </SubUserContainer>
       </UserContainer>
       <Formik
@@ -95,7 +140,7 @@ const Profile = (): JSX.Element => {
               <StyledField
                 name="email"
                 type="email"
-                placeholder= {user ? user.email : ""}
+                placeholder={user ? user.email : ""}
                 className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
                 readOnly
               />
@@ -104,18 +149,17 @@ const Profile = (): JSX.Element => {
 
             <InputContainer>
               <StyledField
-              name="nickname"
-              type="text"
-              placeholder= {user ? user.nickname : ""}
-              className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setFieldValue('nickname', value);
-                debouncedCheckNickname(value);
-              }}
-            />
-
-            <StyledErrorMessage name="nickname" component="div" />
+                name="nickname"
+                type="text"
+                placeholder={user ? user.nickname : ""}
+                className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  setFieldValue('nickname', value);
+                  debouncedCheckNickname(value);
+                }}
+              />
+              <StyledErrorMessage name="nickname" component="div" />
               {nicknameError && <SuccessMessage>{nicknameError}</SuccessMessage>}
             </InputContainer>
 
@@ -152,7 +196,8 @@ const UserContainer = styled.div`
 const SubUserContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ImageContainer = styled.div`
@@ -188,13 +233,16 @@ const ImageUploadInput = styled.input`
 `;
 
 const UserCarName = styled.div`
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
+  color: #969696;
+
 `;
 
 const UserName = styled.div`
   font-size: 20px;
   font-weight: bold;
+  margin-bottom: 10px;
 `;
 
 const StyledForm = styled(Form)`
@@ -241,6 +289,7 @@ const StyledErrorMessage = styled(ErrorMessage)`
   font-size: 0.875em;
   height: 24px;
   margin-bottom: 0.5em;
+  text-align: left;
 `;
 
 const SuccessMessage = styled.div`
@@ -248,6 +297,7 @@ const SuccessMessage = styled.div`
   font-size: 0.8em;
   height: 24px;
   margin-bottom: 0.5em;
+  text-align: left;
 `;
 
 const Button = styled.button`

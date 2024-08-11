@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
+import { requestEmailVerificationCode, verifyEmailCode } from '@/api';
 
 interface FindPasswordFormValues {
   email: string;
@@ -23,6 +24,41 @@ const validationSchema = Yup.object({
 
 const FindPasswordForm = () => {
   const buttonColor = useState<boolean>(false);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [emailVerificationError, setEmailVerificationError] = useState<string>('');
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [timer, setTimer] = useState<number>(0);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+
+  const handleSendVerification = async (email: string) => {
+    try {
+      await requestEmailVerificationCode(email,'password_change');
+      alert('인증번호가 전송되었습니다.');
+      setTimer(300);
+      setIsTimerActive(true);
+    } catch (error) {
+      alert('인증번호 전송 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleVerifyEmailCode = async (email: string, code: string) => {
+    try {
+      const response = await verifyEmailCode(email, code,'password_change');
+      if (response === true) {
+        setEmailVerified(true);
+        setEmailVerificationError('인증번호가 확인되었습니다.');
+        setIsTimerActive(false);
+      } else {
+        setEmailVerified(false);
+        setEmailVerificationError('인증번호가 일치하지 않습니다.');
+      }
+    } catch (error) {
+      setEmailVerified(false);
+      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
+    }
+  };
+
+
 
   const handleSubmit = (values: FindPasswordFormValues, { setSubmitting }: FormikHelpers<FindPasswordFormValues>) => {
     setTimeout(() => {
@@ -40,7 +76,7 @@ const FindPasswordForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-      {({ errors, touched }) => (
+      {({ values, errors, touched }) => (
         <StyledForm>
           <InputContainer>
             <StyledField
@@ -49,26 +85,39 @@ const FindPasswordForm = () => {
               placeholder="이메일"
               className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
             />
-            <Button type="button">인증번호 전송</Button>
+            <Button
+              type="button"
+              onClick={() => handleSendVerification(values.email)}
+            >
+              인증번호 전송
+            </Button>              
           </InputContainer>
           <StyledErrorMessage name="email" component="div" />
-          {touched.email && !errors.email && (
-            <SuccessMessage>인증이 완료되었습니다. 사용 가능한 이메일입니다.</SuccessMessage>
+          {emailValid === false && (
+            <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
+          )}
+          {touched.email && !errors.email && emailValid && (
+            <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
           )}
 
           <InputContainer>
-            <StyledField
-              name="emailVerification"
-              type="text"
-              placeholder="인증번호 입력"
-              className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
-            />
-            <Button type="button">인증번호 확인</Button>
-          </InputContainer>
-          <StyledErrorMessage name="emailVerification" component="div" />
-          {touched.emailVerification && !errors.emailVerification && (
-            <SuccessMessage>인증번호가 확인되었습니다.</SuccessMessage>
-          )}
+              <StyledField
+                name="emailVerification"
+                type="text"
+                placeholder="인증번호 입력"
+                className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
+              />
+              <Button
+                type="button"
+                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
+              >
+                인증번호 확인
+              </Button>
+            </InputContainer>
+            <StyledErrorMessage name="emailVerification" component="div" />
+            {touched.emailVerification && !errors.emailVerification && (
+              <SuccessMessage>{emailVerificationError}</SuccessMessage>
+            )}
 
           <Button
             type="submit"

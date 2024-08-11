@@ -1,0 +1,27 @@
+
+```
+naver_ocr
+├─ .env
+├─ app
+│  ├─ cars_cleaned.sql
+│  ├─ crud.py
+│  ├─ database.py
+│  ├─ main.py
+│  ├─ models.py
+│  ├─ schemas.py
+│  ├─ __init__.py
+│  └─ __pycache__
+│     ├─ crud.cpython-312.pyc
+│     ├─ database.cpython-312.pyc
+│     ├─ main.cpython-312.pyc
+│     ├─ models.cpython-312.pyc
+│     └─ __init__.cpython-312.pyc
+├─ cars.db
+├─ img
+│  └─ 5.jpg
+├─ requirements.txt
+├─ sql_app.db
+└─ __pycache__
+   └─ main.cpython-312.pyc
+
+```

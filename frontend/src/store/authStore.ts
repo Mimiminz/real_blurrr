@@ -7,7 +7,6 @@ interface User {
   nickname: string;
   carTitle: string;
   isAuth: boolean;
-  
 }
 
 interface AuthState {
@@ -30,11 +29,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isLoggedIn: false,
       setAccessToken: (token) => {
-        if (token !== null) {
-          set({ accessToken: token, isLoggedIn: true });
-        } else {
-          set({ accessToken: null, isLoggedIn: false });
-        }
+        set({ accessToken: token, isLoggedIn: token !== null });
       },
       setRefreshToken: (token) => set({ refreshToken: token }),
       setUser: (user) => set({ user }),

@@ -8,7 +8,7 @@ import { submitImageForOCR } from '@/api/carcertification'
 const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [ocrResults, setOcrResults] = useState<any[]>([]);
+  const [ocrResults, setOcrResults] = useState<{ vehicle_model: string | null, preprocessed_image: string | null }>({ vehicle_model: null, preprocessed_image: null });
   const [preprocessedImage, setPreprocessedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
@@ -68,16 +68,20 @@ const CarCertificationForm = () => {
 
     try {
         const result = await submitImageForOCR(imageSrc);
+        console.log(result);
         if (result && result.extracted_texts) {
-            const fourteenthText = result.extracted_texts[14] || null;
-            setOcrResults(fourteenthText ? [fourteenthText] : []);
-            setPreprocessedImage(result.preprocessed_image);
+          setOcrResults({
+            vehicle_model: result.vehicleModel || null, 
+          preprocessed_image: result.preprocessed_image || null
+          });
+
+
         } else {
-            console.error("OCR 결과가 없습니다:", result);
+          console.error("OCR 결과가 없습니다:", result);
         }
-    } catch (error) {
+      } catch (error) {
         console.error("Error submitting image:", error);
-    }
+      }
 };
 
   return (
@@ -112,19 +116,16 @@ const CarCertificationForm = () => {
         onChange={handleImageUpload}
       />
        <Button onClick={handleSubmit}>제출</Button>
-       {preprocessedImage && (
+       {ocrResults.preprocessed_image && (
         <ResultsContainer>
-          <Image src={preprocessedImage} alt="전처리된 이미지" />
+          <Image src={ocrResults.preprocessed_image} alt="전처리된 이미지" />
         </ResultsContainer>
       )}
-      {ocrResults.length > 0 && (
+      {ocrResults.vehicle_model && (
         <ResultsContainer>
-          {ocrResults.map((result, index) => (
-            <Div key={index}>
-              차량 브랜드 : {}
-              차량 모델 : {result.text}
-            </Div>
-          ))}
+          <Div>
+            차량 모델 : {ocrResults.vehicle_model}
+          </Div>
         </ResultsContainer>
       )}
       <ButtonContainer>
@@ -235,7 +236,8 @@ const ResultsContainer = styled.div`
 `;
 
 const Div = styled.div`
-  display: flex;
+  display: block;
   font-weight: 400;
-
-`
+  font-size: 1em; 
+  color: #000; 
+`;
