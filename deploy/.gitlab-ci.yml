@@ -3,8 +3,8 @@ image: ubuntu:22.04
 include:
     - local: '/deploy/server-dev.yml'
     - local: '/deploy/client-dev.yml'
-    - local: '/deploy/server-prod.yml'
-    - local: '/deploy/client-prod.yml'
+    # - local: '/deploy/server-prod.yml'
+    # - local: '/deploy/client-prod.yml'
 
 stages:
     - frontend-build
