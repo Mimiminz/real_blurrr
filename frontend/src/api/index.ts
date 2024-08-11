@@ -88,7 +88,7 @@ export const checkNicknameAvailability = async (nickname: string): Promise<boole
 // 이메일 인증번호 전송
 export const requestEmailVerificationCode = async (
   email: string,
-  type: 'password_change' | 'signin') => {
+  type: 'password_change' | 'signup') => {
   try {
     const response = await api.get(`/v1/auth/email/code/${email}`, {
       params: {

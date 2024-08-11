@@ -54,7 +54,7 @@ const MypageTabBox = (): JSX.Element => {
     <Container>
       <Tabs>
         <UserContainer>
-          <UserImage src = {user ? user.profileUrl : "" }></UserImage>
+          <UserImage src = {user ? user.profileUrl : "" }/>
           <UserName>{user ? user.nickname: ""}</UserName>
           <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
         </UserContainer>
@@ -62,6 +62,7 @@ const MypageTabBox = (): JSX.Element => {
           <Tab
             key={tab.id}
             active={selectedTab === tab.id}
+            isProfileTab={tab.id === 'profile'}
             onClick={() => setSelectedTab(tab.id as TabId)}
           >
             {tab.label}
@@ -120,11 +121,12 @@ const UserName = styled.div`
   margin-bottom: 10px;
 `
 
-const Tab = styled.div<{ active: boolean }>`
+const Tab = styled.div<{ active: boolean; isProfileTab: boolean }>`
   padding: 16px;
   cursor: pointer;
-  background-color: ${(props) => (props.active ? '#F9803A' : 'transparent')};
-  font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
+  background-color: ${(props) =>
+    props.isProfileTab || props.active ? '#F9803A' : 'transparent'};
+  font-weight: ${(props) => (props.isProfileTab || props.active ? 'bold' : 'normal')};
   border-radius: 0 8px 8px 0;
   &:hover {
     background-color: #efefef;

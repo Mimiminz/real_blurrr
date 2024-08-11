@@ -54,7 +54,7 @@ const SignupForm = () => {
       try {
         const isAvailable = await checkNicknameAvailability(nickname);
         setIsNicknameAvailable(isAvailable);
-        setNicknameError(isAvailable ? '' : '이미 사용 중인 닉네임입니다.');
+        setNicknameError(isAvailable ? '' : '중복된 닉네임이 존재합니다.');
       } catch (error) {
         setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
       }
@@ -66,18 +66,19 @@ const SignupForm = () => {
 
   const handleSendVerification = async (email: string) => {
     try {
-      await requestEmailVerificationCode(email,'signin');
+      await requestEmailVerificationCode(email,'signup');
       alert('인증번호가 전송되었습니다.');
       setTimer(300);
       setIsTimerActive(true);
-    } catch (error) {
-      alert('인증번호 전송 중 오류가 발생했습니다.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.body?.detail || '인증번호 전송 중 오류가 발생했습니다.';
+      alert(errorMessage);
     }
   };
 
   const handleVerifyEmailCode = async (email: string, code: string) => {
     try {
-      const response = await verifyEmailCode(email, code,'signin');
+      const response = await verifyEmailCode(email, code,'signup');
       if (response === true) {
         setEmailVerified(true);
         setEmailVerificationError('인증번호가 확인되었습니다.');
@@ -113,14 +114,16 @@ const SignupForm = () => {
     try {
       const response = await signup(values.email, values.nickname, values.password, values.passwordCheck);
 
-      if (response.data === true) {
+      if (response) {
         alert('회원가입이 완료되었습니다.');
+        router.push("/");
       } else {
         alert('회원가입에 실패했습니다.');
       }
 
-    } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.body?.detail || '회원가입 중 오류가 발생했습니다.';
+      alert(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -215,19 +218,19 @@ const SignupForm = () => {
             )}
 
             <StyledField
-              name="nickname"
-              type="text"
-              placeholder="닉네임 입력"
-              className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setFieldValue('nickname', value);
-                debouncedCheckNickname(value);
-              }}
+                name="nickname"
+                type="text"
+                placeholder="닉네임 입력"
+                className={touched.nickname ? (errors.nickname ? 'error' : (isNicknameAvailable ? 'valid' : '')) : ''}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  setFieldValue('nickname', value);
+                  debouncedCheckNickname(value);
+                }}
             />
   
             <StyledErrorMessage name="nickname" component="div" />
-            {nicknameError && <SuccessMessage>{nicknameError}</SuccessMessage>}
+            {nicknameError && <NicknameErrorMessage>{nicknameError}</NicknameErrorMessage>}
 
             <StyledField
               name="password"
@@ -414,7 +417,11 @@ const PasswordFeedback = styled.div<PasswordFeedbackProps>`
   margin-bottom: 1em;
 `;
 
-
+const NicknameErrorMessage = styled.div`
+  color: #f44336; 
+  margin-bottom: 1em;
+  font-size: 0.8em;
+`;
 
 const SuccessMessage = styled.div`
   color: #4caf50;

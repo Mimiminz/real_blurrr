@@ -15,8 +15,8 @@ interface FormValues {
 
 const validationSchema = Yup.object({
   nickname: Yup.string()
-  .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
-  .required('닉네임은 필수 입력 항목입니다.'),
+    .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
+    .required('닉네임은 필수 입력 항목입니다.'),
 });
 
 const Profile = (): JSX.Element => {
@@ -33,11 +33,11 @@ const Profile = (): JSX.Element => {
     nickname: user ? user.nickname : '',
     profileImage: null
   };
-  
+
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      console.log('Selected file:', file);
+
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
@@ -45,10 +45,11 @@ const Profile = (): JSX.Element => {
         }
       };
       reader.readAsDataURL(file);
-      setFieldValue('profileImage', file);
-      
+      setFieldValue('profileImage', file); 
     } else {
       console.log('No file selected');
+      setProfileImage(user?.profileUrl || '');
+      setFieldValue('profileImage', null);
     }
   };
 
@@ -68,26 +69,23 @@ const Profile = (): JSX.Element => {
   }, 500);
 
   const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
-    console.log('Form values:', values);
     setSubmitting(true);
     try {
-      const imgChange = !!values.profileImage;
       let profileUrl = '';
-  
+      let imgChange = false;
+
       if (values.profileImage) {
-        // 서버에 프로필 업데이트 요청
+        imgChange = true;
         const response = await updateProfile(values.profileImage.name, values.nickname, imgChange);
         profileUrl = response.profileUrl;
-  
-        // S3에 이미지 업로드
+
         await uploadImageToS3(profileUrl, values.profileImage);
       } else {
-        // 이미지 변경이 없는 경우
+        imgChange = false;
         const response = await updateProfile('', values.nickname, imgChange);
         profileUrl = user?.profileUrl || '';
       }
-  
-      // Zustand 상태 업데이트
+
       setUser({
         ...user!,
         nickname: values.nickname,
@@ -103,32 +101,6 @@ const Profile = (): JSX.Element => {
   return (
     <Container>
       <Title>프로필 정보</Title>
-      <UserContainer>
-      <ImageContainer>
-          <UserImage src={profileImage} alt='User Profile Image' />
-          <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ setFieldValue }) => (
-              <>
-                <ImageUploadInput 
-                  id='imageUpload' 
-                  type='file' 
-                  accept='image/*' 
-                  onChange={(e) => handleImageChange(e, setFieldValue)} 
-                />
-              </>
-            )}
-          </Formik>
-        </ImageContainer>
-        <SubUserContainer>
-          <UserName>{user ? user.nickname : ""}</UserName>
-          <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
-        </SubUserContainer>
-      </UserContainer>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -136,6 +108,23 @@ const Profile = (): JSX.Element => {
       >
         {({ errors, touched, setFieldValue }) => (
           <StyledForm>
+            <UserContainer>
+              <ImageContainer>
+                <UserImage src={profileImage} alt='User Profile Image' />
+                <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
+                <ImageUploadInput
+                  id='imageUpload'
+                  type='file'
+                  accept='image/*'
+                  onChange={(e) => handleImageChange(e, setFieldValue)}
+                />
+              </ImageContainer>
+              <SubUserContainer>
+                <UserName>{user ? user.nickname : ""}</UserName>
+                <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
+              </SubUserContainer>
+            </UserContainer>
+
             <InputContainer>
               <StyledField
                 name="email"
@@ -160,7 +149,7 @@ const Profile = (): JSX.Element => {
                 }}
               />
               <StyledErrorMessage name="nickname" component="div" />
-              {nicknameError && <SuccessMessage>{nicknameError}</SuccessMessage>}
+              {nicknameError && <FailMessage>{nicknameError}</FailMessage>}
             </InputContainer>
 
             <Button type="submit">저장</Button>
@@ -236,7 +225,6 @@ const UserCarName = styled.div`
   font-size: 15px;
   font-weight: bold;
   color: #969696;
-
 `;
 
 const UserName = styled.div`
@@ -286,17 +274,18 @@ const StyledField = styled(Field)`
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  font-size: 0.875em;
+  font-size: 0.8em;
   height: 24px;
   margin-bottom: 0.5em;
   text-align: left;
 `;
 
-const SuccessMessage = styled.div`
-  color: green;
+const FailMessage = styled.div`
+  display: flex;
+  color: red;
   font-size: 0.8em;
+  width: 100%;
   height: 24px;
-  margin-bottom: 0.5em;
   text-align: left;
 `;
 
