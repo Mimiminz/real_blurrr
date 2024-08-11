@@ -3,30 +3,36 @@ import styled from "styled-components";
 import dummy from "@/db/mainPageData.json";
 import { FaRegHeart } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import { TodayCarItem } from "@/types/mainPageTypes";
 
 const topCar = dummy.topCar;
 
-const TopCarCard: React.FC = () => {
+interface TopCarCardProps {
+  todayCar: TodayCarItem | null;
+}
+
+const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
   const router = useRouter();
-  const channelId = "aff4d655-9a8f-49c6-ab80-6e9270d5691a";
 
   const handleClick = () => {
-    router.push(`/channels/${channelId}/${topCar.id}`);
+    router.push(`/channels/boast/${todayCar.id}`);
   };
+  if (!todayCar) {
+    return <div>올라온 게시글이 없습니다</div>;
+  }
 
   return (
     <CardContainer onClick={handleClick}>
       <ImageContainer>
-        <Image src={topCar.image} alt="Top Car" />
+        <Image src={todayCar.thumbnail} alt="Top Car" />
         <LikeContainer>
           <FaRegHeart />
-          <LikeCount>{topCar.views}</LikeCount>
+          <LikeCount>{todayCar.viewCount}</LikeCount>
         </LikeContainer>
       </ImageContainer>
       <InfoContainer>
-        <Owner>{topCar.name}</Owner>
-        {/* <Description>{topCar.description}</Description> */}
-        <Description>GV70</Description>
+        <Owner>{todayCar.member.nickname}</Owner>
+        <Description>ㆍ{todayCar.member.carTitle}</Description>
       </InfoContainer>
     </CardContainer>
   );
@@ -97,7 +103,7 @@ const Owner = styled.p`
 const Description = styled.p`
   font-size: 11.5px;
   color: ${({ theme }) => theme.colors.subDiscription};
-  margin: 0 4px 4px 8px;
+  margin: 0 0 4px 8px;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;

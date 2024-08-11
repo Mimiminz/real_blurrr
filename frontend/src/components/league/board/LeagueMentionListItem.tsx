@@ -22,7 +22,7 @@ function LeagueMentionListItem({
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>{writerCar}</UserTags>
+          <UserTags>ㆍ{writerCar}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>

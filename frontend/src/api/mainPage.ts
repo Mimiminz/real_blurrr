@@ -5,7 +5,7 @@ import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
 export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
   try {
     const response = await api.get(`/v1/hot`);
-    if (!response.data.data) {
+    if (response.status === 204) {
       return [];
     }
     return response.data.data;
@@ -17,7 +17,8 @@ export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
 export const fetchTodayCar = async (): Promise<TodayCarItem> => {
   try {
     const response = await api.get(`/v1/today/mycar`);
-    return response.data.data.myCar;
+    console.log(response.data);
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;
