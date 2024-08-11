@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EnterPassword from '@/components/mypage/EnterPassword';
 import Profile from '@/components/mypage/Profile';
@@ -22,7 +22,14 @@ type TabId = 'enterPassword' | 'profile' | 'changePassword' |'myHeartList' | 'my
 
 const MypageTabBox = (): JSX.Element => {
   const [selectedTab, setSelectedTab] = useState<TabId>('enterPassword');
+  const [profileImage, setProfileImage] = useState<string>('');
   const user = useAuthStore(state => state.user);
+
+  useEffect(() => {
+    if (user) {
+      setProfileImage(user.profileUrl || '');
+    }
+  }, [user]);
 
   const renderContent = (): JSX.Element => {
     switch (selectedTab) {
@@ -49,7 +56,7 @@ const MypageTabBox = (): JSX.Element => {
         <UserContainer>
           <UserImage src = {user ? user.profileUrl : "" }></UserImage>
           <UserName>{user ? user.nickname: ""}</UserName>
-          <UserCarName>{user? user.carTitle: "차량 미인증"}</UserCarName>
+          <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
         </UserContainer>
         {tabs.map((tab) => (
           <Tab
@@ -104,20 +111,20 @@ const UserImage = styled.img`
 const UserCarName = styled.div`
   font-size: 15px;
   font-weight: bold;
-  padding:5px;
+  color: #969696;
 `
 
 const UserName = styled.div`
-  font-size: 15px;
+  font-size: 20px;
   font-weight: bold;
+  margin-bottom: 10px;
 `
 
 const Tab = styled.div<{ active: boolean }>`
   padding: 16px;
   cursor: pointer;
-  background-color: ${(props) => (props.active ? '#FFB55E' : 'transparent')};
+  background-color: ${(props) => (props.active ? '#F9803A' : 'transparent')};
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  border-left: ${(props) => (props.active ? '4px solid #000000' : 'none')};
   border-radius: 0 8px 8px 0;
   &:hover {
     background-color: #efefef;

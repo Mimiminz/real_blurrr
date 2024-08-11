@@ -13,6 +13,7 @@ function MyHeartListItem({
   createdAt,
   likeCount,
   commentCount,
+  viewCount
 }: LeagueBoardListItemProps) {
   return (
     <ArticleDetail>

@@ -39,6 +39,7 @@ export const getMyHeartLeagueList = async (accessToken: string, pageNumber = 0, 
             }
         });
         return response.data.data.boards;
+        
     } catch (error) {
         console.error('API 호출 오류:', error);
         throw new Error('Failed to fetch league boards');
@@ -88,4 +89,22 @@ export const getMyPostChannelList = async (accessToken: string, pageNumber = 0, 
         console.error('API 호출 오류:', error);
         throw new Error('Failed to fetch channel boards');
     }
+};
+
+//프로필 수정
+export const updateProfile = async (fileName: string, nickname: string, imgChange: boolean) => {
+    const response = await api.put('/v1/members', {
+      fileName,
+      nickname,
+      imgChange,
+    });
+    return response.data;
+  };
+
+export const uploadImageToS3 = async (profileUrl: string, file: File) => {
+await api.put(profileUrl, file, {
+    headers: {
+    'Content-Type': file.type,
+    },
+});
 };

@@ -70,7 +70,7 @@ const MyHeartList = () => {
             createdAt={item.createdAt}
             likeCount={item.likeCount}
             commentCount={item.commentCount}
-          />
+            viewCount={item.viewCount}          />
         ))
         
       ) : (
@@ -91,13 +91,17 @@ export default MyHeartList;
 const TabContainer = styled.div`
   display: flex;
   margin-bottom: 1em;
+
 `;
 
 const Tab = styled.button<{ active: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-right: 1em;
   padding: 0.5em 1em;
   background-color: ${(props) => (props.active ? '#FFB55E' : 'transparent')};
-  border: ${(props) => (props.active ? '1px solid #000000' : '1px solid #ddd')};
+  border: ${(props) => (props.active ? '1px solid #ffffff' : '1px solid #ddd')};
   border-radius: 5px;
   cursor: pointer;
 

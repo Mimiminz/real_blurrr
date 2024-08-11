@@ -3,11 +3,11 @@ import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import api, { requestEmailVerificationCode, verifyEmailCode } from '../../api/index';
-import { SignupFormValues } from '@/types/authTypes';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
 import { useRouter } from "next/navigation";
 import { signup } from '@/api/signup';
+import { SignupFormValues } from '@/types/authTypes';
 
 const initialValues: SignupFormValues = {
   email: '',
@@ -66,7 +66,7 @@ const SignupForm = () => {
 
   const handleSendVerification = async (email: string) => {
     try {
-      await requestEmailVerificationCode(email);
+      await requestEmailVerificationCode(email,'signin');
       alert('인증번호가 전송되었습니다.');
       setTimer(300);
       setIsTimerActive(true);
@@ -77,10 +77,11 @@ const SignupForm = () => {
 
   const handleVerifyEmailCode = async (email: string, code: string) => {
     try {
-      const response = await verifyEmailCode(email, code);
+      const response = await verifyEmailCode(email, code,'signin');
       if (response === true) {
         setEmailVerified(true);
         setEmailVerificationError('인증번호가 확인되었습니다.');
+        setIsTimerActive(false);
       } else {
         setEmailVerified(false);
         setEmailVerificationError('인증번호가 일치하지 않습니다.');

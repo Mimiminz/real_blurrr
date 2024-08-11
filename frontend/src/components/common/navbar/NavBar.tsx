@@ -99,7 +99,7 @@ const NavBar = () => {
                   <CgProfile onClick={() => { router.push("/mypage"); setMenuOpen(false); }} />
                 </MenuItem>
               )}
-              <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+              <MenuItem onClick={() => { router.push("/"); handleLogout(); }}>로그아웃</MenuItem>
 
             </>
           ) : (
@@ -173,14 +173,17 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
+//모달창
 const ModalContent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #ffffff;
-  padding: 2em;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  max-width: 50%;
-  width: 100%;
+  width: 50%;
+  height: 60%;
   animation: ${fadeIn} 300ms ease-in-out;
 
   &.fade-out {

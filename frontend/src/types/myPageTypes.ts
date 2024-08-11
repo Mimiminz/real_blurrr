@@ -12,6 +12,7 @@ export interface Member {
     commentCount: number;
     likeCount: number;
     totalPages: number;
+    viewCount: number;
   }
   
   export interface MyHeartListResponse {
@@ -19,6 +20,7 @@ export interface Member {
   }
 
   export interface MyPostItem {
+    viewCount: number;
     id: string;
     member: Member;
     title: string;

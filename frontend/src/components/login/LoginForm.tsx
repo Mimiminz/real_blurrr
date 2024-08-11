@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import styled from "styled-components";
@@ -19,12 +19,21 @@ interface LoginFormValues {
 
 interface LoginFormProps {
   closeLoginModal: () => void;
-  
 }
 
 
 const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
   const router = useRouter();
+  const [isFindPasswordModalOpen, setIsFindPasswordModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  
+  const openFindPasswordModal = () => setIsFindPasswordModalOpen(true);
+  const closeFindPasswordModal = () => setIsFindPasswordModalOpen(false);
+
+  const openSignupModal = () => setIsSignupModalOpen(true);
+  const closeSignupModal = () => setIsSignupModalOpen(false);
+
+  
   const { setAccessToken, setRefreshToken, setUser } = useAuthStore(
     (state) => ({
       setAccessToken: state.setAccessToken,
@@ -33,7 +42,7 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
     })
   );
   const { setInitialized, setUserLeagueList } = useLeagueStore();
-
+  
   const handleSubmit = async (
     values: LoginFormValues,
     { setSubmitting }: FormikHelpers<LoginFormValues>
@@ -86,12 +95,11 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
 
   return (
     <Container>
+      {/* <Title>로그인</Title> */}
       <Image
               src="/images/logo/logo.png"
               alt="로고"
       />
-      <Div>
-      <Title>로그인</Title>
       <SubTitle>blurrr의 다양한 서비스를 이용해 보세요!</SubTitle>
       <Formik
         initialValues={{ email: "", password: "", rememberMe: false }}
@@ -139,32 +147,32 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
           </StyledForm>
         )}
       </Formik>
-      </Div>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap:80px;
+  height: 100%;
 
   @media (min-width: 480px) {
-    gap: 40px;
+
   }
 
   @media (min-width: 768px) {
-    gap: 80px;
+
   }
 
   @media (min-width: 1024px) {
-    gap: 80px;
+
   }
 
   @media (min-width: 1440px) {
-    gap: 100px;
+
   }
 `;
 
