@@ -188,7 +188,7 @@ public class LeagueBoardController {
         CommentListResponse response =
                 leagueCommentService.findCommentsByLeagueBoard(member.getId(), leagueId, boardId);
 
-        if (response.comments().isEmpty() || response.commentCount() == ZERO) {
+        if (Objects.isNull(response.comments()) || response.comments().isEmpty()) {
             return ResponseUtil.noContent(
                     Result.empty()
             );
