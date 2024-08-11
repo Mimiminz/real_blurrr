@@ -1,0 +1,68 @@
+backend-build:
+    stage: backend-build
+
+    script:
+        # YML 파일 가져오기
+        - ls -al backend/blur/src/main/resources
+        - echo "$APPLICATION_YML" > backend/blur/src/main/resources/application.yml
+        - echo "$APPLICATION_MAIL_YML" > backend/blur/src/main/resources/application-mail.yml
+        - echo "$APPLICATION_JWT_YML" > backend/blur/src/main/resources/application-jwt.yml
+        - echo "$APPLICATION_DEV_YML" > backend/blur/src/main/resources/application-dev.yml
+        - echo "$APPLICATION_AWS_YML" > backend/blur/src/main/resources/application-aws.yml
+        - ls -al backend/blur/src/main/resources
+
+        # 자바 17 설치
+        - echo "install java"
+        - apt-get install openjdk-17-jdk -y
+        - java -version
+
+        # JAVA_HOME 환경 변수 설정
+        - export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+        - export PATH="$JAVA_HOME/bin:$PATH"
+
+        # JAVA_HOME과 PATH 확인
+        - echo "JAVA_HOME is set to $JAVA_HOME"
+        - echo "PATH is set to $PATH"
+
+        - echo 'Build backend'
+        - cd backend/blur
+        - chmod +x ./gradlew
+        - ./gradlew clean build --refresh-dependencies --stacktrace --info -x test
+
+    artifacts:
+        paths:
+            - backend/blur/build/libs/*.jar
+        expire_in: 1 week
+
+    tags:
+        - blurrr-deploy
+
+    only:
+        - deploy/backend
+
+backend-deploy:
+    stage: backend-deploy
+
+    variables:
+        DEPLOY_PATH: '/home/ubuntu/app/backend'
+
+    script:
+        - echo "Deploying backend..."
+        - apt-get install openssh-client -y
+
+        - echo "Setting up SSH key..."
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+        - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
+        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+        - echo "Complete"
+
+    needs: ['backend-build']
+
+    tags:
+        - blurrr-deploy
+
+    only:
+        - deploy/backend
