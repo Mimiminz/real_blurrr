@@ -5,6 +5,7 @@ import static com.luckvicky.blur.domain.member.model.entity.QMember.member;
 
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
+import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import com.luckvicky.blur.global.util.DslUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -30,7 +31,8 @@ public class MyCarCustomRepositoryImpl implements MyCarCustomRepository {
                 .leftJoin(myCarBoard.member, member)
                 .where(
                         createKeywordCondition(keyword),
-                        myCarBoard.channel.eq(channel)
+                        myCarBoard.channel.eq(channel),
+                        myCarBoard.status.eq(ActivateStatus.ACTIVE)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
