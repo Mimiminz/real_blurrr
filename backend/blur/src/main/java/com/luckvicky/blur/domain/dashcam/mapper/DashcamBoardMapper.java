@@ -4,6 +4,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.MentionDto;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
+import com.luckvicky.blur.domain.dashcam.model.dto.VideoDto;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
@@ -45,8 +46,8 @@ public class DashcamBoardMapper {
     }
 
     public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, boolean isLiked) {
-        List<String> videoUrls = dashcam.getVideos().stream()
-                .map(Video::getVideoUrl)
+        List<VideoDto> videos = dashcam.getVideos().stream()
+                .map(video -> VideoDto.of(video.getVideoOrder(), video.getVideoUrl()))
                 .collect(Collectors.toList());
 
 
@@ -65,7 +66,7 @@ public class DashcamBoardMapper {
                 .createdAt(dashcam.getCreatedAt())
                 .voteCount(dashcam.getTotalVoteCount())
                 .voteTitle(dashcam.getVoteTitle())
-                .videoUrl(videoUrls)
+                .videos(videos)
                 .content(dashcam.getContent())
                 .mentionedLeagues(mentionedLeagues)
                 .isLiked(isLiked)
