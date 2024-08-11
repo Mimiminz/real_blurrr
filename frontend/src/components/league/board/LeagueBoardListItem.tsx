@@ -22,7 +22,7 @@ function LeagueBoardListItem({
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>GV70</UserTags>
+          <UserTags>ㆍ{writerCar}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>

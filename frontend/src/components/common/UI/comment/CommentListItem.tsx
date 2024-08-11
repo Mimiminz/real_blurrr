@@ -56,8 +56,6 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
     }
   }, [userDetail]);
 
-  console.log(boardAuthor);
-
   return (
     <Container>
       <Avatar src={avatarUrl} alt={`${userName}'s avatar`} />

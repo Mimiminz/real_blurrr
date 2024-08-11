@@ -31,6 +31,9 @@ export default function WritePage({
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showNoAuthority, setShowNoAuthority] = useState(false);
 
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+
   useEffect(() => {
     const findUserAuthority = () => {
       if (isLoggedIn) {
@@ -58,14 +61,35 @@ export default function WritePage({
   }, [leagueName, isLoggedIn, user, activeTab, setActiveTab, userLeagueList]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+
+    if (newTitle.length > 35) {
+      setTitleError("제목은 35자 이내로 작성해주세요.");
+    } else {
+      setTitleError(""); // 35자 이내면 오류 메시지 제거
+    }
+
+    setTitle(newTitle);
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !content.trim()) return; // 빈 댓글은 제출하지 않음
-    if (title.length > 35) {
-      return;
+    let hasError = false;
+
+    if (!title.trim()) {
+      setTitleError("제목을 작성해주세요.");
+      hasError = true;
+    } else if (title.length > 35) {
+      hasError = true; // 35자 제한 오류는 handleTitleChange에서 처리
     }
+
+    if (!content.trim()) {
+      setContentError("본문을 작성해주세요.");
+      hasError = true;
+    } else {
+      setContentError(""); // 유효한 경우 오류 메시지 초기화
+    }
+
+    if (hasError) return; // 에러가 있으면 제출 중지
 
     try {
       const write = await fetchBoardWrite(
@@ -106,10 +130,14 @@ export default function WritePage({
           placeholder="제목을 입력해주세요."
           value={title}
           onChange={handleTitleChange}
+          isError={!!titleError}
         />
-        <EditorContainer>
+        {titleError && <ErrorMessage>{titleError}</ErrorMessage>}
+
+        <EditorContainer isError={!!contentError}>
           <QuillEditor content={content} setContent={setContent} />
         </EditorContainer>
+        {contentError && <ErrorMessage>{contentError}</ErrorMessage>}
         <SubmitButton onClick={handleSubmit}>작성</SubmitButton>
       </Container>
       {showNoCarPopup && <NoCarPopup closePopup={closeNoCarPopup} />}
@@ -144,28 +172,38 @@ const Title = styled.h1`
   margin-bottom: 24px;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ isError: boolean }>`
   width: 100%;
   max-width: 800px;
   padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
+  margin-bottom: 8px;
+  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
   border-radius: 5px;
   box-sizing: border-box; /* 추가 */
 `;
 
-const EditorContainer = styled.div`
+const EditorContainer = styled.div<{ isError: boolean }>`
   width: 100%;
   max-width: 800px;
-  margin-bottom: 16px;
+  margin-bottom: 8px; /* 오류 메시지 추가를 위해 여백 감소 */
   box-sizing: border-box; /* 추가 */
+  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+  border-radius: 5px;
+  padding: 10px;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin: 0 0 16px; /* 여백 추가 */
+  text-align: left; /* 왼쪽 정렬 */
 `;
 
 const SubmitButton = styled.button`
   width: 10%;
   max-width: 800px;
   padding: 12px;
-  background-color: #ffa600; /* 녹색 배경으로 변경 */
+  background-color: #ffa600;
   color: white; /* 흰색 글씨 */
   border: none;
   border-radius: 5px;
@@ -173,7 +211,7 @@ const SubmitButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #ff900d; /* hover 상태 */
+    background-color: #ff900d;
   }
 `;
 

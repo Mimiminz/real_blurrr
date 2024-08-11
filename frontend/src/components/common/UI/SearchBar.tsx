@@ -78,6 +78,10 @@ const SearchContainer = styled.div`
   width: 100%;
   height: 28px;
 
+  &:focus-within {
+    border: 1.5px solid #121212;
+  }
+
   @media (min-width: 480px) {
     width: 350px;
   }
@@ -122,6 +126,10 @@ const SearchButton = styled.button`
   min-width: 50px;
   margin-top: 0;
   height: 38px;
+
+  &:hover {
+    border-color: #121212;  
+  }
 
   @media (min-width: 480px) {
   }
