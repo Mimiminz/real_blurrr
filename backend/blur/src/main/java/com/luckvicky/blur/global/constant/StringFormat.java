@@ -38,6 +38,11 @@ public class StringFormat {
 
     public static final String REDISSON_ADDRESS = "redis://localhost:6379";
 
+    public static final String THUMBNAIL_BUCKET = "blurrr-thumbnail-img-bucket";
+    public static final String VIDEO_BUCKET = "blurrr-img-bucket";
+    public static final String THUMBNAIL = "_thumbnail";
+    public static final String THUMBNAIL_EXTENSION = ".jpg";
+
     // Utility 관련 URI
     public static final String[] UTILITY_URI = {
             "/v3/api-docs/**",

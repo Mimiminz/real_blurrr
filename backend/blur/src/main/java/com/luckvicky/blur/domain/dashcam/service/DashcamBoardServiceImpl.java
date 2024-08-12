@@ -12,6 +12,7 @@ import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 import com.luckvicky.blur.domain.comment.model.entity.Comment;
 import com.luckvicky.blur.domain.comment.model.entity.CommentType;
 import com.luckvicky.blur.domain.comment.repository.CommentRepository;
+import com.luckvicky.blur.domain.dashcam.exception.FailToCreateThumbnail;
 import com.luckvicky.blur.domain.dashcam.exception.NotFoundDashcamException;
 import com.luckvicky.blur.domain.dashcam.mapper.DashcamBoardMapper;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
@@ -50,6 +51,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.luckvicky.blur.global.constant.Number.DASHCAM_BOARD_PAGE_SIZE;
+import static com.luckvicky.blur.global.constant.StringFormat.THUMBNAIL;
+import static com.luckvicky.blur.global.constant.StringFormat.THUMBNAIL_BUCKET;
+import static com.luckvicky.blur.global.constant.StringFormat.THUMBNAIL_EXTENSION;
+import static com.luckvicky.blur.global.constant.StringFormat.VIDEO_BUCKET;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +87,7 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
         if (!request.videos().isEmpty()) {
             dashcam.setVideos(createVideo(request.videos(), dashcam));
+            dashcam.setThumbnail(convertToThumbnailUrl(request.videos().get(0).videoUrl()));
         }
 
         List<League> mentionedLeagues = leagueRepository.findAllByNameIn(request.mentionedLeagueNames());
@@ -100,6 +106,19 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
 
         dashcamRepository.save(dashcam);
         return DashcamBoardCreateResponse.of(dashcam.getId());
+
+    }
+
+    private String convertToThumbnailUrl(String videoUrl) {
+
+        String thumbnailUrl = videoUrl.replace(VIDEO_BUCKET, THUMBNAIL_BUCKET);
+        int extensionIndex = thumbnailUrl.lastIndexOf(".");
+
+        if (extensionIndex == -1) {
+            throw new FailToCreateThumbnail();
+        }
+
+        return thumbnailUrl.substring(0, extensionIndex) + THUMBNAIL + THUMBNAIL_EXTENSION;
 
     }
 
