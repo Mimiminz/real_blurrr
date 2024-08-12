@@ -1,77 +1,166 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { DashCamContentData } from '@/types/channelType';
+import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
+import { useAuthStore } from "@/store/authStore";
+import { DashCamDetail } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
+import { formatPostDate } from "@/utils/formatPostDate";
+import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
 
-const DashCamContent: React.FC<DashCamContentData> = ({
-   id, member, title, createdAt, videoUrl, content, mentionedLeagues
+const DashCamContent: React.FC<DashCamDetail> = ({
+  id,
+  member,
+  title,
+  createdAt,
+  videos,
+  content,
+  mentionedLeagues,
+  viewCount,
+  likeCount,
+  liked,
 }) => {
-   const [isLiked, setIsLiked] = useState(false);
+  const { isLoggedIn, user } = useAuthStore();
 
-   const toggleLike = () => {
-      setIsLiked(!isLiked);
-   };
+  const [isLiked, setIsLiked] = useState(liked ?? false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isSliding, setIsSliding] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
+  const [like, setLike] = useState(likeCount);
+  const [isLoading, setIsLoading] = useState(false);
 
-   const formatPostDate = (createdAt: string) => {
-      const postDate = new Date(createdAt);
-      const today = new Date();
+  const toggleLike = async () => {
+    if (isLoading) return;
 
-      if (postDate.toDateString() === today.toDateString()) {
-         return postDate.toLocaleTimeString([], {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-         });
+    setIsLoading(true);
+    try {
+      if (isLiked) {
+        const likeData = await fetchChannelLikeDelete(id);
+        setLike(likeData.likeCount);
+        setIsLiked(likeData.isLike);
       } else {
-         return postDate.toISOString().split("T")[0].replace(/-/g, ".");
+        const likeData = await fetchChannelLike(id);
+        setLike(likeData.likeCount);
+        setIsLiked(likeData.isLike);
       }
-   };
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-   return (
-      <Container>
-         <Title>
-            <h3>{title}</h3>
-         </Title>
-         <Header>
-            <User>
-               <Avatar src={member.profileUrl} alt={`${member.nickname}'s avatar`} />
-               <UserInfo>
-                  <Username>{member.nickname}</Username>
-                  <CarInfo>{!member.carTitle ? "뚜벅이" : member.carTitle}</CarInfo>
-               </UserInfo>
-            </User>
-            <TimeSection>
-               <Icon>
-                  <MdAccessTime />
-               </Icon>
-               <FormatDate>{formatPostDate(createdAt)}</FormatDate>
-            </TimeSection>
-         </Header>
-         <Body>
-            <Tags>
-               {mentionedLeagues.map((league, index) => (
-                  <Tag key={index}>@ {league.name}</Tag>
-               ))}
-            </Tags>
-            <VideoContainer>
-               {videoUrl.map((url, index) => (
-                  <VideoWrapper key={index}>
-                     <video controls autoPlay loop>
-                        <source src={url} type="video/mp4" />
-                     </video>
-                  </VideoWrapper>
-               ))}
-            </VideoContainer>
-            <Content dangerouslySetInnerHTML={{ __html: content }} />
-            <HeartButton onClick={toggleLike}>
-               {isLiked ? <FaHeart /> : <FaRegHeart />}
-            </HeartButton>
-         </Body>
-      </Container>
-   );
+  const changeVideo = (newIndex: number, direction: 'next' | 'prev') => {
+    setIsSliding(true);
+    setSlideDirection(direction);
+    setTimeout(() => {
+      setCurrentIndex(newIndex);
+      setIsSliding(false);
+    }, 300); // 300ms 동안의 슬라이드 효과
+  };
+
+  const nextVideo = () => {
+    if (currentIndex < videos.length - 1) {
+      changeVideo(currentIndex + 1, 'next');
+    }
+  };
+
+  const prevVideo = () => {
+    if (currentIndex > 0) {
+      changeVideo(currentIndex - 1, 'prev');
+    }
+  };
+
+  return (
+    <Container>
+      <Title>{title}</Title>
+      <Header>
+        <User>
+          <Avatar src={member.profileUrl} alt={`${member.nickname}'s avatar`} />
+          <UserInfo>
+            <Username>{member.nickname}</Username>
+            <CarInfo>{member.carTitle || '뚜벅이'}</CarInfo>
+          </UserInfo>
+        </User>
+        <TimeSection>
+          <Icon>
+            <MdAccessTime />
+          </Icon>
+          <FormatDate>{formatPostDate(createdAt)}</FormatDate>
+        </TimeSection>
+      </Header>
+      <Body>
+        {mentionedLeagues.length > 0 && (
+          <Tags>
+            {mentionedLeagues.map((league, index) => (
+              <Tag key={index}>@ {league.name}</Tag>
+            ))}
+          </Tags>
+        )}
+        {videos && videos.length > 0 && (
+          <VideoSliderContainer>
+            <ArrowButton onClick={prevVideo} disabled={currentIndex === 0}>
+              <FaArrowLeft />
+            </ArrowButton>
+            <VideoWrapper isSliding={isSliding} direction={slideDirection}>
+              <video controls autoPlay loop>
+                <source src={videos[currentIndex].videoUrl} type="video/mp4" />
+              </video>
+            </VideoWrapper>
+            <ArrowButton onClick={nextVideo} disabled={currentIndex === videos.length - 1}>
+              <FaArrowRight />
+            </ArrowButton>
+          </VideoSliderContainer>
+        )}
+        <Content dangerouslySetInnerHTML={{ __html: content }} />
+        {isLoggedIn && (
+          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </HeartButton>
+        )}
+      </Body>
+    </Container>
+  );
 };
 
+
+const slideInFromRight = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideInFromLeft = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOutToLeft = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const slideOutToRight = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+`;
+
+// 스타일 컴포넌트 정의
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
@@ -85,20 +174,21 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
   margin-top: 10px;
   margin-bottom: 16px;
-  padding : 5px 28px;
+  padding: 5px 28px;
 `;
 
-const Title = styled.div`
-   padding : 0px 28px;
-   border-bottom: 1px solid #e0e0e0;
-`
+const Title = styled.h3`
+  padding: 13px 28px;
+  border-bottom: 1px solid #e0e0e0;
+  margin: 0;
+`;
 
 const Body = styled.div`
-   padding : 0px 28px;
-`
+  padding: 0 28px;
+`;
 
 const User = styled.div`
   display: flex;
@@ -145,19 +235,42 @@ const Tag = styled.span`
   font-size: 12px;
 `;
 
-const VideoContainer = styled.div`
+const VideoSliderContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
 `;
 
-const VideoWrapper = styled.div`
+const VideoWrapper = styled.div<{ isSliding: boolean; direction: 'next' | 'prev' }>`
   width: 100%;
+  animation: ${({ isSliding, direction }) =>
+    isSliding
+      ? direction === 'next'
+        ? slideOutToLeft
+        : slideOutToRight
+      : direction === 'next'
+        ? slideInFromRight
+        : slideInFromLeft
+  } 300ms ease-in-out;
 
   video {
     width: 100%;
-    height: 100%;
+    height: auto;
+  }
+`;
+
+const ArrowButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #666;
+
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -179,18 +292,24 @@ const Icon = styled.span`
   vertical-align: middle;
 `;
 
-const HeartButton = styled.button`
-  margin: 30px 1px 0px auto;
+const HeartButton = styled.button<{ $isLiked: boolean }>`
+  margin: 5px 0px 2px 0px;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 22px;
-  color: #666;
+  font-size: 18px;
+  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
-    color: #666;
+    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+  }
+
+  @media (min-width: 768px) {
+    font-size: 20px;
   }
 `;
 
@@ -200,7 +319,7 @@ const TimeSection = styled.span`
   margin-left: 20px;
   margin-bottom: 8px;
   margin-top: auto;
-  color: ${({ theme }) => theme.colors.subDiscription};
+  color: #999;
   font-size: 14px;
 `;
 

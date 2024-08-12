@@ -13,10 +13,9 @@ interface CarPicture {
 
 function CarPictureCard({ id, name, description, image, views }: CarPicture) {
   const router = useRouter();
-  const channelId = "0f0a73c8-2b8c-42dc-b380-9fa1f5e8c26b";
 
   const handleClick = () => {
-    router.push(`channels/${channelId}/${id}`);
+    router.push(`/channels/${process.env.NEXT_PUBLIC_BOAST_ID}/${id}`);
   };
   return (
     <Container onClick={handleClick}>
@@ -42,8 +41,9 @@ function CarPictureCard({ id, name, description, image, views }: CarPicture) {
 export default CarPictureCard;
 
 const Container = styled.div`
-  width: 260px;
-  height: 260px;
+  width: 90%;
+  max-width: 250px; // Adjust this as needed to fit your design
+  height: auto;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

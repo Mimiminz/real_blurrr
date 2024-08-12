@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import MyHeartListItem from './MyHeartListItem';
-import { MyHeartItem } from '@/types/myPageTypes';
 import { useAuthStore } from '@/store/authStore';
 import { getMyHeartChannelList, getMyHeartLeagueList } from '@/api/mypage';
+import ChannelBoardListItem from '../channel/board/ChannelBoardListItem'
+import LeagueBoardListItem from '../league/board/LeagueBoardListItem'
+import { MyHeartItem } from '@/types/myPageTypes';
+import { Mentioned, Posts } from '@/types/channelType'; // Posts 타입 import
 
 type Tab = 'league' | 'channel';
 
@@ -12,7 +14,8 @@ const MyHeartList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [pageNumber, setPageNumber] = useState<number>(0);
-  const [selectedTab, setSelectedTab] = useState<string>('league');
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<Tab>('league');
   const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
@@ -24,13 +27,16 @@ const MyHeartList = () => {
       }
 
       try {
-        let data: MyHeartItem[] = [];
+        let response: { data: { totalPages: number; content: MyHeartItem[] } };
+
         if (selectedTab === 'league') {
-          data = await getMyHeartLeagueList(accessToken, pageNumber);
-        } else if (selectedTab === 'channel') {
-          data = await getMyHeartChannelList(accessToken, pageNumber);
+          response = await getMyHeartLeagueList(accessToken, pageNumber);
+        } else {
+          response = await getMyHeartChannelList(accessToken, pageNumber);
         }
-        setHeartBoards(data || []);
+
+        setHeartBoards(response.data.content || []);
+        setTotalPages(response.data.totalPages);
       } catch (err) {
         setError('목록을 불러오는 데 실패했습니다.');
       } finally {
@@ -39,10 +45,12 @@ const MyHeartList = () => {
     };
 
     fetchHeartBoards();
-  }, [accessToken, pageNumber]);
+  }, [accessToken, pageNumber, selectedTab]);
 
   const handlePageChange = (newPageNumber: number) => {
-    setPageNumber(newPageNumber);
+    if (newPageNumber >= 0 && newPageNumber < totalPages) {
+      setPageNumber(newPageNumber);
+    }
   };
 
   if (loading) {
@@ -57,30 +65,56 @@ const MyHeartList = () => {
     <Container>
       <Title>내 좋아요 목록 ({heartBoards.length})</Title>
       <TabContainer>
-        <Tab active={selectedTab === 'leagues'} onClick={() => setSelectedTab('leagues')}>리그</Tab>
-        <Tab active={selectedTab === 'channels'} onClick={() => setSelectedTab('channels')}>채널</Tab>
+        <Tab active={selectedTab === 'league'} onClick={() => setSelectedTab('league')}>리그</Tab>
+        <Tab active={selectedTab === 'channel'} onClick={() => setSelectedTab('channel')}>채널</Tab>
       </TabContainer>
       {heartBoards.length > 0 ? (
-        heartBoards.map((item) => (
-          <MyHeartListItem
-            key={item.id}
-            title={item.title}
-            writer={item.member.nickname}
-            writerCar={item.member.carTitle}
-            createdAt={item.createdAt}
-            likeCount={item.likeCount}
-            commentCount={item.commentCount}
-            viewCount={item.viewCount}          />
-        ))
-        
-      ) : (
+        heartBoards.map((item) => {
+          if (selectedTab === 'league') {
+            return (
+              <LeagueBoardListItem
+                key={item.id}
+                title={item.title}
+                writer={item.member.nickname}
+                writerCar={item.member.carTitle}
+                createdAt={item.createdAt}
+                likeCount={item.likeCount}
+                commentCount={item.commentCount}
+                viewCount={item.viewCount}
+              />
+            );
+          }  else {
+            const post: Posts = {
+              id: item.id,
+              title: item.title,
+              content: item.content || '', // 채널 항목에 content가 있을 수 있습니다.
+              member: item.member,
+              createdAt: item.createdAt,
+              likeCount: item.likeCount,
+              commentCount: item.commentCount,
+              viewCount: item.viewCount,
+            };
+            const mentions: Mentioned[] = item.mentions || []; // 채널 항목에 mentions가 있을 수 있습니다.
+            return (
+              <ChannelBoardListItem
+                key={item.id}
+                post={post}
+                mentions={mentions}
+                onClick={() => { /* Handle item click */ }}
+              />
+            );
+          }
+        })
+      ): (
         <div>좋아요 목록이 없습니다.</div>
       )}
       <Pagination>
         {pageNumber > 0 && (
           <Button onClick={() => handlePageChange(pageNumber - 1)}>이전</Button>
         )}
-        <Button onClick={() => handlePageChange(pageNumber + 1)}>다음</Button>
+        {pageNumber < totalPages - 1 && (
+          <Button onClick={() => handlePageChange(pageNumber + 1)}>다음</Button>
+        )}
       </Pagination>
     </Container>
   );
@@ -91,7 +125,6 @@ export default MyHeartList;
 const TabContainer = styled.div`
   display: flex;
   margin-bottom: 1em;
-
 `;
 
 const Tab = styled.button<{ active: boolean }>`

@@ -69,33 +69,10 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public PaginatedResponse<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, int pageNumber, String criteria) {
+    public PaginatedResponse<ChannelBoardListDto> getChannelBoards(UUID channelId, String keyword, Pageable pageable) {
         Channel channel = channelRepository.getOrThrow(channelId);
 
-        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
-        Pageable pageable = PageRequest.of(
-                pageNumber, CHANNEL_BOARD_PAGE_SIZE,
-                Sort.by(Sort.Direction.DESC, sortingCriteria.getCriteria())
-        );
-
-
-        Page<ChannelBoard> channelBoardPage;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            channelBoardPage = channelBoardRepository.findAllByChannelAndStatus(
-                    channel,
-                    ActivateStatus.ACTIVE,
-                    pageable
-            );
-        } else {
-            channelBoardPage = channelBoardRepository.findAllByChannelAndStatusAndTitleContainingOrContentContaining(
-                    channel,
-                    ActivateStatus.ACTIVE,
-                    keyword,
-                    keyword,
-                    pageable
-            );
-        }
+        Page<ChannelBoard> channelBoardPage = channelBoardRepository.findAllByKeywordAndChannel(pageable, ActivateStatus.ACTIVE, keyword, channel);
 
         List<ChannelBoard> channelBoards = channelBoardPage.getContent();
 

@@ -55,7 +55,7 @@ const MyPostList = () => {
 
   return (
     <Container>
-      <Title>내 좋아요 목록 ({postBoards.length})</Title>
+      <Title>내 게시글 목록 ({postBoards.length})</Title>
       <TabContainer>
         <Tab active={selectedTab === 'leagues'} onClick={() => setSelectedTab('leagues')}>리그</Tab>
         <Tab active={selectedTab === 'channels'} onClick={() => setSelectedTab('channels')}>채널</Tab>

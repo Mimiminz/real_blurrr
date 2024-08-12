@@ -16,7 +16,6 @@ const ChannelPage: React.FC = () => {
   const [FollowingChannels, setFollowingChannels] = useState<Channels[]>([]);
   const [CreatedChannels, setCreatedChannels] = useState<Channels[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [keywords, setKeywords] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [first, setFirst] = useState(false);
   const [hasNext, setHasNext] = useState(false);
@@ -74,39 +73,19 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-  const loadChannelsByKeywords = async (newKeywords: string[]) => {
+
+  const onSearch = async (newKeyword: string) => {
     try {
-      if (newKeywords.length === 0) {
+      if (!newKeyword.trim()) {
         const ChannelData = await fetchChannels();
         setChannels(ChannelData ? ChannelData.content : []);
       } else {
-        const searchResults = await fetchSearchKeywords(newKeywords);
+        const searchResults = await fetchSearchKeywords(newKeyword, 0);
         setChannels(searchResults);
       }
     } catch (error) {
       console.error('Error fetching channels data:', error);
     }
-  };
-
-  const onSearch = async (newKeyword: string) => {
-    if (!newKeyword.trim()) {
-      return;
-    }
-
-    if (keywords.length >= 5) {
-      alert('태그는 5개까지 검색 가능합니다');
-      return;
-    }
-
-    const newKeywords = [...keywords, newKeyword];
-    setKeywords(newKeywords);
-    loadChannelsByKeywords(newKeywords);
-  };
-
-  const handleRemoveKeyword = async (keywordToRemove: string) => {
-    const newKeywords = keywords.filter(keyword => keyword !== keywordToRemove);
-    setKeywords(newKeywords);
-    loadChannelsByKeywords(newKeywords);
   };
 
   // <ButtonContainer>
@@ -137,14 +116,6 @@ const ChannelPage: React.FC = () => {
       <SearchBarContainer>
         <SearchBar onSearch={onSearch} />
       </SearchBarContainer>
-      <KeywordContainer>
-        {keywords.map((keyword, index) => (
-          <Keyword key={index}>
-            <KeywordText>{keyword}</KeywordText>
-            <RemoveKeywordButton onClick={() => handleRemoveKeyword(keyword)}>×</RemoveKeywordButton>
-          </Keyword>
-        ))}
-      </KeywordContainer>
       <PageContainer>
         {isLoading ? (
           <Loading />
@@ -199,7 +170,8 @@ const SearchBarContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  margin: 10px 0;
+  margin: 10px 0px 30px;
+  justify-content: start !important;
 `;
 
 const PageContainer = styled.div`
@@ -209,40 +181,6 @@ const PageContainer = styled.div`
   align-items: center;
 `;
 
-const KeywordContainer = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  margin-bottom: 10px;
-  overflow-x: auto; /* 가로 스크롤 추가 */
-  min-height: 50px;
-  max-height: 50px; 
-  padding: 10px;
-  box-sizing: border-box;
-`;
-
-const Keyword = styled.div`
-  padding: 5px 10px;
-  background-color: #374151;
-  border-radius: 10px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-`;
-
-const KeywordText = styled.span`
-  margin-right: 8px;
-  color: #fff;
-`;
-
-const RemoveKeywordButton = styled.button`
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #fff;
-`;
-
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -250,14 +188,17 @@ const GridContainer = styled.div`
   justify-content: center;
   margin: 0 auto;
   width: 100%;
-  @media (max-width: 480px) {
+  @media (max-width: 320px) {
     grid-template-columns: repeat(1, minmax(200px, 1fr));
   }
-  @media (min-width: 768px) {
+  @media (min-width: 480px) {
     grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(3, minmax(200px, 1fr));
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
   }
   @media (min-width: 1440px) {
     grid-template-columns: repeat(5, minmax(200px, 1fr));

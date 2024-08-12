@@ -1,5 +1,6 @@
 import { MyHeartItem, MyPostItem } from '@/types/myPageTypes';
 import api from '../api/index'
+import axios from 'axios';
   
 export const checkPassword = async (password: string, accessToken: string): Promise<boolean> => {
 try {
@@ -29,6 +30,8 @@ export const ChangeMyPassword = async (oldPassword: string, newPassword: string,
         throw new Error('Failed to check password');
     }
     };
+
+//내 좋아요 목록
 
 export const getMyHeartLeagueList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyHeartItem[]> => {
     try {
@@ -61,6 +64,9 @@ export const getMyHeartChannelList = async (accessToken: string, pageNumber = 0,
     }
 };
 
+
+//내 게시글 목록
+
 export const getMyPostLeagueList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyPostItem[]> => {
     try {
         const response = await api.get(`/v1/members/leagues/boards`, {
@@ -91,16 +97,17 @@ export const getMyPostChannelList = async (accessToken: string, pageNumber = 0, 
     }
 };
 
-//프로필 수정
+// 프로필 수정
 export const updateProfile = async (fileName: string, nickname: string, imgChange: boolean) => {
     const response = await api.put('/v1/members', {
-      fileName,
-      nickname,
-      imgChange,
+        fileName,
+        nickname,
+        imgChange,
     });
     return response.data;
-  };
+};
 
+// 이미지 S3 업로드
 export const uploadImageToS3 = async (profileUrl: string, file: File) => {
 await api.put(profileUrl, file, {
     headers: {

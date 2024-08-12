@@ -21,14 +21,18 @@ export default function ChannelDashCamDetailPage({ params }: {
    const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
    const [commentList, setCommentList] = useState<fetchComment | null>(null);
 
+   const [hasOptions, setHasOptions] = useState(true);
+
    const loadDetail = useCallback(async () => {
       try {
-         const data = await fetchDashCamDetail(dashCamDetailId); // API 호출
+         const data = await fetchDashCamDetail(dashCamDetailId);
          setDashCamDetail(data);
+
+         console.log(data);
       } catch (error) {
          console.error('Failed to load dash cam detail:', error);
       }
-   }, [dashCamDetailId]); // dashcamId를 의존성 배열에 포함
+   }, [dashCamDetailId]);
 
    const loadCommentDetail = useCallback(async () => {
       if (!isLoggedIn) return;
@@ -60,14 +64,21 @@ export default function ChannelDashCamDetailPage({ params }: {
                      member={dashCamDetail.member}
                      title={dashCamDetail.title}
                      createdAt={dashCamDetail.createdAt}
-                     videoUrl={dashCamDetail.videoUrl}
+                     videos={dashCamDetail.videos}
                      content={dashCamDetail.content}
-                     mentionedLeagues={dashCamDetail.mentionedLeagues} />
+                     mentionedLeagues={dashCamDetail.mentionedLeagues}
+                     viewCount={dashCamDetail.viewCount}
+                     commentCount={dashCamDetail.commentCount}
+                     likeCount={dashCamDetail.likeCount}
+                     voteCount={dashCamDetail.voteCount}
+                     liked={dashCamDetail.liked} />
                </LeftColumn>
                <RightColumn>
-                  <VoteSection>
-                     <Vote voteId={dashCamDetail.id} />
-                  </VoteSection>
+                  {hasOptions && (
+                     <VoteSection>
+                        <Vote voteId={dashCamDetail.id} onOptionsCheck={setHasOptions} />
+                     </VoteSection>
+                  )}
                   <CommentSection>
                      <CommentList
                         comments={commentList?.comments || []}
@@ -125,7 +136,6 @@ const CommentSection = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0px 20px 20px;
   height: 500px;
-  margin-top: 16px;
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 `;
 
@@ -135,4 +145,5 @@ const VoteSection = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
 `;

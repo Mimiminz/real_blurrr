@@ -19,7 +19,6 @@ const Boast: React.FC = () => {
    // 페이지네이션 상태
    const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
-   const [isLoading, setIsLoading] = useState(true);
 
    const boastId = process.env.NEXT_PUBLIC_BOAST_ID as string;
 
@@ -48,9 +47,11 @@ const Boast: React.FC = () => {
       setCurrentPage(page);
    };
 
+   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+
    useEffect(() => {
       const loadData = async () => {
-         setIsLoading(true);
          try {
             const data = await fetchBoast(keyword, currentPage - 1, sortCriteria);
             if (data) {
@@ -60,13 +61,19 @@ const Boast: React.FC = () => {
             }
          } catch (error) {
             console.error('Failed to load boast list data:', error);
-         } finally {
-            setIsLoading(false);
          }
       };
 
       loadData();
    }, [boastId, keyword, sortCriteria]);
+
+   useEffect(() => {
+      setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+   }, []);
+
+   if (!isMounted) {
+      return <Loading />;
+   }
 
    return (
       <>
@@ -75,9 +82,7 @@ const Boast: React.FC = () => {
             onSearch={handleSearch}
             onSortChange={handleSortChange}
          />
-         {isLoading ? (
-            <Loading />
-         ) : boasts && boasts.length === 0 ? (
+         {boasts && boasts.length === 0 ? (
             <EmptyMessage>게시글이 없습니다.<br />직접 글을 작성해보세요!</EmptyMessage>
          ) : (
             <CardGrid>

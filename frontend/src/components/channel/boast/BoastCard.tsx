@@ -1,11 +1,26 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FiEye, FiHeart } from 'react-icons/fi';
-import { Boasts } from '@/types/channelType';
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import { FiEye, FiHeart } from "react-icons/fi";
+import { Boasts } from "@/types/channelType";
 
 interface BoastCardProps {
   boast: Boasts;
 }
+
+const bounceIn = keyframes`
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+`;
 
 const Card = styled.div`
   width: 100%;
@@ -17,6 +32,14 @@ const Card = styled.div`
   margin: 10px;
   position: relative;
   aspect-ratio: 1; /* 정사각형 유지 */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  transform-origin: center; /* 변환 중심을 요소의 중앙으로 설정 */
+  will-change: transform; /* 브라우저에게 사전 렌더링 힌트 제공 */
+
+  &:hover {
+    animation: ${bounceIn} 0.5s forwards;
+  }
 `;
 
 const Thumbnail = styled.img`
@@ -56,8 +79,12 @@ const BoastCard: React.FC<BoastCardProps> = ({ boast }) => {
     <Card>
       <Thumbnail src={boast.thumbNail} alt="thumbnail" />
       <HoverOverlay>
-        <span><FiEye /> {boast.viewCnt}</span>
-        <span><FiHeart /> {boast.likeCnt}</span>
+        <span>
+          <FiEye /> {boast.viewCnt}
+        </span>
+        <span>
+          <FiHeart /> {boast.likeCnt}
+        </span>
       </HoverOverlay>
     </Card>
   );
