@@ -36,7 +36,6 @@ public class AlarmFacade {
     public AlarmFacade(SseService sseService, AlarmService alarmService, Map<AlarmType, NotificationFactory> factoryMap,
                        MemberRepository memberRepository) {
 
-        log.info("{}",factoryMap);
         this.sseService = sseService;
         this.alarmService = alarmService;
         this.factoryMap = factoryMap;
