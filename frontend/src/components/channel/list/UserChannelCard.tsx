@@ -47,6 +47,7 @@ const ImageContainer = styled.div<{ img: string }>`
 const Title = styled.h3`
   margin: 20px 0 15px;
   font-size: 17px;
+  white-space: nowrap;
 `;
 
 const IconContainer = styled.div`

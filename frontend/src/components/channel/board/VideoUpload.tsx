@@ -105,6 +105,9 @@ const VideoUploadBox = styled.div`
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
 `;
 
 const VideoFile = styled.div`

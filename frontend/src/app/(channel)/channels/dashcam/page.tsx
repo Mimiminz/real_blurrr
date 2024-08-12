@@ -113,19 +113,23 @@ const CardGrid = styled.div`
   align-items: center;
 
   @media (max-width: 480px) {
-    grid-template-columns: repeat(1, minmax(200px, 1fr));
+    grid-template-columns: repeat(1, minmax(300px, 1fr));
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
   }
 
   @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
   }
 
   @media (min-width: 1440px) {
-    grid-template-columns: repeat(4, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, minmax(300px, 1fr));
+  }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 `;
 
