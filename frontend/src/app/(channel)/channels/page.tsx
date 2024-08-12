@@ -171,7 +171,6 @@ const SearchBarContainer = styled.div`
   justify-content: flex-start;
   width: 100%;
   margin: 10px 0px 30px;
-  justify-content: start !important;
 `;
 
 const PageContainer = styled.div`

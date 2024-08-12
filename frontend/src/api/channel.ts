@@ -169,7 +169,11 @@ export const fetchTags = async ( name: string ) => {
         name,
       },
     });
-    console.log(response.data.data.leagues);
+
+    if (response.status === 204) {
+      return [];
+    }
+
     return response.data.data.content;
   } catch (error) {
     console.log(error);

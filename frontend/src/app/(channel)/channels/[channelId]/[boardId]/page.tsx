@@ -105,12 +105,15 @@ export default function ChannelBoardDetailPage({
         channelId={channelId}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <CommentContainer>
-        <WriterContainer>
+      <WriterContainer>
+        {isLoggedIn && (
           <HeartButton onClick={toggleLike} $isLiked={isLiked}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
+            좋아요
           </HeartButton>
-        </WriterContainer>
+        )}
+      </WriterContainer>
+      <CommentContainer>
         <CommentList
           comments={commentList?.comments || []}
           commentCount={commentList?.commentCount || 0}
@@ -134,28 +137,28 @@ const CommentContainer = styled.div`
 
 const WriterContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: end;
+  margin-bottom: 10px;
 `;
 
 const HeartButton = styled.button<{ $isLiked: boolean }>`
-  margin: 5px 0px 2px 0px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
-  justify-content: center;
   align-items: center;
+  padding: 8px;
+  background-color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
 
   &:hover {
-    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+    background-color: #ebebeb;
   }
 
-  @media (min-width: 768px) {
-    font-size: 20px;
+  svg {
+    margin-right: 5px;
+    font-size: 17px;
+    color: #d60606;
   }
 `;
 
