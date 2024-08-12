@@ -17,6 +17,7 @@ public class CorsConfig {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(List.of(
                         "http://localhost:3000",
+                        "https://teamblurrr.com",
                         "https://www.teamblurrr.com",
                         "https://i11a307.p.ssafy.io",
                         "http://localhost:8080"
