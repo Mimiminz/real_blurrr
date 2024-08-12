@@ -2,8 +2,10 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardSearchService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,6 +55,7 @@ public class LeagueBoardSearchController {
     })
     @GetMapping("/{leagueId}/boards/search")
     public ResponseEntity<Result<PaginatedResponse<LeagueBoardResponse>>> search(
+            @NullableAuthUser ContextMember contextMember,
             @PathVariable("leagueId") UUID leagueId,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
             @RequestParam(value = "keyword") String keyword,
@@ -61,7 +64,7 @@ public class LeagueBoardSearchController {
     ) {
 
         PaginatedResponse<LeagueBoardResponse> response = leagueBoardSearchService.search(
-                leagueId, leagueType, keyword, pageNumber, criteria
+                contextMember, leagueId, leagueType, keyword, pageNumber, criteria
         );
 
         if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {
