@@ -63,9 +63,8 @@ const Container = styled.div`
 const SearchForm = styled.form`
   width: 100%;
   display: flex;
-  gap: 10px;
   align-items: center;
-  justify-content: end;
+  justify-content: space-between;
 `;
 
 const SearchContainer = styled.div`

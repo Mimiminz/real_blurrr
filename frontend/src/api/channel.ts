@@ -64,14 +64,15 @@ export const fetchChannels = async (): Promise<ChannelInfo | null> => {
 
 // 채널 태그 검색
 export const fetchSearchKeywords = async (
-  keywords: string[]
+  keyword: string,
+  pageNumber: number,
 ): Promise<Channels[]> => {
   try {
-    const params = new URLSearchParams();
-    keywords.forEach((keyword) => params.append("keywords", keyword));
-
     const response = await api.get("/v1/channels/search", {
-      params,
+      params: {
+        keyword,
+        pageNumber, 
+      },
     });
 
     if (response.status === 204) {
@@ -79,7 +80,7 @@ export const fetchSearchKeywords = async (
     }
 
     console.log(`main channel tag search : ${response.data.data.channels}`);
-    return response.data.data.channels;
+    return response.data.data.content;
   } catch (error) {
     console.error("Error fetching channels data:", error);
     throw error;

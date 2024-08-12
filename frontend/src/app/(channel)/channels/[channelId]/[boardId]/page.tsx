@@ -73,15 +73,19 @@ export default function ChannelBoardDetailPage({
 
   const handleCommentAdded = async () => {
     try {
-      // 새로운 댓글을 가져와서 업데이트합니다.
       const fetchCommentsList = await fetchCommentList(boardId);
       if (fetchCommentsList) {
-        // 새 댓글이 추가될 때 기존 댓글 리스트에 추가합니다.
         setCommentList(fetchCommentsList);
       }
     } catch (error) {
       console.error("Failed to update comment list:", error);
     }
+  };
+
+  const decodeHtml = (html: string): string => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
   };
 
   useEffect(() => {
@@ -105,7 +109,7 @@ export default function ChannelBoardDetailPage({
         boardId={boardDetail.id}
         channelId={channelId}
       />
-      <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
+      <Content dangerouslySetInnerHTML={{ __html: decodeHtml(boardDetail.content) }} />
       <CommentContainer>
         <WriterContainer>
           <HeartButton onClick={toggleLike} $isLiked={isLiked}>

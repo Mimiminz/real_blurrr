@@ -5,10 +5,7 @@ import { Pagination, Scrollbar, Autoplay } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-
 import UserChannelCard from './UserChannelCard';
-import { useRouter } from 'next/navigation';
 
 SwiperCore.use([Scrollbar, Autoplay]);
 
