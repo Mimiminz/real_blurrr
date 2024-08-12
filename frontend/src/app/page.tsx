@@ -76,6 +76,8 @@ export default function Home() {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsBoardLoading(false); // 여기에 finally를 추가하여 로딩 상태 업데이트
       }
     };
 
@@ -112,14 +114,20 @@ export default function Home() {
     router.push("/carcertification");
   };
 
-  if (isBoardLoading && !hotBoards.length && isLeagueLoading && todayCar) {
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
     return <Loading />;
   }
 
   return (
     <PageContainer>
       <Main>
-        {isLoggedIn && (
+        {isLoggedIn !== false && (
           <UserInfoContainer>
             <UserCarInfo />
             <FollowChannelInfo followChannels={followChannels} />

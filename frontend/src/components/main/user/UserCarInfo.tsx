@@ -12,8 +12,15 @@ const UserCarInfo: React.FC = () => {
   const router = useRouter();
   const { user } = useAuthStore();
   const { userLeagueList } = useLeagueStore();
-  const [modelLeague, setModelLeague] = useState<LeagueList | undefined>();
-  const [brandLeague, setBrandLeague] = useState<LeagueList | undefined>();
+  const [profileUrl, setProfileUrl] = useState("");
+
+  useEffect(() => {
+    if (user?.profileUrl) {
+      setProfileUrl(user.profileUrl);
+    } else {
+      setProfileUrl("");
+    }
+  }, [user]);
 
   const handleUserLeagueClick = (tabName: string) => {
     router.push(`/league/${tabName}`);
@@ -23,7 +30,7 @@ const UserCarInfo: React.FC = () => {
     router.push("/carcertification");
   };
 
-  const carTitle = user?.carTitle || "";
+  const carTitle = user?.carTitle || "뚜벅이";
 
   return (
     <Container>
@@ -33,41 +40,37 @@ const UserCarInfo: React.FC = () => {
         <InfoSection>
           <UserName>{user?.nickname}</UserName>
           <CarModel className={carTitle.length > 21 ? "long-title" : ""}>
-            {user?.carTitle || "뚜벅이"}
+            {carTitle}
           </CarModel>
         </InfoSection>
       </ProfileSection>
       <LeagueSection>
-        <LeagueItem>
-          <LeagueTitle>모델 리그</LeagueTitle>
-          {userLeagueList.length > 0 ? (
-            <ClickableLeagueName
-              onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
-            >
-              <FaCar />
-              {userLeagueList[0]?.name}
-            </ClickableLeagueName>
-          ) : (
-            <NonClickableLeagueName onClick={handleCarCertification}>
-              등록하러 가기
-            </NonClickableLeagueName>
-          )}
-        </LeagueItem>
-        <LeagueItem>
-          <LeagueTitle>브랜드 리그</LeagueTitle>
-          {userLeagueList.length > 0 ? (
-            <ClickableLeagueName
-              onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
-            >
-              <MdFactory />
-              {userLeagueList[1]?.name}
-            </ClickableLeagueName>
-          ) : (
-            <NonClickableLeagueName onClick={handleCarCertification}>
-              등록하러 가기
-            </NonClickableLeagueName>
-          )}
-        </LeagueItem>
+        {userLeagueList.length > 0 ? (
+          <>
+            <LeagueItem>
+              <LeagueTitle>모델 리그</LeagueTitle>
+              <ClickableLeagueName
+                onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
+              >
+                <FaCar />
+                {userLeagueList[0]?.name}
+              </ClickableLeagueName>
+            </LeagueItem>
+            <LeagueItem>
+              <LeagueTitle>브랜드 리그</LeagueTitle>
+              <ClickableLeagueName
+                onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
+              >
+                <MdFactory />
+                {userLeagueList[1]?.name}
+              </ClickableLeagueName>
+            </LeagueItem>
+          </>
+        ) : (
+          <NonClickableLeague onClick={handleCarCertification}>
+            자동차 등록하러 가기
+          </NonClickableLeague>
+        )}
       </LeagueSection>
     </Container>
   );
@@ -170,10 +173,16 @@ const ClickableLeagueName = styled.p`
   }
 `;
 
-const NonClickableLeagueName = styled.p`
+const NonClickableLeague = styled.div`
   margin: 0;
-  color: #888;
-
+  /* background-color: #f7f8f9; */
+  border-radius: 10px;
+  border: 1px solid #1212127b;
+  height: 40px;
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center; 
   cursor: pointer;
   font-weight: bold;
   color: black;

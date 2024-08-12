@@ -10,6 +10,7 @@ import { useAuthStore } from "@/store/authStore";
 import { UserLeague, LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
+import Loading from "@/components/common/UI/Loading";
 
 // API
 import { fetchBrandLeagues, fetchUserLeagueList } from "@/api/league";
@@ -72,6 +73,16 @@ export default function LeagueMainPage() {
     isLoadUserLeagues,
     setIsLoadUserLeagues,
   ]);
+
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
+    return <Loading />;
+  }
 
   return (
     <>

@@ -19,15 +19,16 @@ const FollowChannelCard: React.FC<ChannelCardProps> = ({
 
   const router = useRouter();
 
+  const channelImg = img || "/images/logo/logo.png"
+  
+
   const handleClick = () => {
     router.push(`/channels/${id}`);
   };
 
   return (
     <CardContainer onClick={handleClick}>
-      <ChannelImage src={img} alt="Channel Profile" />
-      {/* <ChannelImage src={"/"} alt="Channel Profile" /> */}
-      {/* <ImageContainer img={img} /> */}
+      <ChannelImage src={channelImg} alt="Channel Profile" />
       <TitleContainer>
         <Title>{displayTitle}</Title>
         {title.length > 8 && <Tooltip>{title}</Tooltip>}
