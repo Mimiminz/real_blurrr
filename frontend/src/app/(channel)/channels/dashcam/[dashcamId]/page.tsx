@@ -79,7 +79,7 @@ export default function ChannelDashCamDetailPage({ params }: {
                         <Vote voteId={dashCamDetail.id} onOptionsCheck={setHasOptions} />
                      </VoteSection>
                   )}
-                  <CommentSection>
+                  <CommentSection hasOptions={hasOptions}>
                      <CommentList
                         comments={commentList?.comments || []}
                         commentCount={commentList?.commentCount || 0}
@@ -128,14 +128,14 @@ const RightColumn = styled.div`
   width: 100%;
 `;
 
-const CommentSection = styled.div`
+const CommentSection = styled.div<{ hasOptions: boolean }>`
   background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0px 20px 20px;
-  height: 500px;
+  height: ${({ hasOptions }) => (hasOptions ? '500px' : '700px')};
   overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 `;
 
