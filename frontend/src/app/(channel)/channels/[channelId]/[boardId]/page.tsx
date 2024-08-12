@@ -82,11 +82,6 @@ export default function ChannelBoardDetailPage({
     }
   };
 
-  const decodeHtml = (html: string): string => {
-    const txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-  };
 
   useEffect(() => {
     loadBoardDetail();
@@ -109,7 +104,7 @@ export default function ChannelBoardDetailPage({
         boardId={boardDetail.id}
         channelId={channelId}
       />
-      <Content dangerouslySetInnerHTML={{ __html: decodeHtml(boardDetail.content) }} />
+      <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
       <CommentContainer>
         <WriterContainer>
           <HeartButton onClick={toggleLike} $isLiked={isLiked}>
@@ -175,4 +170,5 @@ const Content = styled.div`
     font-size: 17px;
     padding: 20px 20px 50px 20px;
   }
+
 `;

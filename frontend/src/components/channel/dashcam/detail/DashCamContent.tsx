@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
@@ -7,6 +7,13 @@ import { DashCamDetail } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
 import { formatPostDate } from "@/utils/formatPostDate";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+import SwiperCore from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const DashCamContent: React.FC<DashCamDetail> = ({
   id,
@@ -71,6 +78,8 @@ const DashCamContent: React.FC<DashCamDetail> = ({
     }
   };
 
+  const swiperRef = useRef<SwiperCore>();
+
   return (
     <Container>
       <Title>{title}</Title>
@@ -97,21 +106,24 @@ const DashCamContent: React.FC<DashCamDetail> = ({
             ))}
           </Tags>
         )}
-        {videos && videos.length > 0 && (
-          <VideoSliderContainer>
-            <ArrowButton onClick={prevVideo} disabled={currentIndex === 0}>
-              <FaArrowLeft />
-            </ArrowButton>
-            <VideoWrapper isSliding={isSliding} direction={slideDirection}>
-              <video controls autoPlay loop>
-                <source src={videos[currentIndex].videoUrl} type="video/mp4" />
-              </video>
-            </VideoWrapper>
-            <ArrowButton onClick={nextVideo} disabled={currentIndex === videos.length - 1}>
-              <FaArrowRight />
-            </ArrowButton>
-          </VideoSliderContainer>
-        )}
+        <SwiperContainer>
+          <Swiper
+            onSwiper={(swiper => {
+              swiperRef.current = swiper;
+            })}
+            loop={false}
+            navigation={true}
+            modules={[Navigation]}
+          >
+            {videos.map((video) => (
+              <SwiperSlide key={video.videoOrder}>
+                <Video controls loop>
+                  <source src={video.videoUrl} type="video/mp4" />
+                </Video>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </SwiperContainer>
         <Content dangerouslySetInnerHTML={{ __html: content }} />
         {isLoggedIn && (
           <HeartButton onClick={toggleLike} $isLiked={isLiked}>
@@ -119,45 +131,19 @@ const DashCamContent: React.FC<DashCamDetail> = ({
           </HeartButton>
         )}
       </Body>
-    </Container>
+    </Container >
   );
 };
 
-
-const slideInFromRight = keyframes`
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+const SwiperContainer = styled.div`
+  width: 100%;
+  max-width: 600px; /* 원하는 크기로 제한 */
+  margin: 0 auto;
 `;
 
-const slideInFromLeft = keyframes`
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-`;
-
-const slideOutToLeft = keyframes`
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-`;
-
-const slideOutToRight = keyframes`
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
+const Video = styled.video`
+  width: 100%; /* 부모 요소의 크기에 맞춰 반응형으로 조정 */
+  height: auto;
 `;
 
 // 스타일 컴포넌트 정의
@@ -169,6 +155,8 @@ const Container = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 670px;
+  overflow-y: auto;
 `;
 
 const Header = styled.div`
@@ -233,45 +221,6 @@ const Tag = styled.span`
   padding: 4px 8px;
   margin-right: 8px;
   font-size: 12px;
-`;
-
-const VideoSliderContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-`;
-
-const VideoWrapper = styled.div<{ isSliding: boolean; direction: 'next' | 'prev' }>`
-  width: 100%;
-  animation: ${({ isSliding, direction }) =>
-    isSliding
-      ? direction === 'next'
-        ? slideOutToLeft
-        : slideOutToRight
-      : direction === 'next'
-        ? slideInFromRight
-        : slideInFromLeft
-  } 300ms ease-in-out;
-
-  video {
-    width: 100%;
-    height: auto;
-  }
-`;
-
-const ArrowButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  color: #666;
-
-  &:disabled {
-    color: #ccc;
-    cursor: not-allowed;
-  }
 `;
 
 const Content = styled.div`
