@@ -162,11 +162,15 @@ export const fetchPostWrite = async (
 };
 
 // 채널 게시글 생성 시 태그 검색 함수
-export const fetchTags = async ( keyword: string ) => {
+export const fetchTags = async ( name: string ) => {
   try {
-    const response = await api.get(`/v1/leagues/check/${keyword}`);
+    const response = await api.get(`/v1/leagues/search`, {
+      params: {
+        name,
+      },
+    });
     console.log(response.data.data.leagues);
-    return response.data.data.leagues;
+    return response.data.data.content;
   } catch (error) {
     console.log(error);
     throw error;

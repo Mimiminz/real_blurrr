@@ -21,7 +21,7 @@ interface PollOption {
 
 const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
   const router = useRouter();
-  
+
   const [voteData, setVoteData] = useState<PollOption[]>([]);
   const [question, setQuestion] = useState<string>('');
   const [hasVoted, setHasVoted] = useState<boolean>(false);
@@ -32,7 +32,9 @@ const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
 
   const loadVoteData = useCallback(async () => {
     try {
-      const data = await fetchVote(voteId); // API 호출
+      const data = await fetchVote(voteId);
+
+      console.log(data);
 
       const totalVotes = data.options.reduce((sum: number, option: Option) => sum + option.voteCount, 0);
       const transformedData: PollOption[] = data.options.map((option: Option) => ({
@@ -46,7 +48,7 @@ const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
       onOptionsCheck(data.options && data.options.length > 0);
 
       setVoteData(transformedData);
-      setQuestion('누가누가 잘못했을까요'); // 질문을 여기에 설정하세요
+      setQuestion('누가누가 잘못했을까요');
       setHasVoted(data.hasVoted);
       setSelectedOptionId(data.selectedOptionId);
     } catch (error) {
