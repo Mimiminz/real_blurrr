@@ -63,6 +63,7 @@ const SubSubTitle = styled.h4`
 
 const InfoBox = styled.div`
   margin: 10px;
+  margin-left : 10px;
   display: flex;
   flex-direction: column;
   background-color: #e7e7e7;

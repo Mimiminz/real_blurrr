@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
-import { requestEmailVerificationCode, verifyEmailCode } from '@/api';
+import { requestEmailVerificationCode, verifyEmailCode } from '../../api/index';
+import axios from 'axios';
+
 
 interface FindPasswordFormValues {
   email: string;
@@ -22,48 +24,46 @@ const validationSchema = Yup.object({
     .required('인증번호는 필수 입력 항목입니다.'),
 });
 
-const FindPasswordForm = () => {
-  const buttonColor = useState<boolean>(false);
-  const [emailVerified, setEmailVerified] = useState<boolean>(false);
-  const [emailVerificationError, setEmailVerificationError] = useState<string>('');
+const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: () => void }) => {
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
-  const [timer, setTimer] = useState<number>(0);
-  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+  const [emailVerificationError, setEmailVerificationError] = useState<string | null>(null);
+  const [buttonColor, setButtonColor] = useState<boolean>(false);
 
   const handleSendVerification = async (email: string) => {
     try {
       await requestEmailVerificationCode(email,'password_change');
-      alert('인증번호가 전송되었습니다.');
-      setTimer(300);
-      setIsTimerActive(true);
+      setEmailValid(true);
     } catch (error) {
-      alert('인증번호 전송 중 오류가 발생했습니다.');
+      setEmailValid(false);
+      alert("인증번호 전송에 실패했습니다.");
     }
   };
 
-  const handleVerifyEmailCode = async (email: string, code: string) => {
+  const handleVerifyEmailCode = async (email: string, code: string, type: 'password_change' | 'signup') => {
     try {
-      const response = await verifyEmailCode(email, code,'password_change');
-      if (response === true) {
-        setEmailVerified(true);
-        setEmailVerificationError('인증번호가 확인되었습니다.');
-        setIsTimerActive(false);
-      } else {
-        setEmailVerified(false);
-        setEmailVerificationError('인증번호가 일치하지 않습니다.');
-      }
+      await verifyEmailCode(email, code, type);
+      setEmailVerificationError("인증번호가 확인되었습니다.");
+      setButtonColor(true);
     } catch (error) {
-      setEmailVerified(false);
-      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
+      if (axios.isAxiosError(error)) {
+        // Handle API errors
+        const errorResponse = error.response?.data;
+        setEmailVerificationError(errorResponse?.message || "인증번호가 유효하지 않습니다.");
+      } else {
+        // Handle non-API errors
+        setEmailVerificationError("인증번호가 유효하지 않습니다.");
+      }
+      setButtonColor(false);
     }
   };
-
-
+  
 
   const handleSubmit = (values: FindPasswordFormValues, { setSubmitting }: FormikHelpers<FindPasswordFormValues>) => {
+    setSubmitting(true);
     setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
+      alert('비밀번호 재설정 요청이 완료되었습니다.');
       setSubmitting(false);
+      closeFindPasswordModal();
     }, 400);
   };
 
@@ -76,31 +76,31 @@ const FindPasswordForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-      {({ values, errors, touched }) => (
-        <StyledForm>
-          <InputContainer>
-            <StyledField
-              name="email"
-              type="email"
-              placeholder="이메일"
-              className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
-            />
-            <Button
-              type="button"
-              onClick={() => handleSendVerification(values.email)}
-            >
-              인증번호 전송
-            </Button>              
-          </InputContainer>
-          <StyledErrorMessage name="email" component="div" />
-          {emailValid === false && (
-            <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
-          )}
-          {touched.email && !errors.email && emailValid && (
-            <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
-          )}
+        {({ values, touched, errors }) => (
+          <StyledForm>
+            <InputContainer>
+              <StyledField
+                name="email"
+                type="email"
+                placeholder="이메일"
+                className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
+              />
+              <Button
+                type="button"
+                onClick={() => handleSendVerification(values.email)}
+              >
+                인증번호 전송
+              </Button>
+            </InputContainer>
+            <StyledErrorMessage name="email" component="div" />
+            {emailValid === false && (
+              <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
+            )}
+            {touched.email && !errors.email && emailValid && (
+              <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
+            )}
 
-          <InputContainer>
+            <InputContainer>
               <StyledField
                 name="emailVerification"
                 type="text"
@@ -109,7 +109,7 @@ const FindPasswordForm = () => {
               />
               <Button
                 type="button"
-                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
+                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification,'password_change')}
               >
                 인증번호 확인
               </Button>
@@ -119,27 +119,25 @@ const FindPasswordForm = () => {
               <SuccessMessage>{emailVerificationError}</SuccessMessage>
             )}
 
-          <Button
-            type="submit"
-            disabled={!buttonColor}
-            className={buttonColor ? 'text-green-500' : 'text-slate-200'}
-          >
-            비밀번호 변경
-          </Button>
-        </StyledForm>
-      )}
+            <Button
+              type="submit"
+              disabled={!buttonColor}
+              className={buttonColor ? 'text-green-500' : 'text-slate-200'}
+            >
+              비밀번호 변경
+            </Button>
+          </StyledForm>
+        )}
       </Formik>
     </Container>
   );
 };
 
 const Container = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 2em;
-  background: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 800px;
 `;
 
 const Title = styled.h2`
@@ -148,26 +146,32 @@ const Title = styled.h2`
 `;
 
 const SubTitle = styled.h4`
+  display: flex;
   text-align: center;
+  justify-content: center;
 `;
 
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 1em;
+  margin-bottom: 20px;
 `;
 
 const StyledField = styled(Field)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1;
-  padding: 1em;
+  padding: 0.7em;
   font-size: 1em;
-  margin-bottom: 1em;
+  margin-right: 0.5em;
   border: 2px solid;
   border-radius: 5px;
   transition: border-color 0.3s, color 0.3s;
@@ -197,14 +201,18 @@ const SuccessMessage = styled.div`
 `;
 
 const Button = styled.button`
-  padding: 0.7em;
-  margin-left: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
   font-size: 0.7em;
   color: #fff;
   background-color: #f9803a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-left: 0.5em;
+
 
   &:hover {
     background-color: #ff5e01;
