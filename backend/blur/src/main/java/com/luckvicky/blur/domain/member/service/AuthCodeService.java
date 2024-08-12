@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.member.service;
 
+import com.luckvicky.blur.domain.member.exception.InvalidEmailVerificationException;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeStrategy;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
@@ -43,7 +44,9 @@ public class AuthCodeService {
     public Boolean checkValidCode(EmailAuth emailAuth, AuthCodeType authCodeType) {
         AuthCodeStrategy strategy = authCodeStrategyMap.get(authCodeType);
 
-        strategy.validAuthCode(emailAuth.email(), emailAuth.authCode());
+        boolean isValid = strategy.validAuthCode(emailAuth.email(), emailAuth.authCode());
+
+        if (!isValid) throw new InvalidEmailVerificationException();
 
         strategy.pushAvailableEmail(emailAuth.email());
         return true;

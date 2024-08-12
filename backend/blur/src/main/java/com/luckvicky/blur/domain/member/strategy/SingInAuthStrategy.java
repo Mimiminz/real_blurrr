@@ -8,7 +8,6 @@ import com.luckvicky.blur.global.constant.StringFormat;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import org.springframework.stereotype.Component;
 
-@Component
 public class SingInAuthStrategy implements AuthCodeStrategy {
 
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
@@ -24,6 +23,7 @@ public class SingInAuthStrategy implements AuthCodeStrategy {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
+
         redisAuthCodeAdapter.saveOrUpdate(generateSaveKey(email), code, 5);
     }
 

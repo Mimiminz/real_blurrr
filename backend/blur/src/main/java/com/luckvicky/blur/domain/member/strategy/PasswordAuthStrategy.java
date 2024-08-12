@@ -8,7 +8,6 @@ import com.luckvicky.blur.global.constant.StringFormat;
 import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import org.springframework.stereotype.Component;
 
-@Component
 public class PasswordAuthStrategy implements AuthCodeStrategy {
     private final RedisAuthCodeAdapter redisAuthCodeAdapter;
     private final MemberRepository memberRepository;
