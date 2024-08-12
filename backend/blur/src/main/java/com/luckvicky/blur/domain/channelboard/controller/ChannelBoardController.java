@@ -1,13 +1,15 @@
 package com.luckvicky.blur.domain.channelboard.controller;
 
+import static com.luckvicky.blur.global.constant.Number.CHANNEL_BOARD_PAGE_SIZE;
+
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
-import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardDetailDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.ChannelBoardListDto;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCreateRequest;
 import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardDetailResponse;
-import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardListResponse;
 import com.luckvicky.blur.domain.channelboard.service.ChannelBoardService;
+import com.luckvicky.blur.global.annotation.custom.ValidEnum;
+import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
@@ -18,20 +20,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "채널 게시글 API")
 @RestController
@@ -81,13 +86,19 @@ public class ChannelBoardController {
             @PathVariable(name = "channelId") UUID channelId,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
-            @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
+            @RequestParam(required = false, defaultValue = "TIME", value = "criteria")
+            @ValidEnum(enumClass = SortingCriteria.class) String criteria
     ){
+        SortingCriteria sortingCriteria = SortingCriteria.convertToEnum(criteria);
+        Pageable pageable = PageRequest.of(
+                pageNumber, CHANNEL_BOARD_PAGE_SIZE,
+                Sort.by(Sort.Direction.DESC, sortingCriteria.getCriteria())
+        );
+
         PaginatedResponse<ChannelBoardListDto> response = channelBoardService.getChannelBoards(
                 channelId,
                 keyword,
-                pageNumber,
-                criteria
+                pageable
         );
 
         if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {

@@ -33,7 +33,12 @@ import {
 import { fetchFollowingChannels } from "@/api/channel";
 import { Channels } from "@/types/channelType";
 import { UserLeague, LeagueList as LeagueListType } from "@/types/leagueTypes";
-import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+import {
+  DashCamItem,
+  HotBoardItem,
+  TodayCarItem,
+  MyCarItem,
+} from "@/types/mainPageTypes";
 import Loading from "@/components/common/UI/Loading";
 
 import Image from "next/image";
@@ -48,7 +53,7 @@ export default function Home() {
   const [hotBoards, setHotBoards] = useState<HotBoardItem[]>([]);
   const [dashcamBoards, setDashcamBoards] = useState<DashCamItem[]>([]);
   const [todayCar, setTodayCar] = useState<TodayCarItem | null>(null);
-  const [myCarBoards, setMyCarBoards] = useState<TodayCarItem[]>([]);
+  const [myCarBoards, setMyCarBoards] = useState<MyCarItem[]>([]);
   const [followChannels, setFollowChannels] = useState<Channels[]>([]);
   const [leaugeRanking, setLeagueRanking] = useState<LeagueListType[]>([]);
 
@@ -64,8 +69,8 @@ export default function Home() {
         const today = await fetchTodayCar();
         setTodayCar(today);
 
-        // const car = await fetchMyCars();
-        // setMyCarBoards(car);
+        const car = await fetchMyCars();
+        setMyCarBoards(car);
 
         const ranking = await fetchLeagueRanking();
         setLeagueRanking(ranking);
@@ -160,7 +165,7 @@ export default function Home() {
           </SectionHeader>
           <BlackboxList dashcamBoards={dashcamBoards} />
         </ArticleSection>
-        {/* <ArticleSection>
+        <ArticleSection>
           <SectionHeader>
             <SectionTitle>차 자랑</SectionTitle>
             <MoreButton onClick={handleMoreClickBoast}>
@@ -168,8 +173,8 @@ export default function Home() {
               <IoArrowForward />
             </MoreButton>
           </SectionHeader>
-          <CarPictureList />
-        </ArticleSection> */}
+          <CarPictureList myCarBoards={myCarBoards} />
+        </ArticleSection>
       </Main>
       <Aside>
         <AsideSection>

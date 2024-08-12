@@ -32,6 +32,6 @@ export default CarPictureListItem;
 
 const ItemContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 20px;
 `;

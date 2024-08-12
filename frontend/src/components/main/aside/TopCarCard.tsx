@@ -14,12 +14,12 @@ interface TopCarCardProps {
 const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/channels/boast/${todayCar.id}`);
-  };
   if (!todayCar) {
     return <div>올라온 게시글이 없습니다</div>;
   }
+  const handleClick = () => {
+    router.push(`/channels/boast/${todayCar.id}`);
+  };
 
   return (
     <CardContainer onClick={handleClick}>
@@ -27,7 +27,7 @@ const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
         <Image src={todayCar.thumbnail} alt="Top Car" />
         <LikeContainer>
           <FaRegHeart />
-          <LikeCount>{todayCar.viewCount}</LikeCount>
+          <LikeCount>{todayCar.likeCount}</LikeCount>
         </LikeContainer>
       </ImageContainer>
       <InfoContainer>
