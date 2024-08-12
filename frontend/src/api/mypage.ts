@@ -109,20 +109,24 @@ export const updateProfile = async (fileName: string, nickname: string, imgChang
 
 // 이미지 S3 업로드
 export const uploadImageToS3 = async (profileUrl: string, file: File) => {
+await api.put(profileUrl, file, {
+    headers: {
+    'Content-Type': file.type,
+    },
+});
+};
+
+// 자동차 정보 등록
+export const carInfo = async (brand: string, model: string, carTitle: string,  accessToken: string): Promise<boolean> => {
     try {
-        const response = await axios.put(profileUrl, file, {
-            headers: {
-                'Content-Type': file.type,
-            },
-        });
-
-        if (response.status !== 200) {
-            throw new Error(`Failed to upload image: ${response.statusText}`);
+        const response = await api.post('/v1/members/car', { brand, model, carTitle }, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
         }
-
+        });
         return response.data;
     } catch (error) {
-        console.error('Error uploading image to S3:', error);
-        throw error;
+        console.error('Password check failed:', error);
+        throw new Error('Failed to check password');
     }
-};
+    };
