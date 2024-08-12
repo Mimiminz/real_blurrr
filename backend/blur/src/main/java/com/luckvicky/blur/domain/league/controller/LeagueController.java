@@ -82,27 +82,4 @@ public class LeagueController {
         );
     }
 
-    @Operation(
-            summary = "리그 검색 API",
-            description = "게시글 생성시, 리그 목록들을 검색한다."
-    )
-    @GetMapping("/check/{keyword}")
-    public ResponseEntity<Result<SimpleLeagueListResponse>> checkLeague(
-            @Schema(description = "리그")
-            @PathVariable(name = "keyword")
-            String keyword) {
-
-        List<SimpleLeagueDto> leagues = leagueService.searchLeaguesByKeyword(keyword);
-
-        if(Objects.isNull(leagues) || leagues.isEmpty()) {
-            return ResponseUtil.noContent(
-                    Result.empty()
-            );
-        }
-
-        return ResponseUtil.ok(
-                Result.of(SimpleLeagueListResponse.of(leagues))
-        );
-    }
-
 }

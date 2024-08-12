@@ -2,8 +2,10 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardSearchService;
+import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
+import com.luckvicky.blur.global.security.NullableAuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,14 +41,6 @@ public class LeagueBoardSearchController {
                             @ExampleObject(name = "모델", value = "MODEL")
                     }
             ),
-            @Parameter(
-                    name = "condition",
-                    description = "검색 조건",
-                    examples = {
-                            @ExampleObject(name = "제목", value = "TITLE"),
-                            @ExampleObject(name = "작성자", value = "NICKNAME"),
-                    }
-            ),
             @Parameter(name = "pageNumber", description = "페이지 번호"),
             @Parameter(
                     name = "criteria",
@@ -61,16 +55,16 @@ public class LeagueBoardSearchController {
     })
     @GetMapping("/{leagueId}/boards/search")
     public ResponseEntity<Result<PaginatedResponse<LeagueBoardResponse>>> search(
+            @NullableAuthUser ContextMember contextMember,
             @PathVariable("leagueId") UUID leagueId,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
             @RequestParam(value = "keyword") String keyword,
-            @RequestParam(required = false, defaultValue = "TITLE", value = "condition") String condition,
             @RequestParam(required = false, defaultValue = "0", value = "pageNumber") int pageNumber,
             @RequestParam(required = false, defaultValue = "TIME", value = "criteria") String criteria
     ) {
 
         PaginatedResponse<LeagueBoardResponse> response = leagueBoardSearchService.search(
-                leagueId, leagueType, keyword, condition, pageNumber, criteria
+                contextMember, leagueId, leagueType, keyword, pageNumber, criteria
         );
 
         if (Objects.isNull(response.getContent()) || response.getContent().isEmpty()) {

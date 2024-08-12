@@ -15,15 +15,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "votes",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uniqueVote",
-                        columnNames = {"board_id", "member_id"})
-        })
+@Table(name = "votes")
 public class Vote extends BaseEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dashcam_id", columnDefinition = "BINARY(16)")
     private DashCam dashCam;
 

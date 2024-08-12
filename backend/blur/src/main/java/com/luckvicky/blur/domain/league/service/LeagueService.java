@@ -15,5 +15,4 @@ public interface LeagueService {
 
     LeagueRankingResponse getLeagueRanking();
 
-    List<SimpleLeagueDto> searchLeaguesByKeyword(String keyword);
 }
