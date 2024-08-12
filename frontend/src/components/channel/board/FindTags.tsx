@@ -128,10 +128,8 @@ const TagsInput: React.FC<TagsInputProps> = ({ tags, setTags }) => {
 
 export default TagsInput;
 
-// Styled Components (여기에 그대로 유지)
 const TagInputContainer = styled.div`
   width: 100%;
-  max-width: 800px;
   margin-bottom: 16px;
   position: relative;
 `;
@@ -182,7 +180,6 @@ const RemoveTagButton = styled.span`
 
 const Input = styled.input`
   width: 100%;
-  max-width: 800px;
   padding: 10px;
   margin-bottom: 16px;
   border: 1px solid #ddd;

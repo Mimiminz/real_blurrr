@@ -64,14 +64,20 @@ export default function WritePage() {
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 50px 16px;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-  max-width: 1200px; /* Increased max-width */
+  max-width: 100%; /* 기본적으로 전체 너비 사용 */
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    max-width: 750px; /* 태블릿 이상에서는 750px */
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1000px; /* 데스크탑에서는 1000px */
+  }
 `;
 
 const PageTitle = styled.h1`
@@ -99,9 +105,17 @@ const EditorAndButtonContainer = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
-  max-width: 1000px; /* Increased max-width */
+  max-width: 100%; /* 기본적으로 전체 너비 사용 */
   margin-bottom: 16px;
   box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    max-width: 750px; /* 태블릿 이상에서는 750px */
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1000px; /* 데스크탑에서는 1000px */
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -114,6 +128,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
   font-size: 16px;
   margin-top: 16px;
+  max-width: 300px;
 
   &:hover {
     background-color: #FF900D;

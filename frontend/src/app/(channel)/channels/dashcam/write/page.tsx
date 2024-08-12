@@ -76,12 +76,7 @@ export default function WritePage() {
                )}
                <SubmitButton
                   type="submit"
-                  isActive={videoFiles.length > 0}
-                  onClick={(e) => {
-                     if (videoFiles.length === 0) {
-                        e.preventDefault();  // 폼 제출 막기
-                     }
-                  }}
+                  onClick={(e) => {}}
                >
                작성
             </SubmitButton>
@@ -103,10 +98,20 @@ export default function WritePage() {
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 50px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  max-width: 100%; /* 기본적으로 전체 너비 사용 */
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    max-width: 750px; /* 태블릿 이상에서는 750px */
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1000px; /* 데스크탑에서는 1000px */
+  }
 `;
 
 const PageTitle = styled.h1`
@@ -117,7 +122,6 @@ const PageTitle = styled.h1`
 
 const Input = styled.input`
   width: 100%;
-  max-width: 800px;
   padding: 10px;
   margin-bottom: 16px;
   border: 1px solid #ddd;
@@ -131,8 +135,8 @@ const EditorAndButtonContainer = styled.div`
   justify-content: center;
   flex-direction: row;
   align-items: center;
-  max-width: 800px;
   gap: 15px;
+  margin-top: 24px;
 `;
 
 const EditorContainer = styled.div`
@@ -157,18 +161,18 @@ const VoteButton = styled.button`
   }
 `;
 
-const SubmitButton = styled.button<{ isActive: boolean }>`
+const SubmitButton = styled.button`
   width: 100px;
   padding: 12px;
-  background-color: ${({ isActive }) => (isActive ? "#FF900D" : "#cccccc")};
+  background-color: #FF900D;
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: ${({ isActive }) => (isActive ? "pointer" : "not-allowed")};
+  cursor: pointer;
   font-size: 16px;
   margin-top: 16px;
 
   &:hover {
-    background-color: ${({ isActive }) => (isActive ? "#FF900D" : "#bbbbbb")};
+    background-color: #FF900D;
   }
 `;
