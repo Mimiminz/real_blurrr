@@ -1,15 +1,16 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Scrollbar, Autoplay } from 'swiper/modules';
+import { Pagination, Scrollbar, Autoplay } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+
+
 import UserChannelCard from './UserChannelCard';
 import { useRouter } from 'next/navigation';
 
-SwiperCore.use([Navigation, Scrollbar, Autoplay]);
+SwiperCore.use([Scrollbar, Autoplay]);
 
 const SwiperContainer = styled.div`
   .swiper-button-next::after,
@@ -19,20 +20,6 @@ const SwiperContainer = styled.div`
 
   .swiper-button-active {
    margin-left: 0px;
-  }
-
-  .swiper-button-prev {
-    background: url('/images/carousel_arrow_prev.png') no-repeat;
-    opacity: 0.7;
-    background-size: 70% auto;
-    background-position: center;
-  }
-
-  .swiper-button-next {
-    background: url('/images/carousel_arrow_next.png') no-repeat;
-    opacity: 0.7;
-    background-size: 70% auto;
-    background-position: center;
   }
 `;
 
@@ -49,20 +36,34 @@ interface ChannelCarouselProps {
 const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannelClick }) => {
    const swiperRef = useRef<SwiperCore>();
 
+   const getSlidesPerView = () => {
+      if (window.innerWidth >= 1440) return 5;
+      if (window.innerWidth >= 1024) return 4;
+      if (window.innerWidth >= 768) return 3;
+      if (window.innerWidth >= 480) return 2;
+      return 1;
+   };
+
+   const slidesPerView = getSlidesPerView();
+   const shouldEnablePaginationAndAutoplay = slides.length > slidesPerView;
+
    return (
       <SwiperContainer>
          <Swiper
             onSwiper={(swiper => {
                swiperRef.current = swiper;
             })}
-            loop={true}
+            loop={false}
             spaceBetween={0}
-            navigation={true}
+            pagination={shouldEnablePaginationAndAutoplay ? {
+               clickable: true,
+            } : false}
+            modules={[Pagination]}
             slidesOffsetAfter={10}
-            autoplay={{
+            autoplay={shouldEnablePaginationAndAutoplay ? {
                delay: 2500,
                disableOnInteraction: false,
-            }}
+            } : false}
             breakpoints={{
                320: { // 작은 화면
                   slidesPerView: 1,
