@@ -66,7 +66,7 @@ const SignupForm = () => {
 
   const handleSendVerification = async (email: string) => {
     try {
-      await requestEmailVerificationCode(email,'signin');
+      await requestEmailVerificationCode(email,'signup');
       alert('인증번호가 전송되었습니다.');
       setTimer(300);
       setIsTimerActive(true);
@@ -77,7 +77,7 @@ const SignupForm = () => {
 
   const handleVerifyEmailCode = async (email: string, code: string) => {
     try {
-      const response = await verifyEmailCode(email, code,'signin');
+      const response = await verifyEmailCode(email, code,'signup');
       if (response === true) {
         setEmailVerified(true);
         setEmailVerificationError('인증번호가 확인되었습니다.');
@@ -113,7 +113,7 @@ const SignupForm = () => {
     try {
       const response = await signup(values.email, values.nickname, values.password, values.passwordCheck);
 
-      if (response.data === true) {
+      if (response) {
         alert('회원가입이 완료되었습니다.');
       } else {
         alert('회원가입에 실패했습니다.');
@@ -156,8 +156,8 @@ const SignupForm = () => {
   return (
     <Container>
       <Image
-              src="/images/logo/logo.png"
-              alt="로고"
+        src="/images/logo/logo.png"
+        alt="로고"
       />
       <Div>
       <Title>회원가입</Title>

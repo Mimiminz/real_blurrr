@@ -108,3 +108,18 @@ await api.put(profileUrl, file, {
     },
 });
 };
+
+// 자동차 정보 등록
+export const carInfo = async (brand: string, model: string, carTitle: string,  accessToken: string): Promise<boolean> => {
+    try {
+        const response = await api.post('/v1/members/car', { brand, model, carTitle }, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Password check failed:', error);
+        throw new Error('Failed to check password');
+    }
+    };
