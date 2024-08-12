@@ -4,6 +4,7 @@ import { fetchCommentDelete, fetchLeagueCommentDelete } from "@/api/comment";
 import { WiTime4 } from "react-icons/wi";
 import { CommentListItemProps } from "@/types/commentTypes";
 import { formatPostDate } from "@/utils/formatPostDate";
+import { useAuthStore } from "@/store/authStore";
 
 const Container = styled.div`
   display: flex;
@@ -100,6 +101,7 @@ const ActionRow = styled.div`
 const Delete = styled.span`
   font-size: 11px;
   color: #999;
+  margin-right: 6px;
   cursor: pointer;
 
   @media (min-width: 768px) {
@@ -112,7 +114,6 @@ const Time = styled.span`
   align-items: center;
   font-size: 12px;
   color: #999;
-  margin-left: 8px;
 `;
 
 const DotLine = styled.div`
@@ -137,6 +138,7 @@ const Reply: React.FC<CommentListItemProps> = ({
   boardAuthor,
 }) => {
   const [isLong, setIsLong] = useState(false);
+  const { user } = useAuthStore();
 
   const handleDelete = async () => {
     try {
@@ -173,9 +175,11 @@ const Reply: React.FC<CommentListItemProps> = ({
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>
-          <Delete onClick={handleDelete}>삭제</Delete>
+          {userName === user?.nickname && (
+            <Delete onClick={handleDelete}>삭제</Delete>
+          )}
           <Time>
-            <WiTime4 style={{ marginRight: "4px", verticalAlign: "middle" }} />
+            <WiTime4 style={{ marginRight: "4px",verticalAlign: "middle" }} />
             {formatPostDate(time)}
           </Time>
         </ActionRow>
