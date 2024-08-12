@@ -76,7 +76,6 @@ const Channel = styled.p`
 
 const UserContainer = styled.div`
   display: flex;
-  gap: 10px;
 `;
 
 const UserName = styled.div`

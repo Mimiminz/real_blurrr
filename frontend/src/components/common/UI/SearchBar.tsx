@@ -92,7 +92,7 @@ const SearchIcon = styled.span`
   justify-content: center;
   font-size: 1.2rem;
   color: #aaa;
-  margin-right: 10px;
+  margin-right: 3px;
 `;
 
 const SearchInput = styled.input`
@@ -122,19 +122,19 @@ const SearchButton = styled.button`
   background-color: white;
   cursor: pointer;
   font-size: 12px;
-  min-width: 50px;
+  min-width: 40px;
   margin-top: 0;
   height: 38px;
+  display: none; /* 기본적으로 숨깁니다 */
 
   &:hover {
-    border-color: #121212;  
-  }
-
-  @media (min-width: 480px) {
+    border-color: #121212;
   }
 
   @media (min-width: 768px) {
+    display: inline-block; /* 768px 이상일 때만 보이도록 설정 */
     font-size: 14px;
     height: 40px;
+    min-width: 50px;
   }
 `;

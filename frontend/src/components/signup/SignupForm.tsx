@@ -159,8 +159,8 @@ const SignupForm = () => {
   return (
     <Container>
       <Image
-              src="/images/logo/logo.png"
-              alt="로고"
+        src="/images/logo/logo.png"
+        alt="로고"
       />
       <Div>
       <Title>회원가입</Title>
