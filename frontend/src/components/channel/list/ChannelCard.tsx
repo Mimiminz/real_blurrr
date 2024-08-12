@@ -90,6 +90,7 @@ const Tag = styled.span`
 const Title = styled.h3`
   margin: 0px 0px 5px;
   font-size: 17px;
+  white-space: nowrap;
 `;
 
 const IconContainer = styled.div`
