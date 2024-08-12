@@ -200,7 +200,7 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
     private long getViewCountInRedis(UUID memberId, UUID boardId) {
 
-        if (Boolean.FALSE.equals(redisViewCounterService.isVisited(boardId, memberId))) {
+        if (Boolean.TRUE.equals(redisViewCounterService.isVisited(boardId, memberId))) {
             return redisViewCounterService.getViewCountInRedis(boardId);
         }
 
