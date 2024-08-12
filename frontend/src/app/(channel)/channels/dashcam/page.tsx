@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import DashCamCard from "@/components/channel/dashcam/DashCamCard";
 import PostTitle from "@/components/channel/PostTitle";
 import { fetchDashCams } from "@/api/channel";
-import { DashCamList, DashCam } from "@/types/channelType";
+import { DashCam } from "@/types/channelType";
 import Loading from "@/components/common/UI/Loading";
 import PaginationComponent from "@/components/common/UI/Pagination";
 
@@ -14,7 +14,6 @@ const DashCamPage: React.FC = () => {
   const [dashCams, setDashCams] = useState<DashCam[]>([]);
   const [keyword, setKeyword] = useState('');
   const [sortCriteria, setSortCriteria] = useState('TIME');
-  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
@@ -40,7 +39,6 @@ const DashCamPage: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      setIsLoading(true);
       try {
         const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
         if (data) {
@@ -52,8 +50,6 @@ const DashCamPage: React.FC = () => {
       } catch (error) {
         console.error("Failed to load dash cam data:", error);
         setDashCams([]);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -68,6 +64,16 @@ const DashCamPage: React.FC = () => {
     setCurrentPage(page);
   };
 
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
+    return <Loading />;
+  }
+
   return (
     <Container>
       <PostTitle
@@ -75,9 +81,7 @@ const DashCamPage: React.FC = () => {
         onSearch={handleSearch}
         onSortChange={handleSortChange}
       />
-      {isLoading ? (
-        <Loading />
-      ) : dashCams && dashCams.length === 0 ? (
+      {dashCams && dashCams.length === 0 ? (
         <EmptyMessage>게시물이 없습니다.<br />직접 글을 작성해보세요!</EmptyMessage>
       ) : (
         <CardGrid>
@@ -105,6 +109,8 @@ const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+  justify-content: center; 
+  align-items: center;
 
   @media (max-width: 480px) {
     grid-template-columns: repeat(1, minmax(200px, 1fr));

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChannelBoardList from '@/components/channel/board/ChannelBoardList';
 import PostTitle from '@/components/channel/PostTitle';
+import Loading from "@/components/common/UI/Loading";
 
 interface PageProps {
    params: {
@@ -31,6 +32,16 @@ const ChannelBoardPage: React.FC<PageProps> = ({ params }) => {
    const handleSearch = (newKeyword: string) => {
       setKeyword(newKeyword);
    };
+
+   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+   useEffect(() => {
+      setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+   }, []);
+
+   if (!isMounted) {
+      return <Loading />;
+   }
 
    return (
       <>

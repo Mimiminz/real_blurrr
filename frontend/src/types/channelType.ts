@@ -155,8 +155,8 @@ export interface DashCamDetail {
    commentCount: number;
    likeCount: number;
    voteCount: number;
-   createdAt: string; // ISO 날짜 문자열을 가리킴
-   videoUrl: string[];
+   createdAt: string;
+   videos: Video[];
    content: string;
    mentionedLeagues: Mentioned[];
    liked: boolean;

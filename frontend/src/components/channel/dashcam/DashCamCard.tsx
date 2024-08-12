@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { DashCam } from "@/types/channelType";
@@ -43,12 +43,34 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
   );
 };
 
+const bounceIn = keyframes`
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+`;
+
 const Card = styled.div`
   width: 100%;;
   border: 1px solid #eaeaea;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(141, 141, 141, 0.1);
+  transition: transform 0.3s ease;
+  transform-origin: center; /* 변환 중심을 요소의 중앙으로 설정 */
+  will-change: transform; /* 브라우저에게 사전 렌더링 힌트 제공 */
+
+  &:hover {
+    animation: ${bounceIn} 0.5s forwards;
+  }
 `;
 
 const ThumbnailContainer = styled.div`

@@ -22,8 +22,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({
    const [uploadProgress, setUploadProgress] = useState(0);
 
    const onFileUpload = async (file: File) => {
-      if (videoFiles.length >= 3) {
-         alert("최대 3개의 비디오만 업로드할 수 있습니다.");
+      if (videoFiles.length >= 2) {
+         alert("최대 2개의 비디오만 업로드할 수 있습니다.");
          return;
       }
 

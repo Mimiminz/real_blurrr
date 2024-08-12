@@ -4,9 +4,11 @@ import { fetchVote, addVote } from '@/api/channel';
 import { Option } from '@/types/channelType';
 import { useAuthStore } from "@/store/authStore";
 import LoginForm from "@/components/login/LoginForm";
+import { useRouter } from "next/navigation";
 
 interface VoteProps {
   voteId: string;
+  onOptionsCheck: (hasOptions: boolean) => void;
 }
 
 interface PollOption {
@@ -17,14 +19,14 @@ interface PollOption {
   id: string;
 }
 
-const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
+const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
+  const router = useRouter();
+  
   const [voteData, setVoteData] = useState<PollOption[]>([]);
   const [question, setQuestion] = useState<string>('');
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const openLoginModal = () => setIsLoginModalOpen(true);
-  const closeLoginModal = () => setIsLoginModalOpen(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const { isLoggedIn } = useAuthStore();
 
@@ -41,6 +43,8 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
         id: option.id
       }));
 
+      onOptionsCheck(data.options && data.options.length > 0);
+
       setVoteData(transformedData);
       setQuestion('누가누가 잘못했을까요'); // 질문을 여기에 설정하세요
       setHasVoted(data.hasVoted);
@@ -56,7 +60,7 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
 
   const handleVote = async (orderId: number, optionId: string) => {
     if (!isLoggedIn) {
-      openLoginModal();
+      setShowLogin(true);
       return;
     }
 
@@ -88,6 +92,15 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
     }
   };
 
+  const closePopup = () => {
+    setShowLogin(false);
+    router.back();
+  };
+
+  if (voteData.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <Container>
@@ -111,11 +124,11 @@ const PollComponent: React.FC<VoteProps> = ({ voteId }) => {
           ))}
         </Options>
       </Container>
-      {isLoginModalOpen && (
-        <ModalOverlay onClick={closeLoginModal}>
-          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
-            <LoginForm />
-            <CloseButton onClick={closeLoginModal}>×</CloseButton>
+      {showLogin && (
+        <ModalOverlay onClick={closePopup}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <LoginForm closeLoginModal={closePopup} />
+            <CloseIcon onClick={closePopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       )}
@@ -231,14 +244,17 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-const CloseButton = styled.button`
+const CloseIcon = styled.span`
   position: absolute;
   top: 10px;
   right: 10px;
-  border: none;
-  background: none;
   font-size: 24px;
+  font-weight: bold;
   cursor: pointer;
+  color: #999;
+  &:hover {
+    color: #333;
+  }
 `;
 
 const ModalContent = styled.div`

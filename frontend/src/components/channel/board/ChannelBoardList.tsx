@@ -6,7 +6,6 @@ import PaginationComponent from "@/components/common/UI/Pagination";
 import { fetchPosts } from "@/api/channel";
 import { PostData } from "@/types/channelType";
 import { useRouter } from "next/navigation";
-import Loading from "@/components/common/UI/Loading";
 
 interface ChannelBoardListProps {
   channelId: string;
@@ -25,11 +24,9 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      setIsLoading(true);
       try {
         const data = await fetchPosts(
           channelId,
@@ -46,8 +43,6 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
         console.log("Posts loaded:", data);
       } catch (error) {
         console.error("Failed to load channel board list data:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -64,9 +59,7 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
 
   return (
     <ChannelList>
-      {isLoading ? (
-        <Loading />
-      ) : Posts && Posts.length === 0 ? (
+      {Posts && Posts.length === 0 ? (
         <EmptyMessage>게시글이 없습니다.</EmptyMessage>
       ) : (
         Posts.map((post) => (
