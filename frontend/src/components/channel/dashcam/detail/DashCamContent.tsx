@@ -132,11 +132,14 @@ const DashCamContent: React.FC<DashCamDetail> = ({
           </Swiper>
         </SwiperContainer>
         <Content dangerouslySetInnerHTML={{ __html: content }} />
-        {isLoggedIn && (
-          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
-            {isLiked ? <FaHeart /> : <FaRegHeart />}
-          </HeartButton>
-        )}
+        <WriterContainer>
+          {isLoggedIn && (
+            <HeartButton onClick={toggleLike} $isLiked={isLiked}>
+              {isLiked ? <FaHeart /> : <FaRegHeart />}
+              좋아요
+            </HeartButton>
+          )}
+        </WriterContainer>
       </Body>
     </Container >
   );
@@ -159,11 +162,10 @@ const Video = styled.video<{ videoCount: number }>`
   height: auto;
 `;
 
-// 스타일 컴포넌트 정의
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
   background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -255,24 +257,34 @@ const Content = styled.div`
 `;
 
 const HeartButton = styled.button<{ $isLiked: boolean }>`
-  margin: 5px 0px 2px 0px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
+  padding-top: 30px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  padding: 8px;
+  background-color: #f8f8f8;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+  font-size: 14px;
 
   &:hover {
-    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+    background-color: #ebebeb;
   }
 
-  @media (min-width: 768px) {
-    font-size: 20px;
+  svg {
+    margin-right: 5px;
+    font-size: 17px;
+    /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+    color: #d60606;
   }
+`;
+
+const WriterContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+  /* margin-left: 20px; */
 `;
 
 const TimeSection = styled.span`
