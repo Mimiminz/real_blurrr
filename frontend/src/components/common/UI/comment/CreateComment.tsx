@@ -4,7 +4,7 @@ import {
   fetchLeagueReplyCreate,
   fetchReplyCreate,
 } from "@/api/comment";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import { CreateCommentProps } from "@/types/commentTypes";
@@ -22,6 +22,7 @@ export default function CreateComment({
   const { user } = useAuthStore();
   const [comment, setComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (inputRef && inputRef.current) {
@@ -29,45 +30,33 @@ export default function CreateComment({
     }
   }, [inputRef]);
 
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
 
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newComment = e.target.value;
-
-    if (newComment.length <= 200) {
-      setComment(newComment);
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newComment = e.target.value;
 
     if (newComment.length <= 200) {
       setComment(newComment);
-      e.target.style.height = 'auto'; // 높이를 초기화하여 내용에 맞게 재조정
+      e.target.style.height = "auto"; // 높이를 초기화하여 내용에 맞게 재조정
 
-      if (newComment.includes('\n') || e.target.scrollHeight > e.target.clientHeight) {
-        e.target.style.height = 'auto'; // 높이를 초기화하여 내용에 맞게 재조정
-        e.target.style.height = e.target.scrollHeight + 'px'; // 줄바꿈 발생 시 높이 조정
+      if (
+        newComment.includes("\n") ||
+        e.target.scrollHeight > e.target.clientHeight
+      ) {
+        e.target.style.height = "auto"; // 높이를 초기화하여 내용에 맞게 재조정
+        e.target.style.height = e.target.scrollHeight + "px"; // 줄바꿈 발생 시 높이 조정
       } else {
-        e.target.style.height = '34px'; // 텍스트가 한 줄일 때는 높이를 기본값으로 유지
+        e.target.style.height = "34px"; // 텍스트가 한 줄일 때는 높이를 기본값으로 유지
       }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
   };
-
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault(); // 폼의 기본 동작을 막음
@@ -93,6 +82,9 @@ export default function CreateComment({
         }
       }
       setComment("");
+      if (textAreaRef.current) {
+        textAreaRef.current.style.height = "34px"; // 제출 후 높이를 34px로 리셋
+      }
       onCommentAdded(); // 댓글 작성 후 콜백 호출
     } catch (error) {
       console.error("Error submitting comment:", error);
@@ -104,19 +96,12 @@ export default function CreateComment({
       <Avatar src={user?.profileUrl} alt={`${user?.nickname}'s avatar`} />
       <InputContainer>
         <TextArea
-           value={comment}
-           onChange={handleInputChange}
-           onKeyDown={handleKeyDown}
-           placeholder="댓글을 입력하세요..."
-        />
-        {/* <Input
-          type="text"
-          placeholder="댓글 달기..."
+          ref={textAreaRef}
           value={comment}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        /> */}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder="댓글을 입력하세요..."
+        />
         <CharCount>{comment.length}/200</CharCount>
       </InputContainer>
       <Button type="submit" disabled={!comment.trim()}>
@@ -155,13 +140,6 @@ const InputContainer = styled.div`
   width: 40px;
 `;
 
-const Input = styled.input`
-  border: none;
-  outline: none;
-  font-size: 14px;
-  color: #666;
-`;
-
 const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;
@@ -170,7 +148,7 @@ const TextArea = styled.textarea`
   outline: none;
   border-radius: 5px;
   box-sizing: border-box;
-  resize: none; 
+  resize: none;
   overflow: hidden;
   font-size: 14px;
   height: 34px;
