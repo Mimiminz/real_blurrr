@@ -7,7 +7,6 @@ import QuillEditor from "@/components/channel/board/QuillEditor";
 import { fetchPostWrite, fetchBoastWrite } from "@/api/channel";
 import FindTags from "@/components/channel/board/FindTags";
 
-
 export default function WritePage() {
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
   const { channelId } = useParams<{ channelId: string }>();
@@ -52,7 +51,7 @@ export default function WritePage() {
           value={title}
           onChange={handleTitleChange}
         />
-        <FindTags tags={tags} setTags={setTags} /> {/* TagsInput 컴포넌트 사용 */}
+        <FindTags tags={tags} setTags={setTags} />
         <EditorAndButtonContainer>
           <EditorContainer>
             <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
@@ -69,6 +68,10 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 50px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  max-width: 1200px; /* Increased max-width */
 `;
 
 const PageTitle = styled.h1`
@@ -79,7 +82,7 @@ const PageTitle = styled.h1`
 
 const Input = styled.input`
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px; /* Increased max-width */
   padding: 10px;
   margin-bottom: 16px;
   border: 1px solid #ddd;
@@ -89,7 +92,6 @@ const Input = styled.input`
 
 const EditorAndButtonContainer = styled.div`
   width: 100%;
-  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,6 +99,7 @@ const EditorAndButtonContainer = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
+  max-width: 1000px; /* Increased max-width */
   margin-bottom: 16px;
   box-sizing: border-box;
 `;

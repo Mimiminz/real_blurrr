@@ -7,6 +7,7 @@ import { DashCamDetail } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
 import { formatPostDate } from "@/utils/formatPostDate";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
+import { FaRegEye } from "react-icons/fa";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
@@ -92,10 +93,16 @@ const DashCamContent: React.FC<DashCamDetail> = ({
           </UserInfo>
         </User>
         <TimeSection>
-          <Icon>
+          <FormatDate>
+            <FaRegHeart />
+            {likeCount}
+          </FormatDate>
+          <FormatDate>
+            <FaRegEye />
+            {viewCount}</FormatDate>
+          <FormatDate>
             <MdAccessTime />
-          </Icon>
-          <FormatDate>{formatPostDate(createdAt)}</FormatDate>
+            {formatPostDate(createdAt)}</FormatDate>
         </TimeSection>
       </Header>
       <Body>
@@ -116,20 +123,23 @@ const DashCamContent: React.FC<DashCamDetail> = ({
             modules={[Navigation]}
           >
             {videos.map((video) => (
-              <SwiperSlide key={video.videoOrder}>
-                <Video controls loop>
+              <StyledSwiperSlide key={video.videoOrder}>
+                <Video videoCount={videos.length} controls loop>
                   <source src={video.videoUrl} type="video/mp4" />
                 </Video>
-              </SwiperSlide>
+              </StyledSwiperSlide>
             ))}
           </Swiper>
         </SwiperContainer>
         <Content dangerouslySetInnerHTML={{ __html: content }} />
-        {isLoggedIn && (
-          <HeartButton onClick={toggleLike} $isLiked={isLiked}>
-            {isLiked ? <FaHeart /> : <FaRegHeart />}
-          </HeartButton>
-        )}
+        <WriterContainer>
+          {isLoggedIn && (
+            <HeartButton onClick={toggleLike} $isLiked={isLiked}>
+              {isLiked ? <FaHeart /> : <FaRegHeart />}
+              좋아요
+            </HeartButton>
+          )}
+        </WriterContainer>
       </Body>
     </Container >
   );
@@ -141,21 +151,26 @@ const SwiperContainer = styled.div`
   margin: 0 auto;
 `;
 
-const Video = styled.video`
-  width: 100%; /* 부모 요소의 크기에 맞춰 반응형으로 조정 */
+const StyledSwiperSlide = styled(SwiperSlide)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Video = styled.video<{ videoCount: number }>`
+  width: ${({ videoCount }) => (videoCount > 1 ? '80%' : '100%')};
   height: auto;
 `;
 
-// 스타일 컴포넌트 정의
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
   background-color: #f8f8f8;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 670px;
+  max-height: 670px;
   overflow-y: auto;
 `;
 
@@ -164,7 +179,7 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 5px;
   padding: 5px 28px;
 `;
 
@@ -207,8 +222,17 @@ const CarInfo = styled.div`
 `;
 
 const FormatDate = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2spx;
   font-size: 14px;
   color: #999;
+
+  svg {
+    margin-right: 4px;
+    font-size: 16px;
+  }
 `;
 
 const Tags = styled.div`
@@ -232,34 +256,35 @@ const Content = styled.div`
   margin-top: 15px;
 `;
 
-const Icon = styled.span`
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  vertical-align: middle;
-`;
-
 const HeartButton = styled.button<{ $isLiked: boolean }>`
-  margin: 5px 0px 2px 0px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
+  padding-top: 30px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  padding: 8px;
+  background-color: #f8f8f8;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+  font-size: 14px;
 
   &:hover {
-    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+    background-color: #ebebeb;
   }
 
-  @media (min-width: 768px) {
-    font-size: 20px;
+  svg {
+    margin-right: 5px;
+    font-size: 17px;
+    /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+    color: #d60606;
   }
+`;
+
+const WriterContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+  /* margin-left: 20px; */
 `;
 
 const TimeSection = styled.span`
@@ -270,6 +295,7 @@ const TimeSection = styled.span`
   margin-top: auto;
   color: #999;
   font-size: 14px;
+  gap: 10px;
 `;
 
 export default DashCamContent;

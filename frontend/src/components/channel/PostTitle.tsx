@@ -37,7 +37,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
   const { isLoggedIn } = useAuthStore();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedSort, setSelectedSort] = useState("게시글 정렬");
-  const [isFollowing, setIsFollowing] = useState<boolean | null>(null); // Initial value set to null
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
   const [title, setTitle] = useState("");
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID as string;
@@ -121,7 +121,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
     <Container>
       <TitleSection>
         <h1>{title}</h1> {/* 실제 채널 이름을 표시 */}
-        <SideSection isLoggedIn={isLoggedIn}>
+        <SideSection isloggedin={isLoggedIn}>
           {isLoggedIn && isFollowing !== null && (
             <SetButton $isFollowing={isFollowing} onClick={handleFollowChannel}>
               {isFollowing ? "언팔로우 -" : "팔로우 +"}
@@ -259,9 +259,9 @@ const DropdownItem = styled.div`
   }
 `;
 
-const SideSection = styled.div<{ isLoggedIn: boolean }>`
+const SideSection = styled.div<{ isloggedin: boolean }>`
   display: flex;
-  justify-content: ${({ isLoggedIn }) => (isLoggedIn ? "space-between" : "flex-end")};
+  justify-content: ${({ isloggedin }) => (isloggedin ? "space-between" : "flex-end")};
   width: 100%;
   align-items: center;
   gap: 10px;
