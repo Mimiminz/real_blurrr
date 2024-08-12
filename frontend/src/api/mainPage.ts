@@ -1,6 +1,11 @@
 import { LeagueList } from "@/types/leagueTypes";
 import api from "./index";
-import { DashCamItem, HotBoardItem, TodayCarItem } from "@/types/mainPageTypes";
+import {
+  DashCamItem,
+  HotBoardItem,
+  TodayCarItem,
+  MyCarItem,
+} from "@/types/mainPageTypes";
 
 export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
   try {
@@ -25,10 +30,10 @@ export const fetchTodayCar = async (): Promise<TodayCarItem> => {
   }
 };
 
-export const fetchMyCars = async (): Promise<TodayCarItem[]> => {
+export const fetchMyCars = async (): Promise<MyCarItem[]> => {
   try {
     const response = await api.get(`/v1/mycar`);
-    return response.data.data.boards;
+    return response.data.data;
   } catch (error) {
     console.log(error);
     throw error;
@@ -38,7 +43,6 @@ export const fetchMyCars = async (): Promise<TodayCarItem[]> => {
 export const fetchDashCams = async (): Promise<DashCamItem[]> => {
   try {
     const response = await api.get(`/v1/dashcam`);
-    console.log(response.data);
     return response.data.data;
   } catch (error) {
     console.log(error);
