@@ -1,28 +1,24 @@
 package com.luckvicky.blur.domain.channelboard.repository;
 
-import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.league.model.entity.League;
-import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import java.time.LocalDateTime;
-import org.springdoc.core.properties.SpringDocConfigProperties.ModelConverters.PageableConverter;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.repository.query.Param;
 
-public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID> {
+public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID>, ChannelBoardSearchRepository {
 
     List<ChannelBoard> findByChannel (Channel channel);
 
@@ -35,23 +31,6 @@ public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID
     )
     Optional<ChannelBoard> findByIdWithCommentAndReply(UUID id);
 
-    @EntityGraph(attributePaths = "member")
-    Page<ChannelBoard> findAllByChannelAndStatusAndTitleContainingOrContentContaining(
-            Channel channel,
-            ActivateStatus status,
-            String titleKeyword,
-            String contentKeyword,
-            Pageable pageable
-    );
-
-    @EntityGraph(attributePaths = "member")
-    Page<ChannelBoard> findAllByChannelAndStatus(
-            Channel channel,
-            ActivateStatus status,
-            Pageable pageable
-    );
-
-    Optional<ChannelBoard> findByIdAndChannel(UUID id, Channel channel);
 
     @Query("SELECT cb "
             + "FROM ChannelBoard cb "
