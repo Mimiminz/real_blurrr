@@ -30,8 +30,6 @@ export default function CreateComment({
     }
   }, [inputRef]);
 
-
-
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newComment = e.target.value;
 
@@ -142,8 +140,8 @@ const InputContainer = styled.div`
 
 const TextArea = styled.textarea`
   width: 100%;
-  padding: 10px;
-  margin-bottom: 8px;
+  padding: 6px;
+  /* margin-bottom: 8px; */
   border: none;
   outline: none;
   border-radius: 5px;
@@ -171,7 +169,9 @@ const CharCount = styled.div`
 
 const Button = styled.button<{ disabled: boolean }>`
   background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fbc02d")};
-  margin-top: 3px;
+  /* margin-top: 3px; */
+  margin-top: auto;
+  margin-bottom: 3px;
   border: none;
   border-radius: 8px;
   padding: 8px 10px;

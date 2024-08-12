@@ -48,20 +48,24 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
   return (
     <>
       <BoardList>
-        {boardList.map((item) => (
-          <div key={item.id} onClick={() => handleCardClick(item.id)}>
-            <LeagueBoardListItem
-              key={item.id}
-              title={item.title}
-              writer={item.member.nickname}
-              writerCar={item.member.carTitle}
-              createdAt={item.createdAt}
-              likeCount={item.likeCount}
-              commentCount={item.commentCount}
-              viewCount={item.viewCount}
-            />
-          </div>
-        ))}
+        {boardList && boardList.length === 0 ? (
+          <EmptyMessage>게시글이 없습니다.</EmptyMessage>
+        ) : (
+          boardList.map((item) => (
+            <div key={item.id} onClick={() => handleCardClick(item.id)}>
+              <LeagueBoardListItem
+                key={item.id}
+                title={item.title}
+                writer={item.member.nickname}
+                writerCar={item.member.carTitle}
+                createdAt={item.createdAt}
+                likeCount={item.likeCount}
+                commentCount={item.commentCount}
+                viewCount={item.viewCount}
+              />
+            </div>
+          ))
+        )}
       </BoardList>
       {showPopup && <NoCarPopup closePopup={closePopup} />}
       {showLogin && (
@@ -76,6 +80,14 @@ const LeagueBoardList = ({ leagueName, boardList }: boardListProp) => {
     </>
   );
 };
+
+const EmptyMessage = styled.p`
+  padding: 100px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+`;
+
 
 const BoardList = styled.div`
   // 스타일 정의
