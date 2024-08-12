@@ -24,6 +24,13 @@ export interface TodayCarItem {
   id: string;
   thumbnail: string;
   member: Member;
+  likeCount: number;
+}
+
+export interface MyCarItem {
+  id: string;
+  thumbnail: string;
+  member: Member;
   viewCount: number;
 }
 
