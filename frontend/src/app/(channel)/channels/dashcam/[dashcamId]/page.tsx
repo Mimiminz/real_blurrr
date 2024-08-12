@@ -48,7 +48,7 @@ export default function ChannelDashCamDetailPage({ params }: {
    useEffect(() => {
       loadDetail();
       loadCommentDetail();
-   }, [loadDetail, loadCommentDetail]);
+   }, []);
 
    if (!dashCamDetail) {
       return <div>Loading...</div>;

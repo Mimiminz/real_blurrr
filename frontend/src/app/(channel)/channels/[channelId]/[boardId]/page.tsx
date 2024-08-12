@@ -86,7 +86,7 @@ export default function ChannelBoardDetailPage({
   useEffect(() => {
     loadBoardDetail();
     loadCommentDetail();
-  }, [loadBoardDetail, loadCommentDetail]);
+  }, []);
 
   if (!boardDetail) {
     return <div>{error ? error : "Loading..."}</div>;
