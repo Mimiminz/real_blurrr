@@ -14,9 +14,9 @@ const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
   const settings = {
     dots: true,
     arrows: false,
-    infinite: true,
+    infinite: followChannels.length > 3 ? true : false,
     centerPadding: "60px",
-    slidesToShow: 3,
+    slidesToShow: followChannels.length > 3 ? 3 : followChannels.length,
     slidesToScroll: 1,
     autoplay: followChannels.length > 3 ? true : false,
     autoplaySpeed: 5000,
@@ -26,18 +26,18 @@ const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
   return (
     <Container>
       <CarouselContainer>
-          <Slider {...settings}>
-            {followChannels.map((channel, index) => (
-              <FollowChannelCard
-                key={index}
-                title={channel.name}
-                followers={channel.followCount}
-                img={channel.imgUrl}
-                id={channel.id}
-              />
-            ))}
-          </Slider>
-          </CarouselContainer>
+        <Slider {...settings}>
+          {followChannels.map((channel, index) => (
+            <FollowChannelCard
+              key={index}
+              title={channel.name}
+              followers={channel.followCount}
+              img={channel.imgUrl}
+              id={channel.id}
+            />
+          ))}
+        </Slider>
+      </CarouselContainer>
     </Container>
   );
 };
