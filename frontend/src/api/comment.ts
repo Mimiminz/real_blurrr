@@ -10,7 +10,6 @@ export const fetchLeagueCommentList = async (
     const response = await api.get(
       `/v1/leagues/${leagueId}/boards/${boardId}/comments`
     );
-    console.log(response.data);
     if (response.status === 204) {
       return { comments: [], commentCount: 0 };
     }

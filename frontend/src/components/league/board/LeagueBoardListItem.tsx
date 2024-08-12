@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa6";
 import { BiTimeFive } from "react-icons/bi";
+import { LuEye } from "react-icons/lu";
 import { FaRegComment } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa";
 import { LeagueBoardListItemProps } from "@/types/leagueTypes";
@@ -35,12 +36,12 @@ function LeagueBoardListItem({
           {likeCount}
         </LikeSection>
         <LikeSection>
-          <FaRegComment />
-          {commentCount}
-        </LikeSection>
-        <LikeSection>
           <FaRegEye />
           {viewCount}
+        </LikeSection>
+        <LikeSection>
+          <FaRegComment />
+          {commentCount}
         </LikeSection>
       </LikeAndComment>
     </ArticleDetail>
@@ -67,7 +68,6 @@ const ArticleInfo = styled.div`
 
 const UserContainer = styled.div`
   display: flex;
-  gap: 6px;
 `;
 
 const UserName = styled.div`

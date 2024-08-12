@@ -21,7 +21,7 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
   };
   return (
     <CardContainer onClick={handleClick}>
-      <Title>{name}</Title>
+      <Title className={name.length > 6 ? "long-name" : ""}>{name}</Title>
       <CountContainer>
         <Icon>
           <MdPeopleAlt />
@@ -54,6 +54,10 @@ const Title = styled.h3`
   /* color: #000; */
   margin-bottom: 8px;
   margin-top: 0px;
+
+  &.long-name {
+    font-size: 11px;
+  }
 `;
 
 const CountContainer = styled.div`
