@@ -88,7 +88,6 @@ const EmptyMessage = styled.p`
   color: #333;
 `;
 
-
 const BoardList = styled.div`
   // 스타일 정의
 `;

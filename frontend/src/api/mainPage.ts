@@ -32,7 +32,10 @@ export const fetchTodayCar = async (): Promise<TodayCarItem> => {
 
 export const fetchMyCars = async (): Promise<MyCarItem[]> => {
   try {
+    console.log("fetchMyCar 호출 시작");
     const response = await api.get(`/v1/mycar`);
+    console.log("fetchMyCar 응답 완료");
+
     return response.data.data;
   } catch (error) {
     console.log(error);

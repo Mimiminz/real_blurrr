@@ -69,8 +69,12 @@ export default function Home() {
         const today = await fetchTodayCar();
         setTodayCar(today);
 
+        console.log("page.tsx에서 car 호출");
+
         const car = await fetchMyCars();
         setMyCarBoards(car);
+
+        console.log("page.tsx에서 car 호출 완료");
 
         const ranking = await fetchLeagueRanking();
         setLeagueRanking(ranking);

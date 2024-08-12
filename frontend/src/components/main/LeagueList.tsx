@@ -11,7 +11,7 @@ const LeagueList: React.FC = () => {
     // 새로고침 시 랜덤한 요소를 한 번만 선택
     const getRandomItems = (arr: typeof brandLeagueList, num: number) => {
       return arr
-        .sort(() => 0.5 - Math.random()) // 배열을 랜덤하게 섞음
+        .toSorted(() => 0.5 - Math.random()) // 배열을 랜덤하게 섞음
         .slice(0, num); // 원하는 수만큼 아이템을 선택
     };
 

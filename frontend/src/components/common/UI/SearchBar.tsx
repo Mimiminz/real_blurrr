@@ -64,7 +64,7 @@ const SearchForm = styled.form`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 `;
 
 const SearchContainer = styled.div`
@@ -92,7 +92,7 @@ const SearchIcon = styled.span`
   justify-content: center;
   font-size: 1.2rem;
   color: #aaa;
-  margin-right: 3px;
+  margin-right: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -122,19 +122,22 @@ const SearchButton = styled.button`
   background-color: white;
   cursor: pointer;
   font-size: 12px;
-  min-width: 40px;
+  min-width: 50px;
   margin-top: 0;
+  margin-left: 10px;
   height: 38px;
-  display: none; /* 기본적으로 숨깁니다 */
+  display: none;
 
   &:hover {
     border-color: #121212;
   }
 
-  @media (min-width: 768px) {
-    display: inline-block; /* 768px 이상일 때만 보이도록 설정 */
+  @media (min-width: 480px) {
+  }
+
+  @media (min-width: 830px) {
+    display: inline-block;
     font-size: 14px;
     height: 40px;
-    min-width: 50px;
   }
 `;
