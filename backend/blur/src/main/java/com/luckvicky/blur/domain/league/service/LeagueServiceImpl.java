@@ -64,19 +64,6 @@ public class LeagueServiceImpl implements LeagueService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<SimpleLeagueDto> searchLeaguesByKeyword(String keyword) {
-
-        List<League> leagues = leagueRepository.findAllByNameContainingIgnoreCase(keyword);
-
-
-        return leagues.stream()
-                .limit(5)
-                .map(SimpleLeagueDto::of)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Boolean createLeague(LeagueCreateRequest request) {
 
         LeagueType type = LeagueType.valueOf(request.type());

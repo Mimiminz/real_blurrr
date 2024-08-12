@@ -1,6 +1,7 @@
 package com.luckvicky.blur.domain.leagueboard.repository;
 
 import com.luckvicky.blur.domain.board.exception.NotExistBoardException;
+import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.member.model.entity.Member;
@@ -32,13 +33,7 @@ public interface LeagueBoardRepository extends JpaRepository<LeagueBoard, UUID> 
     Page<LeagueBoard> findAllByMemberAndLike(Member member, Pageable pageable, ActivateStatus status);
 
     @EntityGraph(attributePaths = "member")
-    Page<LeagueBoard> findAllByLeagueAndTitleContainingIgnoreCase(League league, String title, Pageable pageable);
-
-    @EntityGraph(attributePaths = "member")
-    Page<LeagueBoard> findAllByLeagueAndContentContainingIgnoreCase(League league, String title, Pageable pageable);
-
-    @EntityGraph(attributePaths = "member")
-    Page<LeagueBoard> findAllByLeagueAndMemberNicknameContainingIgnoreCase(League league, String nickname, Pageable pageable);
+    Page<LeagueBoard> findAllByLeagueAndStatusAndTitleContainingIgnoreCase(League league, ActivateStatus status, String title, Pageable pageable);
 
     @EntityGraph(attributePaths = "member")
     Page<LeagueBoard> findAllByMemberAndStatus(Member member, ActivateStatus status, Pageable pageable);

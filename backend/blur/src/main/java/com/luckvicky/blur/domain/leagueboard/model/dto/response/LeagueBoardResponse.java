@@ -1,5 +1,6 @@
 package com.luckvicky.blur.domain.leagueboard.model.dto.response;
 
+import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +35,7 @@ public record LeagueBoardResponse(
 
 ) {
 
-    public static LeagueBoardResponse of(LeagueBoard board, Long viewCount) {
+    public static LeagueBoardResponse of(Board board, Long viewCount) {
         return LeagueBoardResponse.builder()
                 .id(board.getId())
                 .member(SimpleMemberDto.of(board.getMember()))

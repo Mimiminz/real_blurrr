@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface LeagueBoardSearchService {
 
     PaginatedResponse<LeagueBoardResponse> search(
-            UUID leagueId, String leagueType, String keyword, String condition, int pageNumber, String criteria
+            UUID leagueId, String leagueType, String keyword, int pageNumber, String criteria
     );
 
 }
