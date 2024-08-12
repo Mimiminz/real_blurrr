@@ -64,5 +64,6 @@ public class ErrorMessage {
     public static final String FAIL_TO_DELETE_COMMENT_MESSAGE = "댓글 삭제를 실패했습니다.";
     public static final String FAIL_TO_CREATE_FOLLOW_MESSAGE = "팔로우 생성을 실패했습니다.";
     public static final String FAIL_TO_DELETE_FOLLOW_MESSAGE = "팔로우 삭제를 실패했습니다.";
+    public static final String FAIL_TO_CREATE_THUMBNAIL_MESSAGE = "썸네일 생성을 실패했습니다.";
 
 }

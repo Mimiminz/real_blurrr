@@ -87,6 +87,8 @@ export default function LeaguePage({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mediaQuery.matches); // 초기값 설정
+
     const handleMediaChange = (e: MediaQueryListEvent) =>
       setIsDesktop(e.matches);
 
@@ -250,6 +252,7 @@ export default function LeaguePage({
       const results = await fetchBoardSearch(
         activeTab.id,
         keyword,
+        activeTab.type,
         currentPage - 1
       );
       setSearchResults(results.content);
@@ -267,7 +270,12 @@ export default function LeaguePage({
 
   const closeLoginPopup = () => {
     setShowLoginPopup(false);
-    router.back();
+
+  };
+
+  const closeNoLoginPopup = () => {
+    setShowLoginPopup(false);
+    router.push("/");
   };
 
   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
@@ -352,7 +360,7 @@ export default function LeaguePage({
         <ModalOverlay onClick={closeLoginPopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closeLoginPopup} />
-            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+            <CloseIcon onClick={closeNoLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       )}

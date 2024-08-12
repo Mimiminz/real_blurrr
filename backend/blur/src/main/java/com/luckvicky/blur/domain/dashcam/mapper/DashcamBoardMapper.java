@@ -6,9 +6,7 @@ import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardDetailDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.DashcamBoardListDto;
 import com.luckvicky.blur.domain.dashcam.model.dto.VideoDto;
 import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
-import com.luckvicky.blur.domain.dashcam.model.entity.Video;
 import com.luckvicky.blur.domain.member.model.SimpleMemberDto;
-import com.luckvicky.blur.domain.vote.model.dto.OptionDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +32,7 @@ public class DashcamBoardMapper {
                 .commentCount(dashcam.getCommentCount())
                 .likeCount(dashcam.getLikeCount())
                 .createdAt(dashcam.getCreatedAt())
-                .thumbNail(dashcam.getThumbNail())
+                .thumbNail(dashcam.getThumbnail())
                 .mentionedLeagues(mentionedLeagues)
                 .build();
     }

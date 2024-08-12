@@ -51,10 +51,12 @@ export default function BoardDetailPage({
 
   const loadBoardDetail = async () => {
     try {
+      console.log("page에서 호출 시작");
       const details = await fetchLeagueDetail(boardId);
       setBoardDetail(details);
       setIsLiked(details.isLike);
       setLikeCount(details.likeCount);
+      console.log("page에서 호출 완료");
     } catch (error) {
       console.log(error);
     }
@@ -86,8 +88,11 @@ export default function BoardDetailPage({
   };
 
   const previousBoardIdRef = useRef<string | null>(null);
+
   useEffect(() => {
     const loadDetails = async () => {
+      console.log(`boardID: ${boardId}`);
+      console.log(`previousBoardIdRef: ${previousBoardIdRef.current}`);
       if (!isLoggedIn) {
         setShowLogin(true);
         setLoading(false);
@@ -99,12 +104,17 @@ export default function BoardDetailPage({
         setLoading(false);
       } else if (previousBoardIdRef.current !== boardId) {
         previousBoardIdRef.current = boardId;
+        console.log(`loadDetails 안 ${previousBoardIdRef.current}`);
         await loadBoardDetail();
       }
     };
 
+    console.log("useEffect 안 시작");
+
     loadDetails();
-  }, [boardId, isLoggedIn, user?.isAuth]);
+    console.log("useEffect 안 완료");
+    console.log(previousBoardIdRef.current);
+  }, [previousBoardIdRef]);
 
   useEffect(() => {
     const loadBoardData = async () => {
@@ -147,6 +157,7 @@ export default function BoardDetailPage({
     router.back();
   };
   const closeLoginPopup = () => {
+    setShowLogin(false);
     router.back();
   };
   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
@@ -165,7 +176,7 @@ export default function BoardDetailPage({
         <ModalOverlay onClick={closePopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closePopup} />
-            <CloseIcon onClick={closePopup}>×</CloseIcon>
+            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       );

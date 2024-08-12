@@ -79,8 +79,7 @@ public record DashcamBoardCreateRequest(
                 .commentCount(0L)
                 .likeCount(0L)
                 .totalVoteCount(0L)
-                // TODO : 썸네일 만들어야함.
-                .thumbNail("https://blurrr-img-bucket.s3.ap-northeast-2.amazonaws.com/videos/bbcc4b76-2661-4-dashcam_test.png")
+                .thumbnail("https://blurrr-img-bucket.s3.ap-northeast-2.amazonaws.com/default/logo.png")
                 .build();
     }
 

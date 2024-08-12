@@ -37,7 +37,7 @@ public class DashCam extends Board {
     private List<Video> videos = new ArrayList<>();
 
     @Column
-    private String thumbNail;
+    private String thumbnail;
 
 
     @Column(nullable = false)
@@ -55,12 +55,16 @@ public class DashCam extends Board {
         this.options = options;
     }
 
-    public void increaseVoteCount() {this.totalVoteCount++;}
-
-    @Override
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void increaseVoteCount() {this.totalVoteCount++;}
+
 }
 
 
