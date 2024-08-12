@@ -157,6 +157,7 @@ export default function BoardDetailPage({
     router.back();
   };
   const closeLoginPopup = () => {
+    setShowLogin(false);
     router.back();
   };
   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
@@ -175,7 +176,7 @@ export default function BoardDetailPage({
         <ModalOverlay onClick={closePopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closePopup} />
-            <CloseIcon onClick={closePopup}>×</CloseIcon>
+            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       );

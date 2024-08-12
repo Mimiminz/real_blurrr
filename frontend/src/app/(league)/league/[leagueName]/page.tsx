@@ -270,7 +270,12 @@ export default function LeaguePage({
 
   const closeLoginPopup = () => {
     setShowLoginPopup(false);
-    router.back();
+
+  };
+
+  const closeNoLoginPopup = () => {
+    setShowLoginPopup(false);
+    router.push("/");
   };
 
   const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
@@ -355,7 +360,7 @@ export default function LeaguePage({
         <ModalOverlay onClick={closeLoginPopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closeLoginPopup} />
-            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+            <CloseIcon onClick={closeNoLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       )}
