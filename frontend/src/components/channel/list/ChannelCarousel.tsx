@@ -10,14 +10,7 @@ import UserChannelCard from './UserChannelCard';
 SwiperCore.use([Scrollbar, Autoplay]);
 
 const SwiperContainer = styled.div`
-  .swiper-button-next::after,
-  .swiper-button-prev::after {
-    display: none;
-  }
 
-  .swiper-button-active {
-   margin-left: 0px;
-  }
 `;
 
 interface ChannelCarouselProps {
