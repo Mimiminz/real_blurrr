@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ChannelCard from '@/components/channel/list/ChannelCard';
-import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; // 경로에 맞게 변경하세요
-import SearchBar from '@/components/common/UI/SearchBar'; // 경로에 맞게 변경하세요
+import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; 
+import SearchBar from '@/components/common/UI/SearchBar'; 
 import { useRouter } from 'next/navigation';
 import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchKeywords } from '@/api/channel';
 import { Channels } from '@/types/channelType';
@@ -145,27 +145,6 @@ const SectionTitle = styled.h3`
   margin-bottom: 25px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-`;
-
-const CreateButton = styled.button`
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #fff;
-  background-color: #6b7280;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #4b5563;
-  }
-`;
-
 const SearchBarContainer = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -201,6 +180,9 @@ const GridContainer = styled.div`
   }
   @media (min-width: 1440px) {
     grid-template-columns: repeat(5, minmax(200px, 1fr));
+  }
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 `;
 
