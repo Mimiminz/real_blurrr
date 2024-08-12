@@ -29,8 +29,6 @@ export default function CommentList({
   const openLoginModal = () => setShowLogin(true);
   const closeLoginModal = () => setShowLogin(false);
 
-  console.log(comments)
-
   return (
     <CommentContainer>
       <CommentNumber>

@@ -85,21 +85,6 @@ export default function BoardDetailPage({
     return userLeagueList.some((league) => league.name === leagueName);
   };
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     setShowLogin(true);
-  //     setLoading(false);
-  //   } else if (!user?.isAuth) {
-  //     setShowPopup(true);
-  //     setLoading(false);
-  //     return;
-  //   } else if (!checkLeagueInUserList()) {
-  //     setShowNoAuthority(true);
-  //     setLoading(false);
-  //   }
-  //   loadBoardDetail();
-  // }, [boardId, isLoggedIn, user]);
-
   const previousBoardIdRef = useRef<string | null>(null);
   useEffect(() => {
     const loadDetails = async () => {
@@ -164,6 +149,15 @@ export default function BoardDetailPage({
   const closeLoginPopup = () => {
     router.back();
   };
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
+    return <Loading />;
+  }
 
   if (loading || !boardDetail || !commentList) {
     if (showLogin) {
@@ -206,12 +200,15 @@ export default function BoardDetailPage({
         leagueName={leagueName}
       />
       <Content dangerouslySetInnerHTML={{ __html: boardDetail.content }} />
-      <CommentContainer>
-        <WriterContainer>
+      <WriterContainer>
+        {isLoggedIn && (
           <HeartButton onClick={toggleLike} $isLiked={isLiked}>
             {isLiked ? <FaHeart /> : <FaRegHeart />}
+            좋아요
           </HeartButton>
-        </WriterContainer>
+        )}
+      </WriterContainer>
+      <CommentContainer>
         <CommentList
           comments={commentList.comments}
           commentCount={commentList.commentCount}
@@ -262,8 +259,9 @@ const CommentContainer = styled.div`
 
 const WriterContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: end;
+  margin-bottom: 10px;
+  /* margin-left: 20px; */
 `;
 
 const WriterButton = styled.p`
@@ -279,23 +277,25 @@ const WriterButton = styled.p`
 `;
 
 const HeartButton = styled.button<{ $isLiked: boolean }>`
-  margin: 5px 0px 2px 0px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")};
   display: flex;
-  justify-content: center;
   align-items: center;
+  padding: 8px;
+  background-color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+  font-size: 14px;
 
   &:hover {
-    color: ${({ $isLiked }) => ($isLiked ? "#ff6666" : "#d60606")};
+    background-color: #ebebeb;
   }
 
-  @media (min-width: 768px) {
-    font-size: 20px;
+  svg {
+    margin-right: 5px;
+    font-size: 17px;
+    /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
+    color: #d60606;
   }
 `;
 
