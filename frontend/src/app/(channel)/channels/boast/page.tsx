@@ -130,6 +130,10 @@ const CardGrid = styled.div`
   @media (min-width: 1440px) {
     grid-template-columns: repeat(4, minmax(200px, 1fr));
   }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 `;
 
 const EmptyMessage = styled.p`
