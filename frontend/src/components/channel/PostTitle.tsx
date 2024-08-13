@@ -121,7 +121,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
     <Container>
       <TitleSection>
         <h1>{title}</h1> {/* 실제 채널 이름을 표시 */}
-        <SideSection isloggedin={isLoggedIn}>
+        <SideSection $isLoggedIn={isLoggedIn}>
           {isLoggedIn && isFollowing !== null && (
             <SetButton $isFollowing={isFollowing} onClick={handleFollowChannel}>
               {isFollowing ? "언팔로우 -" : "팔로우 +"}
@@ -259,9 +259,9 @@ const DropdownItem = styled.div`
   }
 `;
 
-const SideSection = styled.div<{ isloggedin: boolean }>`
+const SideSection = styled.div<{ $isLoggedIn: boolean }>`
   display: flex;
-  justify-content: ${({ isloggedin }) => (isloggedin ? "space-between" : "flex-end")};
+  justify-content: ${({ $isLoggedIn }) => ($isLoggedIn ? "space-between" : "flex-end")};
   width: 100%;
   align-items: center;
   gap: 10px;

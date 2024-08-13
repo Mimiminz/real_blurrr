@@ -174,7 +174,7 @@ const Title = styled.h1`
 
 const Input = styled.input<{ isError: boolean }>`
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 10px;
   margin-bottom: 8px;
   border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
@@ -184,12 +184,11 @@ const Input = styled.input<{ isError: boolean }>`
 
 const EditorContainer = styled.div<{ isError: boolean }>`
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin-bottom: 8px; /* 오류 메시지 추가를 위해 여백 감소 */
   box-sizing: border-box; /* 추가 */
   border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
   border-radius: 5px;
-  padding: 10px;
 `;
 
 const ErrorMessage = styled.p`
@@ -201,7 +200,7 @@ const ErrorMessage = styled.p`
 
 const SubmitButton = styled.button`
   width: 10%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 12px;
   background-color: #ffa600;
   color: white; /* 흰색 글씨 */

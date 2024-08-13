@@ -1,11 +1,13 @@
+// src/pages/WritePage.tsx
+
 "use client";
 
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import styled from "styled-components";
 import QuillEditor from "@/components/channel/board/QuillEditor";
 import { fetchPostWrite, fetchBoastWrite } from "@/api/channel";
 import FindTags from "@/components/channel/board/FindTags";
+import * as S from '@/styles/channel/board/writePage.styled'; // 스타일드 컴포넌트 불러오기
 
 export default function WritePage() {
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
@@ -17,16 +19,40 @@ export default function WritePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [thumbNail, setThumbNail] = useState<string>("");
 
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+
+    if (newTitle.length > 35) {
+      setTitleError("제목은 35자 이내로 작성해주세요.");
+    } else {
+      setTitleError(""); // 35자 이내면 오류 메시지 제거
+    }
+
+    setTitle(newTitle);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
-      return;
+    let hasError = false;
+
+    if (!title.trim()) {
+      setTitleError("제목을 작성해주세요.");
+      hasError = true;
+    } else if (title.length > 35) {
+      hasError = true; // 35자 제한 오류는 handleTitleChange에서 처리
     }
+
+    if (!content.trim()) {
+      setContentError("본문을 작성해주세요.");
+      hasError = true;
+    } else {
+      setContentError(""); // 유효한 경우 오류 메시지 초기화
+    }
+
+    if (hasError) return;
 
     try {
       if (boastId === channelId) {
@@ -42,95 +68,26 @@ export default function WritePage() {
   };
 
   return (
-    <Container>
-      <PageTitle>게시글 작성</PageTitle>
+    <S.Container>
+      <S.PageTitle>게시글 작성</S.PageTitle>
       <form onSubmit={handleSubmit}>
-        <Input
+        <S.Input
           name="titleInput"
           placeholder="제목을 입력해주세요."
           value={title}
           onChange={handleTitleChange}
+          isError={!!titleError}
         />
+        {titleError && <S.ErrorMessage>{titleError}</S.ErrorMessage>}
         <FindTags tags={tags} setTags={setTags} />
-        <EditorAndButtonContainer>
-          <EditorContainer>
+        <S.EditorAndButtonContainer>
+          <S.EditorContainer isError={!!contentError}>
             <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
-          </EditorContainer>
-          <SubmitButton type="submit">작성</SubmitButton>
-        </EditorAndButtonContainer>
+          </S.EditorContainer>
+          {contentError && <S.ErrorMessage>{contentError}</S.ErrorMessage>}
+          <S.SubmitButton type="submit">작성</S.SubmitButton>
+        </S.EditorAndButtonContainer>
       </form>
-    </Container>
+    </S.Container>
   );
 };
-
-const Container = styled.div`
-  padding: 50px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  max-width: 100%; /* 기본적으로 전체 너비 사용 */
-  margin: 0 auto;
-
-  @media (min-width: 768px) {
-    max-width: 750px; /* 태블릿 이상에서는 750px */
-  }
-
-  @media (min-width: 1024px) {
-    max-width: 1000px; /* 데스크탑에서는 1000px */
-  }
-`;
-
-const PageTitle = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  max-width: 1000px; /* Increased max-width */
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
-`;
-
-const EditorAndButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const EditorContainer = styled.div`
-  width: 100%;
-  max-width: 100%; /* 기본적으로 전체 너비 사용 */
-  margin-bottom: 16px;
-  box-sizing: border-box;
-
-  @media (min-width: 768px) {
-    max-width: 750px; /* 태블릿 이상에서는 750px */
-  }
-
-  @media (min-width: 1024px) {
-    max-width: 1000px; /* 데스크탑에서는 1000px */
-  }
-`;
-
-const SubmitButton = styled.button`
-  width: 100px;
-  padding: 12px;
-  background-color: #ffa600;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 16px;
-  max-width: 300px;
-
-  &:hover {
-    background-color: #FF900D;
-  }
-`;
