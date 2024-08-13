@@ -19,9 +19,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,94 +40,58 @@ public class LeagueCommentController {
 
     private final LeagueCommentService leagueCommentService;
 
-    @Operation(
-            summary = "댓글 작성 API",
-            description = "사용자와 게시글 고유 식별자를 받아 댓글을 생성한다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "생성 완료"
-            ),
-            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ACCESS_MESSAGE),
-            @ApiResponse(responseCode = "403", description = NOT_ALLOCATED_LEAGUE_MESSAGE),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = NOT_EXIST_MEMBER_MESSAGE + "or" + NOT_EXIST_BOARD_MESSAGE
-            ),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_COMMENT_MESSAGE)
-    })
+    @Operation(summary = "댓글 작성 API", description = "사용자와 게시글 고유 식별자를 받아 댓글을 생성한다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     })
     @PostMapping("/{leagueId}/boards/{boardId}/comments")
-    public ResponseEntity createComment(
+    public ResponseEntity<Result<Boolean>> createComment(
             @AuthUser ContextMember member,
             @PathVariable("leagueId") UUID leagueId,
             @PathVariable("boardId") UUID boardId,
-            @RequestBody LeagueCommentCreateRequest request
+            @RequestBody @Valid LeagueCommentCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueCommentService.createComment(
-                                member.getId(), leagueId, boardId, request)
-                        )
-                        .build()
+                Result.of(leagueCommentService.createComment(
+                        member.getId(), leagueId, boardId, request)
+                )
         );
 
     }
 
-    @Operation(
-            summary = "대댓글 작성 API",
-            description = "댓글, 사용자, 게시글 고유 식별자를 받아 대댓글을 생성한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "생성 완료"),
-            @ApiResponse(responseCode = "404", description = FAIL_TO_CREATE_COMMENT_MESSAGE),
-            @ApiResponse(responseCode = "500", description = FAIL_TO_CREATE_COMMENT_MESSAGE)
-    })
+    @Operation(summary = "대댓글 작성 API", description = "댓글, 사용자, 게시글 고유 식별자를 받아 대댓글을 생성한다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "commentId", description = "댓글 고유 식별값", in = ParameterIn.PATH)
     })
     @PostMapping("/{leagueId}/boards/{boardId}/comments/{commentId}")
-    public ResponseEntity createReply(
+    public ResponseEntity<Result<Boolean>> createReply(
             @AuthUser ContextMember member,
             @PathVariable("leagueId") UUID leagueId,
             @PathVariable("boardId") UUID boardId,
             @PathVariable(name = "commentId") UUID commentId,
-            @RequestBody LeagueReplyCreateRequest request
+            @RequestBody @Valid LeagueReplyCreateRequest request
     ) {
 
         return ResponseUtil.created(
-                Result.builder()
-                        .data(leagueCommentService.createReply
-                                (member.getId(), leagueId, boardId, commentId, request)
-                        )
-                        .build()
+                Result.of(
+                        leagueCommentService.createReply(member.getId(), leagueId, boardId, commentId, request)
+                )
         );
 
     }
 
-    @Operation(
-            summary = "댓글 삭제 API",
-            description = "댓글, 게시글 고유 식별값을 받아 일치하는 댓글을 삭제한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 댓글, 게시글"),
-            @ApiResponse(responseCode = "500", description = "DB 삭제 실패"),
-    })
+    @Operation(summary = "댓글 삭제 API", description = "댓글, 게시글 고유 식별값을 받아 일치하는 댓글을 삭제한다.")
     @Parameters({
             @Parameter(name = "leagueId", description = "리그 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "commentId", description = "댓글 고유 식별값", in = ParameterIn.PATH),
             @Parameter(name = "boardId", description = "게시글 고유 식별값", in = ParameterIn.PATH)
     })
-    @PutMapping("/{leagueId}/comments/{commentId}/boards/{boardId}")
-    public ResponseEntity deleteComment(
+    @DeleteMapping("/{leagueId}/comments/{commentId}/boards/{boardId}")
+    public ResponseEntity<Result<Boolean>> deleteComment(
             @AuthUser ContextMember member,
             @PathVariable("leagueId") UUID leagueId,
             @PathVariable(name = "commentId") UUID commentId,
@@ -133,12 +99,9 @@ public class LeagueCommentController {
     ) {
 
         return ResponseUtil.ok(
-                Result.builder()
-                        .data(
-                                leagueCommentService
-                                        .deleteComment(member.getId(), leagueId, commentId, boardId)
-                        )
-                        .build()
+                Result.of(
+                        leagueCommentService.deleteComment(member.getId(), leagueId, commentId, boardId)
+                )
         );
 
     }
