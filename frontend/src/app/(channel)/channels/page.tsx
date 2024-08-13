@@ -1,21 +1,20 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import ChannelCard from '@/components/channel/list/ChannelCard';
-import ChannelCarousel from '@/components/channel/list/ChannelCarousel'; 
-import SearchBar from '@/components/common/UI/SearchBar'; 
+import ChannelCarousel from '@/components/channel/list/ChannelCarousel';
+import SearchBar from '@/components/common/UI/SearchBar';
 import { useRouter } from 'next/navigation';
 import { fetchChannels, fetchFollowingChannels, fetchCreatedChannels, fetchSearchKeywords } from '@/api/channel';
 import { Channels } from '@/types/channelType';
 import { useAuthStore } from '@/store/authStore';
-import Loading from "@/components/common/UI/Loading";
+import * as S from '@/styles/channel/channelPage.styled';
+import Loading from '@/app/loading';
 
 const ChannelPage: React.FC = () => {
   const [Channels, setChannels] = useState<Channels[]>([]);
   const [FollowingChannels, setFollowingChannels] = useState<Channels[]>([]);
   const [CreatedChannels, setCreatedChannels] = useState<Channels[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [first, setFirst] = useState(false);
   const [hasNext, setHasNext] = useState(false);
@@ -24,11 +23,7 @@ const ChannelPage: React.FC = () => {
 
   const dashcamId = process.env.NEXT_PUBLIC_DASHCAM_ID;
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
-
-  useEffect(() => {
-    const accessToken = useAuthStore.getState().accessToken;
-    setIsLoggedIn(!!accessToken);
-  }, []);
+  const { isLoggedIn } = useAuthStore();
 
   useEffect(() => {
     const loadData = async () => {
@@ -73,7 +68,6 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-
   const onSearch = async (newKeyword: string) => {
     try {
       if (!newKeyword.trim()) {
@@ -88,22 +82,18 @@ const ChannelPage: React.FC = () => {
     }
   };
 
-  // <ButtonContainer>
-  //   <CreateButton onClick={handleCreateChannel}>채널 생성 +</CreateButton>
-  // </ButtonContainer>
   return (
     <>
       {isLoggedIn && (
         <>
-
-          <SectionTitle>내가 생성한 채널</SectionTitle>
+          <S.SectionTitle>내가 생성한 채널</S.SectionTitle>
           {CreatedChannels.length === 0 ? (
             <p>생성한 채널이 없습니다</p>
           ) : (
             <ChannelCarousel slides={CreatedChannels} handleChannelClick={handleChannelClick} />
           )}
 
-          <SectionTitle>내가 팔로우한 채널</SectionTitle>
+          <S.SectionTitle>내가 팔로우한 채널</S.SectionTitle>
           {FollowingChannels.length === 0 ? (
             <p>팔로잉한 채널이 없습니다</p>
           ) : (
@@ -112,17 +102,17 @@ const ChannelPage: React.FC = () => {
         </>
       )}
 
-      <SectionTitle>전체 채널</SectionTitle>
-      <SearchBarContainer>
+      <S.SectionTitle>전체 채널</S.SectionTitle>
+      <S.SearchBarContainer>
         <SearchBar onSearch={onSearch} />
-      </SearchBarContainer>
-      <PageContainer>
+      </S.SearchBarContainer>
+      <S.PageContainer>
         {isLoading ? (
           <Loading />
         ) : Channels && Channels.length === 0 ? (
-          <EmptyMessage>채널이 없습니다.</EmptyMessage>
+          <S.EmptyMessage>채널이 없습니다.</S.EmptyMessage>
         ) : (
-          <GridContainer>
+          <S.GridContainer>
             {Channels.map((channel) => (
               <div key={channel.id} onClick={() => handleChannelClick(channel.id)}>
                 <ChannelCard
@@ -133,64 +123,11 @@ const ChannelPage: React.FC = () => {
                 />
               </div>
             ))}
-          </GridContainer>
+          </S.GridContainer>
         )}
-      </PageContainer>
+      </S.PageContainer>
     </>
   );
 }
-
-const SectionTitle = styled.h3`
-  margin-top: 40px;
-  margin-bottom: 25px;
-`;
-
-const SearchBarContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  margin: 10px 0px 30px;
-`;
-
-const PageContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  margin: 0 auto;
-  width: 100%;
-  @media (max-width: 320px) {
-    grid-template-columns: repeat(1, minmax(200px, 1fr));
-  }
-  @media (min-width: 480px) {
-    grid-template-columns: repeat(2, minmax(200px, 1fr));
-  }
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
-  }
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(4, minmax(200px, 1fr));
-  }
-  @media (min-width: 1440px) {
-    grid-template-columns: repeat(5, minmax(200px, 1fr));
-  }
-  @media (min-width: 2560px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-`;
-
-const EmptyMessage = styled.p`
-  padding-top: 100px;
-  text-align: center;
-  font-size: 18px;
-  color: #333;
-`;
 
 export default ChannelPage;

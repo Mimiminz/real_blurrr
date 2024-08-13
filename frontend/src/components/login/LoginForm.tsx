@@ -22,9 +22,10 @@ interface LoginFormValues {
 
 interface LoginFormProps {
   closeLoginModal: () => void;
+  onLoginSuccess?: () => void; // 로그인 성공 시 호출될 콜백
 }
 
-const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
+const LoginForm = ({ closeLoginModal, onLoginSuccess }: LoginFormProps) => {
   const router = useRouter();
   const [isFindPasswordModalOpen, setIsFindPasswordModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -35,12 +36,15 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
   const openSignupModal = () => setIsSignupModalOpen(true);
   const closeSignupModal = () => setIsSignupModalOpen(false);
 
-  const { setAccessToken, setRefreshToken, setUser } = useAuthStore((state) => ({
-    setAccessToken: state.setAccessToken,
-    setRefreshToken: state.setRefreshToken,
-    setUser: state.setUser,
-  }));
-  const { setInitialized, setUserLeagueList } = useLeagueStore();
+  const { setAccessToken, setRefreshToken, setUser, user } = useAuthStore(
+    (state) => ({
+      setAccessToken: state.setAccessToken,
+      setRefreshToken: state.setRefreshToken,
+      setUser: state.setUser,
+      user: state.user,
+    })
+  );
+  const { userLeagueList, setUserLeagueList } = useLeagueStore();
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -62,11 +66,11 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
 
       const userResponse = await getUserInfo();
 
-      setUser(userResponse.data);
+      setUser(userResponse);
 
       if (userResponse.isAuth) {
-
         const userLeagues: UserLeague[] = await fetchUserLeagueList();
+        console.log(userLeagues);
         const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
           id: userLeague.league.id,
           name: userLeague.league.name,
@@ -74,28 +78,30 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
           peopleCount: userLeague.league.peopleCount,
         }));
 
+        console.log(userTabs);
         setUserLeagueList(userTabs);
+        console.log(userLeagueList);
       }
 
       closeLoginModal();
+      if (onLoginSuccess) onLoginSuccess();
     } catch (error) {
- 
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data;
-        const errorMessage = errorResponse?.body?.detail || '로그인 요청 중 오류가 발생했습니다.';
+        const errorMessage =
+          errorResponse?.body?.detail || "로그인 요청 중 오류가 발생했습니다.";
         alert(`로그인 오류: ${errorMessage}`);
       } else if (error instanceof Error) {
         // 일반 에러 처리
         alert(`오류: ${error.message}`);
       } else {
         // 알 수 없는 오류 처리
-        alert('로그인 요청 중 알 수 없는 오류가 발생했습니다.');
+        alert("로그인 요청 중 알 수 없는 오류가 발생했습니다.");
       }
     } finally {
       // 요청 완료 후 버튼 비활성화 해제
       setSubmitting(false);
     }
-  
   };
 
   return (
@@ -103,9 +109,7 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
       {isFindPasswordModalOpen && (
         <FindPasswordForm closeFindPasswordModal={closeFindPasswordModal} />
       )}
-      {isSignupModalOpen && (
-        <SignupForm closeSignupModal={closeSignupModal} />
-      )}
+      {isSignupModalOpen && <SignupForm closeSignupModal={closeSignupModal} />}
       {!isFindPasswordModalOpen && !isSignupModalOpen && (
         <Container>
           <Image src="/images/logo/logo.png" alt="로고" />
@@ -117,11 +121,11 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
                 .email("유효한 이메일 형식을 입력하세요.")
                 .required("이메일은 필수 입력 항목입니다."),
               password: Yup.string()
-              .matches(
-                /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/,
-                "비밀번호는 영문자, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다."
-              )
-              .required("비밀번호는 필수 입력 항목입니다."),
+                .matches(
+                  /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/,
+                  "비밀번호는 영문자, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다."
+                )
+                .required("비밀번호는 필수 입력 항목입니다."),
               rememberMe: Yup.boolean(),
             })}
             onSubmit={handleSubmit}
@@ -210,7 +214,7 @@ const StyledField = styled(Field)`
   font-size: 14px;
   border-radius: 5px;
   border: 1.5px solid #eeeeee;
-  
+
   @media (min-width: 768px) {
     font-size: 16px;
     padding: 15px;
@@ -227,8 +231,8 @@ const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
   font-size: 12px;
   margin-bottom: 10px;
-  min-height: 20px; 
-  
+  min-height: 20px;
+
   @media (min-width: 768px) {
     font-size: 14px;
   }

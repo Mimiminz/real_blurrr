@@ -18,7 +18,7 @@ const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
     return <div>올라온 게시글이 없습니다</div>;
   }
   const handleClick = () => {
-    router.push(`/channels/boast/${todayCar.id}`);
+    router.push(`/channels/${process.env.NEXT_PUBLIC_BOAST_ID}/${todayCar.id}`);
   };
 
   return (

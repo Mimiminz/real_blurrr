@@ -17,7 +17,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // 폼 제출 기본 동작 방지
 
-    const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/g;
+    const specialCharPattern = /[(){}|<>]/g;
 
     if (specialCharPattern.test(keyword)) {
       alert("특수 문자는 사용할 수 없습니다.");
@@ -59,11 +59,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 export default SearchBar;
 
 const Container = styled.div`
-  width: 100%;
   display: flex;
   align-items: center;
 
-  @media (min-width: 768px) {
+  @media (maxs-width: 768px) {
     width: 40%;
   }
 `;

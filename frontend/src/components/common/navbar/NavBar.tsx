@@ -192,13 +192,13 @@ const ModalContent = styled.div`
     animation: ${fadeOut} 300ms ease-in-out;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 480px) {
     width: 100%;
     height: 500px;
     padding: 15px;
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
     width: 90%;
     height: 500px;
     padding: 10px;

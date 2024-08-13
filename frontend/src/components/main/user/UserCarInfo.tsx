@@ -59,7 +59,7 @@ const UserCarInfo: React.FC = () => {
             <LeagueItem>
               <LeagueTitle>브랜드 리그</LeagueTitle>
               <ClickableLeagueName
-                onClick={() => handleUserLeagueClick(userLeagueList[0]?.name)}
+                onClick={() => handleUserLeagueClick(userLeagueList[1]?.name)}
               >
                 <MdFactory />
                 {userLeagueList[1]?.name}
