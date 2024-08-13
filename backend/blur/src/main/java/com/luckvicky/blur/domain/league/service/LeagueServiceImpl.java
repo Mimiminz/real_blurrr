@@ -2,9 +2,7 @@ package com.luckvicky.blur.domain.league.service;
 
 import static com.luckvicky.blur.global.constant.Number.RANKING_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
 
-import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;

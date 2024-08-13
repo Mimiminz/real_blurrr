@@ -9,6 +9,4 @@ public interface LeagueMemberService {
 
     LeagueMemberListResponse findLeagueMemberByMember(UUID memberId);
 
-    Boolean checkLeagueAllocationOfMember(League league, Member member);
-
 }

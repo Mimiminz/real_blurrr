@@ -1,17 +1,11 @@
 package com.luckvicky.blur.domain.leaguemember.service;
 
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
-
-import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
-import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
-import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
-import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.UUID;
@@ -42,10 +36,6 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
                         .collect(Collectors.toList())
         );
 
-    }
-
-    public Boolean checkLeagueAllocationOfMember(League league, Member member) {
-        return leagueMemberRepository.existsByLeagueAndMember(league, member);
     }
 
 }
