@@ -22,7 +22,7 @@ interface LoginFormValues {
 
 interface LoginFormProps {
   closeLoginModal: () => void;
-  onLoginSuccess?: () => void; // 로그인 성공 시 호출될 콜백
+  onLoginSuccess?: () => void; 
 }
 
 const LoginForm = ({ closeLoginModal, onLoginSuccess }: LoginFormProps) => {
@@ -215,6 +215,12 @@ const StyledField = styled(Field)`
   border-radius: 5px;
   border: 1.5px solid #eeeeee;
 
+  @media (min-width: 480px) {
+    font-size: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
   @media (min-width: 768px) {
     font-size: 16px;
     padding: 15px;
@@ -223,7 +229,7 @@ const StyledField = styled(Field)`
 
   @media (min-width: 1024px) {
     padding: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
   }
 `;
 

@@ -4,10 +4,7 @@ import React from 'react'
 import CarCertificationForm from '@/components/carcertification/CarCertificationForm'
 import styled from 'styled-components';
 
-
-type Props = {}
-
-const page = (props: Props) => {
+const page = () => {
   return (
     <Container>
         <CarCertificationForm/>
