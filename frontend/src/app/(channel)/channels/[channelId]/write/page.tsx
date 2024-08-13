@@ -1,11 +1,13 @@
+// src/pages/WritePage.tsx
+
 "use client";
 
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import styled from "styled-components";
 import QuillEditor from "@/components/channel/board/QuillEditor";
 import { fetchPostWrite, fetchBoastWrite } from "@/api/channel";
 import FindTags from "@/components/channel/board/FindTags";
+import * as S from '@/styles/channel/board/writePage.styled'; // 스타일드 컴포넌트 불러오기
 
 export default function WritePage() {
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
@@ -42,95 +44,23 @@ export default function WritePage() {
   };
 
   return (
-    <Container>
-      <PageTitle>게시글 작성</PageTitle>
+    <S.Container>
+      <S.PageTitle>게시글 작성</S.PageTitle>
       <form onSubmit={handleSubmit}>
-        <Input
+        <S.Input
           name="titleInput"
           placeholder="제목을 입력해주세요."
           value={title}
           onChange={handleTitleChange}
         />
         <FindTags tags={tags} setTags={setTags} />
-        <EditorAndButtonContainer>
-          <EditorContainer>
+        <S.EditorAndButtonContainer>
+          <S.EditorContainer>
             <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
-          </EditorContainer>
-          <SubmitButton type="submit">작성</SubmitButton>
-        </EditorAndButtonContainer>
+          </S.EditorContainer>
+          <S.SubmitButton type="submit">작성</S.SubmitButton>
+        </S.EditorAndButtonContainer>
       </form>
-    </Container>
+    </S.Container>
   );
 };
-
-const Container = styled.div`
-  padding: 50px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  max-width: 100%; /* 기본적으로 전체 너비 사용 */
-  margin: 0 auto;
-
-  @media (min-width: 768px) {
-    max-width: 750px; /* 태블릿 이상에서는 750px */
-  }
-
-  @media (min-width: 1024px) {
-    max-width: 1000px; /* 데스크탑에서는 1000px */
-  }
-`;
-
-const PageTitle = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  max-width: 1000px; /* Increased max-width */
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
-`;
-
-const EditorAndButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const EditorContainer = styled.div`
-  width: 100%;
-  max-width: 100%; /* 기본적으로 전체 너비 사용 */
-  margin-bottom: 16px;
-  box-sizing: border-box;
-
-  @media (min-width: 768px) {
-    max-width: 750px; /* 태블릿 이상에서는 750px */
-  }
-
-  @media (min-width: 1024px) {
-    max-width: 1000px; /* 데스크탑에서는 1000px */
-  }
-`;
-
-const SubmitButton = styled.button`
-  width: 100px;
-  padding: 12px;
-  background-color: #ffa600;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 16px;
-  max-width: 300px;
-
-  &:hover {
-    background-color: #FF900D;
-  }
-`;
