@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,6 @@ public class LeagueBoardController {
 
     private final LeagueBoardService leagueBoardService;
     private final LeagueCommentService leagueCommentService;
-    private final RedisViewCounterService redisViewCounterService;
 
     @Operation(summary = "리그 게시글 생성 API")
     @Parameters({
@@ -63,7 +63,7 @@ public class LeagueBoardController {
             @AuthUser ContextMember member,
             @PathVariable(name = "leagueId") UUID leagueId,
             @RequestParam(defaultValue = "BRAND", value = "leagueType") String leagueType,
-            @RequestBody LeagueBoardCreateRequest request
+            @RequestBody @Valid LeagueBoardCreateRequest request
     ) {
 
         return ResponseUtil.created(
