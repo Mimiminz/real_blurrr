@@ -62,7 +62,7 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
 
       const userResponse = await getUserInfo();
 
-      setUser(userResponse.data);
+      setUser(userResponse);
 
       if (userResponse.isAuth) {
 

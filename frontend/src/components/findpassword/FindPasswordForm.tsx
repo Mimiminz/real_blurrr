@@ -143,9 +143,9 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
                 </InputContainer>
                 <StyledErrorMessage name="emailVerification" component="div" />
                 
-                {touched.emailVerification && !errors.emailVerification && (
+                {/* {touched.emailVerification && !errors.emailVerification && (
                   <SuccessMessage>인증번호가 확인되었습니다.</SuccessMessage>
-                )}
+                )} */}
 
                 <Button
                   type="submit"

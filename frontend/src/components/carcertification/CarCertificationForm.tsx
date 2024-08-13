@@ -4,6 +4,11 @@ import { useRouter } from "next/navigation";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import axios from "axios";
 import { submitImageForOCR } from '@/api/carcertification'
+import { carInfo, getUserInfo } from "@/api/mypage";
+import { useAuthStore } from "@/store/authStore";
+import { fetchUserLeagueList } from "@/api/league";
+import { LeagueList, UserLeague } from "@/types/leagueTypes";
+import { useLeagueStore } from "@/store/leagueStore";
 
 interface SimilarCar {
   brand: string;
@@ -19,6 +24,13 @@ const CarCertificationForm = () => {
   const [preprocessedImage, setPreprocessedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
+  const { accessToken } = useAuthStore();
+  const { setAccessToken, setRefreshToken, setUser } = useAuthStore((state) => ({
+    setAccessToken: state.setAccessToken,
+    setRefreshToken: state.setRefreshToken,
+    setUser: state.setUser,
+  }));
+  const { setInitialized, setUserLeagueList } = useLeagueStore();
 
   useEffect(() => {
     return () => {
@@ -92,18 +104,52 @@ const CarCertificationForm = () => {
       } finally {
         setLoading(false);
       }
+
+      const userResponse = await getUserInfo();
+
+      setUser(userResponse);
+
+      if (userResponse.isAuth) {
+
+        const userLeagues: UserLeague[] = await fetchUserLeagueList();
+        const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
+          id: userLeague.league.id,
+          name: userLeague.league.name,
+          type: userLeague.league.type,
+          peopleCount: userLeague.league.peopleCount,
+        }));
+
+        setUserLeagueList(userTabs);
+      }
+
+
   };
 
-  const handleConfirm = () => {
-    alert("🎉내 차량이 등록되었습니다🎉")
-    // router.push("/")
+  const handleConfirm = async () => {
+    if (ocrResults.similar_car && accessToken) {
+      try {
+        const { brand, series, model_detail } = ocrResults.similar_car;
+        
+        const success = await carInfo(brand, series, model_detail, accessToken);
 
+        if (success) {
+          alert("🎉내 차량이 등록되었습니다🎉");
+          router.push("/"); 
+        } else {
+          alert("차량 등록에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("Error registering car:", error);
+        alert("차량 등록 중 오류가 발생했습니다.");
+      }
+    } else {
+      alert("차량 정보가 없거나 로그인되지 않았습니다.");
+    }
   };
 
   const handleDecline = () => {
     alert("관리자가 차량 확인 후 차량 재등록을 해드릴게요.")
-    // router.push("/")
-
+    router.push("/")
   };
 
   return (
@@ -388,7 +434,7 @@ const ConfirmationButtonContainer = styled.div`
   gap: 20px;
 `;
 
-const ConfirmationButton = styled.button`
+const ConfirmationButton = styled.div`
   font-size: 1em;
   width:100px;
   padding: 10px 20px;
