@@ -112,16 +112,17 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   return (
     <CarouselContainer>
       <Slider {...settings}>
-        {myCarBoards.map((myCar) => (
-          <CarPictureCard
-            key={myCar.id}
-            id={myCar.id}
-            name={myCar.member.nickname}
-            description={myCar.member.carTitle}
-            image={myCar.thumbnail}
-            views={myCar.viewCount}
-          />
-        ))}
+        {myCarBoards.length > 0 &&
+          myCarBoards.map((myCar) => (
+            <CarPictureCard
+              key={myCar.id}
+              id={myCar.id}
+              name={myCar.member.nickname}
+              description={myCar.member.carTitle}
+              image={myCar.thumbnail}
+              views={myCar.viewCount}
+            />
+          ))}
       </Slider>
     </CarouselContainer>
   );
