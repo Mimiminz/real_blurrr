@@ -52,6 +52,9 @@ export const Prev = styled.div`
 `;
 
 const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
+  if (!myCarBoards || myCarBoards.length > 0) {
+    return <div></div>;
+  }
   const settings = {
     dots: true,
     arrows: true,

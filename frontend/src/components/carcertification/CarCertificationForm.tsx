@@ -9,6 +9,7 @@ import { useAuthStore } from "@/store/authStore";
 import { fetchUserLeagueList } from "@/api/league";
 import { LeagueList, UserLeague } from "@/types/leagueTypes";
 import { useLeagueStore } from "@/store/leagueStore";
+import { FaCar } from "react-icons/fa";
 
 interface SimilarCar {
   brand: string;
@@ -40,18 +41,6 @@ const CarCertificationForm = () => {
     };
   }, [videoStream]);
 
-  const handleCaptureClick = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      setVideoStream(stream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-    } catch (error) {
-      console.error("새로고침을 해주세요.", error);
-    }
-  };
 
   const handleVideoClick = () => {
     if (videoRef.current) {
@@ -87,17 +76,14 @@ const CarCertificationForm = () => {
 
     try {
         const result = await submitImageForOCR(imageSrc);
-        console.log("OCR 결과: ", result);
+
         if (result && result.extracted_texts) {
           setOcrResults({
             vehicle_model: result.vehicleModel || null, 
             preprocessed_image: result.preprocessed_image || null,
             similar_car: result.similar_car || null,
           });
-          console.log("OCR 결과 상태:", ocrResults);
 
-        } else {
-          console.error("OCR 결과가 없습니다:", result);
         }
       } catch (error) {
         console.error("Error submitting image:", error);
@@ -133,6 +119,23 @@ const CarCertificationForm = () => {
         const success = await carInfo(brand, series, model_detail, accessToken);
 
         if (success) {
+
+          //사용자 정보 갱신
+          const updatedUserInfo = await getUserInfo();
+          useAuthStore.getState().setUser(updatedUserInfo);
+
+          // 사용자 리그 목록 갱신
+        const userLeagues = await fetchUserLeagueList();
+        const userTabs = userLeagues.map((userLeague) => ({
+          id: userLeague.league.id,
+          name: userLeague.league.name,
+          type: userLeague.league.type,
+          peopleCount: userLeague.league.peopleCount,
+        }));
+
+        // 리그 상태 관리 스토어에 저장
+        useLeagueStore.getState().setUserLeagueList(userTabs);
+        
           alert("🎉내 차량이 등록되었습니다🎉");
           router.push("/"); 
         } else {
@@ -149,6 +152,7 @@ const CarCertificationForm = () => {
 
   const handleDecline = () => {
     alert("관리자가 차량 확인 후 차량 재등록을 해드릴게요.")
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSclf6QxZWK4E6beV_Q0iHMN4-YTqE7sXo5n3Dt0GgkCttHfPg/viewform?usp=sf_link");
     router.push("/")
   };
 
@@ -163,7 +167,6 @@ const CarCertificationForm = () => {
       </Head>
       <Body>
         
-        <CaptureButton onClick={handleCaptureClick}>자동차 등록증 촬영하기</CaptureButton>
         <ImageBox
           onClick={() => document.getElementById("uploadImage")?.click()}
         >
@@ -195,16 +198,24 @@ const CarCertificationForm = () => {
       )}
        {ocrResults.similar_car && (
           <CarInfoContainer>
-            <Div>
-              차량 브랜드: {ocrResults.similar_car.brand}
-            </Div>
-            <Div>
-              차량 모델: {ocrResults.similar_car.series} 
-            </Div>
+            <CarContainer>
+              
+              <CarDiv>
+               <FaCar color = "#F9803A"/>브랜드
+              </CarDiv>
+              <Div>
+                 {ocrResults.similar_car.brand}
+              </Div>
+              <CarDiv>
+              <FaCar color = "#F9803A" />모델
+              </CarDiv>
+              <Div>
+                 {ocrResults.similar_car.series} 
+              </Div>
+            </CarContainer>
             <Owner>
-              {ocrResults.similar_car.model_detail} 오너
+              {ocrResults.similar_car.model_detail} 오너가 맞나요?
             </Owner>
-            <Question>내 차량이 맞나요?</Question>
             <ConfirmationContainer>
               <ConfirmationButtonContainer>
                 <ConfirmationButton onClick={handleConfirm}>예</ConfirmationButton>
@@ -273,7 +284,7 @@ const SubmitButtonContainer = styled.button`
   border: none;
   width: 100%;
 `
-const SubmitButton = styled.button`
+const SubmitButton = styled.div`
   font-size: 1em;
   padding: 10px 20px;
   font-weight: 400;
@@ -375,12 +386,36 @@ const ResultsContainer = styled.div`
 `;
 
 const Div = styled.div`
-  display: block;
-  font-weight: 700;
-  margin-bottom: 10px;
-  font-size: 1em; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 600; 
+  font-size: 1em;
+  margin-right: 10px;
+  border-radius: 50px;
+  padding:10px;
   color: #000000; 
 `;
+
+const CarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+`
+
+const CarDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  gap: 8px;
+  border-radius: 15px;
+  font-weight: 600;
+  color: #F9803A;
+  background-color: white;
+`
 
 const Owner = styled.div`
   display: block;
@@ -388,6 +423,7 @@ const Owner = styled.div`
   margin-top: 20px;
   font-size: 1em; 
   color: #000000; 
+  margin-bottom: 30px;
 `;
 
 const CarInfoContainer = styled.div`
@@ -440,14 +476,14 @@ const ConfirmationButton = styled.div`
   padding: 10px 20px;
   font-weight: 400;
   color: #fff;
-  background-color: ${props => props.children === '예' ? '#007BFF' : '#007BFF'}; /* 파란색 또는 빨간색 */
+  background-color: ${props => props.children === '예' ? '#007BFF' : '#007BFF'};
   border: none;
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: ${props => props.children === '예' ? '#0056b3' : '#0056b3'}; /* 어두운 파란색 또는 어두운 빨간색 */
+    background-color: ${props => props.children === '예' ? '#0056b3' : '#0056b3'}; 
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 `;

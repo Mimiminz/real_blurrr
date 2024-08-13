@@ -27,6 +27,8 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
   const [email, setEmail] = useState<string>('');
   const [timer, setTimer] = useState<number>(0);
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+  const [isVerificationSuccessful, setIsVerificationSuccessful] = useState<boolean>(false);
+  const [isFormVisible, setIsFormVisible] = useState<boolean>(true);
 
   const handleSendVerification = async (email: string) => {
     try {
@@ -35,6 +37,7 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
       setTimer(300);
       setIsTimerActive(true);
       setEmail(email); // Save email to state
+      setIsVerificationSuccessful(false); // Reset verification success status
     } catch (error: any) {
       const errorMessage = error.response?.data?.body?.detail || '인증번호 전송 중 오류가 발생했습니다.';
       alert(errorMessage);
@@ -46,24 +49,25 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
       const response = await verifyEmailCode(email, code, 'password_change');
       if (response === true) {
         setEmailVerified(true);
+        setIsVerificationSuccessful(true);
         setIsTimerActive(false);
+        alert('인증번호가 확인되었습니다. 비밀번호 변경 버튼을 클릭하여 비밀번호를 변경하세요.');
       } else {
         setEmailVerified(false);
+        setIsVerificationSuccessful(false);
         alert('인증번호가 일치하지 않습니다.');
       }
     } catch (error) {
       setEmailVerified(false);
+      setIsVerificationSuccessful(false);
       alert('인증번호 확인 중 오류가 발생했습니다.');
     }
   };
 
-  const handleSubmit = (values: FindPasswordFormValues, { setSubmitting }: FormikHelpers<FindPasswordFormValues>) => {
-    setSubmitting(true);
-    setTimeout(() => {
-      alert('비밀번호 재설정 요청이 완료되었습니다.');
-      setSubmitting(false);
-      closeFindPasswordModal();
-    }, 400);
+  const handleShowChangePasswordForm = () => {
+    if (isVerificationSuccessful) {
+      setIsFormVisible(false);
+    }
   };
 
   useEffect(() => {
@@ -95,14 +99,15 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
 
   return (
     <Container>
-      {!emailVerified ? (
+      {isFormVisible ? (
         <>
+          <Image src="/images/logo/logo.png" alt="로고" />
           <Title>비밀번호 찾기</Title>
           <SubTitle>이메일을 인증해 주세요.</SubTitle>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={handleSubmit}
+            onSubmit={() => {}}
           >
             {({ values, touched, errors, isSubmitting }) => (
               <StyledForm>
@@ -143,14 +148,11 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
                 </InputContainer>
                 <StyledErrorMessage name="emailVerification" component="div" />
                 
-                {/* {touched.emailVerification && !errors.emailVerification && (
-                  <SuccessMessage>인증번호가 확인되었습니다.</SuccessMessage>
-                )} */}
-
                 <Button
-                  type="submit"
-                  disabled={!emailVerified || isSubmitting}
-                  className={emailVerified ? 'text-green-500' : 'text-slate-200'}
+                  type="button"
+                  onClick={handleShowChangePasswordForm}
+                  disabled={!isVerificationSuccessful || isSubmitting}
+                  className={isVerificationSuccessful ? 'text-green-500' : 'text-slate-200'}
                 >
                   비밀번호 변경
                 </Button>
@@ -169,27 +171,76 @@ export default FindPasswordForm;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  max-width: 1200px;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+
+  @media (min-width: 480px) {
+    padding: 10px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 30px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 40px;
+  }
+`;
+
+const Image = styled.img`
+  width: 60px;
+  height: auto;
+
+  @media (min-width: 768px) {
+    width: 80px;
+  }
+  @media (min-width: 1024px) {
+    width: 100px;
+  }
 `;
 
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 0.5em;
+  font-size: 1.90em;
+  color: #666;
+
+  @media (min-width: 768px) {
+    font-size: 1.75em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.75em;
+  }
 `;
 
 const SubTitle = styled.h4`
-  display: flex;
   text-align: center;
-  justify-content: center;
+  margin-bottom: 1.5em;
+  font-size: 1em;
+  color: #666;
+
+  @media (min-width: 768px) {
+    font-size: 1.2em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.2em;
+  }
 `;
 
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
 `;
 
 const InputContainer = styled.div`
@@ -205,6 +256,7 @@ const StyledField = styled(Field)`
   padding: 0.7em;
   font-size: 1em;
   border: 2px solid;
+  margin-right: 10px;
   border-radius: 5px;
   transition: border-color 0.3s, color 0.3s;
   border-color: #ccc;
@@ -223,6 +275,11 @@ const StyledField = styled(Field)`
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
   margin-bottom: 1em;
+  font-size: 0.875em;
+
+  @media (min-width: 768px) {
+    font-size: 1em;
+  }
 `;
 
 const SuccessMessage = styled.div`
@@ -236,23 +293,41 @@ const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1em;
+  padding: 0.7em;
   font-size: 0.7em;
-  color: #000000;
+  color: #ffffff;
   background-color: #f9803a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 0.5em;
+
 
   &:hover {
     background-color: #ff5e01;
+    padding: 0.7em;
   }
 
   &:disabled {
     background-color: #ddd;
     cursor: not-allowed;
   }
+
+  @media (min-width: 480px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.85em;
+  }
+
 `;
 
 const VerificationContainer = styled.div`
@@ -265,11 +340,15 @@ const TimerDisplay = styled.div`
   font-size: 14px;
   color: #ff0000;
   position: absolute;
-  right: 110%;
+  right: 130%;
   top: 48%;
   transform: translateY(-50%);
 
   @media (min-width: 768px) {
     font-size: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 18px;
   }
 `;

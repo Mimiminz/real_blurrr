@@ -393,6 +393,7 @@ const SubTitle = styled.h2`
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
 const InputContainer = styled.div`
@@ -522,14 +523,29 @@ const Label = styled.label`
 `;
 
 const TimerDisplay = styled.div`
-  font-size: 14px;
-  color: #ff0000;
+  font-size: 12px;
+  color: #000000;
+  font-weight: 400;
   position: absolute;
-  right: 42%;
-  top: 48%;
+  right: 36%;
+  top: 40%;
   transform: translateY(-50%);
+  
+  @media (min-width: 480px) {
+    font-size: 12px;
+    right: 40%;
+  }
 
   @media (min-width: 768px) {
-    font-size: 16px;
+    font-size: 14px;
+    right: 36%;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 14px;
   }
 `;

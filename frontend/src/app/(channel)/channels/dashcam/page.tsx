@@ -19,7 +19,10 @@ const DashCamPage: React.FC = () => {
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+
+  // 검색
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSortChange = (newSort: string) => {
     const criteriaMap: { [key: string]: string } = {
@@ -34,16 +37,27 @@ const DashCamPage: React.FC = () => {
   };
 
   const handleSearch = (newKeyword: string) => {
+    if (!keyword.trim()) {
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
     setKeyword(newKeyword);
   };
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        if(keyword){
+          setTotalPages(0);
+        }
         const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
+        
         if (data) {
           setDashCams(data.content);
           setTotalPages(data.totalPages);
+
+          console.log(data);
         } else {
           setDashCams([]);
         }
@@ -92,11 +106,13 @@ const DashCamPage: React.FC = () => {
           ))}
         </CardGrid>
       )}
-      <PaginationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {totalPages > 0 && (
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </Container >
   );
 };
@@ -129,7 +145,7 @@ const CardGrid = styled.div`
   }
 
   @media (min-width: 2560px) {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 `;
 

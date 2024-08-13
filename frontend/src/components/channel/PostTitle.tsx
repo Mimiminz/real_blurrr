@@ -266,6 +266,11 @@ const SideSection = styled.div<{ $isLoggedIn: boolean }>`
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export default PostTitle;

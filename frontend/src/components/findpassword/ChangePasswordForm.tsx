@@ -49,6 +49,7 @@ const ChangePasswordForm = ({ email, closeFindPasswordModal }: ChangePasswordFor
 
   return (
     <Container>
+      <Image src="/images/logo/logo.png" alt="로고" />
       <Title>비밀번호 변경</Title>
       <SubTitle>비밀번호를 재설정해주세요.</SubTitle>
       <Formik
@@ -93,46 +94,96 @@ const ChangePasswordForm = ({ email, closeFindPasswordModal }: ChangePasswordFor
   );
 };
 
-
 const Container = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
 
+  @media (min-width: 480px) {
+    padding: 10px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 30px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 40px;
+  }
 `;
+
+const Image = styled.img`
+  width: 60px;
+  height: auto;
+
+  @media (min-width: 768px) {
+    width: 80px;
+  }
+  @media (min-width: 1024px) {
+    width: 100px;
+  }
+`;
+
 
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 0.5em;
+  font-size: 1.90em;
+  color: #666;
+
+  @media (min-width: 768px) {
+    font-size: 1.75em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.75em;
+  }
 `;
 
 const SubTitle = styled.h4`
   text-align: center;
+  margin-bottom: 1.5em;
+  font-size: 1em;
+  color: #666;
+
+  @media (min-width: 768px) {
+    font-size: 1.2em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.2em;
+  }
 `;
 
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const StyledField = styled(Field)`
-  flex: 1;
-  padding: 1em;
+  padding: 0.7em;
   font-size: 1em;
-
   border: 2px solid;
   border-radius: 5px;
-  transition: border-color 0.3s, color 0.3s;
+  margin-bottom: 1em;
   border-color: #ccc;
+  transition: border-color 0.3s, color 0.3s;
 
   &.valid {
-    margin-bottom: 5px;
     border-color: #4caf50;
     color: #333;
   }
 
   &.error {
-    margin-bottom: 5px;
     border-color: #f44336;
     color: #f44336;
   }
@@ -141,6 +192,11 @@ const StyledField = styled(Field)`
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
   margin-bottom: 1em;
+  font-size: 0.875em;
+
+  @media (min-width: 768px) {
+    font-size: 1em;
+  }
 `;
 
 const SuccessMessage = styled.div`
@@ -151,22 +207,44 @@ const SuccessMessage = styled.div`
 `;
 
 const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0.7em;
-  font-size: 1em;
-  color: #fff;
+  font-size: 0.7em;
+  color: #ffffff;
   background-color: #f9803a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
+
   &:hover {
     background-color: #ff5e01;
+    padding: 0.7em;
   }
 
   &:disabled {
     background-color: #ddd;
     cursor: not-allowed;
   }
+
+  @media (min-width: 480px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 0.85em;
+  }
+
 `;
 
 export default ChangePasswordForm;

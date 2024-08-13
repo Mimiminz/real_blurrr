@@ -63,6 +63,7 @@ const ArticleDetail = styled.div`
   align-items: center;
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
+  cursor: pointer;
 `;
 
 const ArticleInfo = styled.div`
