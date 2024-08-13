@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaHeart, FaEye } from "react-icons/fa";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import { BiTimeFive } from "react-icons/bi";
-import { Mentioned, PostMember } from "@/types/channelType";
+import { Mentioned, SimpleMember } from "@/types/channelType";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { fetchChannelBoardDelete } from "@/api/channel";
@@ -13,7 +13,7 @@ interface BoardDetailTitleProps {
   createdAt: string;
   viewCount: number;
   likeCount: number;
-  member: PostMember;
+  member: SimpleMember;
   tags: Mentioned[]; // 태그들을 나타내기 위한 새로운 속성
   boardId: string;
   channelId: string;
@@ -30,6 +30,8 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
   channelId,
 }) => {
   const router = useRouter();
+  const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
+
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const { user } = useAuthStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -46,7 +48,11 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
       }
       console.log("삭제");
       await fetchChannelBoardDelete(boardId);
-      router.push(`/channels/${channelId}`);
+      if (boastId === channelId) {
+        router.push(`/channels/boast`);
+      }else{  
+        router.push(`/channels/${channelId}`);
+      }
     } catch (error) {
       console.log(error);
     }
