@@ -39,7 +39,7 @@ export default function ChannelDashCamDetailPage({ params }: {
    useEffect(() => {
       setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
    }, []);
-   z
+
    if (!isMounted) {
       return <Loading />;
    }

@@ -9,13 +9,16 @@ interface DashCamCardProps {
 }
 
 const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
+  const [imagePath, setImagePath] = useState(dashCam.thumbNail);
+
+
   return (
     <Card>
       <ThumbnailContainer>
         <Thumbnail
-          src={dashCam.thumbNail}
+          src={imagePath}
           alt={dashCam.title}
-          onError={(e) => (e.currentTarget.style.display = "none")}
+          onError={() => setImagePath('/images/logo/logo.png')}
         />
       </ThumbnailContainer>
       <Content>
