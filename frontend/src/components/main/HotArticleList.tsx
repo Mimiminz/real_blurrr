@@ -11,7 +11,8 @@ const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
   console.log(hotBoards);
   return (
     <ArticleList>
-      {hotBoards.length > 0 &&
+      {hotBoards &&
+        hotBoards.length > 0 &&
         hotBoards.map((board: HotBoardItem) => (
           <HotArticleListItem
             key={board.id}

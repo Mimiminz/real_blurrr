@@ -112,7 +112,8 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   return (
     <CarouselContainer>
       <Slider {...settings}>
-        {myCarBoards.length > 0 &&
+        {myCarBoards &&
+          myCarBoards.length > 0 &&
           myCarBoards.map((myCar) => (
             <CarPictureCard
               key={myCar.id}
