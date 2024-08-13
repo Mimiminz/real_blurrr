@@ -1,4 +1,6 @@
 import StyledComponentsWrapper from "@/components/common/UI/StyledComponentsWrapper";
+import PageTransition from "@/components/common/UI/PageTransition";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <StyledComponentsWrapper>{children}</StyledComponentsWrapper>
+        <StyledComponentsWrapper>
+          {/* <PageTransition>
+            {children}
+          </PageTransition> */}
+          {children}
+        </StyledComponentsWrapper>
       </body>
     </html>
   );
