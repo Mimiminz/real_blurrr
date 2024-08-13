@@ -7,14 +7,12 @@ import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
-import com.luckvicky.blur.domain.leaguemember.model.dto.request.LeagueMemberCreateRequest;
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,47 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class LeagueMemberServiceImpl implements LeagueMemberService {
 
     private final ModelMapper mapper;
-    private final LeagueRepository leagueRepository;
     private final LeagueMemberRepository leagueMemberRepository;
     private final MemberRepository memberRepository;
-
-
-    @Override
-    public Boolean createLeagueMember(LeagueMemberCreateRequest request, UUID memberId) {
-
-        Member member = memberRepository.getOrThrow(memberId);
-
-        for (String name : request.leagues()) {
-
-            League league =  leagueRepository.findByNameForUpdate(name)
-                    .orElseThrow(NotExistLeagueException::new);
-
-           isCreated(
-                   leagueMemberRepository.save(
-                           LeagueMember.builder()
-                                   .league(league)
-                                   .member(member)
-                                   .build()
-                   )
-           );
-
-            league.increasePeopleCount();
-
-        }
-
-        member.updateIsAuth(true);
-        member.updateRole(Role.ROLE_AUTH_USER);
-
-        return true;
-
-    }
-
-
-    public Boolean checkLeagueAllocationOfMember(League league, Member member) {
-
-        return leagueMemberRepository.existsByLeagueAndMember(league, member);
-
-    }
 
     @Transactional(readOnly = true)
     public LeagueMemberListResponse findLeagueMemberByMember(UUID memberId) {
@@ -85,11 +44,8 @@ public class LeagueMemberServiceImpl implements LeagueMemberService {
 
     }
 
-    private void isCreated(LeagueMember leagueMember) {
-
-        leagueMemberRepository.findById(leagueMember.getId())
-                .orElseThrow(() -> new FailToCreateLeagueException(NOT_EXIST_LEAGUE));
-
+    public Boolean checkLeagueAllocationOfMember(League league, Member member) {
+        return leagueMemberRepository.existsByLeagueAndMember(league, member);
     }
 
 }
