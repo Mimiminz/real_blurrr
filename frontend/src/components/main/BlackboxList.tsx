@@ -10,7 +10,7 @@ interface DashcamBoardsListProps {
 const HotArticleList = ({ dashcamBoards }: DashcamBoardsListProps) => {
   return (
     <ArticleList>
-      {dashcamBoards.map((article, index) => (
+      {dashcamBoards.length > 0 && dashcamBoards.map((article, index) => (
         <BlackboxListItem
           key={index}
           id={article.id}
