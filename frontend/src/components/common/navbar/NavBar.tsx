@@ -182,10 +182,9 @@ const ModalContent = styled.div`
   position: relative;
   width: 90%;
   max-width: 500px;
-  height: auto;
-  padding: 20px;
+  height: 100%;
+  padding: 10px;
   overflow: hidden;
-  overflow-x: hidden;
 
   animation: ${fadeIn} 300ms ease-in-out;
 
@@ -193,15 +192,29 @@ const ModalContent = styled.div`
     animation: ${fadeOut} 300ms ease-in-out;
   }
 
-  @media (max-width: 768px) {
-    width: 95%;
-    height: auto;
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 500px;
     padding: 15px;
   }
 
-  @media (max-width: 480px) {
-    width: 100%;
-    padding: 15px;
+  @media (max-width: 768px) {
+    width: 90%;
+    height: 500px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1440px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
   }
 `;
 

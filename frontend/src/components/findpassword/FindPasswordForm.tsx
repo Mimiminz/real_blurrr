@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import { requestEmailVerificationCode, verifyEmailCode } from '../../api/index';
-import axios from 'axios';
-
+import ChangePasswordForm from './ChangePasswordForm';
 
 interface FindPasswordFormValues {
   email: string;
@@ -18,45 +17,45 @@ const initialValues: FindPasswordFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .email('유효한 이메일 형식을 입력하세요.')
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, '유효한 이메일 형식을 입력하세요.')
     .required('이메일은 필수 입력 항목입니다.'),
-  emailVerification: Yup.string()
-    .required('인증번호는 필수 입력 항목입니다.'),
+  emailVerification: Yup.string().required('인증번호는 필수 입력 항목입니다.'),
 });
 
 const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: () => void }) => {
-  const [emailValid, setEmailValid] = useState<boolean | null>(null);
-  const [emailVerificationError, setEmailVerificationError] = useState<string | null>(null);
-  const [buttonColor, setButtonColor] = useState<boolean>(false);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [timer, setTimer] = useState<number>(0);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
 
   const handleSendVerification = async (email: string) => {
     try {
-      await requestEmailVerificationCode(email,'password_change');
-      setEmailValid(true);
-    } catch (error) {
-      setEmailValid(false);
-      alert("인증번호 전송에 실패했습니다.");
+      await requestEmailVerificationCode(email, 'password_change');
+      alert('인증번호가 전송되었습니다.');
+      setTimer(300);
+      setIsTimerActive(true);
+      setEmail(email); // Save email to state
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.body?.detail || '인증번호 전송 중 오류가 발생했습니다.';
+      alert(errorMessage);
     }
   };
 
-  const handleVerifyEmailCode = async (email: string, code: string, type: 'password_change' | 'signup') => {
+  const handleVerifyEmailCode = async (email: string, code: string) => {
     try {
-      await verifyEmailCode(email, code, type);
-      setEmailVerificationError("인증번호가 확인되었습니다.");
-      setButtonColor(true);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        // Handle API errors
-        const errorResponse = error.response?.data;
-        setEmailVerificationError(errorResponse?.message || "인증번호가 유효하지 않습니다.");
+      const response = await verifyEmailCode(email, code, 'password_change');
+      if (response === true) {
+        setEmailVerified(true);
+        setIsTimerActive(false);
       } else {
-        // Handle non-API errors
-        setEmailVerificationError("인증번호가 유효하지 않습니다.");
+        setEmailVerified(false);
+        alert('인증번호가 일치하지 않습니다.');
       }
-      setButtonColor(false);
+    } catch (error) {
+      setEmailVerified(false);
+      alert('인증번호 확인 중 오류가 발생했습니다.');
     }
   };
-  
 
   const handleSubmit = (values: FindPasswordFormValues, { setSubmitting }: FormikHelpers<FindPasswordFormValues>) => {
     setSubmitting(true);
@@ -67,77 +66,112 @@ const FindPasswordForm = ({ closeFindPasswordModal }: { closeFindPasswordModal: 
     }, 400);
   };
 
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (isTimerActive && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            clearInterval(intervalId!);
+            setIsTimerActive(false);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isTimerActive, timer]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
   return (
     <Container>
-      <Title>비밀번호 찾기</Title>
-      <SubTitle>이메일을 인증해 주세요.</SubTitle>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, touched, errors }) => (
-          <StyledForm>
-            <InputContainer>
-              <StyledField
-                name="email"
-                type="email"
-                placeholder="이메일"
-                className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
-              />
-              <Button
-                type="button"
-                onClick={() => handleSendVerification(values.email)}
-              >
-                인증번호 전송
-              </Button>
-            </InputContainer>
-            <StyledErrorMessage name="email" component="div" />
-            {emailValid === false && (
-              <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
-            )}
-            {touched.email && !errors.email && emailValid && (
-              <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
-            )}
+      {!emailVerified ? (
+        <>
+          <Title>비밀번호 찾기</Title>
+          <SubTitle>이메일을 인증해 주세요.</SubTitle>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ values, touched, errors, isSubmitting }) => (
+              <StyledForm>
+                <InputContainer>
+                  <StyledField
+                    name="email"
+                    type="email"
+                    placeholder="이메일"
+                    className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => handleSendVerification(values.email)}
+                  >
+                    인증번호 전송
+                  </Button>
+                </InputContainer>
+                <StyledErrorMessage name="email" component="div" />
 
-            <InputContainer>
-              <StyledField
-                name="emailVerification"
-                type="text"
-                placeholder="인증번호 입력"
-                className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
-              />
-              <Button
-                type="button"
-                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification,'password_change')}
-              >
-                인증번호 확인
-              </Button>
-            </InputContainer>
-            <StyledErrorMessage name="emailVerification" component="div" />
-            {touched.emailVerification && !errors.emailVerification && (
-              <SuccessMessage>{emailVerificationError}</SuccessMessage>
-            )}
+                <InputContainer>
+                  <StyledField
+                    name="emailVerification"
+                    type="text"
+                    placeholder="인증번호 입력"
+                    className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
+                  />
+                  <VerificationContainer>
+                    <Button
+                      type="button"
+                      onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
+                    >
+                      인증번호 확인
+                    </Button>
+                    {isTimerActive && (
+                      <TimerDisplay>{formatTime(timer)}</TimerDisplay>
+                    )}
+                  </VerificationContainer>
+                </InputContainer>
+                <StyledErrorMessage name="emailVerification" component="div" />
+                
+                {touched.emailVerification && !errors.emailVerification && (
+                  <SuccessMessage>인증번호가 확인되었습니다.</SuccessMessage>
+                )}
 
-            <Button
-              type="submit"
-              disabled={!buttonColor}
-              className={buttonColor ? 'text-green-500' : 'text-slate-200'}
-            >
-              비밀번호 변경
-            </Button>
-          </StyledForm>
-        )}
-      </Formik>
+                <Button
+                  type="submit"
+                  disabled={!emailVerified || isSubmitting}
+                  className={emailVerified ? 'text-green-500' : 'text-slate-200'}
+                >
+                  비밀번호 변경
+                </Button>
+              </StyledForm>
+            )}
+          </Formik>
+        </>
+      ) : (
+        <ChangePasswordForm email={email} closeFindPasswordModal={closeFindPasswordModal} />
+      )}
     </Container>
   );
 };
+
+export default FindPasswordForm;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  max-width: 800px;
+  max-width: 1200px;
 `;
 
 const Title = styled.h2`
@@ -162,16 +196,14 @@ const InputContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  width: 100%; 
+  position: relative; 
 `;
 
 const StyledField = styled(Field)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex: 1;
   padding: 0.7em;
   font-size: 1em;
-  margin-right: 0.5em;
   border: 2px solid;
   border-radius: 5px;
   transition: border-color 0.3s, color 0.3s;
@@ -206,13 +238,12 @@ const Button = styled.button`
   align-items: center;
   padding: 1em;
   font-size: 0.7em;
-  color: #fff;
+  color: #000000;
   background-color: #f9803a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-left: 0.5em;
-
 
   &:hover {
     background-color: #ff5e01;
@@ -224,4 +255,21 @@ const Button = styled.button`
   }
 `;
 
-export default FindPasswordForm;
+const VerificationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+const TimerDisplay = styled.div`
+  font-size: 14px;
+  color: #ff0000;
+  position: absolute;
+  right: 110%;
+  top: 48%;
+  transform: translateY(-50%);
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+`;

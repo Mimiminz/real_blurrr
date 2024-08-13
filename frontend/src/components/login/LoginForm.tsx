@@ -10,8 +10,9 @@ import api from "../../api/index";
 import { useLeagueStore } from "@/store/leagueStore";
 import { fetchUserLeagueList } from "@/api/league";
 import { LeagueList, UserLeague } from "@/types/leagueTypes";
-import FindPasswordForm from "../findpassword/FindPasswordForm";
 import SignupForm from "../signup/SignupForm";
+import FindPasswordForm from "../findpassword/FindPasswordForm";
+import { getUserInfo } from "@/api/mypage";
 
 interface LoginFormValues {
   email: string;
@@ -59,11 +60,12 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
       sessionStorage.setItem("refreshToken", refreshToken);
       sessionStorage.setItem("accessToken", accessToken);
 
-      const userResponse = await api.get("/v1/members", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const userResponse = await getUserInfo();
+
       setUser(userResponse.data);
-      if (userResponse.data.isAuth) {
+
+      if (userResponse.isAuth) {
+
         const userLeagues: UserLeague[] = await fetchUserLeagueList();
         const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
           id: userLeague.league.id,
@@ -76,19 +78,24 @@ const LoginForm = ({ closeLoginModal }: LoginFormProps) => {
       }
 
       closeLoginModal();
-      router.push("/");
     } catch (error) {
+ 
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data;
-        const errorMessage =
-          errorResponse?.body?.detail || "로그인 요청 중 오류가 발생했습니다.";
-        alert(errorMessage);
+        const errorMessage = errorResponse?.body?.detail || '로그인 요청 중 오류가 발생했습니다.';
+        alert(`로그인 오류: ${errorMessage}`);
+      } else if (error instanceof Error) {
+        // 일반 에러 처리
+        alert(`오류: ${error.message}`);
       } else {
-        alert("로그인 요청 중 오류가 발생했습니다.");
+        // 알 수 없는 오류 처리
+        alert('로그인 요청 중 알 수 없는 오류가 발생했습니다.');
       }
     } finally {
+      // 요청 완료 후 버튼 비활성화 해제
       setSubmitting(false);
     }
+  
   };
 
   return (
@@ -158,19 +165,19 @@ const Container = styled.div`
   padding: 20px;
 
   @media (min-width: 480px) {
-    padding: 20px;
+    padding: 10px;
   }
 
   @media (min-width: 768px) {
-    padding: 40px;
+    padding: 20px;
   }
 
   @media (min-width: 1024px) {
-    padding: 50px;
+    padding: 30px;
   }
 
   @media (min-width: 1440px) {
-    padding: 60px;
+    padding: 40px;
   }
 `;
 

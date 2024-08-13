@@ -183,12 +183,6 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
                 </Button>              
               </InputContainer>
               <StyledErrorMessage name="email" component="div" />
-              {emailValid === false && (
-                <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
-              )}
-              {touched.email && !errors.email && emailValid && (
-                <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
-              )}
 
               <InputContainer>
                 <StyledField
@@ -313,22 +307,50 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   max-width: 600px;
-  height: 70vh; 
+  height: 100%; 
   padding: 10px;
   position: relative;
   overflow: hidden;
-  
-  @media (min-width: 768px) {
-    padding: 10px;
-    height: 80vh; 
+  @media (min-width: 480px) {
+    padding: 20px;
   }
+
+  @media (min-width: 768px) {
+    padding: 40px;
+
+  }
+
+  @media (min-width: 1024px) {
+    padding: 50px;
+
+  }
+
+  @media (min-width: 1440px) {
+    padding: 60px;
+  }
+  
 `;
 
 const Image = styled.img`
   width: 120px;
 
+  
+  @media (min-width: 480px) {
+    width: 120px;
+  }
+
   @media (min-width: 768px) {
-    width: 150px;
+    width: 100px;
+
+  }
+
+  @media (min-width: 1024px) {
+    width: 120px;
+
+  }
+
+  @media (min-width: 1440px) {
+    width: 120px;
   }
 `;
 
@@ -376,18 +398,15 @@ const StyledForm = styled(Form)`
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
   position: relative;
 
-  @media (min-width: 768px) {
-    margin-bottom: 20px;
-  }
 `;
 
 const StyledField = styled(Field)`
   flex: 1;
-  padding: 20px;
+  padding: 10px;
   margin-right: 10px;
+  margin-bottom: 10px;
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #dddddd;
@@ -400,9 +419,23 @@ const StyledField = styled(Field)`
     border-color: green;
   }
 
+
+  @media (min-width: 480px) {
+    padding: 10px;
+  }
+
   @media (min-width: 768px) {
-    font-size: 16px;
-    padding: 15px;
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1024px) {
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1440px) {
+    padding: 10px;
   }
 `;
 
@@ -430,6 +463,7 @@ const SuccessMessage = styled.div`
 
 const Button = styled.button`
   padding: 10px;
+  margin-bottom: 10px;
   font-size: 14px;
   border-radius: 5px;
   border: none;
@@ -445,9 +479,23 @@ const Button = styled.button`
   &:hover {
     background-color: #ff5e01;
   }
+  
+  @media (min-width: 480px) {
+    padding: 10px;
+  }
+
   @media (min-width: 768px) {
-    font-size: 16px;
-    padding: 15px;
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1024px) {
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1440px) {
+    padding: 10px;
   }
 `;
 

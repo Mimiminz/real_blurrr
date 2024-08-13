@@ -56,7 +56,7 @@ const MypageTabBox = (): JSX.Element => {
         <UserContainer>
           <UserImage src = {user ? user.profileUrl : "" }/>
           <UserName>{user ? user.nickname: ""}</UserName>
-          <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
+          <UserCarName>{user?.carTitle || "뚜벅이"}</UserCarName>
         </UserContainer>
         {tabs.map((tab) => (
           <Tab
