@@ -194,26 +194,26 @@ const ModalContent = styled.div`
 
   @media (min-width: 480px) {
     width: 100%;
-    height: 500px;
+    height: 600px;
     padding: 15px;
   }
 
   @media (min-width: 768px) {
     width: 90%;
-    height: 500px;
+    height: 700px;
     padding: 10px;
   }
 
   @media (min-width: 1024px) {
     width: 90%;
-    height: 600px;
+    height: 700px;
     padding: 10px;
 
   }
 
   @media (min-width: 1440px) {
     width: 90%;
-    height: 600px;
+    height: 700px;
     padding: 10px;
   }
 `;
@@ -344,7 +344,7 @@ const Image = styled.img`
   }
 
   @media (min-width: 1440px) {
-    width: 80px;
+    width: 60px;
   }
 `;
 
