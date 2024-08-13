@@ -1,11 +1,17 @@
-import React, { useState, ChangeEvent } from 'react';
+import React from 'react';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
+import { changePassword } from '@/api/auth';
 
 interface ChangePasswordFormValues {
   password: string;
   passwordCheck: string;
+}
+
+interface ChangePasswordFormProps {
+  email: string;
+  closeFindPasswordModal: () => void;
 }
 
 const initialValues: ChangePasswordFormValues = {
@@ -22,14 +28,23 @@ const validationSchema = Yup.object({
     .required('비밀번호 확인은 필수 입력 항목입니다.'),
 });
 
-const ChangePasswordForm = () => {
-  const buttonColor = useState<boolean>(false);
+const ChangePasswordForm = ({ email, closeFindPasswordModal }: ChangePasswordFormProps) => {
+  const handleSubmit = async (values: ChangePasswordFormValues, actions: FormikHelpers<ChangePasswordFormValues>) => {
+    const payload = {
+      email,
+      password: values.password,
+      passwordCheck: values.passwordCheck,
+    };
 
-  const handleSubmit = (values: ChangePasswordFormValues, { setSubmitting }: FormikHelpers<ChangePasswordFormValues>) => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 400);
+    try {
+      await changePassword(payload);
+      alert('비밀번호가 성공적으로 변경되었습니다.');
+      closeFindPasswordModal();
+    } catch (error) {
+      alert('비밀번호 변경에 실패했습니다.');
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
 
   return (
@@ -43,18 +58,16 @@ const ChangePasswordForm = () => {
       >
         {({ errors, touched }) => (
           <StyledForm>
-           
             <StyledField
               name="password"
               type="password"
               placeholder="비밀번호"
               className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
             />
-
-              <StyledErrorMessage name="password" component="div" />
-              {touched.password && !errors.password && (
-                <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
-              )}
+            <StyledErrorMessage name="password" component="div" />
+            {touched.password && !errors.password && (
+              <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
+            )}
 
             <StyledField
               name="passwordCheck"
@@ -69,12 +82,10 @@ const ChangePasswordForm = () => {
 
             <Button
               type="submit"
-              disabled={!buttonColor}
-              className={buttonColor ? 'text-green-500' : 'text-slate-200'}
+              disabled={errors.password || errors.passwordCheck ? true : false}
             >
               확인
             </Button>
-
           </StyledForm>
         )}
       </Formik>
@@ -82,13 +93,12 @@ const ChangePasswordForm = () => {
   );
 };
 
+
 const Container = styled.div`
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 2em;
-  background: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 `;
 
 const Title = styled.h2`
@@ -105,29 +115,24 @@ const StyledForm = styled(Form)`
   flex-direction: column;
 `;
 
-const InputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1em;
-`;
-
 const StyledField = styled(Field)`
   flex: 1;
   padding: 1em;
   font-size: 1em;
-  margin-bottom: 1em;
+
   border: 2px solid;
   border-radius: 5px;
   transition: border-color 0.3s, color 0.3s;
   border-color: #ccc;
 
   &.valid {
+    margin-bottom: 5px;
     border-color: #4caf50;
     color: #333;
   }
 
   &.error {
+    margin-bottom: 5px;
     border-color: #f44336;
     color: #f44336;
   }
@@ -135,15 +140,6 @@ const StyledField = styled(Field)`
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  margin-bottom: 1em;
-`;
-
-interface PasswordFeedbackProps {
-  isValid: boolean;
-}
-
-const PasswordFeedback = styled.div<PasswordFeedbackProps>`
-  color: ${({ isValid }) => (isValid ? '#4caf50' : '#f44336')};
   margin-bottom: 1em;
 `;
 
@@ -156,8 +152,7 @@ const SuccessMessage = styled.div`
 
 const Button = styled.button`
   padding: 0.7em;
-  margin-left: 0.5em;
-  font-size: 0.7em;
+  font-size: 1em;
   color: #fff;
   background-color: #f9803a;
   border: none;
@@ -172,27 +167,6 @@ const Button = styled.button`
     background-color: #ddd;
     cursor: not-allowed;
   }
-`;
-
-const TermsContainer = styled.div`
-  margin-bottom: 1em;
-`;
-
-const CheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5em;
-
-  input {
-    margin-right: 0.5em;
-  }
-`;
-
-const Separator = styled.hr`
-  border: 0;
-  height: 1px;
-  background-color: #ddd;
-  margin: 1em 0;
 `;
 
 export default ChangePasswordForm;

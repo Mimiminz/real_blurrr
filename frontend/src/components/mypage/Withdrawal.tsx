@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
 
-type Props = {}
 
-const Withdrawal = (props: Props) => {
+const Withdrawal = () => {
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const router = useRouter();
   const handleClick = () => {
     const confirmMessage = "정말로 계정을 탈퇴하시겠습니까? 이 작업은 취소할 수 없습니다.";
     if (window.confirm(confirmMessage)) {
       setIsProcessing(true);
-      // 여기에 실제 탈퇴 로직을 추가하세요.
-      // 예를 들어, API 호출 등을 할 수 있습니다.
-      console.log("탈퇴가 진행됩니다.");
+
+      alert("15일 이내로 사용자 정보가 삭제됩니다.");
+      router.push("/");
+
     } else {
-      console.log("탈퇴가 취소되었습니다.");
+      alert("탈퇴가 취소되었습니다.");
     }
   };
 
@@ -45,7 +46,8 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   height: 600px;
-  gap: 5px;
+  gap: 20px;
+
 `;
 
 const Title = styled.h1`
@@ -59,10 +61,12 @@ const SubTitle = styled.h2`
 
 const SubSubTitle = styled.h4`
   margin: 5px 0;
+  font-weight: 400;
 `;
 
 const InfoBox = styled.div`
   margin: 10px;
+  margin-left : 10px;
   display: flex;
   flex-direction: column;
   background-color: #e7e7e7;
