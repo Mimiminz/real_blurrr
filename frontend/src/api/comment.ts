@@ -80,7 +80,8 @@ export const fetchLeagueCommentDelete = async (
   leagueId: string
 ) => {
   try {
-    const response = await api.put(
+    console.log(boardId, commentId, leagueId);
+    const response = await api.delete(
       `/v1/leagues/${leagueId}/comments/${commentId}/boards/${boardId}`
     );
 
