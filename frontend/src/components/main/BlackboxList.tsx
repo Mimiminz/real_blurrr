@@ -10,16 +10,18 @@ interface DashcamBoardsListProps {
 const HotArticleList = ({ dashcamBoards }: DashcamBoardsListProps) => {
   return (
     <ArticleList>
-      {dashcamBoards.length > 0 && dashcamBoards.map((article, index) => (
-        <BlackboxListItem
-          key={index}
-          id={article.id}
-          title={article.title}
-          totalVotes={article.voteCount}
-          optionNumber={article.optionCount}
-          options={article.options}
-        />
-      ))}
+      {dashcamBoards &&
+        dashcamBoards.length > 0 &&
+        dashcamBoards.map((article, index) => (
+          <BlackboxListItem
+            key={index}
+            id={article.id}
+            title={article.title}
+            totalVotes={article.voteCount}
+            optionNumber={article.optionCount}
+            options={article.options}
+          />
+        ))}
     </ArticleList>
   );
 };

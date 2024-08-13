@@ -11,7 +11,8 @@ interface LeagueRankingProps {
 const LeagueRanking: React.FC<LeagueRankingProps> = ({ leaugeRanking }) => {
   return (
     <RankingContainer>
-      {LeagueRanking.length > 0 &&
+      {LeagueRanking &&
+        LeagueRanking.length > 0 &&
         leaugeRanking.map((league, index) => (
           <LeagueRankingItem
             key={league.id}
