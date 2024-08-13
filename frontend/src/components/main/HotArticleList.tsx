@@ -8,19 +8,21 @@ interface HotArticleListProps {
 }
 
 const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
-  console.log(hotBoards)
+  console.log(hotBoards);
   return (
     <ArticleList>
-      {hotBoards.map((board: HotBoardItem) => (
-        <HotArticleListItem
-          key={board.id}
-          id={board.id}
-          channel={board.channel}
-          title={board.title}
-          likeCount={board.likeCount}
-          commentCount={board.commentCount}
-        />
-      ))}
+      {hotBoards &&
+        hotBoards.length > 0 &&
+        hotBoards.map((board: HotBoardItem) => (
+          <HotArticleListItem
+            key={board.id}
+            id={board.id}
+            channel={board.channel}
+            title={board.title}
+            likeCount={board.likeCount}
+            commentCount={board.commentCount}
+          />
+        ))}
     </ArticleList>
   );
 };

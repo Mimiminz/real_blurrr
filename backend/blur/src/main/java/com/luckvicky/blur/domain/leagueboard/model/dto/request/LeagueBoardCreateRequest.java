@@ -17,7 +17,7 @@ public record LeagueBoardCreateRequest(
 
         @NotBlank
         @Size(min = 1, max = 35)
-        @Schema(description = "제목", example = "제목입니다.", maxLength = 35)
+        @Schema(description = "제목", example = "제목입니다.")
         String title,
 
         @NotBlank

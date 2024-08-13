@@ -22,9 +22,7 @@ const StyledComponentsWrapper = ({
         <Layout>
           <Header />
           <ContentWrapper>
-            <PageTransition>
               <Main>{children}</Main>
-            </PageTransition>
           </ContentWrapper>
           <Footer />
         </Layout>

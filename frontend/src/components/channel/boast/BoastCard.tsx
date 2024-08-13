@@ -7,6 +7,22 @@ interface BoastCardProps {
   boast: Boasts;
 }
 
+const BoastCard: React.FC<BoastCardProps> = ({ boast }) => {
+  return (
+    <Card>
+      <Thumbnail src={boast.thumbNail} alt="thumbnail" />
+      <HoverOverlay>
+        <span>
+          <FiEye /> {boast.viewCnt}
+        </span>
+        <span>
+          <FiHeart /> {boast.likeCnt}
+        </span>
+      </HoverOverlay>
+    </Card>
+  );
+};
+
 const bounceIn = keyframes`
   0% {
     transform: scale(0.95);
@@ -29,7 +45,6 @@ const Card = styled.div`
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(141, 141, 141, 0.1);
-  margin: 10px;
   position: relative;
   aspect-ratio: 1; /* 정사각형 유지 */
   cursor: pointer;
@@ -73,21 +88,5 @@ const HoverOverlay = styled.div`
     gap: 7px;
   }
 `;
-
-const BoastCard: React.FC<BoastCardProps> = ({ boast }) => {
-  return (
-    <Card>
-      <Thumbnail src={boast.thumbNail} alt="thumbnail" />
-      <HoverOverlay>
-        <span>
-          <FiEye /> {boast.viewCnt}
-        </span>
-        <span>
-          <FiHeart /> {boast.likeCnt}
-        </span>
-      </HoverOverlay>
-    </Card>
-  );
-};
 
 export default BoastCard;

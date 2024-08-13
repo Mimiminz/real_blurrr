@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAuthStore } from '@/store/authStore';
-import { getMyHeartChannelList, getMyHeartLeagueList } from '@/api/mypage';
+import { getMyHeartLeagueList, getMyHeartChannelList } from '@/api/mypage';
 import ChannelBoardListItem from '../channel/board/ChannelBoardListItem'
 import LeagueBoardListItem from '../league/board/LeagueBoardListItem'
 import { MyHeartItem } from '@/types/myPageTypes';
-import { Mentioned, Posts } from '@/types/channelType'; // Posts 타입 import
+import { Mentioned, Posts } from '@/types/channelType';
 
 type Tab = 'league' | 'channel';
 
@@ -27,16 +27,16 @@ const MyHeartList = () => {
       }
 
       try {
-        let response: { data: { totalPages: number; content: MyHeartItem[] } };
-
+        let boards: MyHeartItem[];
         if (selectedTab === 'league') {
-          response = await getMyHeartLeagueList(accessToken, pageNumber);
+          boards = await getMyHeartLeagueList(accessToken, pageNumber);
         } else {
-          response = await getMyHeartChannelList(accessToken, pageNumber);
+          boards = await getMyHeartChannelList(accessToken, pageNumber);
         }
 
-        setHeartBoards(response.data.content || []);
-        setTotalPages(response.data.totalPages);
+        // Assuming totalPages is determined in some other way
+        // You might need to set `totalPages` based on your pagination logic
+        setHeartBoards(boards);
       } catch (err) {
         setError('목록을 불러오는 데 실패했습니다.');
       } finally {
@@ -83,7 +83,7 @@ const MyHeartList = () => {
                 viewCount={item.viewCount}
               />
             );
-          }  else {
+          } else {
             const post: Posts = {
               id: item.id,
               title: item.title,
@@ -105,7 +105,7 @@ const MyHeartList = () => {
             );
           }
         })
-      ): (
+      ) : (
         <div>좋아요 목록이 없습니다.</div>
       )}
       <Pagination>

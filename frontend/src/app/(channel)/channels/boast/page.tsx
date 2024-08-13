@@ -53,7 +53,11 @@ const Boast: React.FC = () => {
    useEffect(() => {
       const loadData = async () => {
          try {
+            if(keyword){
+               setTotalPages(0);
+             }
             const data = await fetchBoast(keyword, currentPage - 1, sortCriteria);
+            
             if (data) {
                setBoasts(data.content);
             } else {
@@ -95,11 +99,13 @@ const Boast: React.FC = () => {
                ))}
             </CardGrid>
          )}
-         <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-         />
+         {totalPages > 0 && (
+            <PaginationComponent
+               currentPage={currentPage}
+               totalPages={totalPages}
+               onPageChange={handlePageChange}
+            />
+         )}
       </>
    );
 };
@@ -123,6 +129,10 @@ const CardGrid = styled.div`
 
   @media (min-width: 1440px) {
     grid-template-columns: repeat(4, minmax(200px, 1fr));
+  }
+
+  @media (min-width: 2560px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 `;
 

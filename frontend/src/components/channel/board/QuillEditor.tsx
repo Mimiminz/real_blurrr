@@ -11,7 +11,7 @@ const CLOUD_FRONT_URL = process.env.NEXT_PUBLIC_CLOUD_FRONT_URL;
 interface QuillEditorProps {
   content: string;
   setContent: (content: string) => void;
-  setThumbNail: (url: string) => void;
+  setThumbNail?: (url: string) => void; // 옵셔널로 변경
 }
 
 Quill.register('modules/imageActions', ImageActions);
@@ -26,32 +26,30 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
     input.setAttribute("accept", "image/*");
     input.click();
     input.addEventListener("change", async () => {
-      //이미지를 담아 전송할 file을 만든다
       const file = input.files?.[0];
       if (!file) return;
 
       try {
-        //업로드할 파일의 이름으로 Date 사용
         const name = Date.now();
         const extension = file.name.split('.').pop();
         const filename = `${name}.${extension}`;
 
-        //생성한 s3 관련 설정들
         AWS.config.update({
           region: "ap-northeast-2",
           accessKeyId: ACCESS_KEY,
           secretAccessKey: SECRET_ACCESS_KEY,
         });
-        //앞서 생성한 file을 담아 s3에 업로드하는 객체를 만든다
+
         const upload = new AWS.S3.ManagedUpload({
           params: {
             ACL: "public-read",
-            Bucket: "blurrr-img-bucket", //버킷 이름
+            Bucket: "blurrr-img-bucket",
             Key: `images/${filename}`,
             Body: file,
             ContentType: file.type,
           },
         });
+
         const result = await upload.promise();
         const url_key = result.Key;
         const fullUrl = CLOUD_FRONT_URL + url_key;
@@ -64,7 +62,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
           }
         }
 
-        if (!isSaved) {
+        if (!isSaved && setThumbNail) {
           setThumbNail(fullUrl);
           setIsSaved(true);
         }
@@ -73,7 +71,6 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
       }
     });
   };
-
 
   const modules = useMemo(() => {
     return {
@@ -85,7 +82,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
           [{ color: [] }, { background: [] }],
-          ["link", "image"],
+          ["image"],
           ["vote"],
         ],
         handlers: {
@@ -110,17 +107,15 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
     "align",
     "color",
     "background",
-    "link",
     "image",
     'height',
     'width',
   ];
-  console.log(content);
 
   return (
     <ReactQuill
       ref={quillRef}
-      style={{ height: "400px", paddingBottom: "40px" }} // 적절한 높이와 여유 공간 설정
+      style={{ height: "400px", paddingBottom: "40px" }}
       value={content}
       theme="snow"
       onChange={setContent}
