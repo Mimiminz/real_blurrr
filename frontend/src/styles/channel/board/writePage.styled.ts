@@ -25,15 +25,15 @@ export const PageTitle = styled.h1`
   margin-bottom: 24px;
 `;
 
-export const Input = styled.input`
+export const Input = styled.input<{ isError: boolean }>`
   width: 100%;
-  max-width: 1000px;
   padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
+  margin-bottom: 8px;
+  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
   border-radius: 5px;
   box-sizing: border-box;
 `;
+
 
 export const EditorAndButtonContainer = styled.div`
   width: 100%;
@@ -42,11 +42,13 @@ export const EditorAndButtonContainer = styled.div`
   align-items: center;
 `;
 
-export const EditorContainer = styled.div`
+export const EditorContainer = styled.div<{ isError: boolean }>`
   width: 100%;
   max-width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   box-sizing: border-box;
+  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+  border-radius: 5px;
 
   @media (min-width: 768px) {
     max-width: 750px;
@@ -72,4 +74,11 @@ export const SubmitButton = styled.button`
   &:hover {
     background-color: #ff900d;
   }
+`;
+
+export const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin: 0 0 16px; /* 여백 추가 */
+  text-align: left; /* 왼쪽 정렬 */
 `;

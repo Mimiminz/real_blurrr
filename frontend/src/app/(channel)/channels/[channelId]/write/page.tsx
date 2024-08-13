@@ -19,16 +19,40 @@ export default function WritePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [thumbNail, setThumbNail] = useState<string>("");
 
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+
+    if (newTitle.length > 35) {
+      setTitleError("제목은 35자 이내로 작성해주세요.");
+    } else {
+      setTitleError(""); // 35자 이내면 오류 메시지 제거
+    }
+
+    setTitle(newTitle);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
-      return;
+    let hasError = false;
+
+    if (!title.trim()) {
+      setTitleError("제목을 작성해주세요.");
+      hasError = true;
+    } else if (title.length > 35) {
+      hasError = true; // 35자 제한 오류는 handleTitleChange에서 처리
     }
+
+    if (!content.trim()) {
+      setContentError("본문을 작성해주세요.");
+      hasError = true;
+    } else {
+      setContentError(""); // 유효한 경우 오류 메시지 초기화
+    }
+
+    if (hasError) return;
 
     try {
       if (boastId === channelId) {
@@ -52,12 +76,15 @@ export default function WritePage() {
           placeholder="제목을 입력해주세요."
           value={title}
           onChange={handleTitleChange}
+          isError={!!titleError}
         />
+        {titleError && <S.ErrorMessage>{titleError}</S.ErrorMessage>}
         <FindTags tags={tags} setTags={setTags} />
         <S.EditorAndButtonContainer>
-          <S.EditorContainer>
+          <S.EditorContainer isError={!!contentError}>
             <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
           </S.EditorContainer>
+          {contentError && <S.ErrorMessage>{contentError}</S.ErrorMessage>}
           <S.SubmitButton type="submit">작성</S.SubmitButton>
         </S.EditorAndButtonContainer>
       </form>
