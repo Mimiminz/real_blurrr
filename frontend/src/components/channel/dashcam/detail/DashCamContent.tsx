@@ -1,41 +1,48 @@
-import React, { useState, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useState, useRef } from 'react';
+import styled from 'styled-components';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import { useAuthStore } from "@/store/authStore";
 import { DashCamDetail } from '@/types/channelType';
 import { MdAccessTime } from 'react-icons/md';
 import { formatPostDate } from "@/utils/formatPostDate";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
 import { FaRegEye } from "react-icons/fa";
+import { fetchDashCamDetail } from '@/api/channel';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-const DashCamContent: React.FC<DashCamDetail> = ({
-  id,
-  member,
-  title,
-  createdAt,
-  videos,
-  content,
-  mentionedLeagues,
-  viewCount,
-  likeCount,
-  liked,
-}) => {
-  const { isLoggedIn, user } = useAuthStore();
+interface DashCamContentProps {
+  dashCamDetailId: string;
+}
 
-  const [isLiked, setIsLiked] = useState(liked ?? false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isSliding, setIsSliding] = useState(false);
-  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
-  const [like, setLike] = useState(likeCount);
+const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId }) => {
+  const { isLoggedIn } = useAuthStore();
+
+  const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
+  const [like, setLike] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const swiperRef = useRef<SwiperCore>();
+
+  useEffect(() => {
+    const loadDetail = async () => {
+      try {
+        const data = await fetchDashCamDetail(dashCamDetailId);
+        setDashCamDetail(data);
+        setIsLiked(data.liked ?? false);
+        setLike(data.likeCount);
+      } catch (error) {
+        console.error('Failed to load dash cam detail:', error);
+      }
+    };
+
+    loadDetail();
+  }, [dashCamDetailId]);
 
   const toggleLike = async () => {
     if (isLoading) return;
@@ -43,11 +50,11 @@ const DashCamContent: React.FC<DashCamDetail> = ({
     setIsLoading(true);
     try {
       if (isLiked) {
-        const likeData = await fetchChannelLikeDelete(id);
+        const likeData = await fetchChannelLikeDelete(dashCamDetailId);
         setLike(likeData.likeCount);
         setIsLiked(likeData.isLike);
       } else {
-        const likeData = await fetchChannelLike(id);
+        const likeData = await fetchChannelLike(dashCamDetailId);
         setLike(likeData.likeCount);
         setIsLiked(likeData.isLike);
       }
@@ -58,80 +65,63 @@ const DashCamContent: React.FC<DashCamDetail> = ({
     }
   };
 
-  const changeVideo = (newIndex: number, direction: 'next' | 'prev') => {
-    setIsSliding(true);
-    setSlideDirection(direction);
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setIsSliding(false);
-    }, 300); // 300ms 동안의 슬라이드 효과
-  };
-
-  const nextVideo = () => {
-    if (currentIndex < videos.length - 1) {
-      changeVideo(currentIndex + 1, 'next');
-    }
-  };
-
-  const prevVideo = () => {
-    if (currentIndex > 0) {
-      changeVideo(currentIndex - 1, 'prev');
-    }
-  };
-
-  const swiperRef = useRef<SwiperCore>();
+  if (!dashCamDetail) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container>
-      <Title>{title}</Title>
+      <Title>{dashCamDetail.title}</Title>
       <Header>
         <User>
-          <Avatar src={member.profileUrl} alt={`${member.nickname}'s avatar`} />
+          <Avatar src={dashCamDetail.member.profileUrl} alt={`${dashCamDetail.member.nickname}'s avatar`} />
           <UserInfo>
-            <Username>{member.nickname}</Username>
-            <CarInfo>{member.carTitle || '뚜벅이'}</CarInfo>
+            <Username>{dashCamDetail.member.nickname}</Username>
+            <CarInfo>{dashCamDetail.member.carTitle || '뚜벅이'}</CarInfo>
           </UserInfo>
         </User>
         <TimeSection>
           <FormatDate>
             <FaRegHeart />
-            {likeCount}
+            {like}
           </FormatDate>
           <FormatDate>
             <FaRegEye />
-            {viewCount}</FormatDate>
+            {dashCamDetail.viewCount}
+          </FormatDate>
           <FormatDate>
             <MdAccessTime />
-            {formatPostDate(createdAt)}</FormatDate>
+            {formatPostDate(dashCamDetail.createdAt)}
+          </FormatDate>
         </TimeSection>
       </Header>
       <Body>
-        {mentionedLeagues.length > 0 && (
+        {dashCamDetail.mentionedLeagues.length > 0 && (
           <Tags>
-            {mentionedLeagues.map((league, index) => (
+            {dashCamDetail.mentionedLeagues.map((league, index) => (
               <Tag key={index}>@ {league.name}</Tag>
             ))}
           </Tags>
         )}
         <SwiperContainer>
           <Swiper
-            onSwiper={(swiper => {
+            onSwiper={(swiper) => {
               swiperRef.current = swiper;
-            })}
+            }}
             loop={false}
             navigation={true}
             modules={[Navigation]}
           >
-            {videos.map((video) => (
+            {dashCamDetail.videos.map((video) => (
               <StyledSwiperSlide key={video.videoOrder}>
-                <Video videoCount={videos.length} controls loop>
+                <Video videoCount={dashCamDetail.videos.length} controls loop>
                   <source src={video.videoUrl} type="video/mp4" />
                 </Video>
               </StyledSwiperSlide>
             ))}
           </Swiper>
         </SwiperContainer>
-        <Content dangerouslySetInnerHTML={{ __html: content }} />
+        <Content dangerouslySetInnerHTML={{ __html: dashCamDetail.content }} />
         <WriterContainer>
           {isLoggedIn && (
             <HeartButton onClick={toggleLike} $isLiked={isLiked}>
@@ -141,7 +131,7 @@ const DashCamContent: React.FC<DashCamDetail> = ({
           )}
         </WriterContainer>
       </Body>
-    </Container >
+    </Container>
   );
 };
 
@@ -265,7 +255,6 @@ const HeartButton = styled.button<{ $isLiked: boolean }>`
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
   font-size: 14px;
 
   &:hover {
@@ -275,7 +264,6 @@ const HeartButton = styled.button<{ $isLiked: boolean }>`
   svg {
     margin-right: 5px;
     font-size: 17px;
-    /* color: ${({ $isLiked }) => ($isLiked ? "#d60606" : "#333")}; */
     color: #d60606;
   }
 `;
@@ -284,7 +272,6 @@ const WriterContainer = styled.div`
   display: flex;
   justify-content: end;
   margin-bottom: 10px;
-  /* margin-left: 20px; */
 `;
 
 const TimeSection = styled.span`
