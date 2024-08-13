@@ -49,18 +49,8 @@ export default function BoardDetailPage({
   const [showLogin, setShowLogin] = useState(false);
   const [showNoAuthority, setShowNoAuthority] = useState(false);
 
-  const loadBoardDetail = async () => {
-    try {
-      console.log("page에서 호출 시작");
-      const details = await fetchLeagueDetail(boardId);
-      setBoardDetail(details);
-      setIsLiked(details.isLike);
-      setLikeCount(details.likeCount);
-      console.log("page에서 호출 완료");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const previousBoardIdRef = useRef<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
 
   const loadCommentDetail = async (leagueId: string) => {
     try {
@@ -70,6 +60,68 @@ export default function BoardDetailPage({
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+      setLoading(false);
+      return;
+    }
+
+    if (!user?.isAuth) {
+      setShowPopup(true);
+      setLoading(false);
+      return;
+    }
+
+    if (
+      userLeagueList.length > 0 &&
+      !userLeagueList.some((league) => league.name === leagueName)
+    ) {
+      console.log("userLeagueList : ", userLeagueList);
+      console.log("leagueName : ", leagueName);
+      setShowNoAuthority(true);
+      setLoading(false);
+      return;
+    }
+  }, [isLoggedIn, user, userLeagueList, leagueName]);
+
+  useEffect(() => {
+    const loadDetails = async () => {
+      if (previousBoardIdRef.current !== boardId) {
+        previousBoardIdRef.current = boardId;
+
+        try {
+          const details = await fetchLeagueDetail(boardId);
+          setBoardDetail(details);
+          setIsLiked(details.isLike);
+          setLikeCount(details.likeCount);
+
+          const findActiveTab = userLeagueList.find(
+            (t) => t.name === leagueName
+          );
+
+          if (findActiveTab) {
+            setActiveTab(findActiveTab);
+            await loadCommentDetail(findActiveTab.id);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (
+      user?.isAuth &&
+      userLeagueList.some((league) => league.name === leagueName)
+    ) {
+      loadDetails();
+    }
+
+    setLoading(false);
+  }, [boardId, activeTab, leagueName, userLeagueList]);
 
   const toggleLike = async () => {
     if (isLiked) {
@@ -83,67 +135,6 @@ export default function BoardDetailPage({
     }
   };
 
-  const checkLeagueInUserList = () => {
-    return userLeagueList.some((league) => league.name === leagueName);
-  };
-
-  const previousBoardIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const loadDetails = async () => {
-      console.log(`boardID: ${boardId}`);
-      console.log(`previousBoardIdRef: ${previousBoardIdRef.current}`);
-      if (!isLoggedIn) {
-        setShowLogin(true);
-        setLoading(false);
-      } else if (!user?.isAuth) {
-        setShowPopup(true);
-        setLoading(false);
-      } else if (!checkLeagueInUserList()) {
-        setShowNoAuthority(true);
-        setLoading(false);
-      } else if (previousBoardIdRef.current !== boardId) {
-        previousBoardIdRef.current = boardId;
-        console.log(`loadDetails 안 ${previousBoardIdRef.current}`);
-        await loadBoardDetail();
-      }
-    };
-
-    console.log("useEffect 안 시작");
-
-    loadDetails();
-    console.log("useEffect 안 완료");
-    console.log(previousBoardIdRef.current);
-  }, [previousBoardIdRef]);
-
-  useEffect(() => {
-    const loadBoardData = async () => {
-      const findActiveTab = userLeagueList.find((t) => t.name === leagueName);
-
-      if (findActiveTab) {
-        setActiveTab(findActiveTab);
-        await loadCommentDetail(findActiveTab.id);
-        setLoading(false);
-      } else {
-        if (!user?.isAuth) {
-          setShowPopup(true);
-        } else {
-          setShowNoAuthority(true);
-        }
-        setLoading(false);
-      }
-    };
-
-    if (isLoggedIn && user?.isAuth) {
-      if (activeTab.id) {
-        loadCommentDetail(activeTab.id);
-        setLoading(false);
-      } else {
-        loadBoardData();
-      }
-    }
-  }, [activeTab, boardId, leagueName, setActiveTab, isLoggedIn, user]);
-
   const handleCommentAdded = async () => {
     if (activeTab && activeTab.id) {
       await loadCommentDetail(activeTab.id);
@@ -152,31 +143,31 @@ export default function BoardDetailPage({
 
   const closePopup = () => {
     setShowPopup(false);
-    setShowLogin(false);
     setShowNoAuthority(false);
-    router.back();
+    router.push("/");
   };
+
   const closeLoginPopup = () => {
     setShowLogin(false);
-    router.back();
+    setShowNoAuthority(false);
   };
-  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  const closeNoLoginPopup = () => {
+    setShowLogin(false);
+    router.push("/");
+  };
 
   useEffect(() => {
     setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
   }, []);
 
-  if (!isMounted) {
-    return <Loading />;
-  }
-
-  if (loading || !boardDetail || !commentList) {
+  if (!isMounted || !boardDetail || !commentList) {
     if (showLogin) {
       return (
         <ModalOverlay onClick={closePopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm closeLoginModal={closePopup} />
-            <CloseIcon onClick={closeLoginPopup}>×</CloseIcon>
+            <LoginForm closeLoginModal={closeLoginPopup} />
+            <CloseIcon onClick={closeNoLoginPopup}>×</CloseIcon>
           </ModalContent>
         </ModalOverlay>
       );
@@ -230,16 +221,6 @@ export default function BoardDetailPage({
           boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
-      {showPopup && <NoCarPopup closePopup={closePopup} />}
-      {showLogin && (
-        <ModalOverlay onClick={closePopup}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm closeLoginModal={closePopup} />
-            <CloseIcon onClick={closePopup}>×</CloseIcon>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-      {showNoAuthority && <NoAuthority closePopup={closePopup} />}
     </>
   );
 }
@@ -345,18 +326,50 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
+// 모달창
 const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: #ffffff;
-  padding: 2em;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  max-width: 50%;
-  width: 100%;
+  width: 90%;
+  max-width: 500px;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+
   animation: ${fadeIn} 300ms ease-in-out;
 
   &.fade-out {
     animation: ${fadeOut} 300ms ease-in-out;
+  }
+
+  @media (min-width: 480px) {
+    width: 100%;
+    height: 500px;
+    padding: 15px;
+  }
+
+  @media (min-width: 768px) {
+    width: 90%;
+    height: 500px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
   }
 `;
 
