@@ -23,11 +23,14 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        if(keyword){
+          setTotalPages(0);
+        }
         const data = await fetchPosts(
           channelId,
           keyword,
@@ -71,11 +74,13 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
           />
         ))
       )}
-      <PaginationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {totalPages > 0 && (
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </ChannelList>
   );
 };

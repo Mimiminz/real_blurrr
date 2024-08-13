@@ -53,7 +53,11 @@ const Boast: React.FC = () => {
    useEffect(() => {
       const loadData = async () => {
          try {
+            if(keyword){
+               setTotalPages(0);
+             }
             const data = await fetchBoast(keyword, currentPage - 1, sortCriteria);
+            
             if (data) {
                setBoasts(data.content);
             } else {
@@ -95,11 +99,13 @@ const Boast: React.FC = () => {
                ))}
             </CardGrid>
          )}
-         <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-         />
+         {totalPages > 0 && (
+            <PaginationComponent
+               currentPage={currentPage}
+               totalPages={totalPages}
+               onPageChange={handlePageChange}
+            />
+         )}
       </>
    );
 };
