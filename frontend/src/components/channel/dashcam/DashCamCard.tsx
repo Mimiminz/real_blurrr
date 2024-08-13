@@ -59,7 +59,7 @@ const bounceIn = keyframes`
 `;
 
 const Card = styled.div`
-  width: 100%;;
+  width: 100%;
   border: 1px solid #eaeaea;
   border-radius: 4px;
   overflow: hidden;
