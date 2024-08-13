@@ -33,7 +33,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "boards")
 public class Board extends BaseEntity {
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(30)")
+    @Column(nullable = false, columnDefinition = "VARCHAR(35)")
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")

@@ -18,9 +18,9 @@ public record DashcamBoardCreateRequest(
         @Schema(
                 description = "제목",
                 example = "사고 영상 공유합니다.",
-                maxLength = 20
+                maxLength = 35
         )
-        @Size(max = 20)
+        @Size(max = 35)
         String title,
 
         @Schema(
