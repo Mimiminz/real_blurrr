@@ -2,12 +2,8 @@ package com.luckvicky.blur.domain.league.service;
 
 import static com.luckvicky.blur.global.constant.Number.RANKING_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.ZERO;
-import static com.luckvicky.blur.global.enums.code.ErrorCode.NOT_EXIST_LEAGUE;
 
-import com.luckvicky.blur.domain.league.exception.FailToCreateLeagueException;
 import com.luckvicky.blur.domain.league.model.dto.LeagueDto;
-import com.luckvicky.blur.domain.league.model.dto.SimpleLeagueDto;
-import com.luckvicky.blur.domain.league.model.dto.request.LeagueCreateRequest;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueListResponse;
 import com.luckvicky.blur.domain.league.model.dto.response.LeagueRankingResponse;
 import com.luckvicky.blur.domain.league.model.entity.League;
@@ -60,26 +56,6 @@ public class LeagueServiceImpl implements LeagueService {
                         .map(league -> mapper.map(league, LeagueDto.class))
                         .collect(Collectors.toList())
         );
-
-    }
-
-    @Override
-    public Boolean createLeague(LeagueCreateRequest request) {
-
-        LeagueType type = LeagueType.valueOf(request.type());
-        League createdLeague = leagueRepository.save(request.toEntity(type));
-
-        return isCreated(createdLeague);
-
-    }
-
-
-    private boolean isCreated(League league) {
-
-        leagueRepository.findById(league.getId())
-                .orElseThrow(() -> new FailToCreateLeagueException(NOT_EXIST_LEAGUE));
-
-        return true;
 
     }
 

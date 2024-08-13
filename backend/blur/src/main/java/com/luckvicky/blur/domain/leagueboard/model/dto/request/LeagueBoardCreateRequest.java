@@ -6,22 +6,22 @@ import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 @Schema(name = "리그 게시글 생성 요청")
 public record LeagueBoardCreateRequest(
 
-        @Schema(
-                description = "제목",
-                example = "제목입니다.",
-                maxLength = 35
-        )
+        @NotBlank
+        @Size(min = 1, max = 35)
+        @Schema(description = "제목", example = "제목입니다.", maxLength = 35)
         String title,
 
-        @Schema(
-                description = "본문",
-                example = "본문입니다."
-        )
+        @NotBlank
+        @Schema(description = "본문", example = "본문입니다.")
         String content
 
 ) {

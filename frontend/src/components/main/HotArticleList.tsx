@@ -8,6 +8,7 @@ interface HotArticleListProps {
 }
 
 const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
+  console.log(hotBoards)
   return (
     <ArticleList>
       {hotBoards.map((board: HotBoardItem) => (

@@ -99,6 +99,7 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
+        console.log(user);
         if (isLoggedIn && user?.isAuth && mentionTabs.length === 0) {
           const userMentionTabs: LeagueList[] = userLeagueList.map(
             (league) => ({
@@ -270,7 +271,6 @@ export default function LeaguePage({
 
   const closeLoginPopup = () => {
     setShowLoginPopup(false);
-
   };
 
   const closeNoLoginPopup = () => {
@@ -360,7 +360,7 @@ export default function LeaguePage({
         <ModalOverlay onClick={closeLoginPopup}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closeLoginPopup} />
-            <CloseIcon onClick={closeNoLoginPopup}>×</CloseIcon>
+            <CloseButton onClick={closeNoLoginPopup}>×</CloseButton>
           </ModalContent>
         </ModalOverlay>
       )}
@@ -510,30 +510,59 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
+// 모달창
 const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: #ffffff;
-  padding: 2em;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  max-width: 50%;
-  width: 100%;
+  width: 90%;
+  max-width: 500px;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+
   animation: ${fadeIn} 300ms ease-in-out;
 
   &.fade-out {
     animation: ${fadeOut} 300ms ease-in-out;
   }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 500px;
+    padding: 15px;
+  }
+
+  @media (max-width: 768px) {
+    width: 90%;
+    height: 500px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
+  }
 `;
 
-const CloseIcon = styled.span`
+const CloseButton = styled.button`
   position: absolute;
   top: 10px;
   right: 10px;
+  border: none;
+  background: none;
   font-size: 24px;
-  font-weight: bold;
   cursor: pointer;
-  color: #bbb;
-  &:hover {
-    color: #333;
-  }
 `;

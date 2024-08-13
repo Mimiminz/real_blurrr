@@ -1,22 +1,14 @@
 package com.luckvicky.blur.domain.leaguemember.controller;
 
-import com.luckvicky.blur.domain.leaguemember.model.dto.request.LeagueMemberCreateRequest;
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
-import com.luckvicky.blur.domain.leaguemember.model.dto.LeagueMemberDto;
 import com.luckvicky.blur.domain.leaguemember.service.LeagueMemberService;
-import com.luckvicky.blur.global.constant.ErrorMessage;
 import com.luckvicky.blur.global.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.CertificationMember;
 import com.luckvicky.blur.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,18 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class LeagueMemberController {
 
     private final LeagueMemberService leagueMemberService;
-
-    @Operation(summary = "사용자 리그 할당 API", description = "사용자에게 리그를 할당한다.")
-    @PostMapping("/members")
-    public ResponseEntity<Result<Boolean>> createLeagueMember(
-            @AuthUser ContextMember member, @RequestBody LeagueMemberCreateRequest request
-    ) {
-
-        return ResponseUtil.created(
-                Result.of(leagueMemberService.createLeagueMember(request, member.getId()))
-        );
-
-    }
 
     @Operation(summary = "사용자 참여 리그 조회 API", description = "사용자가 참여한 리그 목록을 조회한다.")
     @CertificationMember
