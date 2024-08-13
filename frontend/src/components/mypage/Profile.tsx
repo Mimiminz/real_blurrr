@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useAuthStore } from '@/store/authStore';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
-import { updateProfile, uploadImageToS3 } from '@/api/mypage';
+import { getUserInfo, updateProfile, uploadImageToS3 } from '@/api/mypage';
 
 interface FormValues {
   email: string;
@@ -15,8 +15,8 @@ interface FormValues {
 
 const validationSchema = Yup.object({
   nickname: Yup.string()
-    .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
-    .required('닉네임은 필수 입력 항목입니다.'),
+  .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
+  .required('닉네임은 필수 입력 항목입니다.'),
 });
 
 const Profile = (): JSX.Element => {
@@ -33,11 +33,11 @@ const Profile = (): JSX.Element => {
     nickname: user ? user.nickname : '',
     profileImage: null
   };
-
+  
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-
+      console.log('Selected file:', file);
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
@@ -45,11 +45,10 @@ const Profile = (): JSX.Element => {
         }
       };
       reader.readAsDataURL(file);
-      setFieldValue('profileImage', file); 
+      setFieldValue('profileImage', file);
+      
     } else {
       console.log('No file selected');
-      setProfileImage(user?.profileUrl || '');
-      setFieldValue('profileImage', null);
     }
   };
 
@@ -69,27 +68,32 @@ const Profile = (): JSX.Element => {
   }, 500);
 
   const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
-    setSubmitting(true);
-    try {
-      let profileUrl = '';
-      let imgChange = false;
 
+    setSubmitting(true);
+
+    try {
+      const imgChange = !!values.profileImage;
+      let profileUrl = '';
+  
       if (values.profileImage) {
-        imgChange = true;
+
         const response = await updateProfile(values.profileImage.name, values.nickname, imgChange);
         profileUrl = response.profileUrl;
-
         await uploadImageToS3(profileUrl, values.profileImage);
       } else {
-        imgChange = false;
+        // 이미지 변경이 없는 경우
         const response = await updateProfile('', values.nickname, imgChange);
         profileUrl = user?.profileUrl || '';
       }
 
+      // 사용자 정보 다시 불러오기
+      const updatedUser = await getUserInfo();
+  
+      // Zustand 상태 업데이트
       setUser({
-        ...user!,
+        ...updatedUser,
         nickname: values.nickname,
-        profileUrl: profileUrl,
+   
       });
       alert('프로필이 성공적으로 업데이트되었습니다.');
     } catch (error) {
@@ -101,6 +105,17 @@ const Profile = (): JSX.Element => {
   return (
     <Container>
       <Title>프로필 정보</Title>
+      <UserContainer>
+        <ImageContainer>
+          <UserImage src={profileImage} alt='User Profile Image' />
+          <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
+        </ImageContainer>
+        <SubUserContainer>
+          <UserName>{user ? user.nickname : ""}</UserName>
+          <UserCarName>{user?.carTitle || "뚜벅이"}</UserCarName>
+        </SubUserContainer>
+      </UserContainer>
+      
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -108,23 +123,6 @@ const Profile = (): JSX.Element => {
       >
         {({ errors, touched, setFieldValue }) => (
           <StyledForm>
-            <UserContainer>
-              <ImageContainer>
-                <UserImage src={profileImage} alt='User Profile Image' />
-                <ImageUploadLabel htmlFor='imageUpload'>+</ImageUploadLabel>
-                <ImageUploadInput
-                  id='imageUpload'
-                  type='file'
-                  accept='image/*'
-                  onChange={(e) => handleImageChange(e, setFieldValue)}
-                />
-              </ImageContainer>
-              <SubUserContainer>
-                <UserName>{user ? user.nickname : ""}</UserName>
-                <UserCarName>{user?.carTitle || "차량 미인증"}</UserCarName>
-              </SubUserContainer>
-            </UserContainer>
-
             <InputContainer>
               <StyledField
                 name="email"
@@ -135,7 +133,7 @@ const Profile = (): JSX.Element => {
               />
               <StyledErrorMessage name="email" component="div" />
             </InputContainer>
-
+  
             <InputContainer>
               <StyledField
                 name="nickname"
@@ -151,13 +149,23 @@ const Profile = (): JSX.Element => {
               <StyledErrorMessage name="nickname" component="div" />
               {nicknameError && <FailMessage>{nicknameError}</FailMessage>}
             </InputContainer>
-
+  
+            <InputContainer>
+              <ImageUploadInput 
+                id='imageUpload' 
+                type='file' 
+                accept='image/*' 
+                onChange={(e) => handleImageChange(e, setFieldValue)} 
+              />
+            </InputContainer>
+  
             <Button type="submit">저장</Button>
           </StyledForm>
         )}
       </Formik>
     </Container>
   );
+  
 };
 
 const Title = styled.h2`
@@ -176,10 +184,28 @@ const UserContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 80px;
-  margin-bottom: 20px;
+  margin-top: 70px;
+  margin-bottom: 30px;
   gap: 70px;
   border-radius: 15px;
+
+  @media (min-width: 480px) {
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 70px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 70px;
+  }
+
+  @media (min-width: 1440px) {
+    gap: 70px;
+  }
+
+
 `;
 
 const SubUserContainer = styled.div`
@@ -225,6 +251,7 @@ const UserCarName = styled.div`
   font-size: 15px;
   font-weight: bold;
   color: #969696;
+
 `;
 
 const UserName = styled.div`
@@ -251,7 +278,7 @@ const InputContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 1em;
-  width: 300px;
+  width: 100%;
 `;
 
 const StyledField = styled(Field)`
@@ -277,22 +304,18 @@ const StyledErrorMessage = styled(ErrorMessage)`
   font-size: 0.8em;
   height: 24px;
   margin-bottom: 0.5em;
-  text-align: left;
 `;
 
 const FailMessage = styled.div`
-  display: flex;
   color: red;
   font-size: 0.8em;
-  width: 100%;
   height: 24px;
-  text-align: left;
+
 `;
 
 const Button = styled.button`
   width: 200px;
   padding: 0.7em;
-  margin-top: 0.5em;
   font-size: 1em;
   color: #fff;
   background-color: #f9803a;

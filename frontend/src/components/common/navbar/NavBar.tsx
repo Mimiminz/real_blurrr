@@ -77,7 +77,6 @@ const NavBar = () => {
             router.push("/");
             setMenuOpen(false);
           }}
-
         />
         <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -100,7 +99,6 @@ const NavBar = () => {
                 </MenuItem>
               )}
               <MenuItem onClick={() => { router.push("/"); handleLogout(); }}>로그아웃</MenuItem>
-
             </>
           ) : (
             <>
@@ -116,7 +114,7 @@ const NavBar = () => {
 
       {isLoginModalOpen && (
         <ModalOverlay onClick={closeLoginModal}>
-          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
             <LoginForm closeLoginModal={closeLoginModal} />
             <CloseButton onClick={closeLoginModal}>×</CloseButton>
           </ModalContent>
@@ -125,15 +123,14 @@ const NavBar = () => {
 
       {isSignupModalOpen && (
         <ModalOverlay onClick={closeSignupModal}>
-          <ModalContent className="fade-in" onClick={(e) => e.stopPropagation()}>
-            <SignupForm />
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <SignupForm closeSignupModal={closeSignupModal} />
             <CloseButton onClick={closeSignupModal}>×</CloseButton>
           </ModalContent>
         </ModalOverlay>
       )}
     </>
   );
-
 };
 
 export default NavBar;
@@ -173,21 +170,51 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-//모달창
+// 모달창
 const ModalContent = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  width: 50%;
-  height: 60%;
+  width: 90%;
+  max-width: 500px;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+
   animation: ${fadeIn} 300ms ease-in-out;
 
   &.fade-out {
     animation: ${fadeOut} 300ms ease-in-out;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 500px;
+    padding: 15px;
+  }
+
+  @media (max-width: 768px) {
+    width: 90%;
+    height: 500px;
+    padding: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1440px) {
+    width: 90%;
+    height: 600px;
+    padding: 10px;
   }
 `;
 
@@ -229,7 +256,7 @@ const Nav = styled.nav`
 
 const MenuToggleBtn = styled.div`
   display: none;
-  color: black; 
+  color: black;
 
   @media (max-width: 768px) {
     display: flex;
@@ -260,7 +287,7 @@ const Menu = styled.div`
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    visibility: hidden; 
+    visibility: hidden;
   }
 
   &.open {
@@ -269,12 +296,11 @@ const Menu = styled.div`
     visibility: visible;
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
-  
+
   svg {
     width: 20px;
     height: 20px;
   }
-
 `;
 
 const MenuItem = styled.div`
@@ -298,13 +324,6 @@ const MenuItem = styled.div`
   @media (max-width: 768px) {
     width: 85%;
   }
-
-  @media (max-width: 1024px) {
-  }
-
-  @media (max-width: 1440px) {
-  }
-
 `;
 
 const Image = styled.img`

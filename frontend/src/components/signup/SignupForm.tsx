@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import api, { requestEmailVerificationCode, verifyEmailCode } from '../../api/index';
 import { debounce } from '../../utils/debounce';
 import { checkNicknameAvailability } from '../../api/index';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { signup } from '@/api/signup';
 import { SignupFormValues } from '@/types/authTypes';
 
@@ -19,25 +19,21 @@ const initialValues: SignupFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      '유효한 이메일 형식을 입력하세요.'
-    )
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, '유효한 이메일 형식을 입력하세요.')
     .required('이메일은 필수 입력 항목입니다.'),
-  emailVerification: Yup.string()
-    .required('인증번호는 필수 입력 항목입니다.'),
+  emailVerification: Yup.string().required('인증번호는 필수 입력 항목입니다.'),
   nickname: Yup.string()
-    .matches(/^[a-zA-Z가-힣]{2,8}$/, '닉네임은 2자 이상 8자 이하이어야 하며, 특수 문자 및 한글 초성, 모음이 포함될 수 없습니다.')
+    .matches(/^[a-zA-Z가-힣]{2,8}$/, '2자 이상 8자 이하, 특수 문자 및 한글 초성, 모음 포함 불가')
     .required('닉네임은 필수 입력 항목입니다.'),
   password: Yup.string()
-    .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]{8,16}$/, '비밀번호는 영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하로 입력해야 합니다.')
+    .matches(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/, '영문, 숫자, 특수 기호를 조합하여 8자 이상 16자 이하')
     .required('비밀번호는 필수 입력 항목입니다.'),
   passwordCheck: Yup.string()
     .oneOf([Yup.ref('password'), ''], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수 입력 항목입니다.'),
 });
 
-const SignupForm = () => {
+const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
   const router = useRouter();
   const [checkList, setCheckList] = useState<string[]>([]);
   const [buttonColor, setButtonColor] = useState<boolean>(false);
@@ -66,7 +62,7 @@ const SignupForm = () => {
 
   const handleSendVerification = async (email: string) => {
     try {
-      await requestEmailVerificationCode(email,'signup');
+      await requestEmailVerificationCode(email, 'signup');
       alert('인증번호가 전송되었습니다.');
       setTimer(300);
       setIsTimerActive(true);
@@ -78,7 +74,7 @@ const SignupForm = () => {
 
   const handleVerifyEmailCode = async (email: string, code: string) => {
     try {
-      const response = await verifyEmailCode(email, code,'signup');
+      const response = await verifyEmailCode(email, code, 'signup');
       if (response === true) {
         setEmailVerified(true);
         setEmailVerificationError('인증번호가 확인되었습니다.');
@@ -116,6 +112,7 @@ const SignupForm = () => {
 
       if (response) {
         alert('회원가입이 완료되었습니다.');
+        closeSignupModal();
         router.push("/");
       } else {
         alert('회원가입에 실패했습니다.');
@@ -158,66 +155,59 @@ const SignupForm = () => {
 
   return (
     <Container>
-      <Image
-        src="/images/logo/logo.png"
-        alt="로고"
-      />
       <Div>
-      <Title>회원가입</Title>
-      <SubTitle>간편한 가입으로 다양한 서비스를 이용해 보세요!</SubTitle>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, errors, touched, setFieldValue }) => (
-          <StyledForm>
-            <InputContainer>
+        <Image
+          src="/images/logo/logo.png"
+          alt="로고"
+        />
+        <SubTitle>간편한 가입으로 다양한 서비스를 이용해 보세요!</SubTitle>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, errors, touched, setFieldValue }) => (
+            <StyledForm>
+              <InputContainer>
+                <StyledField
+                  name="email"
+                  type="email"
+                  placeholder="이메일"
+                  className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
+                />
+                <Button
+                  type="button"
+                  onClick={() => handleSendVerification(values.email)}
+                >
+                  인증번호 전송
+                </Button>              
+              </InputContainer>
+              <StyledErrorMessage name="email" component="div" />
+
+              <InputContainer>
+                <StyledField
+                  name="emailVerification"
+                  type="text"
+                  placeholder="인증번호 입력"
+                  className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
+                />
+                <Button
+                  type="button"
+                  onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
+                >
+                  인증번호 확인
+                </Button>
+                {isTimerActive && (
+                  <TimerDisplay>{formatTime(timer)}</TimerDisplay>
+                )}
+              </InputContainer>
+              <StyledErrorMessage name="emailVerification" component="div" />
+              
+              {touched.emailVerification && !errors.emailVerification && (
+                <SuccessMessage>{emailVerificationError}</SuccessMessage>
+              )}
+
               <StyledField
-                name="email"
-                type="email"
-                placeholder="이메일"
-                className={touched.email ? (errors.email ? 'error' : 'valid') : ''}
-              />
-              <Button
-                type="button"
-                onClick={() => handleSendVerification(values.email)}
-              >
-                인증번호 전송
-              </Button>              
-            </InputContainer>
-            <StyledErrorMessage name="email" component="div" />
-            {emailValid === false && (
-              <SuccessMessage>유효한 이메일 형식이 아닙니다.</SuccessMessage>
-            )}
-            {touched.email && !errors.email && emailValid && (
-              <SuccessMessage>올바른 이메일 형식입니다.</SuccessMessage>
-            )}
-
-            <InputContainer>
-              <StyledField
-                name="emailVerification"
-                type="text"
-                placeholder="인증번호 입력"
-                className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
-              />
-              <Button
-                type="button"
-                onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
-              >
-                인증번호 확인
-              </Button>
-            </InputContainer>
-            <StyledErrorMessage name="emailVerification" component="div" />
-            {touched.emailVerification && !errors.emailVerification && (
-              <SuccessMessage>{emailVerificationError}</SuccessMessage>
-            )}
-
-            {isTimerActive && (
-              <TimerDisplay>{formatTime(timer)}</TimerDisplay>
-            )}
-
-            <StyledField
                 name="nickname"
                 type="text"
                 placeholder="닉네임 입력"
@@ -227,145 +217,177 @@ const SignupForm = () => {
                   setFieldValue('nickname', value);
                   debouncedCheckNickname(value);
                 }}
-            />
-  
-            <StyledErrorMessage name="nickname" component="div" />
-            {nicknameError && <NicknameErrorMessage>{nicknameError}</NicknameErrorMessage>}
+              />
+              <StyledErrorMessage name="nickname" component="div" />
+              {touched.nickname && !errors.nickname && (
+                <SuccessMessage>
+                  {isNicknameAvailable === true
+                    ? '사용 가능한 닉네임입니다.'
+                    : nicknameError}
+                </SuccessMessage>
+              )}
 
-            <StyledField
-              name="password"
-              type="password"
-              placeholder="비밀번호"
-              className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
-            />
-            <StyledErrorMessage name="password" component="div" />
-            {/* {touched.password && !errors.password && (
-              <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
-            )} */}
+              <StyledField
+                name="password"
+                type="password"
+                placeholder="비밀번호"
+                className={touched.password ? (errors.password ? 'error' : 'valid') : ''}
+              />
+              <StyledErrorMessage name="password" component="div" />
 
-            <StyledField
-              name="passwordCheck"
-              type="password"
-              placeholder="비밀번호 확인"
-              className={touched.passwordCheck ? (errors.passwordCheck ? 'error' : 'valid') : ''}
-            />
-            <StyledErrorMessage name="passwordCheck" component="div" />
-            {/* {touched.passwordCheck && !errors.passwordCheck && (
-              <SuccessMessage>비밀번호가 일치합니다.</SuccessMessage>
-            )} */}
-            
-            {/* 약관 동의 부분 */}
-            <TermsContainer>
-              <div>
-                <CheckboxContainer>
-                  <input
-                    type="checkbox"
-                    name="all"
-                    onChange={checkAll}
-                    checked={checkList.length === 3}
-                  />
-                  <div>이용약관 전체동의</div>
-                </CheckboxContainer>
-                <Separator />
+              <StyledField
+                name="passwordCheck"
+                type="password"
+                placeholder="비밀번호 확인"
+                className={touched.passwordCheck ? (errors.passwordCheck ? 'error' : 'valid') : ''}
+              />
+              <StyledErrorMessage name="passwordCheck" component="div" />
 
-                <CheckboxContainer>
-                  <input
-                    type="checkbox"
-                    name="age"
-                    onChange={check}
-                    checked={checkList.includes('age')}
-                  />
-                  <div>
-                    <span>(필수)</span> 만 19세 이상입니다
-                  </div>
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <input
-                    type="checkbox"
-                    name="terms"
-                    onChange={check}
-                    checked={checkList.includes('terms')}
-                  />
-                  <div>
-                    <span>(필수)</span> 서비스 이용약관 동의
-                  </div>
-                </CheckboxContainer>
-                <CheckboxContainer>
-                  <input
-                    type="checkbox"
-                    name="collect"
-                    onChange={check}
-                    checked={checkList.includes('collect')}
-                  />
-                  <div>
-                    <span>(필수)</span> 개인정보처리방침 동의
-                  </div>
-                </CheckboxContainer>
-              </div>
-            </TermsContainer>
+              <CheckContainer>
+                <Checkbox
+                  type="checkbox"
+                  id="all-check"
+                  checked={checkList.length === 3}
+                  onChange={checkAll}
+                />
+                <Label htmlFor="all-check">전체 동의</Label>
+              </CheckContainer>
 
-            <Button onClick={() => router.push("/")}
-              type="submit"
-              disabled={!buttonColor}
-              className={buttonColor ? 'text-green-500' : 'text-slate-200'}
-            >
-              회원가입
-        
-            </Button>
-          </StyledForm>
-        )}
-      </Formik>
+              <CheckContainer>
+                <Checkbox
+                  type="checkbox"
+                  id="age-check"
+                  name="age"
+                  checked={checkList.includes('age')}
+                  onChange={check}
+                />
+                <Label htmlFor="age-check">(필수) 만 14세 이상입니다.</Label>
+              </CheckContainer>
+
+              <CheckContainer>
+                <Checkbox
+                  type="checkbox"
+                  id="terms-check"
+                  name="terms"
+                  checked={checkList.includes('terms')}
+                  onChange={check}
+                />
+                <Label htmlFor="terms-check">
+                  (필수) 이용약관 및 개인정보수집 및 이용에 동의합니다.
+                </Label>
+              </CheckContainer>
+
+              <CheckContainer>
+                <Checkbox
+                  type="checkbox"
+                  id="collect-check"
+                  name="collect"
+                  checked={checkList.includes('collect')}
+                  onChange={check}
+                />
+                <Label htmlFor="collect-check">(필수) 마케팅 정보 수집에 동의합니다.</Label>
+              </CheckContainer>
+
+              <Button type="submit" className={buttonColor ? 'active' : ''} disabled={!buttonColor}>
+                가입하기
+              </Button>
+            </StyledForm>
+          )}
+        </Formik>
       </Div>
     </Container>
   );
 };
 
+export default SignupForm;
+
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  max-width: 100%;
-  gap:80px;
-
+  width: 100%;
+  max-width: 600px;
+  height: 100%; 
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
   @media (min-width: 480px) {
-    gap: 40px;
+    padding: 20px;
   }
 
   @media (min-width: 768px) {
-    gap: 80px;
+    padding: 40px;
+
   }
 
   @media (min-width: 1024px) {
-    gap: 80px;
+    padding: 50px;
+
   }
 
   @media (min-width: 1440px) {
-    gap: 100px;
+    padding: 60px;
   }
+  
 `;
 
-const Title = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-size: 30px;
-  font-weight: 700;
-  text-align: center; 
+const Image = styled.img`
+  width: 120px;
+
+  
+  @media (min-width: 480px) {
+    width: 120px;
+  }
+
+  @media (min-width: 768px) {
+    width: 100px;
+
+  }
+
+  @media (min-width: 1024px) {
+    width: 120px;
+
+  }
+
+  @media (min-width: 1440px) {
+    width: 120px;
+  }
 `;
 
 const Div = styled.div`
   display: flex;
-  width: 60%;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const SubTitle = styled.h4`
-  display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%; 
+  padding: 20px;
+  border-radius: 10px;
+  
+  @media (min-width: 768px) {
+    padding: 20px;
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 20px;
+  margin-bottom: 10px;
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+`;
+
+const SubTitle = styled.h2`
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #666666;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
 `;
 
 const StyledForm = styled(Form)`
@@ -376,130 +398,138 @@ const StyledForm = styled(Form)`
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  position: relative;
 
 `;
 
 const StyledField = styled(Field)`
-  display: flex;
   flex: 1;
-  padding: 0.5em;
-  font-size: 1em;
-  margin-bottom: 1em;
-  border: 2px solid;
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
   border-radius: 5px;
-  transition: border-color 0.3s, color 0.3s;
-  border: 1.5px solid #EEEEEE;
-
-  &.valid {
-    border-color: #4caf50;
-    color: #333;
-  }
+  border: 1px solid #dddddd;
 
   &.error {
-    border-color: #f44336;
-    color: #f44336;
+    border-color: red;
+  }
+
+  &.valid {
+    border-color: green;
+  }
+
+
+  @media (min-width: 480px) {
+    padding: 10px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1024px) {
+    padding: 10px;
+
+  }
+
+  @media (min-width: 1440px) {
+    padding: 10px;
   }
 `;
 
 const StyledErrorMessage = styled(ErrorMessage)`
   color: red;
-  margin-bottom: 1em;
-  font-size: 0.8em;
-`;
+  font-size: 12px;
+  margin-bottom: 5px;
 
-interface PasswordFeedbackProps {
-  isValid: boolean;
-}
-
-const PasswordFeedback = styled.div<PasswordFeedbackProps>`
-  color: ${({ isValid }) => (isValid ? '#4caf50' : '#f44336')};
-  margin-bottom: 1em;
-`;
-
-const NicknameErrorMessage = styled.div`
-  color: #f44336; 
-  margin-bottom: 1em;
-  font-size: 0.8em;
+  @media (min-width: 768px) {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
 `;
 
 const SuccessMessage = styled.div`
-  color: #4caf50;
-  margin-bottom: 1em;
-  font-size: 0.8em;
+  color: green;
+  font-size: 12px;
+  margin-bottom: 5px;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
 `;
 
 const Button = styled.button`
-  padding: 0.7em;
-  margin-left: 0.5em;
-  font-size: 0%.8;
-  color: #fff;
-  background-color: #f9803a;
-  border: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
   border-radius: 5px;
-  margin-bottom: 1em;
+  border: none;
+  background-color: #f9803a;
+  color: white;
   cursor: pointer;
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
 
   &:hover {
     background-color: #ff5e01;
   }
-
-  &:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-  }
-`;
-
-const TermsContainer = styled.div`
-  margin-bottom: 1em;
-`;
-
-const CheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5em;
-
-  input {
-    margin-right: 0.5em;
-  }
-`;
-
-const Separator = styled.hr`
-  border: 0;
-  height: 1px;
-  background-color: #ddd;
-  margin: 1em 0;
-`;
-
-const TimerDisplay = styled.div`
-  font-size: 1em;
-  font-weight: bold;
-  color: #d9534f;
-  margin-bottom: 10px;
-`;
-
-const Image = styled.img`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  height: auto;
-
+  
   @media (min-width: 480px) {
-    width: 80px;
+    padding: 10px;
   }
 
   @media (min-width: 768px) {
-    width: 80px;
+    padding: 10px;
+
   }
 
   @media (min-width: 1024px) {
-    width: 80px;
+    padding: 10px;
+
   }
 
   @media (min-width: 1440px) {
-    width: 100px;
+    padding: 10px;
   }
 `;
 
-export default SignupForm;
+const CheckContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+
+  @media (min-width: 768px) {
+    margin-bottom: 10px;
+  }
+`;
+
+const Checkbox = styled.input`
+  margin-right: 10px;
+`;
+
+const Label = styled.label`
+  font-size: 12px;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
+const TimerDisplay = styled.div`
+  font-size: 14px;
+  color: #ff0000;
+  position: absolute;
+  right: 42%;
+  top: 48%;
+  transform: translateY(-50%);
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+`;
