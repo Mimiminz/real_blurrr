@@ -52,6 +52,9 @@ export const Prev = styled.div`
 `;
 
 const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
+  if (!myCarBoards || myCarBoards.length > 0) {
+    return <div></div>;
+  }
   const settings = {
     dots: true,
     arrows: true,
@@ -112,18 +115,16 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   return (
     <CarouselContainer>
       <Slider {...settings}>
-        {myCarBoards &&
-          myCarBoards.length > 0 &&
-          myCarBoards.map((myCar) => (
-            <CarPictureCard
-              key={myCar.id}
-              id={myCar.id}
-              name={myCar.member.nickname}
-              description={myCar.member.carTitle}
-              image={myCar.thumbnail}
-              views={myCar.viewCount}
-            />
-          ))}
+        {myCarBoards.map((myCar) => (
+          <CarPictureCard
+            key={myCar.id}
+            id={myCar.id}
+            name={myCar.member.nickname}
+            description={myCar.member.carTitle}
+            image={myCar.thumbnail}
+            views={myCar.viewCount}
+          />
+        ))}
       </Slider>
     </CarouselContainer>
   );
