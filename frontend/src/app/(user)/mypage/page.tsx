@@ -34,10 +34,12 @@ const MypageTabBox = (): JSX.Element => {
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
-  if (!isLoggedIn) {
-    alert("로그인 후 사용해주세요");
-    router.back();
-  }
+  useEffect(() => {
+    if (!isLoggedIn) {
+      alert("로그인 후 사용해주세요");
+      router.back();
+    }
+  }, [isLoggedIn, router]);
 
   useEffect(() => {
     if (user) {
@@ -65,6 +67,10 @@ const MypageTabBox = (): JSX.Element => {
         return <div>탭 선택</div>;
     }
   };
+
+  if (!isLoggedIn) {
+    return <div></div>;
+  }
 
   return (
     <Container>
