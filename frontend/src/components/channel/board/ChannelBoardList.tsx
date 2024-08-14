@@ -28,7 +28,7 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
   useEffect(() => {
     const loadData = async () => {
       try {
-        if(keyword){
+        if (keyword) {
           setTotalPages(0);
         }
         const data = await fetchPosts(
@@ -40,6 +40,8 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
         if (data) {
           setPosts(data.content);
           setTotalPages(data.totalPages);
+
+          console.log(data);
         } else {
           setPosts([]);
         }

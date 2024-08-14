@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { useRouter } from "next/navigation";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import BoardDetailTitle from "@/components/channel/board/BoardDetailTitle";
 import { useAuthStore } from "@/store/authStore";
@@ -18,6 +19,7 @@ export default function ChannelBoardDetailPage({
 }: {
   params: { channelId: string; boardId: string };
 }) {
+  const router = useRouter();
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
   const channelId = params.channelId;
   const boardId = params.boardId;
@@ -58,10 +60,12 @@ export default function ChannelBoardDetailPage({
       console.error(error);
       setError("Failed to load post details. Please try again later.");
     }
-  }, [boardId, channelId]);
+  }, []);
 
   const loadCommentDetail = useCallback(async () => {
     if (!isLoggedIn) return;
+
+    console.log("comment call");
 
     try {
       const fetchCommentsList = await fetchCommentList(boardId);
@@ -69,7 +73,7 @@ export default function ChannelBoardDetailPage({
     } catch (error) {
       console.log(error);
     }
-  }, [boardId, isLoggedIn]);
+  }, []);
 
   const handleCommentAdded = async () => {
     try {
@@ -82,11 +86,18 @@ export default function ChannelBoardDetailPage({
     }
   };
 
+  const handleBackToList = () => {
+    router.push(`/channels/${channelId}`);
+  };
+
 
   useEffect(() => {
     loadBoardDetail();
-    loadCommentDetail();
   }, []);
+
+  useEffect(() => {
+    loadCommentDetail();
+  }, [isLoggedIn]);
 
   if (!boardDetail) {
     return <div>{error ? error : "Loading..."}</div>;
@@ -124,6 +135,7 @@ export default function ChannelBoardDetailPage({
           boardAuthor={boardDetail.member.nickname}
         />
       </CommentContainer>
+      <ListButton onClick={handleBackToList}>&lt; 목록으로</ListButton>
     </>
   );
 }
@@ -174,4 +186,24 @@ const Content = styled.div`
     padding: 20px 20px 50px 20px;
   }
 
+`;
+
+const ListButton = styled.div`
+  max-width: 80px;
+  margin-top: 130px;
+  padding: 12px 13px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #999999; /* Changed background color to a more vibrant blue */
+  color: #fff; /* Changed text color to white for better contrast */
+  text-align: center;
+  white-space: nowrap;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #6d6d6d; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+  }
 `;
