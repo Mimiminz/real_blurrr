@@ -41,12 +41,13 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
             })}
             loop={false}
             spaceBetween={0}
+            slidesPerGroup={1}
             pagination={shouldEnablePaginationAndAutoplay ? {
                clickable: true,
                renderBullet: (index, className) => {
                   // 페이지네이션 버튼의 개수를 조절하는 부분
-                  const numBullets = Math.ceil(slides.length / 3); // 3개 단위로 버튼 생성
-                  if (index < numBullets) {
+                  const numBullets = slides.length - slidesPerView; // 5개의 카드를 보여주므로, 5개를 뺌
+                  if (index >= 2 && index < numBullets + 2) { // 인덱스 2부터 시작
                      return `<span class="${className}"></span>`;
                   }
                   return '';
@@ -102,7 +103,7 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
 };
 
 const SwiperContainer = styled.div`
-  padding: 10px; /* Adjust padding to provide extra space */
+  padding: 10px; 
 
   .swiper-pagination {
     position: relative;
@@ -110,12 +111,12 @@ const SwiperContainer = styled.div`
 `;
 
 const SwiperSlideStyled = styled(SwiperSlide)`
-  padding: 10px; /* Add padding to the slides themselves */
-  box-sizing: border-box; /* Ensure padding is included in the slide dimensions */
+  padding: 10px; 
+  box-sizing: border-box; 
 `;
 
 const UserChannelCardStyled = styled(UserChannelCard)`
-  overflow: visible; /* Ensure content is not clipped */
+  overflow: visible; 
 `;
 
 
