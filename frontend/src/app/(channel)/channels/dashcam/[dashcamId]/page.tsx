@@ -59,7 +59,7 @@ export default function ChannelDashCamDetailPage({ params }: {
                         <Vote voteId={dashCamDetailId} onOptionsCheck={setHasOptions} />
                      </S.VoteSection>
                   )}
-                  <S.CommentSection hasOptions={hasOptions}>
+                  <S.CommentSection $hasOptions={hasOptions}>
                      <CommentList
                         comments={commentList?.comments || []}
                         commentCount={commentList?.commentCount || commentCount}

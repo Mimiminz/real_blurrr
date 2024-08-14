@@ -116,7 +116,7 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
           >
             {dashCamDetail.videos.map((video) => (
               <StyledSwiperSlide key={video.videoOrder}>
-                <Video videoCount={dashCamDetail.videos.length} controls loop>
+                <Video $videoCount={dashCamDetail.videos.length} controls loop>
                   <source src={video.videoUrl} type="video/mp4" />
                 </Video>
               </StyledSwiperSlide>
@@ -139,7 +139,7 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
 
 const SwiperContainer = styled.div`
   width: 100%;
-  max-width: 600px; /* 원하는 크기로 제한 */
+  max-width: 600px; 
   margin: 0 auto;
 `;
 
@@ -149,8 +149,9 @@ const StyledSwiperSlide = styled(SwiperSlide)`
   align-items: center;
 `;
 
-const Video = styled.video<{ videoCount: number }>`
-  width: ${({ videoCount }) => (videoCount > 1 ? '80%' : '100%')};
+const Video = styled.video<{ $videoCount: number }>`
+  width: 500px;
+  max-width: 100%;
   height: auto;
 `;
 
@@ -162,7 +163,6 @@ const Container = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-height: 670px;
   overflow-y: auto;
 `;
 
