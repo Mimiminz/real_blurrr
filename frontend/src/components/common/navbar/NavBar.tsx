@@ -95,15 +95,13 @@ const NavBar = (): JSX.Element => {
   return (
     <>
       <Nav>
-        <ImageContainer onClick={() => {
-              router.push("/");
-              setMenuOpen(false);
-            }}>
-          <Image
-            src="/images/logo/logo.png"
-            alt="로고"
-            
-          />
+        <ImageContainer
+          onClick={() => {
+            router.push("/");
+            setMenuOpen(false);
+          }}
+        >
+          <Image src="/images/logo/logo.png" alt="로고" />
         </ImageContainer>
         <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -213,7 +211,6 @@ const fadeOut = keyframes`
   }
 `;
 
-
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -297,7 +294,7 @@ const MenuItem = styled.div<MenuItemProps>`
   font-size: 15px;
   padding: 5px 20px;
   font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
-  color: ${({ isActive }) => (isActive ? '#f9803a' : '#000000')};
+  color: ${({ isActive }) => (isActive ? "#f9803a" : "#000000")};
   text-align: left;
 
   a {
@@ -331,8 +328,7 @@ const ImageContainer = styled.div`
   align-items: center;
   width: 100px;
   cursor: pointer;
-`
-
+`;
 
 const Image = styled.img`
   width: 60px;

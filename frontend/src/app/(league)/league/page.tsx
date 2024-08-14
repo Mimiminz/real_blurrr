@@ -136,6 +136,8 @@ const LeagueListContainer = styled.div`
   gap: 22px;
   justify-content: center;
   margin: 20px;
+  margin-top: 40px;
+
 `;
 
 const Title = styled.h1`

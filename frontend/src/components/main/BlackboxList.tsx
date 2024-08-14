@@ -8,11 +8,13 @@ interface DashcamBoardsListProps {
 }
 
 const HotArticleList = ({ dashcamBoards }: DashcamBoardsListProps) => {
+
+  if (!dashcamBoards || dashcamBoards.length <= 0) {
+    return <NoBoard>게시글이 없습니다. </NoBoard>;
+  }
   return (
     <ArticleList>
-      {dashcamBoards &&
-        dashcamBoards.length > 0 &&
-        dashcamBoards.map((article, index) => (
+      {dashcamBoards.map((article, index) => (
           <BlackboxListItem
             key={index}
             id={article.id}
@@ -27,5 +29,10 @@ const HotArticleList = ({ dashcamBoards }: DashcamBoardsListProps) => {
 };
 
 const ArticleList = styled.div``;
+
+const NoBoard = styled.div`
+  margin-top: 30px;
+`
+
 
 export default HotArticleList;

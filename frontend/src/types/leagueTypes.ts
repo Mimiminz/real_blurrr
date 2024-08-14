@@ -91,7 +91,7 @@ export interface moreTabProps {
 }
 
 export interface TabButtonProps {
-  $isActive: boolean;
+  $isactive: boolean;
 }
 
 export interface UserTabProps {
