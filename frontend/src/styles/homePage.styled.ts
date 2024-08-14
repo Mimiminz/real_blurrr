@@ -4,7 +4,7 @@ export const PageContainer = styled.div`
   padding-top: 20px;
   display: flex;
   width: 100%;
-  
+
   @media (min-width: 1024px) {
     flex-direction: row;
     border-top: none;
@@ -48,7 +48,7 @@ export const SectionTitle = styled.h1`
   margin-top: 0px;
   margin-bottom: 6px;
   display: flex;
-  align-items: center;
+  align-items: end;
 
   svg {
     margin-right: 5px;
@@ -178,6 +178,24 @@ export const CarCerficationButton = styled.button`
   &:hover {
     background: #f5f5f5;
   }
+
+  svg {
+    margin-right: 5px;
+  }
+`;
+
+export const TitleDescription = styled.p`
+  font-size: 12px;
+  font-weight: normal;
+  color: #6f6f6f;
+  margin: 0;
+  margin-left: 7px;
+  margin-bottom: 1px;
+`;
+
+export const Title = styled.div`
+  display: flex;
+  align-items: center;
 
   svg {
     margin-right: 5px;

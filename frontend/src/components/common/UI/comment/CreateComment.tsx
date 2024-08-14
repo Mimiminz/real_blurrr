@@ -18,7 +18,7 @@ export default function CreateComment({
   commentId,
   onCommentAdded,
   inputRef,
-}: CreateCommentProps & { inputRef?: React.RefObject<HTMLInputElement> }) {
+}: CreateCommentProps & { inputRef?: React.RefObject<HTMLTextAreaElement> }) {
   const { user } = useAuthStore();
   const [comment, setComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -94,7 +94,7 @@ export default function CreateComment({
       <Avatar src={user?.profileUrl} alt={`${user?.nickname}'s avatar`} />
       <InputContainer>
         <TextArea
-          ref={textAreaRef}
+          ref={inputRef || textAreaRef}
           value={comment}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}

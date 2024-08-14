@@ -24,7 +24,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
   const [showReply, setShowReply] = useState(false);
   const [isLong, setIsLong] = useState(false);
   const { isLoggedIn, user } = useAuthStore();
-  const replyInputRef = useRef<HTMLInputElement>(null);
+  const replyInputRef = useRef<HTMLTextAreaElement>(null); // textarea를 위한 ref
 
   const handleDelete = async () => {
     try {
@@ -46,7 +46,7 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
 
   useEffect(() => {
     if (showReply && replyInputRef.current) {
-      replyInputRef.current.focus();
+      replyInputRef.current.focus(); // 답글 창이 열리면 포커스를 설정
     }
   }, [showReply]);
 
@@ -67,9 +67,6 @@ const CommentListItem: React.FC<CommentListItemProps> = ({
           <UserDetail className={isLong ? "long" : ""}>
             {userDetail || "뚜벅이"}
           </UserDetail>
-          {/* <UserDetail className="long">
-            벤츠 GLS 600 4MATIC MANUFAKTUR 2024
-          </UserDetail> */}
         </UsernameWrapper>
         <Text>{text}</Text>
         <ActionRow>

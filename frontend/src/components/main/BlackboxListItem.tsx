@@ -24,10 +24,12 @@ function BlackboxListItem({
   options,
 }: blackboxArticle) {
   const router = useRouter();
-  const optionPercentage = options.map((option) => ({
-    ...option,
-    percentage: Math.round((option.voteCount / totalVotes) * 100),
-  }));
+  const optionPercentage = options
+    .map((option) => ({
+      ...option,
+      percentage: Math.round((option.voteCount / totalVotes) * 100),
+    }))
+    .sort((a, b) => b.voteCount - a.voteCount);
 
   if (!optionPercentage) {
     return <div>loading...</div>;
