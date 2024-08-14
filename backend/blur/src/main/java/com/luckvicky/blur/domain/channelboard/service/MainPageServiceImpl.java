@@ -81,6 +81,8 @@ public class MainPageServiceImpl implements MainPageService {
     public TodayMyCarResponse getTodayMyCarBoard() {
 
         LocalDateTime now = ClockUtil.getLocalDateTime();
+        System.out.println(now.minusDays(1).toLocalDate().atStartOfDay());
+        System.out.println(now.plusDays(1).minusNanos(1));
 
         List<MyCarBoard> board = myCarRepository
                 .findAllByStatusAndLikeCountGreaterThanEqualAndCreatedAtBetween(
@@ -88,7 +90,7 @@ public class MainPageServiceImpl implements MainPageService {
                         ActivateStatus.ACTIVE,
                         1L,
                         now.minusDays(1).toLocalDate().atStartOfDay(),
-                        now.plusDays(1).minusNanos(1)
+                        now.toLocalDate().atStartOfDay().minusNanos(1)
                 );
 
         if (Objects.isNull(board) || board.isEmpty()) {
