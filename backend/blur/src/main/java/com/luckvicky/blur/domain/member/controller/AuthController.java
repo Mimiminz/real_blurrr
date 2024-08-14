@@ -1,10 +1,10 @@
 package com.luckvicky.blur.domain.member.controller;
 
+import com.luckvicky.blur.domain.channel.service.ChannelService;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
-import com.luckvicky.blur.domain.member.service.AuthCodeService;
 import com.luckvicky.blur.domain.member.service.AuthService;
 import com.luckvicky.blur.domain.member.service.MemberService;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
@@ -12,11 +12,10 @@ import com.luckvicky.blur.global.annotation.custom.ValidEnum;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
 import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +33,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/auth")
 public class AuthController {
     private final MemberService memberService;
+    private final ChannelService channelService;
     private final AuthService authService;
 
-    public AuthController(MemberService memberService, AuthService authService) {
+    public AuthController(MemberService memberService, ChannelService channelService, AuthService authService) {
         this.memberService = memberService;
+        this.channelService = channelService;
         this.authService = authService;
     }
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Boolean> createMember(@Valid @RequestBody SignupDto signupDto) {
-        memberService.createMember(signupDto);
+        UUID memberId = memberService.createMember(signupDto);
+        memberService.createDefaultChannel(memberId);
         return ResponseEntity.ok(true);
     }
 

@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 
 public interface MemberService {
-    void createMember(SignupDto signupDto);
+    UUID createMember(SignupDto signupDto);
     JwtDto login(SignInDto signInDto);
     MemberProfile findMember(UUID memberId);
     MemberProfileUpdateResp modifyMember(UUID memberId, MemberProfileUpdate updateInfo) throws MalformedURLException;
@@ -25,4 +25,5 @@ public interface MemberService {
     boolean checkPassword(UUID memberId, CheckPassword checkPassword);
     void logout(UUID memberId);
     boolean addCarInfo(CarInfo carInfo, UUID memberId);
+    void createDefaultChannel(UUID memberId);
 }
