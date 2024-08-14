@@ -39,6 +39,9 @@ import {
   MyCarItem,
 } from "@/types/mainPageTypes";
 import Loading from "@/components/common/UI/Loading";
+import { MdFactory } from "react-icons/md";
+import { FaCarRear } from "react-icons/fa6";
+import { RiVideoOnLine } from "react-icons/ri";
 import * as S from "@/styles/homePage.styled"; // 분리된 스타일 불러오기
 
 export default function HomeClient() {
@@ -138,14 +141,24 @@ export default function HomeClient() {
         )}
         <S.ArticleSection>
           <S.SectionTitle>
-            <BsFire />
-            Hot
+            <S.Title>
+              <BsFire />
+              Hot
+            </S.Title>
+            <S.TitleDescription>
+              현재 채널에서 인기있는 게시글
+            </S.TitleDescription>
           </S.SectionTitle>
           <HotArticleList hotBoards={hotBoards} />
         </S.ArticleSection>
         <S.ArticleSection>
           <S.SectionHeader>
-            <S.SectionTitle>브랜드 리그</S.SectionTitle>
+            <S.SectionTitle>
+              <S.Title>
+                <MdFactory />
+                브랜드 리그
+              </S.Title>
+            </S.SectionTitle>
             <S.MoreButton onClick={handleMoreClickLeage}>
               더보기
               <IoArrowForward />
@@ -155,7 +168,12 @@ export default function HomeClient() {
         </S.ArticleSection>
         <S.ArticleSection>
           <S.SectionHeader>
-            <S.SectionTitle>블랙박스</S.SectionTitle>
+            <S.SectionTitle>
+              <S.Title>
+                <RiVideoOnLine />
+                블랙박스 채널
+              </S.Title>
+            </S.SectionTitle>
             <S.MoreButton onClick={handleMoreClickDashcam}>
               더보기
               <IoArrowForward />
@@ -165,7 +183,11 @@ export default function HomeClient() {
         </S.ArticleSection>
         <S.ArticleSection>
           <S.SectionHeader>
-            <S.SectionTitle>차 자랑</S.SectionTitle>
+            <S.SectionTitle>
+              <S.Title>
+                <FaCarRear />차 자랑 채널
+              </S.Title>
+            </S.SectionTitle>
             <S.MoreButton onClick={handleMoreClickBoast}>
               더보기
               <IoArrowForward />
