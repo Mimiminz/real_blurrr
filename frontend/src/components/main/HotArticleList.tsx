@@ -8,11 +8,13 @@ interface HotArticleListProps {
 }
 
 const HotArticleList = ({ hotBoards }: HotArticleListProps) => {
+
+  if (!hotBoards || hotBoards.length <= 0) {
+    return <NoBoard>게시글이 없습니다. </NoBoard>;
+  }
   return (
     <ArticleList>
-      {hotBoards &&
-        hotBoards.length > 0 &&
-        hotBoards.map((board: HotBoardItem) => (
+      {hotBoards.map((board: HotBoardItem) => (
           <HotArticleListItem
             key={board.id}
             id={board.id}
@@ -29,5 +31,10 @@ const ArticleList = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const NoBoard = styled.div`
+  margin-top: 30px;
+`
+
 
 export default HotArticleList;

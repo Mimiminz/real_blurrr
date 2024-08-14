@@ -21,7 +21,7 @@ export default function UserTab({
           <TabButton
             key={tab.id}
             href={`/league/${tab.name}`}
-            $isActive={activeTabName === tab.name}
+            $isactive={activeTabName === tab.name}
           >
             {activeTabName === tab.name &&
               (tab.type === "BRAND" ? <MdFactory /> : <FaCar />)}
@@ -32,7 +32,7 @@ export default function UserTab({
           <TabButton
             key={tab.id}
             href={`/league/mention${tab.name}`}
-            $isActive={activeTabName === `mention${tab.name}`}
+            $isactive={activeTabName === `mention${tab.name}`}
           >
             @{tab.name}
           </TabButton>
@@ -61,12 +61,12 @@ const TabButton = styled(Link)<TabButtonProps>`
   min-width: 55px;
   max-height: 30px;
   cursor: pointer;
-  background: ${(props) => (props.$isActive ? "#FFEDD5" : "none")};
+  background: ${(props) => (props.$isactive ? "#FFEDD5" : "none")};
   border: none;
   border-radius: 15px;
   font-size: 12px;
-  font-weight: ${(props) => (props.$isActive ? "bold" : "normal")};
-  color: ${(props) => (props.$isActive ? "#F97316" : "#333")};
+  font-weight: ${(props) => (props.$isactive ? "bold" : "normal")};
+  color: ${(props) => (props.$isactive ? "#F97316" : "#333")};
   text-decoration: none;
 
   &:hover {

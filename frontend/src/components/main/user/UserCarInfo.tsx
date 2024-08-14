@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
-import { LeagueList } from "@/types/leagueTypes";
-import { useAuthStore } from "@/store/authStore";
-
+import { LuPenSquare } from "react-icons/lu";
 import { FaCar } from "react-icons/fa";
 import { MdFactory } from "react-icons/md";
+import { useAuthStore } from "@/store/authStore";
 import { useLeagueStore } from "@/store/leagueStore";
 
 const UserCarInfo: React.FC = () => {
@@ -34,9 +33,13 @@ const UserCarInfo: React.FC = () => {
 
   return (
     <Container>
-      <ProfileSection onClick={() => router.push('/mypage')}>
-        <ProfileImage src={user?.profileUrl} alt="User Profile" />
-
+      <ProfileSection>
+        <ImageContainer>
+          <ProfileImage src={user?.profileUrl} alt="User Profile" />
+          <MyPage onClick={() => router.push("/mypage")}>
+            <LuPenSquare />
+          </MyPage>
+        </ImageContainer>
         <InfoSection>
           <UserName>{user?.nickname}</UserName>
           <CarModel className={carTitle.length > 21 ? "long-title" : ""}>
@@ -80,15 +83,12 @@ export default UserCarInfo;
 
 const Container = styled.div`
   border-radius: 20px;
-  /* background-color: #c8e6c9; */
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
   margin: 0 10px;
   padding: 20px;
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  /* box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1); */
 
   @media (min-width: 768px) {
     margin-left: 20px;
@@ -102,9 +102,14 @@ const Container = styled.div`
 
 const ProfileSection = styled.div`
   display: flex;
-  width: 100%;
   flex-direction: column;
-  justify-content: flex-start;
+  width: 100%;
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: left;
+  position: relative;
 `;
 
 const ProfileImage = styled.img`
@@ -112,15 +117,32 @@ const ProfileImage = styled.img`
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 10px;
-  margin-right: auto;
   background-color: #e5e7eb;
+`;
+
+const MyPage = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px;
+  background-color: white;
+  border-radius: 50%;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  svg {
+    font-size: 16px;
+    color: #333;
+  }
 `;
 
 const InfoSection = styled.div`
   text-align: start;
-  cursor: pointer;
+  margin-top: 12px;
 `;
 
 const UserName = styled.h2`
@@ -177,14 +199,13 @@ const ClickableLeagueName = styled.p`
 
 const NonClickableLeague = styled.div`
   margin: 0;
-  /* background-color: #f7f8f9; */
   border-radius: 10px;
   border: 1px solid #1212127b;
   height: 40px;
   display: flex;
   font-size: 14px;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   cursor: pointer;
   font-weight: bold;
   color: black;

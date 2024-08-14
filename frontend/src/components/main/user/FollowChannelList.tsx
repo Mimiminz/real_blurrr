@@ -15,20 +15,12 @@ const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
     dots: followChannels.length > 2 ? true : false,
     arrows: false,
     centerPadding: "60px",
+    infinite: false,
     slidesToShow: followChannels.length > 2 ? 2 : followChannels.length,
     autoplay: followChannels.length > 2 ? true : false,
     autoplaySpeed: 5000,
     pauseOnHover: true,
     responsive: [
-      // {
-      //   breakpoint: 1024,
-      //   settings: {
-      //     slidesToShow: 2,
-      //     slidesToScroll: 1,
-      //     infinite: filteredCarBoards.length > 6 ? true : false,
-      //     dots: filteredCarBoards.length > 6 ? true : false,
-      //   },
-      // },
       {
         breakpoint: 900,
         settings: {
@@ -78,28 +70,13 @@ const CarouselContainer = styled.div`
     flex-direction: column;
   }
   .slick-list {
-    /* width: 450px; */
     width: 350px;
     display: flex;
     gap: 10px;
     flex-direction: column;
     justify-content: center;
   }
-  /* .slick-prev,
-  .slick-next {
-    display: none;
-  }
 
-  .slick-prev:before,
-  .slick-next:before {
-    display: none;
-    color: black;
-    font-size: 20px;
-  }
-
-  .slick-next:before {
-    content: "";
-  } */
   .slick-dots {
     position: relative;
     height: 20px;
@@ -114,7 +91,7 @@ const CarouselContainer = styled.div`
 
   div {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     margin-bottom: 3px;
   }
