@@ -76,12 +76,12 @@ export default function WritePage() {
           placeholder="제목을 입력해주세요."
           value={title}
           onChange={handleTitleChange}
-          isError={!!titleError}
+          $isError={!!titleError}
         />
         {titleError && <S.ErrorMessage>{titleError}</S.ErrorMessage>}
         <FindTags tags={tags} setTags={setTags} />
         <S.EditorAndButtonContainer>
-          <S.EditorContainer isError={!!contentError}>
+          <S.EditorContainer $isError={!!contentError}>
             <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
           </S.EditorContainer>
           {contentError && <S.ErrorMessage>{contentError}</S.ErrorMessage>}

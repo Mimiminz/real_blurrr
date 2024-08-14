@@ -22,6 +22,7 @@ const CarCertificationForm = () => {
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [ocrResults, setOcrResults] = useState<{ vehicle_model: string | null, preprocessed_image: string | null, similar_car: SimilarCar | null }>({ vehicle_model: null, preprocessed_image: null, similar_car: null });
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [preprocessedImage, setPreprocessedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
@@ -74,29 +75,24 @@ const CarCertificationForm = () => {
   const handleSubmit = async () => {
     if (!imageSrc) return;
 
+    setLoading(true);
+    setError(null);
+
     try {
-        const result = await submitImageForOCR(imageSrc);
+      const result = await submitImageForOCR(imageSrc);
 
-        if (result && result.extracted_texts) {
-          setOcrResults({
-            vehicle_model: result.vehicleModel || null, 
-            preprocessed_image: result.preprocessed_image || null,
-            similar_car: result.similar_car || null,
-          });
-
-        }
-      } catch (error) {
-        console.error("Error submitting image:", error);
-      } finally {
-        setLoading(false);
+      if (result && result.extracted_texts) {
+        setOcrResults({
+          vehicle_model: result.vehicle_model || null,
+          preprocessed_image: result.preprocessed_image || null,
+          similar_car: result.similar_car || null,
+        });
       }
-
+      
       const userResponse = await getUserInfo();
-
       setUser(userResponse);
 
       if (userResponse.isAuth) {
-
         const userLeagues: UserLeague[] = await fetchUserLeagueList();
         const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
           id: userLeague.league.id,
@@ -107,37 +103,42 @@ const CarCertificationForm = () => {
 
         setUserLeagueList(userTabs);
       }
-
-
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        alert("차량 정보를 찾을 수 없습니다. 다시 시도해 주세요.");
+        setError("차명을 찾을 수 없습니다. 차명이 잘 보이도록 다시 촬영해주세요.");
+       
+      } else {
+        setError("서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleConfirm = async () => {
     if (ocrResults.similar_car && accessToken) {
       try {
         const { brand, series, model_detail } = ocrResults.similar_car;
-        
+
         const success = await carInfo(brand, series, model_detail, accessToken);
 
         if (success) {
-
-          //사용자 정보 갱신
           const updatedUserInfo = await getUserInfo();
           useAuthStore.getState().setUser(updatedUserInfo);
 
-          // 사용자 리그 목록 갱신
-        const userLeagues = await fetchUserLeagueList();
-        const userTabs = userLeagues.map((userLeague) => ({
-          id: userLeague.league.id,
-          name: userLeague.league.name,
-          type: userLeague.league.type,
-          peopleCount: userLeague.league.peopleCount,
-        }));
+          const userLeagues = await fetchUserLeagueList();
+          const userTabs = userLeagues.map((userLeague) => ({
+            id: userLeague.league.id,
+            name: userLeague.league.name,
+            type: userLeague.league.type,
+            peopleCount: userLeague.league.peopleCount,
+          }));
 
-        // 리그 상태 관리 스토어에 저장
-        useLeagueStore.getState().setUserLeagueList(userTabs);
-        
+          useLeagueStore.getState().setUserLeagueList(userTabs);
+
           alert("🎉내 차량이 등록되었습니다🎉");
-          router.push("/"); 
+          router.push("/");
         } else {
           alert("차량 등록에 실패했습니다.");
         }
@@ -149,7 +150,6 @@ const CarCertificationForm = () => {
       alert("차량 정보가 없거나 로그인되지 않았습니다.");
     }
   };
-
   const handleDecline = () => {
     alert("관리자가 차량 확인 후 차량 재등록을 해드릴게요.")
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSclf6QxZWK4E6beV_Q0iHMN4-YTqE7sXo5n3Dt0GgkCttHfPg/viewform?usp=sf_link");
@@ -293,7 +293,6 @@ const SubmitButton = styled.div`
   border: none; 
   border-radius: 8px; 
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
   &:hover {
     background-color: #0056b3;
@@ -307,31 +306,6 @@ const SubmitButton = styled.div`
     box-shadow: none;
   }
 `
-
-const CaptureButton = styled.button`
-  font-size: 1em;
-  padding: 10px 20px;
-  font-weight: 400;
-  color: #fff;
-  background-color: #007BFF; 
-  border: none; 
-  border-radius: 8px; 
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    background-color: #0056b3;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); 
-  }
-
-  &:disabled {
-    background-color: #cccccc; 
-    color: #666666;
-    cursor: not-allowed; 
-    box-shadow: none;
-  }
-`
-
 
 const Button = styled.button`
   font-size: 1em;

@@ -19,11 +19,16 @@ const FollowChannelCard: React.FC<ChannelCardProps> = ({
 
   const router = useRouter();
 
-  const channelImg = img || "/images/logo/logo.png"
-  
+  const channelImg = img || "/images/logo/logo.png";
 
   const handleClick = () => {
-    router.push(`/channels/${id}`);
+    if (id === process.env.NEXT_PUBLIC_DASHCAM_ID) {
+      router.push(`/channels/dashcam`);
+    } else if (id === process.env.NEXT_PUBLIC_BOAST_ID) {
+      router.push("/channels/boast");
+    } else {
+      router.push(`/channels/${id}`);
+    }
   };
 
   return (
@@ -40,7 +45,7 @@ const FollowChannelCard: React.FC<ChannelCardProps> = ({
 export default FollowChannelCard;
 
 const CardContainer = styled.div`
-  display: flex;  
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;

@@ -81,7 +81,7 @@ export default function WritePage() {
                placeholder="제목을 입력해주세요."
                value={title}
                onChange={handleTitleChange}
-               isError={!!titleError}
+               $isError={!!titleError}
             />
             {titleError && <ErrorMessage>{titleError}</ErrorMessage>}
             <FindTags tags={tags} setTags={setTags} />
@@ -147,11 +147,11 @@ const PageTitle = styled.h1`
   margin-bottom: 24px;
 `;
 
-const Input = styled.input<{ isError: boolean }>`
+const Input = styled.input<{ $isError: boolean }>`
    width: 100%;
    padding: 10px;
    margin-bottom: 8px;
-   border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+   border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
    border-radius: 5px;
    box-sizing: border-box;
 `;
