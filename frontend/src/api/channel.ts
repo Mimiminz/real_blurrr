@@ -79,7 +79,6 @@ export const fetchSearchKeywords = async (
       return [];
     }
 
-    console.log(`main channel tag search : ${response.data.data.channels}`);
     return response.data.data.content;
   } catch (error) {
     console.error("Error fetching channels data:", error);
@@ -133,7 +132,6 @@ export const fetchChannelPostDetail = async (
     const response = await api.get(
       `/v1/channels/${channelId}/boards/${boardId}`
     );
-    console.log("channelPostDetail call");
     return response.data.data.channelBoard;
   } catch (error) {
     console.error("Error fetching channel post detail:", error);
@@ -231,7 +229,6 @@ export const fetchDashCamDetail = async (
 ): Promise<DashCamDetail> => {
   try {
     const response = await api.get(`/v1/channels/dashcams/boards/${boardId}`);
-    console.log(response.data);
     return response.data.board;
   } catch (error) {
     console.error("Error fetching dash cam detail:", error);
@@ -257,13 +254,10 @@ export const addVote = async (boardId: string, optionId: string) => {
       `/v1/channels/board/${boardId}/votes/${optionId}`
     );
     if (response.data.state == 201) {
-      console.log(`vote success`);
       return true;
     } else if (response.data.state == 400) {
-      console.log(`이미 투표함`);
       return true;
     }
-    console.log(`vote fail`);
     return false;
   } catch (error) {
     console.error("Error fetching vote:", error);
@@ -281,14 +275,6 @@ export const fetchDashCamWrite = async (
   mentionedLeagueNames: string[]
 ) => {
   try {
-    // console.log({
-    //   title: title,
-    //   content: content,
-    //   voteTitle: voteTitle,
-    //   options: option,
-    //   videos: videos,
-    //   mentionedLeagueNames: mentionedLeagueNames
-    // });
     const response = await api.post(`/v1/channels/dashcams/boards`, {
       title: title,
       content: content,
@@ -310,8 +296,6 @@ export const videoPresigned = async (fileName: string): Promise<{ noQueryParamUr
     const response = await api.get(`/v1/channels/dashcams/boards/aws`, {
       params: { fileName },
     });
-
-    console.log(response.data);
 
     return response.data.data;
   } catch (error) {
@@ -335,7 +319,6 @@ export const S3UploadVideo = async (uploadUrl: string, file: File): Promise<void
       throw new Error('Failed to upload video to S3');
     }
 
-    console.log('Successfully uploaded video to S3');
   } catch (error) {
     console.error('Error uploading video:', error);
     throw error;
@@ -358,9 +341,6 @@ export const fetchBoast = async (
       },
     });
 
-    console.log(response.data);
-    console.log(`mycar : ${response.data.content}`);
-
     return response.data;
   } catch (error) {
     console.error("Error fetching boast data:", error);
@@ -378,8 +358,6 @@ export const fetchBoastDetail = async (
         id,
       },
     });
-
-    console.log(`mycar detail: ${response.data}`);
 
     return response.data;
   } catch (error) {
