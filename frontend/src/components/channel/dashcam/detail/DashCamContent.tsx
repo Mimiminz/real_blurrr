@@ -145,24 +145,19 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
             ))}
           </Tags>
         )}
-        <SwiperContainer>
-          <Swiper
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-            }}
-            loop={false}
-            navigation={true}
-            modules={[Navigation]}
-          >
-            {dashCamDetail.videos.map((video) => (
-              <StyledSwiperSlide key={video.videoOrder}>
-                <Video $videoCount={dashCamDetail.videos.length} controls loop>
-                  <source src={video.videoUrl} type="video/mp4" />
-                </Video>
-              </StyledSwiperSlide>
-            ))}
-          </Swiper>
-        </SwiperContainer>
+        <Swiper
+          loop={false}
+          navigation={true}
+          modules={[Navigation]}
+        >
+          {dashCamDetail.videos.map((video) => (
+            <SwiperSlide key={video.videoOrder}>
+              <Video $videoCount={dashCamDetail.videos.length} controls loop>
+                <source src={video.videoUrl} type="video/mp4" />
+              </Video>
+            </SwiperSlide>
+          ))}
+        </Swiper>
         <Content dangerouslySetInnerHTML={{ __html: dashCamDetail.content }} />
         <WriterContainer>
           {isLoggedIn && (
@@ -178,21 +173,20 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
 };
 
 const SwiperContainer = styled.div`
+  max-width: 550px; 
   width: 100%;
-  max-width: 600px; 
   margin: 0 auto;
+  height: auto;
 `;
 
 const StyledSwiperSlide = styled(SwiperSlide)`
-  display: flex;
   justify-content: center;
   align-items: center;
+  height: 300px;
 `;
 
 const Video = styled.video<{ $videoCount: number }>`
-  width: 500px;
-  max-width: 100%;
-  height: auto;
+  max-width: ${({ $videoCount }) => ($videoCount > 1 ? '500px' : '550px')};
 `;
 
 const Container = styled.div`

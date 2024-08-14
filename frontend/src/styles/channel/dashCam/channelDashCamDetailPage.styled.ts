@@ -2,24 +2,22 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding-top: 20px;
+  width: 100%;
 `;
 
 export const ContentContainer = styled.div`
-  display: flex;
   flex-direction: column;
-  width: 100%;
   margin-bottom: 16px;
 `;
 
 export const InnerContentContainer = styled.div`
   display: flex;
-  width: 100%;
 `;
 
 export const LeftColumn = styled.div`
   flex: 1.3;
-  margin-right: 20px;
   display: flex;
+  margin-right: 20px;
   flex-direction: column;
   height: 100%;
   max-height: 700px;
@@ -30,7 +28,7 @@ export const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
+  height: 100%;
   max-height: 700px;
 `;
 
