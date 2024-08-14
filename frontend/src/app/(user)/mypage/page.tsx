@@ -126,11 +126,10 @@ const Tab = styled.div<{ active: boolean; isProfileTab: boolean }>`
   cursor: pointer;
   background-color: ${(props) =>
     props.isProfileTab || props.active ? '#F9803A' : 'transparent'};
-  font-weight: ${(props) => (props.isProfileTab || props.active ? 'bold' : 'normal')};
+  color: ${(props) =>
+    props.isProfileTab || props.active ? '#ffffff' : '#000000'};
+  font-weight: ${(props) => (props.isProfileTab || props.active ? 'normal' : 'normal')};
   border-radius: 0 8px 8px 0;
-  &:hover {
-    background-color: #efefef;
-  }
 `;
 
 const ContentArea = styled.div`

@@ -1,25 +1,35 @@
-"use client";
+// components/NavBar.tsx
 
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { useRouter } from "next/navigation";
-import { IoMdNotifications } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
+import { useRouter, usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useAuthStore } from "@/store/authStore";
 import Notifications from "./Notifications";
 import { useLeagueStore } from "@/store/leagueStore";
 import LoginForm from "@/components/login/LoginForm";
 import SignupForm from "@/components/signup/SignupForm";
+import Modal from "../Modal";
 
-const NavBar = () => {
+type MenuItemProps = {
+  isActive?: boolean;
+  onClick: () => void;
+};
+
+const NavBar = (): JSX.Element => {
   const router = useRouter();
+  const pathname = usePathname();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
+    null
+  );
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const closeLoginModal = () => setIsLoginModalOpen(false);
-
   const openSignupModal = () => setIsSignupModalOpen(true);
   const closeSignupModal = () => setIsSignupModalOpen(false);
 
@@ -36,15 +46,29 @@ const NavBar = () => {
     setMentionTabs,
     setIsLoadUserLeagues,
   } = useLeagueStore();
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [clientIsLoggedIn, setClientIsLoggedIn] = useState<boolean | null>(
-    null
-  );
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setClientIsLoggedIn(isLoggedIn);
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    switch (pathname) {
+      case "/":
+        setActiveItem("home");
+        break;
+      case "/league":
+        setActiveItem("league");
+        break;
+      case "/channels":
+        setActiveItem("channels");
+        break;
+      case "/mypage":
+        setActiveItem("mypage");
+        break;
+      default:
+        setActiveItem(null);
+    }
+  }, [pathname]);
 
   const handleNotificationsClick = () => {
     setShowNotifications(true);
@@ -65,40 +89,78 @@ const NavBar = () => {
     setIsLoadUserLeagues(false);
     alert("로그아웃되었습니다.");
     setMenuOpen(false);
+    router.push("/");
   };
 
   return (
     <>
       <Nav>
-        <Image
-          src="/images/logo/logo.png"
-          alt="로고"
-          onClick={() => {
-            router.push("/");
-            setMenuOpen(false);
-          }}
-        />
+        <ImageContainer onClick={() => {
+              router.push("/");
+              setMenuOpen(false);
+            }}>
+          <Image
+            src="/images/logo/logo.png"
+            alt="로고"
+            
+          />
+        </ImageContainer>
         <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </MenuToggleBtn>
         <Menu className={menuOpen ? "open" : ""}>
-          <MenuItem onClick={() => { router.push("/"); setMenuOpen(false); }}>홈</MenuItem>
-          <MenuItem onClick={() => { router.push(`/league`); setMenuOpen(false); }}>리그</MenuItem>
-          <MenuItem onClick={() => { router.push("/channels"); setMenuOpen(false); }}>채널</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setActiveItem("home");
+              router.push("/");
+              setMenuOpen(false);
+            }}
+            isActive={activeItem === "home"}
+          >
+            홈
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              setActiveItem("league");
+              router.push("/league");
+              setMenuOpen(false);
+            }}
+            isActive={activeItem === "league"}
+          >
+            리그
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setActiveItem("channels");
+              router.push("/channels");
+              setMenuOpen(false);
+            }}
+            isActive={activeItem === "channels"}
+          >
+            채널
+          </MenuItem>
 
           {clientIsLoggedIn === null ? (
             <Spinner />
           ) : clientIsLoggedIn ? (
             <>
-              {/* <MenuItem><IoMdNotifications onClick={handleNotificationsClick} /></MenuItem> */}
-              {menuOpen ? (
-                <MenuItem>마이페이지</MenuItem>
-              ) : (
-                <MenuItem>
-                  <CgProfile onClick={() => { router.push("/mypage"); setMenuOpen(false); }} />
-                </MenuItem>
-              )}
-              <MenuItem onClick={() => { router.push("/"); handleLogout(); }}>로그아웃</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setActiveItem("mypage");
+                  router.push("/mypage");
+                  setMenuOpen(false);
+                }}
+                isActive={activeItem === "mypage"}
+              >
+                마이페이지
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+                isActive={activeItem === "logout"}
+              >
+                로그아웃
+              </MenuItem>
             </>
           ) : (
             <>
@@ -113,21 +175,15 @@ const NavBar = () => {
       </Nav>
 
       {isLoginModalOpen && (
-        <ModalOverlay onClick={closeLoginModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <LoginForm closeLoginModal={closeLoginModal} />
-            <CloseButton onClick={closeLoginModal}>×</CloseButton>
-          </ModalContent>
-        </ModalOverlay>
+        <Modal onClose={closeLoginModal}>
+          <LoginForm closeLoginModal={closeLoginModal} />
+        </Modal>
       )}
 
       {isSignupModalOpen && (
-        <ModalOverlay onClick={closeSignupModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <SignupForm closeSignupModal={closeSignupModal} />
-            <CloseButton onClick={closeSignupModal}>×</CloseButton>
-          </ModalContent>
-        </ModalOverlay>
+        <Modal onClose={closeSignupModal}>
+          <SignupForm closeSignupModal={closeSignupModal} />
+        </Modal>
       )}
     </>
   );
@@ -157,82 +213,11 @@ const fadeOut = keyframes`
   }
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-// 모달창
-const ModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  width: 90%;
-  max-width: 500px;
-  height: 100%;
-  padding: 10px;
-  overflow: hidden;
-
-  animation: ${fadeIn} 300ms ease-in-out;
-
-  &.fade-out {
-    animation: ${fadeOut} 300ms ease-in-out;
-  }
-
-  @media (min-width: 480px) {
-    width: 100%;
-    height: 600px;
-    padding: 15px;
-  }
-
-  @media (min-width: 768px) {
-    width: 90%;
-    height: 700px;
-    padding: 10px;
-  }
-
-  @media (min-width: 1024px) {
-    width: 90%;
-    height: 700px;
-    padding: 10px;
-
-  }
-
-  @media (min-width: 1440px) {
-    width: 90%;
-    height: 700px;
-    padding: 10px;
-  }
-`;
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: none;
-  background: none;
-  font-size: 24px;
-  cursor: pointer;
-`;
 
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
   background-color: #ffffff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   color: black;
@@ -283,7 +268,8 @@ const Menu = styled.div`
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
     padding: 20px 0;
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      visibility 0s linear 0.3s;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -303,18 +289,31 @@ const Menu = styled.div`
   }
 `;
 
-const MenuItem = styled.div`
+const MenuItem = styled.div<MenuItemProps>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   font-size: 15px;
-  margin: 5px 10px;
-  font-weight: 500;
+  padding: 5px 20px;
+  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
+  color: ${({ isActive }) => (isActive ? '#f9803a' : '#000000')};
   text-align: left;
+
   a {
     color: black;
     text-decoration: none;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    font-weight: 600;
+    color: #f9803a;
+  }
+
+  &:active {
+    font-weight: 700;
+    color: #f9803a;
   }
 
   @media (max-width: 480px) {
@@ -326,10 +325,18 @@ const MenuItem = styled.div`
   }
 `;
 
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  cursor: pointer;
+`
+
+
 const Image = styled.img`
   width: 60px;
   height: auto;
-  cursor: pointer;
 
   @media (min-width: 480px) {
     width: 60px;
@@ -344,15 +351,8 @@ const Image = styled.img`
   }
 
   @media (min-width: 1440px) {
-    width: 60px;
+    width: 70px;
   }
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  cursor: pointer;
 `;
 
 const Spinner = styled.div`
