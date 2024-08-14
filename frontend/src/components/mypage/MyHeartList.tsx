@@ -34,8 +34,6 @@ const MyHeartList = () => {
           boards = await getMyHeartChannelList(accessToken, pageNumber);
         }
 
-        // Assuming totalPages is determined in some other way
-        // You might need to set `totalPages` based on your pagination logic
         setHeartBoards(boards);
       } catch (err) {
         setError('목록을 불러오는 데 실패했습니다.');
@@ -87,14 +85,14 @@ const MyHeartList = () => {
             const post: Posts = {
               id: item.id,
               title: item.title,
-              content: item.content || '', // 채널 항목에 content가 있을 수 있습니다.
+              simpleContent: "", 
               member: item.member,
               createdAt: item.createdAt,
               likeCount: item.likeCount,
               commentCount: item.commentCount,
               viewCount: item.viewCount,
             };
-            const mentions: Mentioned[] = item.mentions || []; // 채널 항목에 mentions가 있을 수 있습니다.
+            const mentions: Mentioned[] = item.mentions || []; 
             return (
               <ChannelBoardListItem
                 key={item.id}
