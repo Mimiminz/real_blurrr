@@ -12,7 +12,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 
 const tabs = [
-  { id: "enterPassword", label: "내 정보" },
+  { id: "enterPassword", label: "정보 수정" },
   { id: "changePassword", label: "비밀번호 변경" },
   // { id: 'myHeartList', label: '내 좋아요 목록' },
   // { id: 'myPostList', label: '내 게시글 목록' },
