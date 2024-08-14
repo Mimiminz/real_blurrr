@@ -46,11 +46,10 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
       if (!isDelete) {
         return;
       }
-      console.log("삭제");
       await fetchChannelBoardDelete(boardId);
       if (boastId === channelId) {
         router.push(`/channels/boast`);
-      }else{  
+      } else {
         router.push(`/channels/${channelId}`);
       }
     } catch (error) {

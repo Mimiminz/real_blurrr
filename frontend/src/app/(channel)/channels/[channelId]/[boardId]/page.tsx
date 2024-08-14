@@ -65,8 +65,6 @@ export default function ChannelBoardDetailPage({
   const loadCommentDetail = useCallback(async () => {
     if (!isLoggedIn) return;
 
-    console.log("comment call");
-
     try {
       const fetchCommentsList = await fetchCommentList(boardId);
       setCommentList(fetchCommentsList);
