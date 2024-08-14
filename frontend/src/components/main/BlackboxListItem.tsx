@@ -1,3 +1,4 @@
+import { useChannelStore } from "@/store/channelStore";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styled from "styled-components";
@@ -52,7 +53,11 @@ function BlackboxListItem({
     };
   });
 
+  const { setChannelName, setChannelId, channelName, channelId } =
+    useChannelStore();
+
   const handleClick = () => {
+    setChannelName("블랙박스");
     router.push(`/channels/dashcam/${id}`);
   };
 
