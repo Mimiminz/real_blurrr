@@ -34,7 +34,7 @@ const UserCarInfo: React.FC = () => {
 
   return (
     <Container>
-      <ProfileSection>
+      <ProfileSection onClick={() => router.push('/mypage')}>
         <ProfileImage src={user?.profileUrl} alt="User Profile" />
 
         <InfoSection>
@@ -115,10 +115,12 @@ const ProfileImage = styled.img`
   margin-bottom: 10px;
   margin-right: auto;
   background-color: #e5e7eb;
+  cursor: pointer;
 `;
 
 const InfoSection = styled.div`
   text-align: start;
+  cursor: pointer;
 `;
 
 const UserName = styled.h2`

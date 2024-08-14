@@ -61,7 +61,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
 
   const settings = {
     dots: true,
-    arrows: true,
+    arrows: filteredCarBoards.length > 6 ? true : false,
     infinite: filteredCarBoards.length > 6 ? true : false,
     slidesToShow: 3,
     slidesToScroll: 1,
@@ -88,7 +88,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
           slidesToShow: 2,
           slidesToScroll: 1,
           infinite: filteredCarBoards.length > 6 ? true : false,
-          dots: true,
+          dots: filteredCarBoards.length > 6 ? true : false,
         },
       },
       {
@@ -98,7 +98,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
           slidesToScroll: 1,
           rows: 2,
           dots: true,
-          arrows: true,
+          arrows: filteredCarBoards.length > 6 ? true : false,
           infinite: filteredCarBoards.length > 6 ? true : false,
         },
       },
@@ -109,7 +109,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
           slidesToScroll: 1,
           rows: 2,
           dots: true,
-          arrows: true,
+          arrows: filteredCarBoards.length > 6 ? true : false,
           infinite: filteredCarBoards.length > 6 ? true : false,
         },
       },
@@ -143,7 +143,7 @@ const CarouselContainer = styled.div`
   .slick-list {
     margin: 0 auto;
     padding: 10px 0;
-    width: 90%;
+    width: 70%;
   }
 
   .slick-slide > div {
@@ -162,6 +162,14 @@ const CarouselContainer = styled.div`
   }
   .slick-next {
     right: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .slick-list {
+      margin: 0 auto;
+      padding: 10px 0;
+      width: 90%;
+    }
   }
 `;
 

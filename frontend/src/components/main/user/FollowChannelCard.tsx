@@ -52,7 +52,7 @@ const CardContainer = styled.div`
   border-radius: 8px;
   padding: 10px;
   margin: 10px;
-  width: 90px;
+  width: 140px;
   padding-bottom: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
@@ -65,21 +65,13 @@ const CardContainer = styled.div`
 `;
 
 const ChannelImage = styled.img`
-  width: 100px;
+  width: 100%;
   height: 90px;
   border-radius: 8px;
   margin-bottom: 10px;
+  object-fit: cover;
 `;
 
-const ImageContainer = styled.div<{ img: string }>`
-  width: 100px;
-  height: 90px;
-  background-color: #e5e7eb;
-  border-radius: 8px;
-  background-position: center;
-  background-image: url(${(props) => props.img});
-  margin-bottom: 10px;
-`;
 
 const TitleContainer = styled.div`
   position: relative;
