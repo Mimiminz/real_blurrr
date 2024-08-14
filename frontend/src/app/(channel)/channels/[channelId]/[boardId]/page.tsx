@@ -73,7 +73,7 @@ export default function ChannelBoardDetailPage({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const handleCommentAdded = async () => {
     try {
@@ -93,11 +93,8 @@ export default function ChannelBoardDetailPage({
 
   useEffect(() => {
     loadBoardDetail();
-  }, []);
-
-  useEffect(() => {
     loadCommentDetail();
-  }, [isLoggedIn]);
+  }, [loadCommentDetail]);
 
   if (!boardDetail) {
     return <div>{error ? error : "Loading..."}</div>;
@@ -127,7 +124,7 @@ export default function ChannelBoardDetailPage({
       <CommentContainer>
         <CommentList
           comments={commentList?.comments || []}
-          commentCount={commentList?.commentCount || 0}
+          commentCount={commentList?.commentCount || boardDetail.commentCount}
           boardId={boardId}
           leagueId=""
           isLeague={false}

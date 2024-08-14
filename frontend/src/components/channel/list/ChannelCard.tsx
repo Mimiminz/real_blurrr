@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Mentioned } from '@/types/channelType';
 import { MdPeopleAlt } from "react-icons/md";
 
@@ -31,6 +31,21 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ name, followCount, tags, img 
   );
 };
 
+const bounceIn = keyframes`
+  0% {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+`;
+
 const CardContainer = styled.div`
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -40,6 +55,10 @@ const CardContainer = styled.div`
   margin: 0 auto; 
   max-width: 200px;
   cursor: pointer;
+
+  &:hover {
+    animation: ${bounceIn} 0.5s forwards;
+  }
 `;
 
 const ImageContainer = styled.div<{ img: string }>`

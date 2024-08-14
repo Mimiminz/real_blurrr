@@ -18,9 +18,10 @@ import 'swiper/css/pagination';
 
 interface DashCamContentProps {
   dashCamDetailId: string;
+  setCommentCount: (count: number) => void;
 }
 
-const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId }) => {
+const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCommentCount }) => {
   const { isLoggedIn } = useAuthStore();
 
   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
@@ -36,6 +37,7 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId }) => {
         setDashCamDetail(data);
         setIsLiked(data.liked ?? false);
         setLike(data.likeCount);
+        setCommentCount(data.commentCount);
       } catch (error) {
         console.error('Failed to load dash cam detail:', error);
       }

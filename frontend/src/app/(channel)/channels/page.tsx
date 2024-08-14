@@ -96,12 +96,12 @@ const ChannelPage: React.FC = () => {
     <>
       {isLoggedIn && (
         <>
-          <S.SectionTitle>내가 생성한 채널</S.SectionTitle>
+          {/* <S.SectionTitle>내가 생성한 채널</S.SectionTitle>
           {CreatedChannels.length === 0 ? (
             <p>생성한 채널이 없습니다</p>
           ) : (
             <ChannelCarousel slides={CreatedChannels} handleChannelClick={handleChannelClick} />
-          )}
+          )} */}
 
           <S.SectionTitle>내가 팔로우한 채널</S.SectionTitle>
           {FollowingChannels.length === 0 ? (
