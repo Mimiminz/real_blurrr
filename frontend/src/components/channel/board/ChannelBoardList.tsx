@@ -40,8 +40,6 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
         if (data) {
           setPosts(data.content);
           setTotalPages(data.totalPages);
-
-          console.log(data);
         } else {
           setPosts([]);
         }
