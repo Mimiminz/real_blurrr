@@ -3,15 +3,16 @@ import styled from 'styled-components';
 export const Container = styled.div`
   padding-top: 20px;
   width: 100%;
-`;
-
-export const ContentContainer = styled.div`
   flex-direction: column;
   margin-bottom: 16px;
 `;
 
 export const InnerContentContainer = styled.div`
   display: flex;
+
+  @media (max-width: 480px) {
+    flex-direction: column; /* 480px 이하에서는 세로 배치 */
+  }
 `;
 
 export const LeftColumn = styled.div`
@@ -22,6 +23,11 @@ export const LeftColumn = styled.div`
   height: 100%;
   max-height: 700px;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    margin-right: 0; /* 세로 배치 시 margin 제거 */
+    max-height: none; /* 필요시 최대 높이 제거 */
+  }
 `;
 
 export const RightColumn = styled.div`
@@ -32,6 +38,11 @@ export const RightColumn = styled.div`
   height: 100%;
   max-height: 700px;
   overflow: hidden;
+
+   @media (max-width: 480px) {
+    margin-top: 20px; /* 세로 배치 시 위쪽에 여백 추가 */
+    max-height: none; /* 필요시 최대 높이 제거 */
+  }
 `;
 
 export const CommentSection = styled.div<{ $hasOptions: boolean }>`
