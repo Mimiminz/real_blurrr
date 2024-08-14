@@ -40,8 +40,7 @@ export default function WritePage() {
       setTitle(newTitle);
    };
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+   const handleSubmit = async () => {
       let hasError = false;
 
       if (!title.trim()) {
@@ -75,51 +74,48 @@ export default function WritePage() {
    return (
       <Container>
          <PageTitle>블랙박스 게시글 작성</PageTitle>
-         <form onSubmit={handleSubmit}>
-            <Input
-               name="titleInput"
-               placeholder="제목을 입력해주세요."
-               value={title}
-               onChange={handleTitleChange}
-               $isError={!!titleError}
-            />
-            {titleError && <ErrorMessage>{titleError}</ErrorMessage>}
-            <FindTags tags={tags} setTags={setTags} />
-            <EditorContainer $isError={!!contentError}>
-               <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
-            </EditorContainer>
-            {contentError && <ErrorMessage>{contentError}</ErrorMessage>}
-            <VideoUpload
-               videoFiles={videoFiles}
-               setVideoFiles={setVideoFiles}
-               noQueryParamURLs={noQueryParamURLs}
-               setNoQueryParamURLs={setNoQueryParamURLs}
-            />
-            <EditorAndButtonContainer>
-               {voteOptions.length > 0 ? (
-                  <VoteButton type="button" onClick={togglePopup}>투표 변경</VoteButton>
-               ) : (
-                  <VoteButton type="button" onClick={togglePopup}>투표 생성</VoteButton>
-               )}
-               <SubmitButton
-                  type="submit"
-                  onClick={(e) => { }}
-               >
-                  작성
-               </SubmitButton>
-            </EditorAndButtonContainer>
-            {showPopup && (
-               <DraggableVotePopup
-                  title="투표 생성"
-                  content={<div>원하는 옵션의 투표를 생성해보세요.</div>}
-                  onClose={togglePopup}
-                  onOptionsChange={(newOptions: CreateOption[]) => setVoteOptions(newOptions)}
-                  onVoteTitleChange={(newTitle: string) => setVoteTitle(newTitle)}
-                  initialOptions={voteOptions}
-                  initialVoteTitle={voteTitle}
-               />
+         <Input
+            placeholder="제목을 입력해주세요."
+            value={title}
+            onChange={handleTitleChange}
+            $isError={!!titleError}
+         />
+         {titleError && <ErrorMessage>{titleError}</ErrorMessage>}
+         <FindTags tags={tags} setTags={setTags} />
+         <EditorContainer $isError={!!contentError}>
+            <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
+         </EditorContainer>
+         {contentError && <ErrorMessage>{contentError}</ErrorMessage>}
+         <VideoUpload
+            videoFiles={videoFiles}
+            setVideoFiles={setVideoFiles}
+            noQueryParamURLs={noQueryParamURLs}
+            setNoQueryParamURLs={setNoQueryParamURLs}
+         />
+         <EditorAndButtonContainer>
+            {voteOptions.length > 0 ? (
+               <VoteButton type="button" onClick={togglePopup}>투표 변경</VoteButton>
+            ) : (
+               <VoteButton type="button" onClick={togglePopup}>투표 생성</VoteButton>
             )}
-         </form>
+            <SubmitButton
+               type="submit"
+               onClick={handleSubmit}
+            >
+               작성
+            </SubmitButton>
+         </EditorAndButtonContainer>
+         {showPopup && (
+            <DraggableVotePopup
+               title="투표 생성"
+               content={<div>원하는 옵션의 투표를 생성해보세요.</div>}
+               onClose={togglePopup}
+               onOptionsChange={(newOptions: CreateOption[]) => setVoteOptions(newOptions)}
+               onVoteTitleChange={(newTitle: string) => setVoteTitle(newTitle)}
+               initialOptions={voteOptions}
+               initialVoteTitle={voteTitle}
+            />
+         )}
       </Container>
    );
 };
@@ -127,9 +123,7 @@ export default function WritePage() {
 const Container = styled.div`
   padding: 50px 16px;
   width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  max-width: 100%; /* 기본적으로 전체 너비 사용 */
+  max-width: 1000px; /* 기본적으로 전체 너비 사용 */
   margin: 0 auto;
 
   @media (min-width: 768px) {
@@ -145,6 +139,7 @@ const PageTitle = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
+  text-align: center;
 `;
 
 const Input = styled.input<{ $isError: boolean }>`
@@ -157,7 +152,7 @@ const Input = styled.input<{ $isError: boolean }>`
 `;
 
 const EditorAndButtonContainer = styled.div`
-  width: 100%;
+  max-width: 1000px;
   display: flex;
   justify-content: center;
   flex-direction: row;
@@ -168,7 +163,7 @@ const EditorAndButtonContainer = styled.div`
 
 const EditorContainer = styled.div<{ $isError: boolean }>`
    width: 100%;
-   max-width: 100%;
+   max-width: 1000px;
    margin-bottom: 8px;
    box-sizing: border-box;
    border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};

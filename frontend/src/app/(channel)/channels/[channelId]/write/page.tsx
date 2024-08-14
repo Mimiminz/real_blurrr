@@ -4,10 +4,14 @@
 
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import QuillEditor from "@/components/channel/board/QuillEditor";
+import dynamic from "next/dynamic";
+// import QuillEditor from "@/components/channel/board/QuillEditor";
 import { fetchPostWrite, fetchBoastWrite } from "@/api/channel";
 import FindTags from "@/components/channel/board/FindTags";
-import * as S from '@/styles/channel/board/writePage.styled'; // 스타일드 컴포넌트 불러오기
+import * as S from '@/styles/channel/board/writePage.styled';
+
+const QuillEditor = dynamic(() => import('@/components/channel/board/QuillEditor'), { ssr: false });
+
 
 export default function WritePage() {
   const boastId = process.env.NEXT_PUBLIC_BOAST_ID;
