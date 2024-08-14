@@ -29,11 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class MyCarBoardServiceImpl implements MyCarBoardService {
     private final MyCarRepository myCarRepository;
@@ -105,7 +107,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
                 .orElseThrow(NotExistBoardException::new);
 
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(myCarBoard);
-
+        myCarBoard.increaseCommentCount();
         boolean isLiked = false;
         if (Objects.nonNull(nullableMember)) {
             isLiked = isLike(nullableMember.getId(), myCarBoard);
@@ -114,8 +116,19 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
         return MyCarDetail.of(myCarBoard, mentionedLeagues, isLiked);
     }
 
+//    @Transactional
+//    @Override
+//    public void increaseView(UUID boardId) {
+//        MyCarBoard myCarBoard = myCarRepository.findByIdAndStatus(boardId, ActivateStatus.ACTIVE)
+//                .orElseThrow(NotExistBoardException::new);
+//
+//        myCarBoard.increaseCommentCount();
+//    }
+
     private boolean isLike(UUID memberId, Board board) {
         var member = memberRepository.getOrThrow(memberId);
         return likeRepository.existsByMemberAndBoard(member, board);
     }
+
+
 }
