@@ -33,7 +33,6 @@ function ChannelBoardListItem({
           <UserName>{post.member.nickname}</UserName>
           <UserTags>{post.member.carTitle}</UserTags>
         </UserContainer>
-        <Text>{post.content}</Text>
       </ArticleInfo>
       <LikeAndComment>
         <LikeSection>
@@ -64,6 +63,10 @@ const ArticleDetail = styled.div`
   padding: 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
   cursor: pointer;
+
+  &:hover {
+    background-color: #ebebeb3d;
+  }
 `;
 
 const ArticleInfo = styled.div`
