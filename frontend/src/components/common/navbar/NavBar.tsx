@@ -218,6 +218,7 @@ const Nav = styled.nav`
   background-color: #ffffff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   color: black;
+  padding: 10px 20px;
 
   @media (min-width: 480px) {
     padding: 20px 40px;
@@ -294,7 +295,7 @@ const MenuItem = styled.div<MenuItemProps>`
   font-size: 15px;
   padding: 5px 20px;
   font-weight: ${({ $isActive }) => ($isActive ? 700 : 500)};
-  color: ${({ $isActive }) => ($isActive ? '#f9803a' : '#000000')};
+  color: ${({ $isActive }) => ($isActive ? "#f9803a" : "#000000")};
   text-align: left;
 
   a {
