@@ -43,13 +43,22 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
             spaceBetween={0}
             pagination={shouldEnablePaginationAndAutoplay ? {
                clickable: true,
+               renderBullet: (index, className) => {
+                  // 페이지네이션 버튼의 개수를 조절하는 부분
+                  const numBullets = Math.ceil(slides.length / 3); // 3개 단위로 버튼 생성
+                  if (index < numBullets) {
+                     return `<span class="${className}"></span>`;
+                  }
+                  return '';
+               },
             } : false}
             modules={[Pagination]}
             slidesOffsetAfter={10}
             autoplay={shouldEnablePaginationAndAutoplay ? {
-               delay: 2500,
+               delay: 3500,
                disableOnInteraction: false,
                pauseOnMouseEnter: true,
+               reverseDirection: true,
             } : false}
             breakpoints={{
                320: { // 작은 화면
@@ -94,6 +103,10 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
 
 const SwiperContainer = styled.div`
   padding: 10px; /* Adjust padding to provide extra space */
+
+  .swiper-pagination {
+    position: relative;
+  }
 `;
 
 const SwiperSlideStyled = styled(SwiperSlide)`
