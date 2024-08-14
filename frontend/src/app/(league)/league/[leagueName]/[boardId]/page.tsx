@@ -57,7 +57,7 @@ export default function BoardDetailPage({
       const fetchcommentsList = await fetchLeagueCommentList(leagueId, boardId);
       setCommentList(fetchcommentsList);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -104,7 +104,7 @@ export default function BoardDetailPage({
             await loadCommentDetail(findActiveTab.id);
           }
         } catch (error) {
-          console.log(error);
+          throw error;
         } finally {
           setLoading(false);
         }
@@ -391,7 +391,7 @@ const ListButton = styled.div`
   max-width: 80px;
   margin-top: 130px;
   padding: 12px 13px;
-  border: 2px solid #d1b5a4a9;
+  border: 1px solid #ccc;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
@@ -400,9 +400,4 @@ const ListButton = styled.div`
   text-align: center;
   white-space: nowrap;
   transition: background-color 0.3s ease, transform 0.2s ease;
-
-  /* &:hover {
-    background-color: #6d6d6d;
-    transform: translateY(-2px);
-  } */
 `;

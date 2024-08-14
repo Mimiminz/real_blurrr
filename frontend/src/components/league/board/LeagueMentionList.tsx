@@ -8,7 +8,6 @@ import { useLeagueStore } from "@/store/leagueStore";
 const LeagueMentionBoardList = ({ boardList }: LeagueMentionListProps) => {
   const router = useRouter();
 
-  console.log(boardList);
   const handleCardClick = (id: string, channelId: string) => {
     router.push(`/channels/${channelId}/${id}`);
   };

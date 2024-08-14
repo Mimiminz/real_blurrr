@@ -78,7 +78,7 @@ export default function HomeClient() {
           setFollowChannels(follow);
         }
       } catch (error) {
-        console.log(error);
+        throw error;
       } finally {
         setIsBoardLoading(false);
       }
@@ -94,7 +94,7 @@ export default function HomeClient() {
         const leagues = await fetchBrandLeagues();
         setBrandLeagueTab(leagues);
       } catch (error) {
-        console.log(error);
+        throw error;
       }
     };
 
@@ -164,15 +164,15 @@ export default function HomeClient() {
           <BlackboxList dashcamBoards={dashcamBoards} />
         </S.ArticleSection>
         <S.ArticleSection>
-               <S.SectionHeader>
-                  <S.SectionTitle>차 자랑</S.SectionTitle>
-                  <S.MoreButton onClick={handleMoreClickBoast}>
-                     더보기
-                     <IoArrowForward />
-                  </S.MoreButton>
-               </S.SectionHeader>
-               <CarPictureList myCarBoards={myCarBoards} />
-            </S.ArticleSection>
+          <S.SectionHeader>
+            <S.SectionTitle>차 자랑</S.SectionTitle>
+            <S.MoreButton onClick={handleMoreClickBoast}>
+              더보기
+              <IoArrowForward />
+            </S.MoreButton>
+          </S.SectionHeader>
+          <CarPictureList myCarBoards={myCarBoards} />
+        </S.ArticleSection>
       </S.Main>
       <S.Aside>
         <S.AsideSection>

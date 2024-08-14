@@ -57,7 +57,7 @@ export default function LeagueMainPage() {
             setBrandLeagueTab(leagues);
             setInitialized(true);
           } catch (error) {
-            console.log(error);
+            throw error;
           }
         }
       } catch (error) {
@@ -137,7 +137,6 @@ const LeagueListContainer = styled.div`
   justify-content: center;
   margin: 20px;
   margin-top: 40px;
-
 `;
 
 const Title = styled.h1`

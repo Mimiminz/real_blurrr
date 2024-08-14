@@ -38,7 +38,7 @@ const LeagueDetailTitle: React.FC<BoardDetailProps> = ({
       await fetchBoardDelete(boardId);
       router.push(`/league/${leagueName}`);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
     setDropdownVisible(false);
   };
