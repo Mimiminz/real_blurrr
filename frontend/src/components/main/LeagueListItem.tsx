@@ -82,8 +82,8 @@ const Title = styled.h3`
     margin-bottom: 6px;
 
     &.long-name {
-    font-size: 10px;
-  }
+      font-size: 10px;
+    }
   }
 `;
 

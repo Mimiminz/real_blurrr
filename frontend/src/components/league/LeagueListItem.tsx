@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { MdPeopleAlt } from "react-icons/md";
+import { useLeagueStore } from "@/store/leagueStore";
 
 interface LeagueListItemProps {
   id: string;
@@ -15,12 +16,18 @@ const LeagueListItem: React.FC<LeagueListItemProps> = ({
   peopleCount,
 }) => {
   const router = useRouter();
+  const { userLeagueList } = useLeagueStore();
+
+  const isUserInLeague = userLeagueList.some((league) => league.name === name);
 
   const handleClick = () => {
     router.push(`/league/${name}`);
   };
   return (
-    <CardContainer onClick={handleClick}>
+    <CardContainer
+      onClick={handleClick}
+      className={isUserInLeague ? "myLeague" : ""}
+    >
       <Title className={name.length > 6 ? "long-name" : ""}>{name}</Title>
       <CountContainer>
         <Icon>
@@ -43,9 +50,34 @@ const CardContainer = styled.div`
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  transition: transform 0.3s;
 
   &:hover {
     background: #ffedd5;
+    transition: 0.3s ease-in-out;
+    transform: translateY(-5px) scale(1.05);
+  }
+
+  &.myLeague {
+    background: linear-gradient(135deg, #ffedd5, #ffd7ba); /* 그라데이션 적용 */
+    border-color: #ff900d; /* 테두리 색상 */
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.4); /* 그림자 */
+    transform: scale(1.05);
+    position: relative;
+
+    &::after {
+      content: "My League";
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #FF900D; /* 배지 색상 */
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
   }
 `;
 
