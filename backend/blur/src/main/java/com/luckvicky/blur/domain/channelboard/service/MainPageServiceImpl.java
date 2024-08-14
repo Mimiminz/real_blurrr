@@ -87,7 +87,8 @@ public class MainPageServiceImpl implements MainPageService {
                         Sort.by(Direction.DESC, SortingCriteria.LIKE.getCriteria()),
                         ActivateStatus.ACTIVE,
                         1L,
-                        now.minusDays(1), now
+                        now.minusDays(1).toLocalDate().atStartOfDay(),
+                        now.plusDays(1).minusNanos(1)
                 );
 
         if (Objects.isNull(board) || board.isEmpty()) {
