@@ -18,7 +18,7 @@ const DashCamLayout: React.FC<LayoutProps> = ({ children }) => {
    return (
       <>
          <BreadcrumbContainer>
-            <Breadcrumb channel="채널" subChannel="블랙박스" channelUrl="/channels" />
+            <Breadcrumb channel="채널" subChannel="블랙박스" channelUrl="/channels" subChannelUrl="/channels/dashcam" />
          </BreadcrumbContainer>
          {children}
       </>
