@@ -242,6 +242,10 @@ const Content = styled.div`
     font-size: 17px;
     padding: 20px 20px 50px 20px;
   }
+
+  img {
+    width: 100%;
+  }
 `;
 
 const CommentContainer = styled.div`

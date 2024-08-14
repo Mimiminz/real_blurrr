@@ -1,19 +1,22 @@
 package com.luckvicky.blur.domain.member.service;
 
-import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
+
+import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
+import com.luckvicky.blur.domain.channel.model.entity.Channel;
+import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
+import com.luckvicky.blur.domain.channel.service.ChannelServiceImpl;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
 import com.luckvicky.blur.domain.leaguemember.model.entity.LeagueMember;
 import com.luckvicky.blur.domain.leaguemember.repository.LeagueMemberRepository;
-import com.luckvicky.blur.domain.member.exception.*;
+import com.luckvicky.blur.domain.member.exception.DuplicateNickName;
+import com.luckvicky.blur.domain.member.exception.InvalidCarInfoException;
+import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
+import com.luckvicky.blur.domain.member.exception.PasswordMismatchException;
 import com.luckvicky.blur.domain.member.model.dto.req.CarInfo;
-import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
-import com.luckvicky.blur.domain.member.strategy.SingInAuthStrategy;
-import com.luckvicky.blur.domain.member.strategy.PasswordAuthStrategy;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangeFindPassword;
 import com.luckvicky.blur.domain.member.model.dto.req.ChangePassword;
 import com.luckvicky.blur.domain.member.model.dto.req.CheckPassword;
-import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
 import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.dto.req.SignupDto;
@@ -22,14 +25,12 @@ import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
+import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
 import com.luckvicky.blur.global.enums.code.ErrorCode;
+import com.luckvicky.blur.global.enums.defaultFollow.DefaultChannel;
 import com.luckvicky.blur.global.jwt.model.JwtDto;
-import com.luckvicky.blur.global.jwt.model.ReissueDto;
 import com.luckvicky.blur.global.jwt.service.JwtProvider;
-import com.luckvicky.blur.global.util.ResourceUtil;
 import com.luckvicky.blur.infra.aws.service.S3ImageService;
-import com.luckvicky.blur.infra.mail.service.MailService;
-import com.luckvicky.blur.infra.redis.service.RedisAuthCodeAdapter;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -37,11 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
@@ -55,11 +54,14 @@ public class MemberServiceImpl implements MemberService {
     private final AuthCodeService authCodeService;
     private final LeagueRepository leagueRepository;
     private final LeagueMemberRepository leagueMemberRepository;
+    private final ChannelRepository channelRepository;
+    private final ChannelServiceImpl channelServiceImpl;
 
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder,
                              JwtProvider jwtProvider, RedisRefreshTokenAdapter redisRefreshTokenAdapter,
                              S3ImageService s3ImageService, AuthCodeService authCodeService,
-                             LeagueRepository leagueRepository, LeagueMemberRepository leagueMemberRepository) {
+                             LeagueRepository leagueRepository, LeagueMemberRepository leagueMemberRepository,
+                             ChannelRepository channelRepository, ChannelServiceImpl channelServiceImpl) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
@@ -68,12 +70,14 @@ public class MemberServiceImpl implements MemberService {
         this.authCodeService = authCodeService;
         this.leagueRepository = leagueRepository;
         this.leagueMemberRepository = leagueMemberRepository;
+        this.channelRepository = channelRepository;
+        this.channelServiceImpl = channelServiceImpl;
     }
 
     @Transactional
     @Override
-    public void createMember(SignupDto signupDto) {
-        authCodeService.checkAvailable(signupDto.email(), AuthCodeType.SIGNUP);
+    public UUID createMember(SignupDto signupDto) {
+//        authCodeService.checkAvailable(signupDto.email(), AuthCodeType.SIGNUP);
 
         signupDto.valid();
 
@@ -90,6 +94,8 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        return member.getId();
     }
 
     @Override
@@ -192,6 +198,20 @@ public class MemberServiceImpl implements MemberService {
 
         member.setCarInfo(carInfo);
         return true;
+    }
+
+    @Override
+    public void createDefaultChannel(UUID memberId) {
+
+        DefaultChannel[] channels = DefaultChannel.values();
+
+        for (DefaultChannel channel : channels) {
+            Channel defaultChannel = channelRepository
+                    .findByNameIs(channel.getName())
+                    .orElseThrow(NotExistChannelException::new);
+
+            channelServiceImpl.createFollow(memberId, defaultChannel.getId());
+        }
     }
 
 
