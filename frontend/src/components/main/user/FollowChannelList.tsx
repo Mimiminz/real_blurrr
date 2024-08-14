@@ -12,15 +12,32 @@ interface ChannelsProp {
 
 const FollowChannelList: React.FC<ChannelsProp> = ({ followChannels }) => {
   const settings = {
-    dots: true,
+    dots: followChannels.length > 2 ? true : false,
     arrows: false,
-    infinite: followChannels.length > 3 ? true : false,
     centerPadding: "60px",
-    slidesToShow: followChannels.length > 3 ? 3 : followChannels.length,
-    slidesToScroll: 1,
-    autoplay: followChannels.length > 3 ? true : false,
+    slidesToShow: followChannels.length > 2 ? 2 : followChannels.length,
+    autoplay: followChannels.length > 2 ? true : false,
     autoplaySpeed: 5000,
     pauseOnHover: true,
+    responsive: [
+      // {
+      //   breakpoint: 1024,
+      //   settings: {
+      //     slidesToShow: 2,
+      //     slidesToScroll: 1,
+      //     infinite: filteredCarBoards.length > 6 ? true : false,
+      //     dots: filteredCarBoards.length > 6 ? true : false,
+      //   },
+      // },
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          dots: true,
+        },
+      },
+    ],
   };
 
   return (
@@ -61,7 +78,8 @@ const CarouselContainer = styled.div`
     flex-direction: column;
   }
   .slick-list {
-    width: 450px;
+    /* width: 450px; */
+    width: 350px;
     display: flex;
     gap: 10px;
     flex-direction: column;
@@ -102,6 +120,11 @@ const CarouselContainer = styled.div`
   }
 
   @media (min-width: 900px) {
+    .slick-list {
+      width: 290px;
+    }
+  }
+  @media (min-width: 1130px) {
     .slick-list {
       width: 390px;
     }

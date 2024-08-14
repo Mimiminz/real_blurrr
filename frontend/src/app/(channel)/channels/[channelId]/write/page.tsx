@@ -52,6 +52,13 @@ export default function WritePage() {
       setContentError(""); // 유효한 경우 오류 메시지 초기화
     }
 
+    if (boastId === channelId && !thumbNail) {
+      setContentError("차 자랑은 썸네일로 등록할 사진이 필요합니다.");
+      hasError = true;
+    } else {
+      setContentError("");
+    }
+
     if (hasError) return;
 
     try {

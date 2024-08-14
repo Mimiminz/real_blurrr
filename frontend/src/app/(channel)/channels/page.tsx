@@ -82,6 +82,16 @@ const ChannelPage: React.FC = () => {
     }
   };
 
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
+    return <Loading />;
+  }
+
   return (
     <>
       {isLoggedIn && (

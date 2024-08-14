@@ -1,7 +1,5 @@
 package com.luckvicky.blur.domain.mycar.controller;
 
-import static com.luckvicky.blur.global.constant.Number.ALARM_PAGE_SIZE;
-
 import com.luckvicky.blur.domain.board.service.BoardService;
 import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateRequest;
 import com.luckvicky.blur.domain.mycar.service.MyCarBoardService;
@@ -15,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = "내 차 자랑")
 @RequestMapping("/v1/channels/mycar/boards")
 @RestController
@@ -70,4 +70,13 @@ public class MyCarBoardController {
             @NullableAuthUser ContextMember contextMember) {
         return ResponseEntity.ok(myCarBoardService.findMyCarDetail(id, contextMember));
     }
+
+    @Operation(summary = "차 자랑 상세 조회")
+    @GetMapping("/view/{id}")
+    public ResponseEntity findMyCarDetail(
+            @PathVariable(name = "id") String id) {
+        return null;
+//        return ResponseEntity.ok(myCarBoardService.findMyCarDetail(id, contextMember));
+    }
+
 }
