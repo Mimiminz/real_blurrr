@@ -15,6 +15,7 @@ function LeagueMentionListItem({
   commentCount,
   channelName,
 }: LeagueMentionListItemProps) {
+  const carTitle = writerCar || "뚜벅이";
   return (
     <ArticleDetail>
       <ArticleInfo>
@@ -22,7 +23,7 @@ function LeagueMentionListItem({
         <Title>{title}</Title>
         <UserContainer>
           <UserName>{writer}</UserName>
-          <UserTags>ㆍ{writerCar}</UserTags>
+          <UserTags>ㆍ{carTitle}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -76,19 +77,19 @@ const Channel = styled.p`
 
 const UserContainer = styled.div`
   display: flex;
+  align-items: center;
+  /* justify-content: center; */
 `;
 
 const UserName = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
 `;
 
 const UserTags = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   font-size: 12px;
   color: #787878;
 `;
