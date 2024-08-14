@@ -104,12 +104,11 @@ const CarCertificationForm = () => {
         setUserLeagueList(userTabs);
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        alert("차량 정보를 찾을 수 없습니다. 다시 시도해 주세요.");
-        setError("차명을 찾을 수 없습니다. 차명이 잘 보이도록 다시 촬영해주세요.");
-       
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.detail || "서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.";
+        setError(errorMessage);
       } else {
-        setError("서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
+        setError("알 수 없는 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
       }
     } finally {
       setLoading(false);
@@ -182,6 +181,7 @@ const CarCertificationForm = () => {
         <SubmitButtonContainer>
        <SubmitButton onClick={handleSubmit}>제출</SubmitButton>
       </SubmitButtonContainer>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       </Body>
       <input
         type="file"
@@ -460,4 +460,11 @@ const ConfirmationButton = styled.div`
     background-color: ${props => props.children === '예' ? '#0056b3' : '#0056b3'}; 
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff4d4d;
+  font-size: 1em;
+  font-weight: bold;
+  margin-top: 10px;
 `;

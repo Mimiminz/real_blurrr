@@ -22,7 +22,6 @@ const MypageTabBox = (): JSX.Element => {
   const [selectedTab, setSelectedTab] = useState<TabId>('enterPassword');
 
   const renderContent = (): JSX.Element => {
-    console.log('Selected Tab:', selectedTab);
     switch (selectedTab) {
       case 'enterPassword':
         return <EnterPassword onPasswordEntered={() => setSelectedTab('profile')} />;

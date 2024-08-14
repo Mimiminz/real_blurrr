@@ -107,6 +107,7 @@ const UserImage = styled.img`
   height: 80px;
   border-radius: 50%;
   padding:5px;
+  object-fit: cover;
 `
 
 const UserCarName = styled.div`

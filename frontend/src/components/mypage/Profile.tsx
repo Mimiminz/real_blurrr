@@ -37,7 +37,6 @@ const Profile = (): JSX.Element => {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      console.log('Selected file:', file);
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
@@ -47,8 +46,6 @@ const Profile = (): JSX.Element => {
       reader.readAsDataURL(file);
       setFieldValue('profileImage', file);
       
-    } else {
-      console.log('No file selected');
     }
   };
 
