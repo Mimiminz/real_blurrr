@@ -12,7 +12,7 @@ import SignupForm from "@/components/signup/SignupForm";
 import Modal from "../Modal";
 
 type MenuItemProps = {
-  isActive?: boolean;
+  $isActive?: boolean;
   onClick: () => void;
 };
 
@@ -96,13 +96,13 @@ const NavBar = (): JSX.Element => {
     <>
       <Nav>
         <ImageContainer onClick={() => {
-              router.push("/");
-              setMenuOpen(false);
-            }}>
+          router.push("/");
+          setMenuOpen(false);
+        }}>
           <Image
             src="/images/logo/logo.png"
             alt="로고"
-            
+
           />
         </ImageContainer>
         <MenuToggleBtn onClick={() => setMenuOpen(!menuOpen)}>
@@ -115,7 +115,7 @@ const NavBar = (): JSX.Element => {
               router.push("/");
               setMenuOpen(false);
             }}
-            isActive={activeItem === "home"}
+            $isActive={activeItem === "home"}
           >
             홈
           </MenuItem>
@@ -126,7 +126,7 @@ const NavBar = (): JSX.Element => {
               router.push("/league");
               setMenuOpen(false);
             }}
-            isActive={activeItem === "league"}
+            $isActive={activeItem === "league"}
           >
             리그
           </MenuItem>
@@ -136,7 +136,7 @@ const NavBar = (): JSX.Element => {
               router.push("/channels");
               setMenuOpen(false);
             }}
-            isActive={activeItem === "channels"}
+            $isActive={activeItem === "channels"}
           >
             채널
           </MenuItem>
@@ -151,13 +151,13 @@ const NavBar = (): JSX.Element => {
                   router.push("/mypage");
                   setMenuOpen(false);
                 }}
-                isActive={activeItem === "mypage"}
+                $isActive={activeItem === "mypage"}
               >
                 마이페이지
               </MenuItem>
               <MenuItem
                 onClick={handleLogout}
-                isActive={activeItem === "logout"}
+                $isActive={activeItem === "logout"}
               >
                 로그아웃
               </MenuItem>
@@ -296,8 +296,8 @@ const MenuItem = styled.div<MenuItemProps>`
   justify-content: flex-start;
   font-size: 15px;
   padding: 5px 20px;
-  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
-  color: ${({ isActive }) => (isActive ? '#f9803a' : '#000000')};
+  font-weight: ${({ $isActive }) => ($isActive ? 700 : 500)};
+  color: ${({ $isActive }) => ($isActive ? '#f9803a' : '#000000')};
   text-align: left;
 
   a {
