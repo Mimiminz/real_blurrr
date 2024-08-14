@@ -20,7 +20,8 @@ const NoCarPopup = ({ closePopup }: { closePopup: () => void }) => {
         <Context>인증되지 않은 리그입니다.</Context>
         <Explain>
           해당 자동차를 소유하고 있는 사용자만 글을 볼 수 있습니다. <br />
-          채널 게시글은 공개되어 있습니다. 다양한 주제의 채널을 구경해보세요!
+          채널 게시글은 공개되어 있습니다. <br />
+          다양한 주제의 채널을 구경해보세요!
         </Explain>
         <ButtonContainer>
           <CertificationButton onClick={handleGoCarCertification}>
