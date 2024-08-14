@@ -70,17 +70,14 @@ const LoginForm = ({ closeLoginModal, onLoginSuccess }: LoginFormProps) => {
 
       if (userResponse.isAuth) {
         const userLeagues: UserLeague[] = await fetchUserLeagueList();
-        console.log(userLeagues);
+
         const userTabs: LeagueList[] = userLeagues.map((userLeague) => ({
           id: userLeague.league.id,
           name: userLeague.league.name,
           type: userLeague.league.type,
           peopleCount: userLeague.league.peopleCount,
         }));
-
-        console.log(userTabs);
         setUserLeagueList(userTabs);
-        console.log(userLeagueList);
       }
 
       closeLoginModal();
