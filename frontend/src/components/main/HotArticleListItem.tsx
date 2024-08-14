@@ -3,6 +3,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { FaRegComment } from "react-icons/fa6";
 import { HotBoardItem } from "@/types/mainPageTypes";
 import { useRouter } from "next/navigation";
+import { useChannelStore } from "@/store/channelStore";
 
 function HotArticleListItem({
   id,
@@ -13,12 +14,20 @@ function HotArticleListItem({
 }: HotBoardItem) {
   const router = useRouter();
 
+  const { setChannelName, setChannelId, channelName, channelId } = useChannelStore();
+
   const handleClick = () => {
+    setChannelId(channel.id);
+
     if (channel.id === process.env.NEXT_PUBLIC_DASHCAM_ID) {
+      setChannelName("블랙박스");
       router.push(`/channels/dashcam/${id}`);
+    } else if (channel.id === process.env.NEXT_PUBLIC_BOAST_ID) {
+      setChannelName("차자랑");
     } else {
-      router.push(`/channels/${channel.id}/${id}`);
+      setChannelName(channel.name);
     }
+    router.push(`/channels/${channel.id}/${id}`);
   };
   return (
     <ArticleDetail onClick={handleClick}>
