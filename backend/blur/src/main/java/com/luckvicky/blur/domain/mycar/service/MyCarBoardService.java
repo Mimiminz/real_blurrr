@@ -12,5 +12,5 @@ public interface MyCarBoardService {
     Page<MyCarSimple> findMyCars(Pageable page, String keyword);
     Boolean createMyCarBoard(BoardCreateRequest request, UUID memberId);
     MyCarDetail findMyCarDetail(UUID boardId, ContextMember memberId);
-    void increaseView(UUID boardId);
+//    void increaseView(UUID boardId);
 }
