@@ -77,7 +77,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
 
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
-        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse
