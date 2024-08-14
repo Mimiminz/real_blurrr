@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import dummy from "@/db/mainPageData.json";
 import { FaRegHeart } from "react-icons/fa6";
@@ -14,9 +14,18 @@ interface TopCarCardProps {
 const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
   const router = useRouter();
 
+  const [imagePath, setImagePath] = useState("/images/logo/logo.png");
+
+  useEffect(() => {
+    if (todayCar?.thumbnail) {
+      setImagePath(todayCar.thumbnail);
+    }
+  }, [todayCar]);
+
   if (!todayCar) {
     return <div>올라온 게시글이 없습니다</div>;
   }
+
   const handleClick = () => {
     router.push(`/channels/${process.env.NEXT_PUBLIC_BOAST_ID}/${todayCar.id}`);
   };
@@ -24,7 +33,11 @@ const TopCarCard: React.FC<TopCarCardProps> = ({ todayCar }) => {
   return (
     <CardContainer onClick={handleClick}>
       <ImageContainer>
-        <Image src={todayCar.thumbnail} alt="Top Car" />
+        <Image
+          src={imagePath}
+          alt="Top Car"
+          onError={() => setImagePath("/images/logo/logo.png")}
+        />
         <LikeContainer>
           <FaRegHeart />
           <LikeCount>{todayCar.likeCount}</LikeCount>
@@ -66,7 +79,7 @@ const Image = styled.img`
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
 `;
 
 const LikeContainer = styled.div`
