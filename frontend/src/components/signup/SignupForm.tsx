@@ -45,6 +45,28 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
   const [timer, setTimer] = useState<number>(0);
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
 
+  const debouncedVerifyEmailCode = debounce(async (email: string, code: string) => {
+    if (code) {
+      try {
+        const response = await verifyEmailCode(email, code, 'signup');
+        if (response === true) {
+          setEmailVerified(true);
+          setEmailVerificationError('인증번호가 확인되었습니다.');
+          setIsTimerActive(false);
+        } else {
+          setEmailVerified(false);
+          setEmailVerificationError('인증번호가 일치하지 않습니다.');
+        }
+      } catch (error) {
+        setEmailVerified(false);
+        setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
+      }
+    } else {
+      setEmailVerified(false);
+      setEmailVerificationError('');
+    }
+  }, 500);
+
   const debouncedCheckNickname = debounce(async (nickname: string) => {
     if (nickname) {
       try {
@@ -69,23 +91,6 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
     } catch (error: any) {
       const errorMessage = error.response?.data?.body?.detail || '인증번호 전송 중 오류가 발생했습니다.';
       alert(errorMessage);
-    }
-  };
-
-  const handleVerifyEmailCode = async (email: string, code: string) => {
-    try {
-      const response = await verifyEmailCode(email, code, 'signup');
-      if (response === true) {
-        setEmailVerified(true);
-        setEmailVerificationError('인증번호가 확인되었습니다.');
-        setIsTimerActive(false);
-      } else {
-        setEmailVerified(false);
-        setEmailVerificationError('인증번호가 일치하지 않습니다.');
-      }
-    } catch (error) {
-      setEmailVerified(false);
-      setEmailVerificationError('인증번호 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -189,14 +194,13 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
                   name="emailVerification"
                   type="text"
                   placeholder="인증번호 입력"
-                  className={touched.emailVerification ? (errors.emailVerification ? 'error' : 'valid') : ''}
+                  className={touched.emailVerification ? (errors.emailVerification ? 'error' : (emailVerified ? 'valid' : '')) : ''}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    setFieldValue('emailVerification', value);
+                    debouncedVerifyEmailCode(values.email, value);
+                  }}
                 />
-                <Button
-                  type="button"
-                  onClick={() => handleVerifyEmailCode(values.email, values.emailVerification)}
-                >
-                  인증번호 확인
-                </Button>
                 {isTimerActive && (
                   <TimerDisplay>{formatTime(timer)}</TimerDisplay>
                 )}
@@ -204,7 +208,7 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
               <StyledErrorMessage name="emailVerification" component="div" />
               
               {touched.emailVerification && !errors.emailVerification && (
-                <SuccessMessage>{emailVerificationError}</SuccessMessage>
+                <FailMessage>{emailVerificationError}</FailMessage>
               )}
 
               <StyledField
@@ -462,6 +466,17 @@ const SuccessMessage = styled.div`
   }
 `;
 
+const FailMessage = styled.div`
+  color: red;
+  font-size: 12px;
+  margin-bottom: 5px;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+`;
+
 const Button = styled.button`
   padding: 10px;
   margin-bottom: 10px;
@@ -527,18 +542,18 @@ const TimerDisplay = styled.div`
   color: #000000;
   font-weight: 400;
   position: absolute;
-  right: 36%;
+  right: 10%;
   top: 40%;
   transform: translateY(-50%);
   
   @media (min-width: 480px) {
     font-size: 12px;
-    right: 40%;
+    right: 10%;
   }
 
   @media (min-width: 768px) {
     font-size: 14px;
-    right: 36%;
+    right: 10%;
   }
 
   @media (min-width: 1024px) {
