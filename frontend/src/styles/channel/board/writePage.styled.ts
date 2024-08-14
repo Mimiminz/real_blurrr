@@ -25,11 +25,11 @@ export const PageTitle = styled.h1`
   margin-bottom: 24px;
 `;
 
-export const Input = styled.input<{ isError: boolean }>`
+export const Input = styled.input<{ $isError: boolean }>`
   width: 100%;
   padding: 10px;
   margin-bottom: 8px;
-  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+  border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
   border-radius: 5px;
   box-sizing: border-box;
 `;
@@ -42,12 +42,12 @@ export const EditorAndButtonContainer = styled.div`
   align-items: center;
 `;
 
-export const EditorContainer = styled.div<{ isError: boolean }>`
+export const EditorContainer = styled.div<{ $isError: boolean }>`
   width: 100%;
   max-width: 100%;
   margin-bottom: 8px;
   box-sizing: border-box;
-  border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+  border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
   border-radius: 5px;
 
   @media (min-width: 768px) {

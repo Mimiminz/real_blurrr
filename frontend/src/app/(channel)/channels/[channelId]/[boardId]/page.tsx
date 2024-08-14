@@ -12,6 +12,7 @@ import CommentList from "@/components/common/UI/comment/CommentList";
 import { fetchCommentList } from "@/api/comment";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
 import { formatPostDate } from "@/utils/formatPostDate";
+import Loading from "@/app/loading";
 
 export default function ChannelBoardDetailPage({
   params,
@@ -90,6 +91,16 @@ export default function ChannelBoardDetailPage({
 
   if (!boardDetail) {
     return <div>{error ? error : "Loading..."}</div>;
+  }
+
+  const [isMounted, setIsMounted] = useState(false); // 클라이언트 마운트 상태 추가
+
+  useEffect(() => {
+    setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 표시
+  }, []);
+
+  if (!isMounted) {
+    return <Loading />;
   }
 
   return (
