@@ -145,24 +145,29 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
             ))}
           </Tags>
         )}
-        <SwiperContainer>
+        {dashCamDetail.videos.length === 2 ? (
           <Swiper
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-            }}
             loop={false}
-            navigation={true}
             modules={[Navigation]}
+            navigation={true}
+            slidesPerView={1}  // 한번에 보여줄 슬라이드 개수 설정
+            spaceBetween={0}   // 슬라이드 간 간격 설정
           >
             {dashCamDetail.videos.map((video) => (
-              <StyledSwiperSlide key={video.videoOrder}>
-                <Video $videoCount={dashCamDetail.videos.length} controls loop>
+              <SwiperSlide key={video.videoOrder}>
+                <Video controls loop style={{ width: '100%'}}>
                   <source src={video.videoUrl} type="video/mp4" />
                 </Video>
-              </StyledSwiperSlide>
+              </SwiperSlide>
             ))}
           </Swiper>
-        </SwiperContainer>
+        ) : (
+          dashCamDetail.videos.length === 1 && (
+            <Video controls loop style={{ width: '100%' }}>
+              <source src={dashCamDetail.videos[0].videoUrl} type="video/mp4" />
+            </Video>
+          )
+        )}
         <Content dangerouslySetInnerHTML={{ __html: dashCamDetail.content }} />
         <WriterContainer>
           {isLoggedIn && (
@@ -177,26 +182,12 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
   );
 };
 
-const SwiperContainer = styled.div`
-  width: 100%;
-  max-width: 600px; 
-  margin: 0 auto;
-`;
-
-const StyledSwiperSlide = styled(SwiperSlide)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Video = styled.video<{ $videoCount: number }>`
-  width: 500px;
-  max-width: 100%;
-  height: auto;
+const Video = styled.video`
+  padding: 5px 10px;
 `;
 
 const Container = styled.div`
-  width: 100%;
+  width: 99%;
   margin: 0 auto;
   padding-bottom: 10px;
   background-color: #f8f8f8;
@@ -228,7 +219,7 @@ const TitleRow = styled.div`
 `;
 
 const Body = styled.div`
-  padding: 0 28px;
+  padding: 0 25px;
 `;
 
 const User = styled.div`

@@ -48,7 +48,6 @@ export default function ChannelDashCamDetailPage({ params }: {
 
    return (
       <S.Container>
-         <S.ContentContainer>
             <S.InnerContentContainer>
                <S.LeftColumn>
                   <DashCamContent dashCamDetailId={dashCamDetailId} setCommentCount={setCommentCount} />
@@ -72,7 +71,6 @@ export default function ChannelDashCamDetailPage({ params }: {
                   </S.CommentSection>
                </S.RightColumn>
             </S.InnerContentContainer>
-         </S.ContentContainer>
       </S.Container>
    );
 }

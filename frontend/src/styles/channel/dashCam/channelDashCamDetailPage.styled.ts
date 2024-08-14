@@ -2,27 +2,32 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   padding-top: 20px;
-`;
-
-export const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   width: 100%;
+  flex-direction: column;
   margin-bottom: 16px;
 `;
 
 export const InnerContentContainer = styled.div`
   display: flex;
-  width: 100%;
+
+  @media (max-width: 480px) {
+    flex-direction: column; /* 480px 이하에서는 세로 배치 */
+  }
 `;
 
 export const LeftColumn = styled.div`
   flex: 1.3;
-  margin-right: 20px;
   display: flex;
+  margin-right: 20px;
   flex-direction: column;
   height: 100%;
   max-height: 700px;
+  overflow: hidden;
+
+  @media (max-width: 480px) {
+    margin-right: 0; /* 세로 배치 시 margin 제거 */
+    max-height: none; /* 필요시 최대 높이 제거 */
+  }
 `;
 
 export const RightColumn = styled.div`
@@ -30,8 +35,14 @@ export const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
+  height: 100%;
   max-height: 700px;
+  overflow: hidden;
+
+   @media (max-width: 480px) {
+    margin-top: 20px; /* 세로 배치 시 위쪽에 여백 추가 */
+    max-height: none; /* 필요시 최대 높이 제거 */
+  }
 `;
 
 export const CommentSection = styled.div<{ $hasOptions: boolean }>`
