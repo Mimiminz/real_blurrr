@@ -21,9 +21,6 @@ const DashCamPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-  // 검색
-  const [isSearching, setIsSearching] = useState(false);
-
   const handleSortChange = (newSort: string) => {
     const criteriaMap: { [key: string]: string } = {
       '최신순': 'TIME',
@@ -37,22 +34,17 @@ const DashCamPage: React.FC = () => {
   };
 
   const handleSearch = (newKeyword: string) => {
-    if (!keyword.trim()) {
-      setIsSearching(false);
-      return;
-    }
-    setIsSearching(true);
     setKeyword(newKeyword);
   };
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        if(keyword){
+        if (keyword) {
           setTotalPages(0);
         }
         const data = await fetchDashCams(keyword, currentPage - 1, sortCriteria);
-        
+
         if (data) {
           setDashCams(data.content);
           setTotalPages(data.totalPages);
