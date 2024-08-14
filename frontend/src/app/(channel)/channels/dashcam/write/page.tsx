@@ -85,7 +85,7 @@ export default function WritePage() {
             />
             {titleError && <ErrorMessage>{titleError}</ErrorMessage>}
             <FindTags tags={tags} setTags={setTags} />
-            <EditorContainer isError={!!contentError}>
+            <EditorContainer $isError={!!contentError}>
                <QuillEditor content={content} setContent={setContent} setThumbNail={setThumbNail} />
             </EditorContainer>
             {contentError && <ErrorMessage>{contentError}</ErrorMessage>}
@@ -166,12 +166,12 @@ const EditorAndButtonContainer = styled.div`
   margin-top: 24px;
 `;
 
-const EditorContainer = styled.div<{ isError: boolean }>`
+const EditorContainer = styled.div<{ $isError: boolean }>`
    width: 100%;
    max-width: 100%;
    margin-bottom: 8px;
    box-sizing: border-box;
-   border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
+   border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
    border-radius: 5px;
 
    @media (min-width: 768px) {

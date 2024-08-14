@@ -145,6 +145,7 @@ const SuggestionsContainer = styled.div`
   width: 100%;
   z-index: 1000;
   top: 40px;
+  text-align: left;
 `;
 
 const Suggestion = styled.div<{ highlighted: number }>`
