@@ -51,7 +51,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       {channel === "리그" || !subChannelUrl ? (
         <span className="breadcrumb-link">{subChannel}</span>
       ) : (
-        <Link href={subChannelUrl}>
+        <Link className="breadcrumb-link" href={subChannelUrl}>
           {subChannel}
         </Link>
       )}
