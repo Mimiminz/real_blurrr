@@ -57,9 +57,9 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   }
 
   const filteredCarBoards =
-  myCarBoards.length > 6 && myCarBoards.length % 2 !== 0
-    ? myCarBoards.slice(0, -1)
-    : myCarBoards;
+    myCarBoards.length > 6 && myCarBoards.length % 2 !== 0
+      ? myCarBoards.slice(0, -1)
+      : myCarBoards;
 
   const settings = {
     dots: true,
@@ -98,7 +98,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          rows: 2,
+          // rows: 2,
           dots: true,
           arrows: filteredCarBoards.length > 6 ? true : false,
           infinite: filteredCarBoards.length > 6 ? true : false,
@@ -109,7 +109,6 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          rows: 2,
           dots: true,
           arrows: filteredCarBoards.length > 6 ? true : false,
           infinite: filteredCarBoards.length > 6 ? true : false,
@@ -119,24 +118,37 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   };
 
   return (
-    <CarouselContainer>
-      <Slider {...settings}>
-        {filteredCarBoards.map((myCar) => (
-          <CarPictureCard
-            key={myCar.id}
-            id={myCar.id}
-            name={myCar.member.nickname}
-            description={myCar.member.carTitle}
-            image={myCar.thumbnail}
-            views={myCar.viewCount}
-          />
-        ))}
-      </Slider>
-    </CarouselContainer>
+    <Container>
+      <CarouselContainer>
+        <Slider {...settings}>
+          {filteredCarBoards.map((myCar) => (
+            <CarPictureCard
+              key={myCar.id}
+              id={myCar.id}
+              name={myCar.member.nickname}
+              description={myCar.member.carTitle}
+              image={myCar.thumbnail}
+              views={myCar.viewCount}
+            />
+          ))}
+        </Slider>
+      </CarouselContainer>
+    </Container>
   );
 };
 
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const CarouselContainer = styled.div`
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-items: left;
   .slick-slider {
     display: flex;
     flex-direction: column;
@@ -167,6 +179,13 @@ const CarouselContainer = styled.div`
     right: 0;
   }
 
+  @media (min-width: 480px) {
+    width: 400px;
+  }
+  @media (min-width: 768px) {
+    width: 580px;
+  }
+
   @media (min-width: 1024px) {
     .slick-list {
       margin: 0 auto;
@@ -178,6 +197,6 @@ const CarouselContainer = styled.div`
 
 const NoBoard = styled.div`
   margin-top: 30px;
-`
+`;
 
 export default CarPictureList;

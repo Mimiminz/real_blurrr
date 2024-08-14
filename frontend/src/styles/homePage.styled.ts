@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const PageContainer = styled.div`
-  padding-top: 20px;
   display: flex;
   width: 100%;
 
@@ -96,10 +95,14 @@ export const AsideSectionTitle = styled.h2`
 `;
 
 export const UserInfoContainer = styled.div`
-  margin: 40px 0;
+  margin: 10px 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (min-width: 768px) {
+    margin: 40px 0;
+  }
 `;
 
 export const MoreButton = styled.button`

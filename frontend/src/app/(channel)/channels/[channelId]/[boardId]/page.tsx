@@ -92,7 +92,6 @@ export default function ChannelBoardDetailPage({
     }
   };
 
-
   useEffect(() => {
     loadBoardDetail();
     loadCommentDetail();
@@ -138,7 +137,6 @@ export default function ChannelBoardDetailPage({
     </>
   );
 }
-
 
 const CommentContainer = styled.div`
   display: flex;
@@ -186,9 +184,8 @@ const Content = styled.div`
   }
 
   img {
-    width: 100%;
+    max-width: 100%;
   }
-
 `;
 
 const ListButton = styled.div`
