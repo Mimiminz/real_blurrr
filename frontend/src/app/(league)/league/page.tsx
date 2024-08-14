@@ -33,7 +33,12 @@ export default function LeagueMainPage() {
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        if (isLoggedIn && user?.isAuth && mentionTabs.length === 0) {
+        if (
+          isLoggedIn &&
+          user?.isAuth &&
+          mentionTabs.length === 0 &&
+          userLeagueList
+        ) {
           const userMentionTabs: LeagueList[] = userLeagueList.map(
             (league) => ({
               id: `mention${league.id}`,
@@ -65,6 +70,7 @@ export default function LeagueMainPage() {
     user,
     isLoggedIn,
     brandLeagueList,
+    userLeagueList,
     setBrandLeagueTab,
     initialized,
     setInitialized,
