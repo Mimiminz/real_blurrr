@@ -31,7 +31,7 @@ function ChannelBoardListItem({
         <Title>{post.title}</Title>
         <UserContainer>
           <UserName>{post.member.nickname}</UserName>
-          <UserTags>{post.member.carTitle}</UserTags>
+          <UserTags>{post.member.carTitle || "뚜벅이"}</UserTags>
         </UserContainer>
       </ArticleInfo>
       <LikeAndComment>
@@ -76,7 +76,6 @@ const ArticleInfo = styled.div`
 
 const UserContainer = styled.div`
   display: flex;
-  gap: 10px;
 `;
 
 const UserName = styled.div`
@@ -88,10 +87,14 @@ const UserName = styled.div`
 
 const UserTags = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   font-weight: bold;
   font-size: 12px;
   color: #787878;
+
+  &::before {
+      content: "ㆍ";
+    }
 `;
 
 const ChannelContainer = styled.div`

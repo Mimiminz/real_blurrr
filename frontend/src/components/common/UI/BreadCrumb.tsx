@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 
 interface BreadcrumbProps {
-  channel: string;
+  channel?: string;
   subChannel: string;
   channelUrl: string;
   subChannelUrl?: string; // subChannelUrl 추가
@@ -36,11 +36,12 @@ const BreadcrumbContainer = styled.nav`
 `;
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
-  channel,
+  channel = "채널",
   subChannel,
   channelUrl,
   subChannelUrl,
 }) => {
+
   return (
     <BreadcrumbContainer>
       <Link href={channelUrl}>
