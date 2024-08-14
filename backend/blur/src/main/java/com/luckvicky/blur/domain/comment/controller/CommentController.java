@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Result<Boolean>> createComment(
             @AuthUser ContextMember member,
-            @RequestBody CommentCreateRequest request
+            @RequestBody @Valid CommentCreateRequest request
     ) {
 
         return ResponseUtil.created(
@@ -57,7 +58,7 @@ public class CommentController {
     public ResponseEntity<Result<Boolean>> createReply(
             @AuthUser ContextMember member,
             @PathVariable(name = "commentId") UUID commentId,
-            @RequestBody ReplyCreateRequest request
+            @RequestBody @Valid ReplyCreateRequest request
     ) {
 
         return ResponseUtil.created(
