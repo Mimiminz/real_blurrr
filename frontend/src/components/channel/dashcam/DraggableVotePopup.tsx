@@ -46,6 +46,12 @@ const VoteForm: React.FC<VoteFormProps> = ({ onOptionsChange, onVoteTitleChange,
    const [voteTitle, setVoteTitle] = useState(initialVoteTitle);
    const [options, setOptions] = useState<CreateOption[]>(initialOptions.length > 0 ? initialOptions : [{ optionOrder: 1, content: '' }, { optionOrder: 2, content: '' }]);
 
+   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+         e.preventDefault();
+      }
+   };
+
    const handleVoteTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newTitle = e.target.value;
       setVoteTitle(newTitle);
@@ -88,6 +94,7 @@ const VoteForm: React.FC<VoteFormProps> = ({ onOptionsChange, onVoteTitleChange,
                placeholder="투표 제목을 입력하세요."
                value={voteTitle}
                onChange={handleVoteTitleChange}
+               onKeyDown={handleKeyDown}
             />
          </OptionContainer>
          {options.map((option, index) => (
@@ -96,6 +103,7 @@ const VoteForm: React.FC<VoteFormProps> = ({ onOptionsChange, onVoteTitleChange,
                   placeholder={`옵션 ${option.optionOrder}`}
                   value={option.content}
                   onChange={(e) => handleOptionChange(index, e.target.value)}
+                  onKeyDown={handleKeyDown}
                />
                {options.length > 2 && (
                   <RemoveOptionButton onClick={() => removeOption(index)}><FiMinusSquare /></RemoveOptionButton>

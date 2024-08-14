@@ -85,7 +85,11 @@ export default function ChannelBoardDetailPage({
   };
 
   const handleBackToList = () => {
-    router.push(`/channels/${channelId}`);
+    if (boastId === channelId) {
+      router.push(`/channels/boast`);
+    } else {
+      router.push(`/channels/${channelId}`);
+    }
   };
 
 

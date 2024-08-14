@@ -6,7 +6,6 @@ export const Container = styled.div`
   padding: 50px 16px;
   width: 100%;
   box-sizing: border-box;
-  text-align: center;
   max-width: 100%;
   margin: 0 auto;
 
@@ -23,6 +22,7 @@ export const PageTitle = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
+  text-align: center;
 `;
 
 export const Input = styled.input<{ $isError: boolean }>`
