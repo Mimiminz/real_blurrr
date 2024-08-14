@@ -105,7 +105,6 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
                 .orElseThrow(NotExistBoardException::new);
 
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(myCarBoard);
-        myCarBoard.increaseViewCount();
 
         boolean isLiked = false;
         if (Objects.nonNull(nullableMember)) {
