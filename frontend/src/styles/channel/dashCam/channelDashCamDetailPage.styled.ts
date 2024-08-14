@@ -21,6 +21,7 @@ export const LeftColumn = styled.div`
   flex-direction: column;
   height: 100%;
   max-height: 700px;
+  overflow: hidden;
 `;
 
 export const RightColumn = styled.div`
@@ -30,6 +31,7 @@ export const RightColumn = styled.div`
   justify-content: space-between;
   height: 100%;
   max-height: 700px;
+  overflow: hidden;
 `;
 
 export const CommentSection = styled.div<{ $hasOptions: boolean }>`
