@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FaEye } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useChannelStore } from "@/store/channelStore";
 
 interface CarPicture {
   id: string;
@@ -14,14 +15,17 @@ interface CarPicture {
 function CarPictureCard({ id, name, description, image, views }: CarPicture) {
   const router = useRouter();
   const [imagePath, setImagePath] = useState(image);
+  const { setChannelName, setChannelId, channelName, channelId } =
+    useChannelStore();
 
   const handleClick = () => {
+    setChannelName("차자랑");
     router.push(`/channels/${process.env.NEXT_PUBLIC_BOAST_ID}/${id}`);
   };
   return (
     <Container onClick={handleClick}>
       <ImageContainer>
-      <Image
+        <Image
           src={imagePath}
           alt="Car"
           onError={() => setImagePath("/images/logo/logo.png")}
