@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { DashCam } from "@/types/channelType";
+import { BiTimeFive } from "react-icons/bi";
 import { formatPostDate } from "@/utils/formatPostDate";
 interface DashCamCardProps {
   dashCam: DashCam;
@@ -39,7 +40,7 @@ const DashCamCard: React.FC<DashCamCardProps> = ({ dashCam }) => {
           <span>
             <FaRegHeart /> {dashCam.likeCount}
           </span>
-          <span className="created">{formatPostDate(dashCam.createdAt)}</span>
+          <span className="created"><BiTimeFive />{formatPostDate(dashCam.createdAt)}</span>
         </Meta>
       </Content>
     </Card>
@@ -158,7 +159,7 @@ const Meta = styled.div`
 
   svg {
     margin-right: 4px;
-    font-size: 11.5px;
+    font-size: 13px;
   }
 
   .created {
