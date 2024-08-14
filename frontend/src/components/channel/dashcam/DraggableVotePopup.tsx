@@ -14,39 +14,10 @@ interface DraggableVotePopupProps {
 }
 
 const DraggableVotePopup: React.FC<DraggableVotePopupProps> = ({ title, content, onClose, onOptionsChange, onVoteTitleChange, initialOptions, initialVoteTitle }) => {
-   const [isDragging, setIsDragging] = useState(false);
-   const [position, setPosition] = useState({ x: 0, y: 0 });
-   const popupRef = useRef<HTMLDivElement>(null);
-
-   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-      setIsDragging(true);
-      popupRef.current!.style.cursor = 'grabbing';
-   }, []);
-
-   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-      if (isDragging) {
-         setPosition((prevPosition) => ({
-            x: prevPosition.x + e.movementX,
-            y: prevPosition.y + e.movementY,
-         }));
-      }
-   }, [isDragging]);
-
-   const handleMouseUp = useCallback(() => {
-      setIsDragging(false);
-      popupRef.current!.style.cursor = 'grab';
-   }, []);
 
    return (
       <Overlay>
-         <Popup
-            ref={popupRef}
-            style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-         >
+         <Popup>
             <Header>
                <Title>{title}</Title>
                <CloseButton onClick={onClose}>x</CloseButton>
