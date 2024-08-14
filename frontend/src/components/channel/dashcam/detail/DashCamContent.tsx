@@ -7,7 +7,9 @@ import { MdAccessTime } from 'react-icons/md';
 import { formatPostDate } from "@/utils/formatPostDate";
 import { fetchChannelLike, fetchChannelLikeDelete } from "@/api/board";
 import { FaRegEye } from "react-icons/fa";
-import { fetchDashCamDetail } from '@/api/channel';
+import { fetchDashCamDetail, fetchChannelBoardDelete } from '@/api/channel';
+import { useRouter } from "next/navigation";
+import { HiEllipsisVertical } from "react-icons/hi2";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
@@ -22,13 +24,37 @@ interface DashCamContentProps {
 }
 
 const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCommentCount }) => {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, user } = useAuthStore();
+  const router = useRouter();
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [dashCamDetail, setDashCamDetail] = useState<DashCamDetail | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [like, setLike] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const swiperRef = useRef<SwiperCore>();
+
+  const handleDropdownToggle = () => {
+    setDropdownVisible(!isDropdownVisible);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const isDelete = confirm("정말 삭제하실건가요?");
+      if (!isDelete) {
+        console.log("dadas");
+        return;
+      }
+      await fetchChannelBoardDelete(dashCamDetailId);
+      router.push(`/channels/dashcam`);
+
+    } catch (error) {
+      console.log(error);
+    }
+    setDropdownVisible(false);
+  };
 
   useEffect(() => {
     const loadDetail = async () => {
@@ -73,7 +99,21 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
 
   return (
     <Container>
-      <Title>{dashCamDetail.title}</Title>
+      <TitleRow>
+        <Title>
+          {dashCamDetail.title}
+        </Title>
+        {user?.nickname === dashCamDetail.member.nickname && (
+          <DropdownContainer ref={dropdownRef}>
+            <HiEllipsisVertical onClick={handleDropdownToggle} />
+            {isDropdownVisible && (
+              <DropdownMenu>
+                <DropdownItem onClick={handleDelete}>삭제</DropdownItem>
+              </DropdownMenu>
+            )}
+          </DropdownContainer>
+        )}
+      </TitleRow>
       <Header>
         <User>
           <Avatar src={dashCamDetail.member.profileUrl} alt={`${dashCamDetail.member.nickname}'s avatar`} />
@@ -176,9 +216,15 @@ const Header = styled.div`
 `;
 
 const Title = styled.h3`
-  padding: 13px 28px;
-  border-bottom: 1px solid #e0e0e0;
   margin: 0;
+  `;
+
+const TitleRow = styled.div`
+  padding: 13px 15px 13px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
 `;
 
 const Body = styled.div`
@@ -285,6 +331,73 @@ const TimeSection = styled.span`
   color: #999;
   font-size: 14px;
   gap: 10px;
+`;
+
+const DropdownContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  margin-bottom: auto;
+  padding-top: 2px;
+
+  svg {
+    cursor: pointer;
+    font-size: 23px;
+    color: #999;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #ff900d;
+    }
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  min-width: 80px;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (min-width: 768px) {
+    min-width: 120px;
+  }
+`;
+
+const DropdownItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  background-color: white;
+  color: #333;
+  font-size: 13px;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: #ff900d;
+    color: white;
+  }
+
+  &:first-child {
+    border-bottom: 1px solid #ddd;
+  }
 `;
 
 export default DashCamContent;
