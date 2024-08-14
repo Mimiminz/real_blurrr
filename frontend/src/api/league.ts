@@ -42,7 +42,6 @@ export const fetchBrandLeagues = async (): Promise<LeagueList[]> => {
     });
     return response.data.data.leagues;
   } catch (error) {
-    console.error("Failed to fetch league list", error);
     throw error;
   }
 };
@@ -69,7 +68,7 @@ export const fetchLeagueBoardList = async (
     }
     return response.data.data;
   } catch (error) {
-    console.error("Failed to fetch league board list", error);
+
     throw error;
   }
 };
