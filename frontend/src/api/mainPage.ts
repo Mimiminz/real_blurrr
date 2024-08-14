@@ -22,23 +22,18 @@ export const fetchHotArticles = async (): Promise<HotBoardItem[]> => {
 export const fetchTodayCar = async (): Promise<TodayCarItem> => {
   try {
     const response = await api.get(`/v1/today/mycar`);
-    console.log(response.data);
+
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
 export const fetchMyCars = async (): Promise<MyCarItem[]> => {
   try {
-    console.log("fetchMyCar 호출 시작");
     const response = await api.get(`/v1/mycar`);
-    console.log("fetchMyCar 응답 완료");
-
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -48,7 +43,6 @@ export const fetchDashCams = async (): Promise<DashCamItem[]> => {
     const response = await api.get(`/v1/dashcam`);
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

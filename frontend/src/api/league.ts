@@ -17,14 +17,12 @@ export const fetchUserLeagueList = async (): Promise<UserLeague[]> => {
       return [];
     }
     const leagues = response.data.data.leagueMembers;
-    console.log(leagues);
 
     return leagues.sort((a: UserLeague, b: UserLeague) =>
       a.league.type === "MODEL" ? -1 : 1
     );
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.status);
       if (error.response?.status == 401) {
         return [];
       } else {
@@ -95,7 +93,7 @@ export const fetchMentionBoardList = async (
         content: [],
       };
     }
-    console.log(response.data.data);
+
     return response.data.data;
   } catch (error) {
     console.error("Failed to fetch league board list", error);
@@ -108,12 +106,10 @@ export const fetchLeagueDetail = async (
   boardId: string
 ): Promise<BoardDetail> => {
   try {
-    console.log("fetch함수 시작");
     const response = await api.get(`/v1/leagues/boards/${boardId}`);
-    console.log("fetch함수 완료");
+
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -124,7 +120,7 @@ export const fetchLeagueDetail = async (
 // export const fetchLeagueDetail = async (
 //   boardId: string
 // ): Promise<BoardDetail> => {
-//   console.log(cancelTokenSource);
+//
 //   if (cancelTokenSource) {
 //     cancelTokenSource.cancel("이전 요청이 취소되었습니다.");
 //   }
@@ -132,17 +128,17 @@ export const fetchLeagueDetail = async (
 //   cancelTokenSource = axios.CancelToken.source();
 
 //   try {
-//     console.log("fetch함수 시작");
+//
 //     const response = await api.get(`/v1/leagues/boards/${boardId}`, {
 //       cancelToken: cancelTokenSource.token,
 //     });
-//     console.log("fetch함수 완료");
+//
 //     return response.data.data;
 //   } catch (error) {
 //     if (axios.isCancel(error)) {
-//       console.log("요청이 취소되었습니다:", error.message);
+//
 //     } else {
-//       console.log(error);
+//
 //       throw error;
 //     }
 //   } finally {
@@ -191,10 +187,9 @@ export const fetchBoardWrite = async (
         params: { leagueType }, // 쿼리 매개변수
       }
     );
-    console.log(response.data);
+
     return response.data.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

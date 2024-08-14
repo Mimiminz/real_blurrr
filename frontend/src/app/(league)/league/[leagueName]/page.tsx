@@ -99,7 +99,6 @@ export default function LeaguePage({
   useEffect(() => {
     const loadLeagues = async () => {
       try {
-        console.log(user);
         if (isLoggedIn && user?.isAuth && mentionTabs.length === 0) {
           const userMentionTabs: LeagueList[] = userLeagueList.map(
             (league) => ({
@@ -120,7 +119,7 @@ export default function LeaguePage({
             setBrandLeagueTab(leagues);
             setInitialized(true);
           } catch (error) {
-            console.log(error);
+            throw error;
           }
         }
       } catch (error) {
