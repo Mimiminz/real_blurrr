@@ -53,22 +53,24 @@ export const Prev = styled.div`
 
 const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   if (!myCarBoards || myCarBoards.length <= 0) {
-    return <div></div>;
+    return <NoBoard>게시글이 없습니다. </NoBoard>;
   }
 
   const filteredCarBoards =
-    myCarBoards.length % 2 !== 0 ? myCarBoards.slice(0, -1) : myCarBoards;
+  myCarBoards.length > 6 && myCarBoards.length % 2 !== 0
+    ? myCarBoards.slice(0, -1)
+    : myCarBoards;
 
   const settings = {
     dots: true,
-    arrows: filteredCarBoards.length > 6 ? true : false,
+    arrows: filteredCarBoards.length > 3 ? true : false,
     infinite: filteredCarBoards.length > 6 ? true : false,
     slidesToShow: 3,
     slidesToScroll: 1,
     swipeToSlide: true,
     autoplay: true,
     speed: 500,
-    rows: 2,
+    rows: filteredCarBoards.length >= 6 ? 2 : 1,
     //오른쪽 화살표
     nextArrow: (
       <SlickButtonFix>
@@ -138,6 +140,7 @@ const CarouselContainer = styled.div`
   .slick-slider {
     display: flex;
     flex-direction: column;
+    justify-items: left;
   }
 
   .slick-list {
@@ -172,5 +175,9 @@ const CarouselContainer = styled.div`
     }
   }
 `;
+
+const NoBoard = styled.div`
+  margin-top: 30px;
+`
 
 export default CarPictureList;

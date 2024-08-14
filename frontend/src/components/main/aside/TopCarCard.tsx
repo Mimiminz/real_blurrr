@@ -71,6 +71,7 @@ const ImageContainer = styled.div`
   border-radius: 15px;
   padding-top: 75%; /* Aspect ratio 4:3 */
   overflow: hidden;
+  background-color: #fff;
 `;
 
 const Image = styled.img`

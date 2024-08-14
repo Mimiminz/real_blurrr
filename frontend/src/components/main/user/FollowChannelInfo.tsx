@@ -33,8 +33,9 @@ const Container = styled.div`
   /* align-items: center; */
   flex: 1;
   width: 100%;
+  height: 240px;
   margin-left: 20px; /* UserCarInfo와 간격 추가 */
-  padding-top: 18px;
+  /* padding-top: 18px; */
   border-radius: 12px;
   background-color: #ffffff;
 
@@ -45,7 +46,7 @@ const Container = styled.div`
 
 const Title = styled.h2`
   font-size: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   margin-top: 0;
   padding-left: 6px;
   font-weight: bold;
