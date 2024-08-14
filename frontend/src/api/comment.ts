@@ -26,7 +26,6 @@ export const fetchCommentList = async (
 ): Promise<fetchComment> => {
   try {
     const response = await api.get(`/v1/boards/${boardId}/comments`);
-    console.log(response.data);
     if (response.status === 204) {
       return { comments: [], commentCount: 0 };
     }
@@ -80,7 +79,6 @@ export const fetchLeagueCommentDelete = async (
   leagueId: string
 ) => {
   try {
-    console.log(boardId, commentId, leagueId);
     const response = await api.delete(
       `/v1/leagues/${leagueId}/comments/${commentId}/boards/${boardId}`
     );

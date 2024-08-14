@@ -48,8 +48,6 @@ const DashCamPage: React.FC = () => {
         if (data) {
           setDashCams(data.content);
           setTotalPages(data.totalPages);
-
-          console.log(data);
         } else {
           setDashCams([]);
         }

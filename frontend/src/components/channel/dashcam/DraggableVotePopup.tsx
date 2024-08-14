@@ -104,7 +104,6 @@ const VoteForm: React.FC<VoteFormProps> = ({ onOptionsChange, onVoteTitleChange,
 
    const handleCreateVote = () => {
       if (voteTitle.trim() && options.every(option => option.content.trim())) {
-         console.log('Vote created:', { voteTitle, options });
          onClose();
       } else {
          alert('투표 제목과 모든 옵션을 입력해주세요.');

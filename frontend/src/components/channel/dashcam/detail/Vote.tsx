@@ -34,8 +34,6 @@ const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
     try {
       const data = await fetchVote(voteId);
 
-      console.log(data);
-
       const totalVotes = data.options.reduce((sum: number, option: Option) => sum + option.voteCount, 0);
       const transformedData: PollOption[] = data.options.map((option: Option) => ({
         orderId: option.optionOrder,
@@ -83,9 +81,7 @@ const PollComponent: React.FC<VoteProps> = ({ voteId, onOptionsCheck }) => {
 
       try {
         const voteSuccess = await addVote(voteId, optionId);
-        if (voteSuccess) {
-          console.log(`Successfully voted for option ${orderId}`);
-        } else {
+        if (!voteSuccess) {
           console.error('Failed to register vote');
         }
       } catch (error) {

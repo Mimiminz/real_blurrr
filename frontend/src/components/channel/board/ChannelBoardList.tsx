@@ -43,7 +43,6 @@ const ChannelBoardList: React.FC<ChannelBoardListProps> = ({
         } else {
           setPosts([]);
         }
-        console.log("Posts loaded:", data);
       } catch (error) {
         console.error("Failed to load channel board list data:", error);
       }
