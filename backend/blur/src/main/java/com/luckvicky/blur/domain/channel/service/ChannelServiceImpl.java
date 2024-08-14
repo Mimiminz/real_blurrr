@@ -128,7 +128,7 @@ public class ChannelServiceImpl implements ChannelService {
         Member member = memberRepository.getOrThrow(memberId);
         Channel channel = channelRepository.getOrThrow(channelId);
 
-        if(member.getFollowingChannels().contains(channel)) {
+        if(member.getFollowingChannels()!= null && member.getFollowingChannels().contains(channel)) {
             return false;
         }
         channel.increaseFollowCount();
