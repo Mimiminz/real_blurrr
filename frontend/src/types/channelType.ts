@@ -52,7 +52,7 @@ export interface Channels {
   commentCount: number;
   likeCount: number;
   createdAt: string; 
-  content: string;
+  simpleContent: string;
 }
 
 export interface PostInfo {

@@ -65,7 +65,7 @@ const Card = styled.div`
 const Thumbnail = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 `;
 
 const HoverOverlay = styled.div`

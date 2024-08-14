@@ -124,7 +124,7 @@ const PostTitle: React.FC<PostTitleProps> = ({
         <SideSection $isLoggedIn={isLoggedIn}>
           {isLoggedIn && isFollowing !== null && (
             <SetButton $isFollowing={isFollowing} onClick={handleFollowChannel}>
-              {isFollowing ? "언팔로우 -" : "팔로우 +"}
+              {isFollowing ? "언팔로우" : "팔로우"}
             </SetButton>
           )}
           <SearchBar onSearch={onSearch} />
@@ -187,9 +187,17 @@ const SetButton = styled.button<{ $isFollowing: boolean }>`
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  background-color: ${({ $isFollowing }) => ($isFollowing ? "#f1f1f1" : "#333")};
+  text-align: center;
+  background-color: ${({ $isFollowing }) => ($isFollowing ? "#e6e6e6" : "#333")};
   color: ${({ $isFollowing }) => ($isFollowing ? "#333" : "#f1f1f1")};
   white-space: nowrap;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: ${({ $isFollowing }) => ($isFollowing ? "#cccccc" : "#1f1f1f")};
+    color: ${({ $isFollowing }) => ($isFollowing ? "#131313" : "#f1f1f1")};
+    transform: translateY(-2px); 
+  }
 `;
 
 const StyledButton = styled.button`
