@@ -52,13 +52,17 @@ export const Prev = styled.div`
 `;
 
 const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
-  if (!myCarBoards || myCarBoards.length > 0) {
+  if (!myCarBoards || myCarBoards.length <= 0) {
     return <div></div>;
   }
+
+  const filteredCarBoards =
+    myCarBoards.length % 2 !== 0 ? myCarBoards.slice(0, -1) : myCarBoards;
+
   const settings = {
     dots: true,
     arrows: true,
-    infinite: myCarBoards.length > 6 ? true : false,
+    infinite: filteredCarBoards.length > 6 ? true : false,
     slidesToShow: 3,
     slidesToScroll: 1,
     swipeToSlide: true,
@@ -83,7 +87,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: filteredCarBoards.length > 6 ? true : false,
           dots: true,
         },
       },
@@ -95,7 +99,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
           rows: 2,
           dots: true,
           arrows: true,
-          infinite: true,
+          infinite: filteredCarBoards.length > 6 ? true : false,
         },
       },
       {
@@ -106,7 +110,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
           rows: 2,
           dots: true,
           arrows: true,
-          infinite: true,
+          infinite: filteredCarBoards.length > 6 ? true : false,
         },
       },
     ],
@@ -115,7 +119,7 @@ const CarPictureList: React.FC<CarPictureProps> = ({ myCarBoards }) => {
   return (
     <CarouselContainer>
       <Slider {...settings}>
-        {myCarBoards.map((myCar) => (
+        {filteredCarBoards.map((myCar) => (
           <CarPictureCard
             key={myCar.id}
             id={myCar.id}
