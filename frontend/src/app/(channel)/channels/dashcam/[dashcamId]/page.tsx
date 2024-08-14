@@ -17,6 +17,7 @@ export default function ChannelDashCamDetailPage({ params }: {
    const { isLoggedIn } = useAuthStore();
 
    const [commentList, setCommentList] = useState<fetchComment | null>(null);
+   const [commentCount, setCommentCount] = useState(0);
    const [hasOptions, setHasOptions] = useState(true);
 
    const loadCommentDetail = useCallback(async () => {
@@ -50,8 +51,7 @@ export default function ChannelDashCamDetailPage({ params }: {
          <S.ContentContainer>
             <S.InnerContentContainer>
                <S.LeftColumn>
-                  {/* DashCamContent 컴포넌트는 이제 자체적으로 데이터를 불러옵니다. */}
-                  <DashCamContent dashCamDetailId={dashCamDetailId} />
+                  <DashCamContent dashCamDetailId={dashCamDetailId} setCommentCount={setCommentCount} />
                </S.LeftColumn>
                <S.RightColumn>
                   {hasOptions && (
@@ -62,7 +62,7 @@ export default function ChannelDashCamDetailPage({ params }: {
                   <S.CommentSection hasOptions={hasOptions}>
                      <CommentList
                         comments={commentList?.comments || []}
-                        commentCount={commentList?.commentCount || 0}
+                        commentCount={commentList?.commentCount || commentCount}
                         boardId={dashCamDetailId}
                         leagueId=""
                         isLeague={false}

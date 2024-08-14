@@ -10,7 +10,6 @@ import CommentListItem from "./CommentListItem";
 import NoComment from "./NoComment";
 import Reply from "./Reply";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
 
 export default function CommentList({
   comments,
@@ -22,7 +21,6 @@ export default function CommentList({
   boardAuthor,
 }: CommentListProps) {
   const { isLoggedIn } = useAuthStore();
-  const router = useRouter();
 
   const [showLogin, setShowLogin] = useState(false);
 
@@ -160,7 +158,7 @@ const CommentWrapper = styled.div`
 `;
 
 const LoginMessage = styled.div`
-  margin: 50px 0;
+  margin-top: 50px;
   text-align: center;
   color: #555;
 `;
@@ -175,7 +173,7 @@ const LoginButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   display: block;
-  margin: 20px auto;
+  margin: 20px auto 0px;
 
   &:hover {
     background-color: #4b5563;
