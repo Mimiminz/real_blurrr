@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { FiEye, FiHeart } from "react-icons/fi";
 import { Boasts } from "@/types/channelType";
@@ -8,9 +8,14 @@ interface BoastCardProps {
 }
 
 const BoastCard: React.FC<BoastCardProps> = ({ boast }) => {
+  const [imagePath, setImagePath] = useState(boast.thumbNail);
+
   return (
     <Card>
-      <Thumbnail src={boast.thumbNail} alt="thumbnail" />
+      <Thumbnail
+        src={imagePath}
+        alt="thumbnail"
+        onError={() => setImagePath('/images/logo/logo.png')} />
       <HoverOverlay>
         <span>
           <FiEye /> {boast.viewCnt}
@@ -60,7 +65,7 @@ const Card = styled.div`
 const Thumbnail = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 `;
 
 const HoverOverlay = styled.div`
