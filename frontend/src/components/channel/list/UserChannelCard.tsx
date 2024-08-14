@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { MdPeopleAlt } from "react-icons/md";
 
 interface UserChannelCardProps {
@@ -24,6 +24,21 @@ const UserChannelCard: React.FC<UserChannelCardProps> = ({ name, followCount, im
   );
 };
 
+const bounceIn = keyframes`
+  0% {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(1.03);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+`;
+
 const CardContainer = styled.div`
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -32,6 +47,10 @@ const CardContainer = styled.div`
   max-width: 200px;  
   margin: 0 auto;
   cursor: pointer;
+
+  &:hover {
+    animation: ${bounceIn} 0.5s forwards;
+  }
 `;
 
 const ImageContainer = styled.div<{ img: string }>`

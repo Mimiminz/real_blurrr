@@ -9,10 +9,6 @@ import UserChannelCard from './UserChannelCard';
 
 SwiperCore.use([Scrollbar, Autoplay]);
 
-const SwiperContainer = styled.div`
-
-`;
-
 interface ChannelCarouselProps {
    slides: Array<{
       id: string;
@@ -53,6 +49,7 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
             autoplay={shouldEnablePaginationAndAutoplay ? {
                delay: 2500,
                disableOnInteraction: false,
+               pauseOnMouseEnter: true,
             } : false}
             breakpoints={{
                320: { // 작은 화면
@@ -77,8 +74,8 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
             }}
          >
             {slides.map((slide) => (
-               <SwiperSlide key={slide.id}>
-                  <UserChannelCard
+               <SwiperSlideStyled key={slide.id}>
+                  <UserChannelCardStyled
                      name={slide.name}
                      followCount={slide.followCount}
                      img={slide.imgUrl}
@@ -87,11 +84,26 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
                         handleChannelClick(slide.id);
                      }}
                   />
-               </SwiperSlide>
+               </SwiperSlideStyled>
             ))}
          </Swiper>
       </SwiperContainer>
+
    );
 };
+
+const SwiperContainer = styled.div`
+  padding: 10px; /* Adjust padding to provide extra space */
+`;
+
+const SwiperSlideStyled = styled(SwiperSlide)`
+  padding: 10px; /* Add padding to the slides themselves */
+  box-sizing: border-box; /* Ensure padding is included in the slide dimensions */
+`;
+
+const UserChannelCardStyled = styled(UserChannelCard)`
+  overflow: visible; /* Ensure content is not clipped */
+`;
+
 
 export default ChannelCarousel;
