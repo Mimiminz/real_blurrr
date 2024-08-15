@@ -142,7 +142,6 @@ const CarCertificationForm = () => {
           alert("차량 등록에 실패했습니다.");
         }
       } catch (error) {
-        console.error("Error registering car:", error);
         alert("차량 등록 중 오류가 발생했습니다.");
       }
     } else {
@@ -214,7 +213,7 @@ const CarCertificationForm = () => {
               </Div>
             </CarContainer>
             <Owner>
-              {ocrResults.similar_car.model_detail} 오너가 맞나요?
+            {ocrResults.similar_car.brand} {ocrResults.similar_car.model_detail} 오너가 맞나요?
             </Owner>
             <ConfirmationContainer>
               <ConfirmationButtonContainer>
