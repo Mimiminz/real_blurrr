@@ -187,6 +187,7 @@ const CarouselContainer = styled.div`
   }
 
   @media (min-width: 1024px) {
+    width: 90%;
     .slick-list {
       margin: 0 auto;
       padding: 10px 0;

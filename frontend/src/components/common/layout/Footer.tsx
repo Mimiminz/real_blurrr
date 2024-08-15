@@ -55,6 +55,7 @@ const FooterContainer = styled.footer`
   color: #fff;
   padding: 20px 0;
   height: auto;
+  margin-top: 50px;
 `;
 
 const FooterContent = styled.div`

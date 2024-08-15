@@ -14,7 +14,8 @@ function HotArticleListItem({
 }: HotBoardItem) {
   const router = useRouter();
 
-  const { setChannelName, setChannelId, channelName, channelId } = useChannelStore();
+  const { setChannelName, setChannelId, channelName, channelId } =
+    useChannelStore();
 
   const handleClick = () => {
     setChannelId(channel.id);
@@ -34,8 +35,8 @@ function HotArticleListItem({
       <ArticleInfo>
         <Channel>{channel.name}</Channel>
         <Title>
-          {title.slice(0, 7)}
-          {title.length > 7 && " ..."}
+          {title.slice(0, 12)}
+          {title.length > 12 && " ..."}
         </Title>
       </ArticleInfo>
       <LikeAndComment>
@@ -59,12 +60,11 @@ const ArticleDetail = styled.div`
   padding: 6px 10px;
   border-bottom: 1.6px solid ${({ theme }) => theme.colors.articleDivider};
   cursor: pointer;
-  
+
   &:hover {
     background-color: #f9f9f9;
   }
 `;
-
 
 const ArticleInfo = styled.div`
   display: flex;
