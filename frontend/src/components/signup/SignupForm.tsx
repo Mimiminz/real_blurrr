@@ -246,9 +246,13 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
               </InputContainer>
               <StyledErrorMessage name="emailVerification" component="div" />
 
-              {touched.emailVerification && !errors.emailVerification && (
-                <FailMessage>{emailVerificationError}</FailMessage>
-              )}
+              {touched.emailVerification &&
+                !errors.emailVerification &&
+                (emailVerified === true ? (
+                  <SuccessMessage>{emailVerificationError}</SuccessMessage>
+                ) : (
+                  <FailMessage>{emailVerificationError}</FailMessage>
+                ))}
 
               <StyledField
                 name="nickname"
@@ -270,13 +274,13 @@ const SignupForm = ({ closeSignupModal }: { closeSignupModal: () => void }) => {
                 }}
               />
               <StyledErrorMessage name="nickname" component="div" />
-              {touched.nickname && !errors.nickname && (
-                <SuccessMessage>
-                  {isNicknameAvailable === true
-                    ? "사용 가능한 닉네임입니다."
-                    : nicknameError}
-                </SuccessMessage>
-              )}
+              {touched.nickname &&
+                !errors.nickname &&
+                (isNicknameAvailable === true ? (
+                  <SuccessMessage>사용 가능한 닉네임입니다.</SuccessMessage>
+                ) : (
+                  <FailMessage>{nicknameError}</FailMessage>
+                ))}
 
               <StyledField
                 name="password"
