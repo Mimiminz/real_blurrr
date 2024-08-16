@@ -102,6 +102,11 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 500px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    height: auto;
+  }
 `;
 
 const Tabs = styled.div`
@@ -111,6 +116,7 @@ const Tabs = styled.div`
   border-radius: 0 8px 8px 0;
   display: flex;
   flex-direction: column;
+
 `;
 
 const UserContainer = styled.div`
@@ -120,6 +126,12 @@ const UserContainer = styled.div`
   align-items: center;
   margin: 20px;
   border-radius: 15px;
+  gap: 10px;
+  
+  @media (max-width: 480px) {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
 `;
 
 const UserImage = styled.img`
@@ -139,7 +151,6 @@ const UserCarName = styled.div`
 const UserName = styled.div`
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
 `;
 
 const Tab = styled.div<{ active: boolean; isProfileTab: boolean }>`
@@ -152,6 +163,8 @@ const Tab = styled.div<{ active: boolean; isProfileTab: boolean }>`
   font-weight: ${(props) =>
     props.isProfileTab || props.active ? "normal" : "normal"};
   border-radius: 0 8px 8px 0;
+
+  
 `;
 
 const ContentArea = styled.div`
