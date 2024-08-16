@@ -67,6 +67,11 @@ const ArticleDetail = styled.div`
   &:hover {
     background-color: #ebebeb3d;
   }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const ArticleInfo = styled.div`
