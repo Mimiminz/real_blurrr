@@ -13,7 +13,6 @@ import { HiEllipsisVertical } from "react-icons/hi2";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import SwiperCore from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -34,7 +33,6 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
   const [isLiked, setIsLiked] = useState(false);
   const [like, setLike] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const swiperRef = useRef<SwiperCore>();
 
   const handleDropdownToggle = () => {
     setDropdownVisible(!isDropdownVisible);

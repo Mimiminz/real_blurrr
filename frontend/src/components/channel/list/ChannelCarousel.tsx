@@ -46,8 +46,8 @@ const ChannelCarousel: React.FC<ChannelCarouselProps> = ({ slides, handleChannel
                clickable: true,
                renderBullet: (index, className) => {
                   // 페이지네이션 버튼의 개수를 조절하는 부분
-                  const numBullets = slides.length - slidesPerView; // 5개의 카드를 보여주므로, 5개를 뺌
-                  if (index >= 2 && index < numBullets + 2) { // 인덱스 2부터 시작
+                  const numBullets = slides.length - slidesPerView;
+                  if (index >= 2 && index < numBullets + 2) {
                      return `<span class="${className}"></span>`;
                   }
                   return '';

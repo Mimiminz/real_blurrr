@@ -164,10 +164,12 @@ const EditorAndButtonContainer = styled.div`
 const EditorContainer = styled.div<{ $isError: boolean }>`
    width: 100%;
    max-width: 1000px;
-   margin-bottom: 8px;
+   margin-bottom: 40px;
    box-sizing: border-box;
    border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
    border-radius: 5px;
+   overflow: hidden;
+   height: 100%;
 
    @media (min-width: 768px) {
    max-width: 750px;

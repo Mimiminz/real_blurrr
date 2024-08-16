@@ -21,7 +21,6 @@ export default function CreateComment({
 }: CreateCommentProps & { inputRef?: React.RefObject<HTMLTextAreaElement> }) {
   const { user } = useAuthStore();
   const [comment, setComment] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -57,8 +56,8 @@ export default function CreateComment({
   };
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
-    if (e) e.preventDefault(); // 폼의 기본 동작을 막음
-    if (!comment.trim()) return; // 빈 댓글은 제출하지 않음
+    if (e) e.preventDefault();
+    if (!comment.trim()) return;
 
     if (comment.length > 200) {
       alert("댓글은 200자까지만 작성이 가능합니다.");
@@ -81,9 +80,9 @@ export default function CreateComment({
       }
       setComment("");
       if (textAreaRef.current) {
-        textAreaRef.current.style.height = "34px"; // 제출 후 높이를 34px로 리셋
+        textAreaRef.current.style.height = "34px";
       }
-      onCommentAdded(); // 댓글 작성 후 콜백 호출
+      onCommentAdded();
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
@@ -141,7 +140,6 @@ const InputContainer = styled.div`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 6px;
-  /* margin-bottom: 8px; */
   border: none;
   outline: none;
   border-radius: 5px;
@@ -152,7 +150,7 @@ const TextArea = styled.textarea`
   height: 34px;
 
   &:focus {
-    outline: none; /* 포커스 시에도 테두리가 생기지 않도록 함 */
+    outline: none;
   }
 `;
 
@@ -169,7 +167,6 @@ const CharCount = styled.div`
 
 const Button = styled.button<{ disabled: boolean }>`
   background-color: ${({ disabled }) => (disabled ? "#ccc" : "#fbc02d")};
-  /* margin-top: 3px; */
   margin-top: auto;
   margin-bottom: 3px;
   border: none;

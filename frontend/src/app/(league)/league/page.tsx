@@ -7,7 +7,7 @@ import UserTab from "@/components/league/tab/UserTab";
 import LeagueListItem from "@/components/league/LeagueListItem";
 import { useAuthStore } from "@/store/authStore";
 
-import { UserLeague, LeagueList } from "@/types/leagueTypes";
+import { LeagueList } from "@/types/leagueTypes";
 
 import { useLeagueStore } from "@/store/leagueStore";
 import Loading from "@/components/common/UI/Loading";
@@ -120,8 +120,6 @@ export default function LeagueMainPage() {
     </>
   );
 }
-
-const Container = styled.div``;
 
 const TopComponent = styled.div`
   display: flex;

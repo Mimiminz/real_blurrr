@@ -107,8 +107,8 @@ export const verifyEmailCode = async (email: string, authCode: string, type: str
     const response = await api.post('/v1/auth/email/code', { email, authCode, type });
     return response.data;
   } catch (error) {
-    console.error('인증번호 확인 중 오류가 발생했습니다.', error);
-    throw error;
+    // console.error('인증번호 확인 중 오류가 발생했습니다.', error);
+    // throw error;
   }
 };
 

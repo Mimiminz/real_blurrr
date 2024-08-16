@@ -163,8 +163,6 @@ const Tab = styled.div<{ active: boolean; isProfileTab: boolean }>`
   font-weight: ${(props) =>
     props.isProfileTab || props.active ? "normal" : "normal"};
   border-radius: 0 8px 8px 0;
-
-  
 `;
 
 const ContentArea = styled.div`

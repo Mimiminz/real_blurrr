@@ -6,7 +6,6 @@ export const SectionTitle = styled.h3`
 `;
 
 export const SearchBarContainer = styled.div`
-  display: flex;
   justify-content: flex-start;
   width: 100%;
   margin: 10px 0px 30px;

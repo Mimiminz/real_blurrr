@@ -49,6 +49,8 @@ export const EditorContainer = styled.div<{ $isError: boolean }>`
   box-sizing: border-box;
   border: 1px solid ${({ $isError }) => ($isError ? "red" : "#ddd")};
   border-radius: 5px;
+  overflow: hidden;
+  height: 100%;
 
   @media (min-width: 768px) {
     max-width: 750px;

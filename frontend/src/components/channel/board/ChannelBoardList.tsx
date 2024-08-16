@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 interface ChannelBoardListProps {
   channelId: string;
-  keyword: string; // keyword를 props로 받음
+  keyword: string;
   criteria: string;
 }
 
