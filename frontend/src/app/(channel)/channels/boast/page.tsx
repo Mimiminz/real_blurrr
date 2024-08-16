@@ -53,11 +53,11 @@ const Boast: React.FC = () => {
    useEffect(() => {
       const loadData = async () => {
          try {
-            if(keyword){
+            if (keyword) {
                setTotalPages(0);
-             }
+            }
             const data = await fetchBoast(keyword, currentPage - 1, sortCriteria);
-            
+
             if (data) {
                setBoasts(data.content);
             } else {
@@ -91,11 +91,11 @@ const Boast: React.FC = () => {
          ) : (
             <CardGrid>
                {boasts.map((boast) => (
-                  <div key={boast.id} onClick={() => handleCardClick(boast.id)}>
+                  <Card key={boast.id} onClick={() => handleCardClick(boast.id)}>
                      <BoastCard
                         boast={boast}
                      />
-                  </div>
+                  </Card>
                ))}
             </CardGrid>
          )}
@@ -142,5 +142,9 @@ const EmptyMessage = styled.p`
   font-size: 18px;
   color: #333;
 `;
+
+const Card = styled.div`
+   margin: 0px auto;
+`
 
 export default Boast;

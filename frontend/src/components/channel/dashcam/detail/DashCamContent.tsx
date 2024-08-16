@@ -155,7 +155,7 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
           >
             {dashCamDetail.videos.map((video) => (
               <SwiperSlide key={video.videoOrder}>
-                <Video controls loop style={{ width: '100%'}}>
+                <Video controls style={{ width: '100%' }}>
                   <source src={video.videoUrl} type="video/mp4" />
                 </Video>
               </SwiperSlide>
@@ -183,7 +183,7 @@ const DashCamContent: React.FC<DashCamContentProps> = ({ dashCamDetailId, setCom
 };
 
 const Video = styled.video`
-  padding: 5px 10px;
+  padding: 5px 0px;
 `;
 
 const Container = styled.div`
