@@ -15,14 +15,15 @@
 - 사용자 회원가입 후, 자동차 등록증을 업로드하면 자동차의 모델과 브랜드가 매칭되어 리그를 할당받게 됩니다.
 - 인증된 사용자에게는 닉네임 옆에 자동차명이 표시됩니다.
 
-![registration](./asset/registration.gif)
+<img width="1000" alt="image" src="./asset/registration.gif">
 
 ### 🏆 **리그 기능**
 
 - 같은 브랜드 또는 모델의 자동차를 소유한 사용자들끼리 소통하는 전용 공간입니다.
 - 리그 내에서 신뢰성 높은 정보를 얻고 교류할 수 있는 것이 특징입니다.
 
-![league](./asset/league.gif)
+
+<img width="1000" alt="image" src="./asset/league.gif">
 
 ### 💬 **채널 기능**
 
@@ -30,8 +31,10 @@
 - 블랙박스, 차 자랑, 전기차 등 여러 주제별 채널이 마련되어 있습니다.
 - 특정 리그를 멘션하여 그 리그 사용자들과 직접 소통할 수 있는 기능을 제공합니다.
 
-![blackbox](./asset/blackbox.gif)
-![boast](./asset/boast.gif)
+
+<img width="1000" alt="image" src="./asset/blackbox.gif">
+<img width="1000" alt="image" src="./asset/boast.gif">
+
 
 ---
 
