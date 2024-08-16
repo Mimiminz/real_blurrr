@@ -55,15 +55,15 @@
 
 ## 🧑🏻‍💻 팀원
 
-|Client|Client|Client|
+### Client
+|김주연|정승훈|조민주|
 | :-: | :-: | :-: |
-|김주연|조민주|정승훈|
-<a href="https://github.com/izodam"><img src="https://avatars.githubusercontent.com/izodam" width=160/></a> | <a href="https://github.com/mimiminz"><img src="https://avatars.githubusercontent.com/mimiminz" width=160/></a>|<a href="https://github.com/Jeongseunghun"><img src="https://avatars.githubusercontent.com/Jeongseunghun" width=160/></a>
-|[izodam](https://github.com/izodam)|[mimiminz](https://github.com/mimiminz)|[Jeongseunghun](https://github.com/Jeongseunghun)
+<a href="https://github.com/izodam"><img src="https://avatars.githubusercontent.com/izodam" width=160/></a> | <a href="https://github.com/Jeongseunghun"><img src="https://avatars.githubusercontent.com/Jeongseunghun" width=160/></a> | <a href="https://github.com/mimiminz"><img src="https://avatars.githubusercontent.com/mimiminz" width=160/></a> |
+|[izodam](https://github.com/izodam)|[Jeongseunghun](https://github.com/Jeongseunghun)|[mimiminz](https://github.com/mimiminz)|
 
-|Server|Server|Server|
-| :-: | :-: | :-: |
+### Server
 |박근석|전상현|최은혜|
+| :-: | :-: | :-: |
 <a href="https://github.com/parkrootseok"><img src="https://avatars.githubusercontent.com/parkrootseok" width=160/></a>|<a href="https://github.com/tkdgus97"><img src="https://avatars.githubusercontent.com/tkdgus97" width=160/></a>|<a href="https://github.com/hoiae"><img src="https://avatars.githubusercontent.com/EH05" width=160/></a>|<a href="https://github.com/EH05"><img src="https://avatars.githubusercontent.com/hoiae" width=160/></a>
 [parkrootseok](https://github.com/parkrootseok)|[tkdgus97](https://github.com/tkdgus97)|[EH05](https://github.com/EH05)
 
@@ -99,5 +99,6 @@
 
 ## 🕸️ 아키텍처
 ![image]()
+
 
 
