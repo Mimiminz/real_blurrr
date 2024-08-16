@@ -18,7 +18,7 @@ const page = () => {
       alert("차 인증은 한번만 가능합니다.");
       router.back();
     }
-  }, [isLoggedIn, user, router]);
+  }, [isLoggedIn, router]);
 
   if (!isLoggedIn || user?.isAuth) {
     return <div></div>;
