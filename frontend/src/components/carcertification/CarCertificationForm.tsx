@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import axios from "axios";
-import { submitImageForOCR } from '@/api/carcertification'
+import { submitImageForOCR } from "@/api/carcertification";
 import { carInfo, getUserInfo } from "@/api/mypage";
 import { useAuthStore } from "@/store/authStore";
 import { fetchUserLeagueList } from "@/api/league";
 import { LeagueList, UserLeague } from "@/types/leagueTypes";
 import { useLeagueStore } from "@/store/leagueStore";
 import { FaCar } from "react-icons/fa";
+import { MdFactory } from "react-icons/md";
 
 interface SimilarCar {
   brand: string;
@@ -20,18 +21,26 @@ interface SimilarCar {
 const CarCertificationForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [ocrResults, setOcrResults] = useState<{ vehicle_model: string | null, preprocessed_image: string | null, similar_car: SimilarCar | null }>({ vehicle_model: null, preprocessed_image: null, similar_car: null });
+  const [ocrResults, setOcrResults] = useState<{
+    vehicle_model: string | null;
+    preprocessed_image: string | null;
+    similar_car: SimilarCar | null;
+  }>({ vehicle_model: null, preprocessed_image: null, similar_car: null });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [preprocessedImage, setPreprocessedImage] = useState<string | null>(null);
+  const [preprocessedImage, setPreprocessedImage] = useState<string | null>(
+    null
+  );
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
   const { accessToken } = useAuthStore();
-  const { setAccessToken, setRefreshToken, setUser } = useAuthStore((state) => ({
-    setAccessToken: state.setAccessToken,
-    setRefreshToken: state.setRefreshToken,
-    setUser: state.setUser,
-  }));
+  const { setAccessToken, setRefreshToken, setUser } = useAuthStore(
+    (state) => ({
+      setAccessToken: state.setAccessToken,
+      setRefreshToken: state.setRefreshToken,
+      setUser: state.setUser,
+    })
+  );
   const { setInitialized, setUserLeagueList } = useLeagueStore();
 
   useEffect(() => {
@@ -41,7 +50,6 @@ const CarCertificationForm = () => {
       }
     };
   }, [videoStream]);
-
 
   const handleVideoClick = () => {
     if (videoRef.current) {
@@ -88,7 +96,7 @@ const CarCertificationForm = () => {
           similar_car: result.similar_car || null,
         });
       }
-      
+
       const userResponse = await getUserInfo();
       setUser(userResponse);
 
@@ -105,7 +113,9 @@ const CarCertificationForm = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.detail || "서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.";
+        const errorMessage =
+          error.response?.data?.detail ||
+          "서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.";
         setError(errorMessage);
       } else {
         setError("알 수 없는 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
@@ -149,9 +159,11 @@ const CarCertificationForm = () => {
     }
   };
   const handleDecline = () => {
-    alert("관리자가 차량 확인 후 차량 재등록을 해드릴게요.")
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSclf6QxZWK4E6beV_Q0iHMN4-YTqE7sXo5n3Dt0GgkCttHfPg/viewform?usp=sf_link");
-    router.push("/")
+    alert("관리자가 차량 확인 후 차량 재등록을 해드릴게요.");
+    window.open(
+      "https://docs.google.com/forms/d/e/1FAIpQLSclf6QxZWK4E6beV_Q0iHMN4-YTqE7sXo5n3Dt0GgkCttHfPg/viewform?usp=sf_link"
+    );
+    router.push("/");
   };
 
   return (
@@ -164,7 +176,6 @@ const CarCertificationForm = () => {
         </SubSubHeading>
       </Head>
       <Body>
-        
         <ImageBox
           onClick={() => document.getElementById("uploadImage")?.click()}
         >
@@ -173,14 +184,18 @@ const CarCertificationForm = () => {
           ) : imageSrc ? (
             <Image src={imageSrc} alt="자동차 등록증 이미지 업로드" />
           ) : (
-            <Placeholder><MdAddPhotoAlternate/></Placeholder>
-            
+            <Placeholder>
+              <MdAddPhotoAlternate size={48} />
+              <PlaceholderText>이미지를 업로드해주세요</PlaceholderText>
+            </Placeholder>
           )}
         </ImageBox>
         <SubmitButtonContainer>
-       <SubmitButton onClick={handleSubmit}>제출</SubmitButton>
-      </SubmitButtonContainer>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+          <SubmitButton onClick={handleSubmit} disabled={!imageSrc}>
+            제출
+          </SubmitButton>
+        </SubmitButtonContainer>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
       </Body>
       <input
         type="file"
@@ -195,41 +210,44 @@ const CarCertificationForm = () => {
           <Spinner />
         </SpinnerContainer>
       )}
-       {ocrResults.similar_car && (
-          <CarInfoContainer>
-            <CarContainer>
-              
-              <CarDiv>
-               <FaCar color = "#F9803A"/>브랜드
-              </CarDiv>
-              <Div>
-                 {ocrResults.similar_car.brand}
-              </Div>
-              <CarDiv>
-              <FaCar color = "#F9803A" />모델
-              </CarDiv>
-              <Div>
-                 {ocrResults.similar_car.series} 
-              </Div>
-            </CarContainer>
-            <Owner>
-            {ocrResults.similar_car.brand} {ocrResults.similar_car.model_detail} 오너가 맞나요?
-            </Owner>
-            <ConfirmationContainer>
-              <ConfirmationButtonContainer>
-                <ConfirmationButton onClick={handleConfirm}>예</ConfirmationButton>
-                <ConfirmationButton onClick={handleDecline}>아니오</ConfirmationButton>
-              </ConfirmationButtonContainer>
-            </ConfirmationContainer>
-          </CarInfoContainer>
-          
-        )}
-        <ConfirmationContainer>
-          <ConfirmationButtonContainer>
-            <Button onClick={() => router.push("/")}>다음에 할게요.</Button>
-          </ConfirmationButtonContainer>
-        </ConfirmationContainer>
-      
+      {ocrResults.similar_car && (
+        <CarInfoContainer>
+          <CarContainer>
+            <CarDiv>
+              <FaCar color="#F9803A" />
+              브랜드
+            </CarDiv>
+            <Div>{ocrResults.similar_car.brand}</Div>
+            <CarDiv>
+              <FaCar color="#F9803A" />
+              모델
+            </CarDiv>
+            <Div>{ocrResults.similar_car.series}</Div>
+          </CarContainer>
+
+          <Owner>
+            {ocrResults.similar_car.brand} {ocrResults.similar_car.model_detail}{" "}
+            오너가 맞나요?
+          </Owner>
+          <ConfirmationContainer>
+            <ConfirmationButtonContainer>
+              <ConfirmationButton onClick={handleConfirm}>
+                예
+              </ConfirmationButton>
+              <ConfirmationButton onClick={handleDecline}>
+                아니오
+              </ConfirmationButton>
+            </ConfirmationButtonContainer>
+          </ConfirmationContainer>
+        </CarInfoContainer>
+      )}
+      <ConfirmationContainer>
+        <ConfirmationButtonContainer>
+          <SecondaryButton onClick={() => router.push("/")}>
+            다음에 할게요.
+          </SecondaryButton>
+        </ConfirmationButtonContainer>
+      </ConfirmationContainer>
     </Container>
   );
 };
@@ -241,13 +259,14 @@ const Container = styled.div`
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  width: 400px;
-  height: 100%;
-  margin: 20px;
-  padding: 50px;
-  background-color: #f0f0f0;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  padding: 50px 30px;
+  background-color: #ffffff;
   gap: 30px;
   border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 `;
 
 const Head = styled.div`
@@ -256,67 +275,52 @@ const Head = styled.div`
   font-weight: bold;
 `;
 
-
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   gap: 20px;
 `;
 
 const Heading = styled.h2`
   margin: 5px 0;
+  font-size: 1.75em;
+  color: #333;
 `;
 
 const SubHeading = styled.h4`
   margin: 5px 0;
+  font-size: 1.2em;
+  color: #555;
 `;
 
 const SubSubHeading = styled.h6`
   margin: 5px 0;
+  font-size: 0.9em;
+  color: #777;
 `;
 
-const SubmitButtonContainer = styled.button`
+const SubmitButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  border: none;
-  width: 100%;
-`
-const SubmitButton = styled.div`
+`;
+
+const SubmitButton = styled.button`
   font-size: 1em;
   padding: 10px 20px;
-  font-weight: 400;
+  font-weight: 600;
   color: #fff;
-  background-color: #007BFF; 
-  border: none; 
-  border-radius: 8px; 
+  background-color: #ff900d;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); 
+    background-color: #f97316;
   }
 
   &:disabled {
-    background-color: #cccccc; 
-    color: #666666;
-    cursor: not-allowed; 
-    box-shadow: none;
-  }
-`
-
-const Button = styled.button`
-  font-size: 1em;
-  padding: 10px;
-  color: #000000;
-  border: none;
-  text-decoration: underline;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:disabled {
-    background-color: #ddd;
+    background-color: #ccc;
     cursor: not-allowed;
   }
 `;
@@ -328,7 +332,9 @@ const ImageBox = styled.div`
   width: 100%;
   height: 300px;
   border: 2px dashed #ccc;
+  border-radius: 8px;
   cursor: pointer;
+  background-color: #f9f9f9;
 `;
 
 const Image = styled.img`
@@ -339,71 +345,20 @@ const Image = styled.img`
 const Video = styled.video`
   max-width: 100%;
   max-height: 100%;
+  border-radius: 8px;
 `;
 
-const Placeholder = styled.span`
-  color:#ccc;
-`;
-
-const ButtonContainer = styled.div`
+const Placeholder = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
+  align-items: center;
+  color: #999;
 `;
 
-const ResultsContainer = styled.div`
-  display: flex;
+const PlaceholderText = styled.p`
   margin-top: 10px;
-  text-align: left;
-`;
-
-const Div = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-weight: 600; 
   font-size: 1em;
-  margin-right: 10px;
-  border-radius: 50px;
-  padding:10px;
-  color: #000000; 
-`;
-
-const CarContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-`
-
-const CarDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 7px;
-  gap: 8px;
-  border-radius: 15px;
-  font-weight: 600;
-  color: #F9803A;
-  background-color: white;
-`
-
-const Owner = styled.div`
-  display: block;
-  font-weight: 700;
-  margin-top: 20px;
-  font-size: 1em; 
-  color: #000000; 
-  margin-bottom: 30px;
-`;
-
-const CarInfoContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
+  color: #999;
 `;
 
 const SpinnerContainer = styled.div`
@@ -414,17 +369,67 @@ const SpinnerContainer = styled.div`
 `;
 
 const Spinner = styled.div`
-  border: 4px solid rgba(0, 0, 0, 0.1); 
-  border-left: 4px solid #007BFF; 
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #f97316;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
+`;
+
+const CarInfoContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Div = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1em;
+  margin-right: 10px;
+  border-radius: 50px;
+  padding: 10px;
+  color: #000000;
+`;
+
+const CarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CarDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+  border-radius: 15px;
+  font-weight: 600;
+  color: #f9803a;
+  background-color: #f9f9f9;
+`;
+
+const Owner = styled.div`
+  font-weight: 700;
+  margin-top: 20px;
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 30px;
 `;
 
 const ConfirmationContainer = styled.div`
@@ -434,35 +439,48 @@ const ConfirmationContainer = styled.div`
   gap: 20px;
 `;
 
-const Question = styled.h4`
-  font-weight: bold;
-`;
-
 const ConfirmationButtonContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 30px;
 `;
 
 const ConfirmationButton = styled.div`
   font-size: 1em;
-  width:100px;
+  width: 100px;
   padding: 10px 20px;
   font-weight: 400;
   color: #fff;
-  background-color: ${props => props.children === '예' ? '#007BFF' : '#007BFF'};
+  background-color: ${(props) =>
+    props.children === "예" ? "#f97316" : "#f97316"};
   border: none;
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: ${props => props.children === '예' ? '#0056b3' : '#0056b3'}; 
+    background-color: ${(props) =>
+      props.children === "예" ? "#ff900d" : "#ff900d"};
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 `;
 
+const SecondaryButton = styled.button`
+  font-size: 1em;
+  padding: 10px;
+  color: #007bff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #0056b3;
+  }
+`;
+
 const ErrorMessage = styled.div`
-  color: #ff4d4d;
+  color: #dc3545;
   font-size: 1em;
   font-weight: bold;
   margin-top: 10px;
