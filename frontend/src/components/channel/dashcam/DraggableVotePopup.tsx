@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CreateOption } from '@/types/channelType';
 import { FiMinusSquare } from "react-icons/fi";
@@ -136,9 +136,9 @@ const Popup = styled.div`
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   cursor: grab;
-  max-width: 500px; /* 팝업의 최대 너비 설정 */
+  max-width: 500px; 
   width: 100%;
-  box-sizing: border-box; /* 추가된 부분 */
+  box-sizing: border-box; 
 `;
 
 const Header = styled.div`
@@ -146,13 +146,13 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  padding-right: 20px; /* 추가된 부분 */
+  padding-right: 20px; 
 `;
 
 const Title = styled.h2`
   margin: 0;
   font-size: 18px;
-  padding-right: 20px; /* 추가된 부분 */
+  padding-right: 20px;
 `;
 
 const CloseButton = styled.button`

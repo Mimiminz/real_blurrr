@@ -18,7 +18,6 @@ function ChannelBoardListItem({
   mentions,
   onClick,
 }: ChannelBoardListItemProps) {
-  // post를 props로 사용
 
   const mentionArray = mentions.map((mention, index) => (
     <Channel key={index}>{mention.name}</Channel>
@@ -126,13 +125,6 @@ const Title = styled.p`
   margin: 0;
   margin-bottom: 8px;
   font-weight: bold;
-`;
-
-const Text = styled.p`
-  color: black;
-  font-size: 13px;
-  margin: 10;
-  margin-bottom: 8px;
 `;
 
 const LikeAndComment = styled.div`

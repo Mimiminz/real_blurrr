@@ -115,7 +115,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({ content, setContent, setThumb
   return (
     <ReactQuill
       ref={quillRef}
-      style={{ height: "400px", paddingBottom: "40px" }}
+      style={{ height: "400px" }}
       value={content}
       theme="snow"
       onChange={setContent}

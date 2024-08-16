@@ -87,7 +87,7 @@ export default function LeaguePage({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
-    setIsDesktop(mediaQuery.matches); // 초기값 설정
+    setIsDesktop(mediaQuery.matches);
 
     const handleMediaChange = (e: MediaQueryListEvent) =>
       setIsDesktop(e.matches);
@@ -216,7 +216,6 @@ export default function LeaguePage({
   );
 
   const onSortChange = (newSort: string) => {
-    // 정렬 기준을 변경하고, API에서 사용할 수 있는 형식으로 변환
     const criteriaMap: { [key: string]: string } = {
       최신순: "TIME",
       댓글수: "COMMENT",
@@ -224,7 +223,7 @@ export default function LeaguePage({
       좋아요: "LIKE",
     };
 
-    const newCriteria = criteriaMap[newSort] || "TIME"; // 매핑되지 않는 경우 기본값 설정
+    const newCriteria = criteriaMap[newSort] || "TIME";
     setCriteria(newCriteria);
   };
 
@@ -340,19 +339,19 @@ export default function LeaguePage({
       )}
       {isSearching
         ? searchTotalPages > 0 && (
-            <PaginationComponent
-              currentPage={currentPage}
-              totalPages={searchTotalPages}
-              onPageChange={handlePageChange}
-            />
-          )
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={searchTotalPages}
+            onPageChange={handlePageChange}
+          />
+        )
         : totalPages > 0 && (
-            <PaginationComponent
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          )}
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
 
       {showNoCarPopup && <NoCarPopup closePopup={closeNoCarPopup} />}
       {showLoginPopup && (

@@ -8,7 +8,6 @@ import GlobalStyle from "@/styles/GlobalStyle";
 import { theme } from "@/styles/theme";
 import Header from "@/components/common/layout/Header";
 import Footer from "@/components/common/layout/Footer";
-import PageTransition from "@/components/common/UI/PageTransition";
 
 const StyledComponentsWrapper = ({
   children,

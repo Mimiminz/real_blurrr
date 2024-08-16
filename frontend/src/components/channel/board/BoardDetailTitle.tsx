@@ -14,7 +14,7 @@ interface BoardDetailTitleProps {
   viewCount: number;
   likeCount: number;
   member: SimpleMember;
-  tags: Mentioned[]; // 태그들을 나타내기 위한 새로운 속성
+  tags: Mentioned[];
   boardId: string;
   channelId: string;
 }
@@ -126,7 +126,6 @@ const BoardDetailTitle: React.FC<BoardDetailTitleProps> = ({
 
 export default BoardDetailTitle;
 
-// 스타일 컴포넌트들
 const Container = styled.div`
   margin-bottom: 20px;
 `;

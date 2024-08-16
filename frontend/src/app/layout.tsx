@@ -20,9 +20,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StyledComponentsWrapper>
-          {/* <PageTransition>
-            {children}
-          </PageTransition> */}
           {children}
         </StyledComponentsWrapper>
       </body>

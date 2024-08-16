@@ -6,7 +6,7 @@ interface BreadcrumbProps {
   channel?: string;
   subChannel: string;
   channelUrl?: string;
-  subChannelUrl?: string; // subChannelUrl 추가
+  subChannelUrl?: string;
 }
 
 const BreadcrumbContainer = styled.nav`
@@ -20,10 +20,6 @@ const BreadcrumbContainer = styled.nav`
     color: inherit;
     text-decoration: none;
     margin-right: 5px;
-
-    /* &:hover {
-      text-decoration: underline;
-    } */
   }
 
   span,

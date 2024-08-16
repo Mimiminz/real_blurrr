@@ -13,9 +13,6 @@ const Header = () => {
 export default Header;
 
 const HeaderContainer = styled.header`
-  /* position: fixed;
-  top: 0;
-  left: 0; */
   width: 100%;
   height: 60px;
   background-color: #fff;

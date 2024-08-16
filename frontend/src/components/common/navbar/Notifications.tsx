@@ -9,7 +9,6 @@ const Notifications: React.FC<NotificationsProps> = ({ onClose }) => {
   return (
     <NotificationContainer>
       <CloseButton onClick={onClose}>X</CloseButton>
-      {/* 알림 내용 추가 */}
       <p>알림 내용입니다.</p>
     </NotificationContainer>
   );

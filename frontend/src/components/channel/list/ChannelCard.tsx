@@ -89,19 +89,18 @@ const Tag = styled.span`
   border-radius: 12px;
   padding: 4px 8px;
   margin: 0 4px;
-  white-space: nowrap; /* 텍스트가 한 줄에 나타나도록 설정 */
-  overflow: hidden; /* 범위를 벗어난 텍스트를 숨김 */
-  text-overflow: ellipsis; /* 텍스트가 넘치면 "..." 처리 */
-  display: block; /* 애니메이션을 위해 블록 요소로 설정 */
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  display: block; 
   position: relative;
-  /* animation: scroll 10s linear infinite;  */
   
   @keyframes scroll {
     from {
-      transform: translateX(100%); /* 오른쪽에서 시작 */
+      transform: translateX(100%); 
     }
     to {
-      transform: translateX(-100%); /* 왼쪽으로 이동 */
+      transform: translateX(-100%); 
     }
   }
 `;

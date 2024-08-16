@@ -189,6 +189,8 @@ const EditorContainer = styled.div<{ isError: boolean }>`
   box-sizing: border-box; /* 추가 */
   border: 1px solid ${({ isError }) => (isError ? "red" : "#ddd")};
   border-radius: 5px;
+  overflow: hidden;
+  height: 100%;
 `;
 
 const ErrorMessage = styled.p`
@@ -199,18 +201,18 @@ const ErrorMessage = styled.p`
 `;
 
 const SubmitButton = styled.button`
-  width: 10%;
-  max-width: 1000px;
+  width: 100px;
   padding: 12px;
-  background-color: #ffa600;
-  color: white; /* 흰색 글씨 */
+  background-color: #FF900D;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 16px;
 
   &:hover {
-    background-color: #ff900d;
+    background-color: #FF900D;
   }
 `;
 

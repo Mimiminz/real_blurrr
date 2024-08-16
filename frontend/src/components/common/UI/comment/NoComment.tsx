@@ -60,7 +60,7 @@ const Content = styled.div`
 
 const DotLine = styled.div`
   position: absolute;
-  left: 12px; /* Adjust to position the dot line */
+  left: 12px; 
   top: 0;
   bottom: 0;
   border-left: 2px dotted #ccc;

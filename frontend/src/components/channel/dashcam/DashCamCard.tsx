@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
@@ -69,8 +69,8 @@ const Card = styled.div`
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(141, 141, 141, 0.1);
   transition: transform 0.3s ease;
-  transform-origin: center; /* 변환 중심을 요소의 중앙으로 설정 */
-  will-change: transform; /* 브라우저에게 사전 렌더링 힌트 제공 */
+  transform-origin: center; 
+  will-change: transform; 
 
   &:hover {
     animation: ${bounceIn} 0.5s forwards;
@@ -79,7 +79,7 @@ const Card = styled.div`
 
 const ThumbnailContainer = styled.div`
   width: 100%;
-  height: 180px; /* 고정된 높이 설정 */
+  height: 180px; 
   display: flex;
   justify-content: center;
   align-items: center;

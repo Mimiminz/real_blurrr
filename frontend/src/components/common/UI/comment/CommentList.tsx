@@ -111,7 +111,7 @@ const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 20px; /* 추가된 스타일 */
+  padding-top: 20px; 
 `;
 
 const CommentNumber = styled.div`

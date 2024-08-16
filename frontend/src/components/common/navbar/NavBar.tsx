@@ -70,10 +70,6 @@ const NavBar = (): JSX.Element => {
     }
   }, [pathname]);
 
-  const handleNotificationsClick = () => {
-    setShowNotifications(true);
-  };
-
   const handleCloseNotifications = () => {
     setShowNotifications(false);
   };
