@@ -2,7 +2,7 @@ package com.luckvicky.blur.domain.leaguemember.controller;
 
 import com.luckvicky.blur.domain.leaguemember.model.dto.response.LeagueMemberListResponse;
 import com.luckvicky.blur.domain.leaguemember.service.LeagueMemberService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.CertificationMember;
@@ -13,8 +13,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

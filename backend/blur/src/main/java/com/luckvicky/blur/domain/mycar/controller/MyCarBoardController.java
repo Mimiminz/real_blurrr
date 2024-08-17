@@ -5,7 +5,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateReque
 import com.luckvicky.blur.domain.mycar.service.MyCarBoardService;
 import com.luckvicky.blur.global.annotation.custom.ValidEnum;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.security.NullableAuthUser;

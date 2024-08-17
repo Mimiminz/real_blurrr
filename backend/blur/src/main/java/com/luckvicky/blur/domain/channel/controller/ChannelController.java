@@ -9,7 +9,7 @@ import com.luckvicky.blur.domain.channel.model.dto.response.ChannelListResponse;
 import com.luckvicky.blur.domain.channel.model.dto.response.ChannelResponse;
 import com.luckvicky.blur.domain.channel.model.dto.response.TagListResponse;
 import com.luckvicky.blur.domain.channel.service.ChannelService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.model.dto.SliceResponse;
 import com.luckvicky.blur.global.security.AuthUser;

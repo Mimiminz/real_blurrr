@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.leagueboard.service;
 
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
+import com.luckvicky.blur.domain.board.service.RedisViewCounterService;
 import com.luckvicky.blur.domain.league.exception.InvalidLeagueTypeException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
@@ -15,7 +16,7 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.global.enums.filter.SortingCriteria;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.Objects;
 import java.util.UUID;

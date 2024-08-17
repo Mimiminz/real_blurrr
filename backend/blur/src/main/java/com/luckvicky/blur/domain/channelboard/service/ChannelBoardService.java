@@ -7,7 +7,7 @@ import com.luckvicky.blur.domain.channelboard.model.dto.request.ChannelBoardCrea
 import com.luckvicky.blur.domain.channelboard.model.dto.response.ChannelBoardResponse;
 import com.luckvicky.blur.domain.comment.model.dto.CommentDto;
 
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import java.util.List;
 import java.util.UUID;

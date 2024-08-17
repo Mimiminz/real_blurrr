@@ -1,10 +1,10 @@
-package com.luckvicky.blur.global.jwt.service;
+package com.luckvicky.blur.infra.jwt.service;
 
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
-import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -11,7 +11,7 @@ import com.luckvicky.blur.domain.member.model.dto.req.MemberProfileUpdate;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfile;
 import com.luckvicky.blur.domain.member.model.dto.resp.MemberProfileUpdateResp;
 import com.luckvicky.blur.domain.member.service.MemberService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;

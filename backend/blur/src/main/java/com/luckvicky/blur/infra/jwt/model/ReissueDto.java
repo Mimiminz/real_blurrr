@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.model;
+package com.luckvicky.blur.infra.jwt.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

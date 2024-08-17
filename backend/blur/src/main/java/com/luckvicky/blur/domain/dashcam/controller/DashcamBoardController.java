@@ -6,7 +6,7 @@ import com.luckvicky.blur.domain.dashcam.model.dto.request.DashcamBoardCreateReq
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardCreateResponse;
 import com.luckvicky.blur.domain.dashcam.model.dto.response.DashcamBoardResponse;
 import com.luckvicky.blur.domain.dashcam.service.DashcamBoardService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;

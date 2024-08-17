@@ -15,7 +15,7 @@ import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.model;
+package com.luckvicky.blur.infra.jwt.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;

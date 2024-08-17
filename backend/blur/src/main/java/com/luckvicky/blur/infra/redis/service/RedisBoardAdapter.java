@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RedisLeagueBoardAdapter {
+public class RedisBoardAdapter {
 
     private static final String BOARD_VIEW_COUNT_HASH_KEY = "board:viewCount:";
 

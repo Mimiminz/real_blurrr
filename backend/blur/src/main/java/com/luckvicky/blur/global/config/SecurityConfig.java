@@ -11,13 +11,10 @@ import static com.luckvicky.blur.global.constant.StringFormat.UTILITY_URI;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
-import com.luckvicky.blur.global.jwt.filter.JwtFilter;
-import com.luckvicky.blur.global.jwt.handler.JwtAccessDeniedHandler;
-import com.luckvicky.blur.global.jwt.handler.JwtAuthenticationEntryPoint;
-import java.util.List;
+import com.luckvicky.blur.infra.jwt.filter.JwtFilter;
+import com.luckvicky.blur.infra.jwt.handler.JwtAccessDeniedHandler;
+import com.luckvicky.blur.infra.jwt.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.HttpStatus;
-import org.apache.http.protocol.HTTP;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,8 +27,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 
 @Configuration

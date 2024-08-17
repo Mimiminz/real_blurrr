@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.service;
+package com.luckvicky.blur.infra.jwt.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

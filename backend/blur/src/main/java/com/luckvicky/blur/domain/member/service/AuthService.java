@@ -1,10 +1,9 @@
 package com.luckvicky.blur.domain.member.service;
 
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
-import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
-import com.luckvicky.blur.global.jwt.model.JwtDto;
-import com.luckvicky.blur.global.jwt.model.ReissueDto;
+import com.luckvicky.blur.infra.jwt.model.JwtDto;
+import com.luckvicky.blur.infra.jwt.model.ReissueDto;
 
 public interface AuthService {
     JwtDto reissueToken(ReissueDto reissue);

@@ -1,7 +1,7 @@
-package com.luckvicky.blur.domain.leagueboard.service;
+package com.luckvicky.blur.domain.board.service;
 
 import com.luckvicky.blur.domain.board.repository.BoardRepository;
-import com.luckvicky.blur.infra.redis.service.RedisLeagueBoardAdapter;
+import com.luckvicky.blur.infra.redis.service.RedisBoardAdapter;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisViewCounterService {
 
-    private final RedisLeagueBoardAdapter redisLeagueBoardAdapter;
+    private final RedisBoardAdapter redisBoardAdapter;
     private final BoardRepository boardRepository;
 
     @Scheduled(cron = "0 0/7 * * * ?")
     public void syncViewCount() {
 
-        Map<Object, Object> viewCountLog = redisLeagueBoardAdapter.getViewCountLogs();
+        Map<Object, Object> viewCountLog = redisBoardAdapter.getViewCountLogs();
 
         if (Objects.nonNull(viewCountLog)) {
 
@@ -32,7 +32,7 @@ public class RedisViewCounterService {
 
                 if (Objects.nonNull(viewCount)) {
                     log.info("update view count : {} {}", boardId, viewCount);
-                    redisLeagueBoardAdapter.deleteViewCountLog(boardId);
+                    redisBoardAdapter.deleteViewCountLog(boardId);
                     boardRepository.updateViewCount(boardId, Long.parseLong(viewCount));
                 }
 
@@ -45,14 +45,14 @@ public class RedisViewCounterService {
     public long increment(UUID boardId) {
 
         log.info("Logging view count:{}", boardId);
-        return redisLeagueBoardAdapter.incrementViewCount(boardId.toString());
+        return redisBoardAdapter.incrementViewCount(boardId.toString());
 
     }
 
 
     public long addViewCountInRedis(UUID boardId, long viewCount) {
 
-        long viewCountInRedis = redisLeagueBoardAdapter.getViewCountLogByBoard(boardId.toString());
+        long viewCountInRedis = redisBoardAdapter.getViewCountLogByBoard(boardId.toString());
 
         if (viewCountInRedis > 0) {
             return viewCount + viewCountInRedis;

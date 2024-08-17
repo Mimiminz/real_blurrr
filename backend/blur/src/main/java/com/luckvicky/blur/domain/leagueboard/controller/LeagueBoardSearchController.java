@@ -2,7 +2,7 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardSearchService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.NullableAuthUser;

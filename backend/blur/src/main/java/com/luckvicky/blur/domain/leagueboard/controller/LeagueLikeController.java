@@ -3,7 +3,7 @@ package com.luckvicky.blur.domain.leagueboard.controller;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueLikeService;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeCreateResponse;
 import com.luckvicky.blur.domain.like.model.dto.response.LikeDeleteResponse;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;

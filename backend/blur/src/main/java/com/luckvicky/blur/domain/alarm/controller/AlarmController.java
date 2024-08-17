@@ -1,23 +1,14 @@
 package com.luckvicky.blur.domain.alarm.controller;
 
-import static com.luckvicky.blur.global.constant.Number.ALARM_PAGE_SIZE;
-
 import com.luckvicky.blur.domain.alarm.model.dto.AlarmDto;
-import com.luckvicky.blur.domain.alarm.model.entity.AlarmType;
 import com.luckvicky.blur.domain.alarm.service.AlarmFacade;
-import com.luckvicky.blur.domain.alarm.service.AlarmService;
-import com.luckvicky.blur.global.enums.filter.SortingCriteria;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.security.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

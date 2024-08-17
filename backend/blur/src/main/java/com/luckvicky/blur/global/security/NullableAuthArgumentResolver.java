@@ -1,6 +1,6 @@
 package com.luckvicky.blur.global.security;
 
-import com.luckvicky.blur.global.jwt.model.CustomUserDetails;
+import com.luckvicky.blur.infra.jwt.model.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;

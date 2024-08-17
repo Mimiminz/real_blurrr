@@ -1,10 +1,10 @@
-package com.luckvicky.blur.global.jwt.filter;
+package com.luckvicky.blur.infra.jwt.filter;
 
 import static com.luckvicky.blur.global.constant.StringFormat.BLANK;
 
 import com.luckvicky.blur.global.constant.StringFormat;
-import com.luckvicky.blur.global.jwt.service.CustomUserDetailService;
-import com.luckvicky.blur.global.jwt.service.JwtProvider;
+import com.luckvicky.blur.infra.jwt.service.CustomUserDetailService;
+import com.luckvicky.blur.infra.jwt.service.JwtProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;

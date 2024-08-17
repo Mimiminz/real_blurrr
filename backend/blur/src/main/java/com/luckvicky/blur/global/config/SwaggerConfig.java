@@ -4,7 +4,7 @@ import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.member.model.entity.Member;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 
 import static com.luckvicky.blur.global.constant.StringFormat.JWT;
 import static com.luckvicky.blur.global.constant.StringFormat.TOKEN_PREFIX;

@@ -1,14 +1,9 @@
 package com.luckvicky.blur.domain.leagueboard.controller;
 
-import static com.luckvicky.blur.global.constant.ErrorMessage.*;
-
-import com.luckvicky.blur.domain.comment.model.dto.request.CommentCreateRequest;
-import com.luckvicky.blur.domain.comment.model.dto.request.ReplyCreateRequest;
-import com.luckvicky.blur.domain.comment.service.CommentService;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueCommentCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueReplyCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;
 import com.luckvicky.blur.global.util.ResponseUtil;
@@ -16,8 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -26,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

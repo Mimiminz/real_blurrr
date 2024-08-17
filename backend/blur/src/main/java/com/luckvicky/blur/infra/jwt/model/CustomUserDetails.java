@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.model;
+package com.luckvicky.blur.infra.jwt.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

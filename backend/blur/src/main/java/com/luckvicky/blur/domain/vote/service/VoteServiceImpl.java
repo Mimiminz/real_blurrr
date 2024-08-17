@@ -12,7 +12,7 @@ import com.luckvicky.blur.domain.vote.model.dto.VoteResultDto;
 import com.luckvicky.blur.domain.vote.model.entity.Option;
 import com.luckvicky.blur.domain.vote.model.entity.Vote;
 import com.luckvicky.blur.domain.vote.repository.VoteRepository;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

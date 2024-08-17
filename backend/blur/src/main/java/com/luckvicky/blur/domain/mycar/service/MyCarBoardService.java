@@ -3,7 +3,7 @@ package com.luckvicky.blur.domain.mycar.service;
 import com.luckvicky.blur.domain.board.model.dto.request.BoardCreateRequest;
 import com.luckvicky.blur.domain.mycar.model.resp.MyCarDetail;
 import com.luckvicky.blur.domain.mycar.model.resp.MyCarSimple;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

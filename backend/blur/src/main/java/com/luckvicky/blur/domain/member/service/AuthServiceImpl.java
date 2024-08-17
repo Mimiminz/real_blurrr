@@ -2,14 +2,12 @@ package com.luckvicky.blur.domain.member.service;
 
 import com.luckvicky.blur.domain.member.exception.NotExistMemberException;
 import com.luckvicky.blur.domain.member.model.dto.req.EmailAuth;
-import com.luckvicky.blur.domain.member.model.dto.req.SignInDto;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
 import com.luckvicky.blur.domain.member.strategy.AuthCodeType;
-import com.luckvicky.blur.global.jwt.model.JwtDto;
-import com.luckvicky.blur.global.jwt.model.ReissueDto;
-import com.luckvicky.blur.global.jwt.service.JwtProvider;
-import com.luckvicky.blur.global.util.ResourceUtil;
+import com.luckvicky.blur.infra.jwt.model.JwtDto;
+import com.luckvicky.blur.infra.jwt.model.ReissueDto;
+import com.luckvicky.blur.infra.jwt.service.JwtProvider;
 import com.luckvicky.blur.infra.mail.model.EmailForm;
 import com.luckvicky.blur.infra.mail.service.MailService;
 import com.luckvicky.blur.infra.redis.service.RedisRefreshTokenAdapter;

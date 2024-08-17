@@ -1,7 +1,5 @@
 package com.luckvicky.blur.domain.leagueboard.controller;
 
-import static com.luckvicky.blur.global.constant.Number.ZERO;
-
 import com.luckvicky.blur.domain.comment.model.dto.response.CommentListResponse;
 import com.luckvicky.blur.domain.leagueboard.model.dto.request.LeagueBoardCreateRequest;
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardCreateResponse;
@@ -10,8 +8,7 @@ import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardRespo
 import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueMentionListResponse;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueBoardService;
 import com.luckvicky.blur.domain.leagueboard.service.LeagueCommentService;
-import com.luckvicky.blur.domain.leagueboard.service.RedisViewCounterService;
-import com.luckvicky.blur.global.jwt.model.ContextMember;
+import com.luckvicky.blur.infra.jwt.model.ContextMember;
 import com.luckvicky.blur.global.model.dto.PaginatedResponse;
 import com.luckvicky.blur.global.model.dto.Result;
 import com.luckvicky.blur.global.security.AuthUser;

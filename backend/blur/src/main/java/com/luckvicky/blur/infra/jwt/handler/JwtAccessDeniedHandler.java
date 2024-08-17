@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.handler;
+package com.luckvicky.blur.infra.jwt.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package com.luckvicky.blur.global.jwt.model;
+package com.luckvicky.blur.infra.jwt.model;
 
 import com.luckvicky.blur.domain.member.model.entity.Role;
 import java.util.UUID;
