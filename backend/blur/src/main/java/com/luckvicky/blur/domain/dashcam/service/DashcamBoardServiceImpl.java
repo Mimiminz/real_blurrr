@@ -2,6 +2,7 @@ package com.luckvicky.blur.domain.dashcam.service;
 
 import com.luckvicky.blur.domain.board.model.entity.Board;
 import com.luckvicky.blur.domain.board.model.entity.BoardType;
+import com.luckvicky.blur.domain.board.service.RedisViewCounterService;
 import com.luckvicky.blur.domain.channel.exception.NotExistChannelException;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channel.repository.ChannelRepository;
@@ -53,6 +54,7 @@ import static com.luckvicky.blur.global.constant.StringFormat.VIDEO_BUCKET;
 @RequiredArgsConstructor
 public class DashcamBoardServiceImpl implements DashcamBoardService{
 
+    private final RedisViewCounterService redisViewCounterService;
     private final MemberRepository memberRepository;
     private final DashcamRepository dashcamRepository;
     private final DashcamBoardMapper dashcamBoardMapper;
@@ -188,25 +190,26 @@ public class DashcamBoardServiceImpl implements DashcamBoardService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public DashcamBoardDetailDto getDashcamBoardById(UUID id, ContextMember nullableMember) {
+
         DashCam dashcam = dashcamRepository.findById(id)
                 .orElseThrow(NotFoundDashcamException::new);
-
-        dashcam.increaseViewCount();
 
         boolean isLiked = false;
         if(Objects.nonNull(nullableMember)){
             isLiked = isLike(nullableMember.getId(),dashcam);
         }
 
-        return dashcamBoardMapper.toDashcamBoardDetailDto(dashcam, isLiked);
+        return dashcamBoardMapper.toDashcamBoardDetailDto(
+                dashcam,
+                dashcam.getViewCount() + redisViewCounterService.increment(dashcam.getId()),
+                isLiked);
     }
 
     private boolean isLike(UUID memberId, Board board) {
         var member = memberRepository.getOrThrow(memberId);
         return likeRepository.existsByMemberAndBoard(member, board);
     }
-
 
 }

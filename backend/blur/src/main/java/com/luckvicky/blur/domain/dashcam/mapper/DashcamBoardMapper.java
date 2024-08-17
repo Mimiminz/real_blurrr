@@ -43,7 +43,7 @@ public class DashcamBoardMapper {
                 .collect(Collectors.toList());
     }
 
-    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, boolean isLiked) {
+    public DashcamBoardDetailDto toDashcamBoardDetailDto(DashCam dashcam, Long viewCount, boolean isLiked) {
         List<VideoDto> videos = dashcam.getVideos().stream()
                 .map(video -> VideoDto.of(video.getVideoOrder(), video.getVideoUrl()))
                 .collect(Collectors.toList());
@@ -58,7 +58,7 @@ public class DashcamBoardMapper {
                 .id(dashcam.getId())
                 .title(dashcam.getTitle())
                 .member(SimpleMemberDto.of(dashcam.getMember()))
-                .viewCount(dashcam.getViewCount())
+                .viewCount(viewCount)
                 .commentCount(dashcam.getCommentCount())
                 .likeCount(dashcam.getLikeCount())
                 .createdAt(dashcam.getCreatedAt())
