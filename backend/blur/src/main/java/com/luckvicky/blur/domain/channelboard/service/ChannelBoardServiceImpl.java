@@ -108,7 +108,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
         return ChannelBoardDetailDto.of(
                 board,
-                board.getViewCount() + redisViewCounterService.increment(boardId),
+                board.getViewCount() + redisViewCounterService.increment(board.getId()),
                 MentionDto.of(mentionedLeagues),
                 isLiked);
 

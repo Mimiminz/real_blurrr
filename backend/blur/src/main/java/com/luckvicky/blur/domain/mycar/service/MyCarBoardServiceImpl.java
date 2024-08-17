@@ -90,7 +90,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public MyCarDetail findMyCarDetail(UUID boardId, ContextMember nullableMember) {
 
         MyCarBoard myCarBoard = myCarRepository.findByIdAndStatus(boardId, ActivateStatus.ACTIVE)
@@ -105,7 +105,7 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
 
         return MyCarDetail.of(
                 myCarBoard,
-                myCarBoard.getViewCount() + redisViewCounterService.increment(boardId),
+                myCarBoard.getViewCount() + redisViewCounterService.increment(myCarBoard.getId()),
                 mentionedLeagues,
                 isLiked
         );
