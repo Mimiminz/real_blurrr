@@ -186,12 +186,10 @@ public class LeagueBoardServiceImpl implements LeagueBoardService {
 
         isAllocatedLeague(board.getLeague(), member);
 
-        long viewCountInRedis = redisViewCounterService.increment(boardId);
-
         return LeagueBoardDetailResponse.of(
                 LeagueBoardDetailDto.of(
                         board,
-                        board.getViewCount() + viewCountInRedis,
+                        board.getViewCount() + redisViewCounterService.increment(boardId),
                         isLike(member,  board)
                 )
         );

@@ -3,13 +3,11 @@ package com.luckvicky.blur.domain.league.repository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.model.entity.LeagueType;
-import com.luckvicky.blur.domain.vote.model.entity.Option;
+import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import jakarta.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -21,8 +19,10 @@ public interface LeagueRepository extends JpaRepository<League, UUID> {
 
 
     default League getOrThrow(UUID id) {
-        return findById(id).orElseThrow(NotExistLeagueException::new);
+        return findByIdAndStatus(id, ActivateStatus.ACTIVE).orElseThrow(NotExistLeagueException::new);
     }
+
+    Optional<League> findByIdAndStatus(UUID id, ActivateStatus status);
 
     Optional<League> findByName(String name);
 

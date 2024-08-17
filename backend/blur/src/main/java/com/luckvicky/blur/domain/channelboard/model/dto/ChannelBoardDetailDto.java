@@ -48,12 +48,12 @@ public class ChannelBoardDetailDto {
     private boolean isLiked;
 
 
-    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, List<MentionDto> mentionedLeagues, boolean isLiked){
+    public static ChannelBoardDetailDto of(ChannelBoard channelBoard, Long viewCount, List<MentionDto> mentionedLeagues, boolean isLiked){
         return ChannelBoardDetailDto.builder()
                 .id(channelBoard.getId())
                 .member(SimpleMemberDto.of(channelBoard.getMember()))
                 .title(channelBoard.getTitle())
-                .viewCount(channelBoard.getViewCount())
+                .viewCount(viewCount)
                 .commentCount(channelBoard.getCommentCount())
                 .likeCount(channelBoard.getLikeCount())
                 .createdAt(channelBoard.getCreatedAt())

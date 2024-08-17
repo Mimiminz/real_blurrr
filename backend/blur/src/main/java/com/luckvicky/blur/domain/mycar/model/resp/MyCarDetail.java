@@ -50,12 +50,12 @@ public class MyCarDetail {
     @Schema(description = "썸네일")
     private String thumbNail;
 
-    public static MyCarDetail of(MyCarBoard myCarBoard, List<Mention> mentionList, boolean isLiked) {
+    public static MyCarDetail of(MyCarBoard myCarBoard, Long viewCount, List<Mention> mentionList, boolean isLiked) {
         return MyCarDetail.builder()
                 .id(myCarBoard.getId())
                 .member(SimpleMemberDto.of(myCarBoard.getMember()))
                 .likeCount(myCarBoard.getLikeCount())
-                .viewCount(myCarBoard.getViewCount())
+                .viewCount(viewCount)
                 .commentCount(myCarBoard.getCommentCount())
                 .isLiked(isLiked)
                 .title(myCarBoard.getTitle())

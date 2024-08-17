@@ -13,11 +13,10 @@ import com.luckvicky.blur.domain.channelboard.model.dto.request.MyCarCreateReque
 import com.luckvicky.blur.domain.channelboard.model.entity.Mention;
 import com.luckvicky.blur.domain.channelboard.model.entity.MyCarBoard;
 import com.luckvicky.blur.domain.channelboard.repository.MentionRepository;
-import com.luckvicky.blur.domain.dashcam.exception.NotFoundDashcamException;
-import com.luckvicky.blur.domain.dashcam.model.entity.DashCam;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
+import com.luckvicky.blur.domain.leagueboard.service.RedisViewCounterService;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,28 +37,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MyCarBoardServiceImpl implements MyCarBoardService {
+
     private final MyCarRepository myCarRepository;
     private final Map<BoardType, BoardFactory> factoryMap;
+    private final RedisViewCounterService redisViewCounterService;
     private final MemberRepository memberRepository;
     private final ChannelRepository channelRepository;
     private final LikeRepository likeRepository;
     private final LeagueRepository leagueRepository;
     private final MentionRepository mentionRepository;
-
-
-    public MyCarBoardServiceImpl(MyCarRepository myCarRepository, Map<BoardType, BoardFactory> factoryMap,
-                                 MemberRepository memberRepository, ChannelRepository channelRepository,
-                                 LikeRepository likeRepository, LeagueRepository leagueRepository,
-                                 MentionRepository mentionRepository) {
-        this.myCarRepository = myCarRepository;
-        this.factoryMap = factoryMap;
-        this.memberRepository = memberRepository;
-        this.channelRepository = channelRepository;
-        this.likeRepository = likeRepository;
-        this.leagueRepository = leagueRepository;
-        this.mentionRepository = mentionRepository;
-    }
 
     @Override
     public Page<MyCarSimple> findMyCars(Pageable page, String keyword) {
@@ -103,17 +92,24 @@ public class MyCarBoardServiceImpl implements MyCarBoardService {
     @Override
     @Transactional
     public MyCarDetail findMyCarDetail(UUID boardId, ContextMember nullableMember) {
+
         MyCarBoard myCarBoard = myCarRepository.findByIdAndStatus(boardId, ActivateStatus.ACTIVE)
                 .orElseThrow(NotExistBoardException::new);
 
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(myCarBoard);
-        myCarBoard.increaseViewCount();
+
         boolean isLiked = false;
         if (Objects.nonNull(nullableMember)) {
             isLiked = isLike(nullableMember.getId(), myCarBoard);
         }
 
-        return MyCarDetail.of(myCarBoard, mentionedLeagues, isLiked);
+        return MyCarDetail.of(
+                myCarBoard,
+                myCarBoard.getViewCount() + redisViewCounterService.increment(boardId),
+                mentionedLeagues,
+                isLiked
+        );
+
     }
 
 //    @Transactional

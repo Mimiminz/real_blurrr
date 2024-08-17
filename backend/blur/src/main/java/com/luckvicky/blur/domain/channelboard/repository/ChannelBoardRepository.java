@@ -1,6 +1,5 @@
 package com.luckvicky.blur.domain.channelboard.repository;
 
-import com.luckvicky.blur.domain.board.model.entity.BoardType;
 import com.luckvicky.blur.domain.channel.model.entity.Channel;
 import com.luckvicky.blur.domain.channelboard.model.entity.ChannelBoard;
 import com.luckvicky.blur.domain.league.model.entity.League;
@@ -8,11 +7,9 @@ import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.global.enums.status.ActivateStatus;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,16 +18,6 @@ import org.springframework.data.repository.query.Param;
 public interface ChannelBoardRepository extends JpaRepository<ChannelBoard, UUID>, ChannelBoardSearchRepository {
 
     List<ChannelBoard> findByChannel (Channel channel);
-
-
-    @Query("SELECT b "
-            + "FROM ChannelBoard b "
-            + "LEFT JOIN FETCH b.comments c "
-            + "LEFT JOIN FETCH b.member m "
-            + "WHERE b.id = :id"
-    )
-    Optional<ChannelBoard> findByIdWithCommentAndReply(UUID id);
-
 
     @Query("SELECT cb "
             + "FROM ChannelBoard cb "

@@ -23,8 +23,7 @@ import com.luckvicky.blur.domain.comment.repository.CommentRepository;
 import com.luckvicky.blur.domain.league.exception.NotExistLeagueException;
 import com.luckvicky.blur.domain.league.model.entity.League;
 import com.luckvicky.blur.domain.league.repository.LeagueRepository;
-import com.luckvicky.blur.domain.leagueboard.model.dto.response.LeagueBoardResponse;
-import com.luckvicky.blur.domain.leagueboard.model.entity.LeagueBoard;
+import com.luckvicky.blur.domain.leagueboard.service.RedisViewCounterService;
 import com.luckvicky.blur.domain.like.repository.LikeRepository;
 import com.luckvicky.blur.domain.member.model.entity.Member;
 import com.luckvicky.blur.domain.member.repository.MemberRepository;
@@ -43,7 +42,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.luckvicky.blur.global.constant.Number.CHANNEL_BOARD_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.GENERAL_PAGE_SIZE;
 import static com.luckvicky.blur.global.constant.Number.LEAGUE_BOARD_PAGE_SIZE;
 
@@ -57,6 +55,7 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
 
     private final ModelMapper mapper;
     private final ChannelBoardMapper channelBoardMapper;
+    private final RedisViewCounterService redisViewCounterService;
     private final MemberRepository memberRepository;
     private final ChannelRepository channelRepository;
     private final ChannelBoardRepository channelBoardRepository;
@@ -93,26 +92,25 @@ public class ChannelBoardServiceImpl implements ChannelBoardService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ChannelBoardDetailDto getBoardDetail(UUID boardId, ContextMember nullableMember) {
 
 
-        ChannelBoard board = channelBoardRepository.findByIdWithCommentAndReply(boardId)
+        ChannelBoard board = channelBoardRepository.findById(boardId)
                 .orElseThrow(NotExistBoardException::new);
-
-        board.increaseViewCount();
 
         boolean isLiked = false;
         if(Objects.nonNull(nullableMember)){
             isLiked = isLike(nullableMember.getId(),board);
         }
 
-
         List<Mention> mentionedLeagues = mentionRepository.findAllByBoard(board);
 
-
-        return ChannelBoardDetailDto.of(board, MentionDto.of(mentionedLeagues), isLiked);
-
+        return ChannelBoardDetailDto.of(
+                board,
+                board.getViewCount() + redisViewCounterService.increment(boardId),
+                MentionDto.of(mentionedLeagues),
+                isLiked);
 
     }
 
