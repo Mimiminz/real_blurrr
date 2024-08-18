@@ -14,22 +14,20 @@ from typing import List
 from sqlalchemy.orm import Session
 from .database import SessionLocal, init_db
 from .crud import get_most_similar_car
+import re
+import logging
 
 # .env 파일의 환경 변수 로드
 load_dotenv()
 
-# # 환경 변수 사용
-# api_url = os.getenv('OCR_API_URL')
-# secret_key = os.getenv('OCR_SECRET_KEY')
-
-api_url='https://t4vfqpolti.apigw.ntruss.com/custom/v1/33430/c407d34736518ebb24a60b1dc8ed261e0f5a4cdca6024dbb18e14173ca56e5e2/general'
-secret_key='eXR6S1pwa0phc3lyTXZKTnRKTUV5Um1hb3FjZHJvd2g='
+# 환경 변수 사용
+api_url = os.getenv('OCR_API_URL')
+secret_key = os.getenv('OCR_SECRET_KEY')
 
 app = FastAPI()
 
 # 데이터베이스 초기화
 init_db()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -63,10 +61,10 @@ def ocr_recognition(image_file):
 
     payload = {'message': json.dumps(request_json).encode('UTF-8')}
     files = [
-      ('file', image_file)
+        ('file', image_file)
     ]
     headers = {
-      'X-OCR-SECRET': secret_key
+        'X-OCR-SECRET': secret_key
     }
 
     try:
@@ -88,9 +86,14 @@ async def read_root():
 @app.post("/ocr/")
 async def process_registration(data: ImageData, db: Session = Depends(get_db)):
     try:
+        logging.info("Processing OCR request...")
+
         # 이미지 데이터 처리
         image_data = data.image_data.split(",")[1]
         image = Image.open(BytesIO(base64.b64decode(image_data)))
+
+        if image.mode == 'RGBA':
+            image = image.convert('RGB')
 
         img_byte_arr = BytesIO()
         image.save(img_byte_arr, format='JPEG')
@@ -104,8 +107,11 @@ async def process_registration(data: ImageData, db: Session = Depends(get_db)):
         # '차명' 텍스트를 찾고, 그 뒤의 텍스트 추출
         vehicle_model = extract_vehicle_model(extracted_texts)
 
-        if not vehicle_model:
-            raise HTTPException(status_code=404, detail="차명을 찾을 수 없습니다. 차명이 잘 보이도록 다시 촬영해주세요.")
+        # 정규 표현식으로 괄호 등 불필요한 문자 제거
+        vehicle_model = re.sub(r'\([^)]*\)', '', vehicle_model)
+
+        if not vehicle_model or vehicle_model == "차명을 찾을 수 없습니다.":
+            raise HTTPException(status_code=400, detail="차량명이 인식되지 않습니다. 다시 촬영해주세요.")
 
         # 가장 유사한 차량 모델 찾기
         similar_car = get_most_similar_car(db, vehicle_model)
@@ -117,10 +123,8 @@ async def process_registration(data: ImageData, db: Session = Depends(get_db)):
         preprocessed_image = img_byte_arr.getvalue()
         preprocessed_image_base64 = base64.b64encode(preprocessed_image).decode('utf-8')
 
-        print("----------------------")
-        print("vehicle_model: ", vehicle_model)
-        print("similar_car: ",similar_car)
-        print("----------------------")
+        logging.info(f"Vehicle Model: {vehicle_model}")
+        logging.info(f"Similar Car: {similar_car}")
 
         return {
             "extracted_texts": extracted_texts,
@@ -128,11 +132,15 @@ async def process_registration(data: ImageData, db: Session = Depends(get_db)):
             "similar_car": similar_car,
             "preprocessed_image": f"data:image/jpeg;base64,{preprocessed_image_base64}"
         }
+    except HTTPException as e:
+        # 사용자에게 보여줄 메시지
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
     except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=f"서버 오류: {e}")
+        # 모든 기타 예외 처리
+        logging.error(f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail="서버에서 예기치 않은 오류가 발생했습니다. 나중에 다시 시도해 주세요.")
 
-
+# 텍스트에서 '차명' 키워드 추출하는 함수
 def extract_vehicle_model(extracted_texts: List[str]) -> str:
     combined_text = ''.join(text.replace(' ', '') for text in extracted_texts)
     
