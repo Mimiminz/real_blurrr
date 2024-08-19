@@ -21,6 +21,13 @@ const VideoUpload: React.FC<VideoUploadProps> = ({
    const [isLoading, setIsLoading] = useState(false);
    const [uploadProgress, setUploadProgress] = useState(0);
 
+   const generateFileName = (originalName: string) => {
+      const now = new Date();
+      const timestamp = now.toISOString().replace(/[-:.T]/g, "").slice(0, 14); // YYYYMMDDHHMMSS 형식
+      const extension = originalName.split('.').pop();
+      return `${timestamp}.${extension}`;
+   };
+
    const onFileUpload = async (file: File) => {
       if (videoFiles.length >= 2) {
          alert("최대 2개의 비디오만 업로드할 수 있습니다.");
@@ -29,13 +36,16 @@ const VideoUpload: React.FC<VideoUploadProps> = ({
 
       setIsLoading(true);
       try {
-         const presignedData = await videoPresigned(file.name);
+         const newFileName = generateFileName(file.name);
+         const renamedFile = new File([file], newFileName, { type: file.type });
+
+         const presignedData = await videoPresigned(renamedFile.name);
          const uploadURL = presignedData.fullUrl;
          const noQueryParamUrl = presignedData.noQueryParamUrl;
 
-         await S3UploadVideo(uploadURL, file);
+         await S3UploadVideo(uploadURL, renamedFile);
 
-         setVideoFiles(prevFiles => [...prevFiles, file]);
+         setVideoFiles(prevFiles => [...prevFiles, renamedFile]);
          setNoQueryParamURLs(prevUrls => [
             ...prevUrls,
             { videoOrder: prevUrls.length + 1, videoUrl: noQueryParamUrl }
