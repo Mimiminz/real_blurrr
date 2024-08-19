@@ -110,6 +110,13 @@ async def process_registration(data: ImageData, db: Session = Depends(get_db)):
 
         # 정규 표현식으로 괄호 등 불필요한 문자 제거
         vehicle_model = re.sub(r'\([^)]*\)', '', vehicle_model)
+        print(vehicle_model)
+
+        if '(' in vehicle_model:
+            vehicle_model = re.sub(r'\(.*', '', vehicle_model)
+        else:
+            vehicle_model = vehicle_model[:len(vehicle_model)-1]
+
 
         if not vehicle_model or vehicle_model == "차명을 찾을 수 없습니다.":
             raise HTTPException(status_code=400, detail="차량명이 인식되지 않습니다. 다시 촬영해주세요.")
@@ -146,7 +153,7 @@ def extract_vehicle_model(extracted_texts: List[str]) -> str:
     combined_text = ''.join(text.replace(' ', '') for text in extracted_texts)
     
     start_index = combined_text.find('차명')
-    end_index = combined_text.find('5형식')
+    end_index = combined_text.find('형식')
 
     if start_index != -1 and end_index != -1:
         vehicle_model_text = combined_text[start_index:end_index].strip()
