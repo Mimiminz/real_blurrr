@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MyHeartListItem from './MyHeartListItem';
-import { MyPostItem } from '@/types/myPageTypes';
+import { MyPostItem } from '../../types/myPageTypes'
 import { useAuthStore } from '@/store/authStore';
 import { getMyPostChannelList, getMyPostLeagueList } from '@/api/mypage';
 

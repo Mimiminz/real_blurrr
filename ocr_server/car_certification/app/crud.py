@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 def get_most_similar_car(db: Session, vehicle_model: str) -> dict:
     # 모든 차량 데이터 가져오기
     cars = db.query(Car).all()
@@ -14,11 +16,11 @@ def get_most_similar_car(db: Session, vehicle_model: str) -> dict:
         logging.warning("No car details found in the database.")
         return {"message": "차량 데이터가 없습니다."}
 
-    # 'None' 값 제거하고 유사도 계산
+    # 'None' 값을 제거하고 유사도 계산
     car_details = [detail if detail is not None else '' for detail in car_details]
     vehicle_model = vehicle_model if vehicle_model is not None else ''
     
-    vectorizer = TfidfVectorizer(ngram_range=(1, 2))  # 1-gram과 2-gram 사용
+    vectorizer = TfidfVectorizer(ngram_range=(1, 2))  # 1-gram과 2-gram을 사용
     vectors = vectorizer.fit_transform([vehicle_model] + car_details)
     cosine_sim = cosine_similarity(vectors[0:1], vectors[1:])
 

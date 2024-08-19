@@ -8,3 +8,4 @@ class Car(Base):
     brand = Column(String, index=True)
     series = Column(String)
     model_detail = Column(String)
+    compare = Column(String)

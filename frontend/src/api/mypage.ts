@@ -32,7 +32,6 @@ export const ChangeMyPassword = async (oldPassword: string, newPassword: string,
     };
 
 //내 좋아요 목록
-
 export const getMyHeartLeagueList = async (accessToken: string, pageNumber = 0, criteria = 'TIME'): Promise<MyHeartItem[]> => {
     try {
         const response = await api.get(`/v1/members/likes/leagues/boards`, {

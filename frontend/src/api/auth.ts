@@ -31,7 +31,6 @@ export const changePassword = async (data: ChangePasswordPayload) => {
       const response = await api.put('/v1/auth/password', data);
       return response.data;
     } catch (error) {
-      console.error('비밀번호 변경 중 오류가 발생했습니다.', error);
       throw error;
     }
   };

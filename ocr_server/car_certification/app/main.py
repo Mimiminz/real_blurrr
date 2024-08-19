@@ -24,6 +24,7 @@ load_dotenv()
 api_url = os.getenv('OCR_API_URL')
 secret_key = os.getenv('OCR_SECRET_KEY')
 
+
 app = FastAPI()
 
 # 데이터베이스 초기화

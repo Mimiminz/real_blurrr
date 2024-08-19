@@ -79,7 +79,6 @@ const Tab = styled.div<{ active: boolean }>`
   padding: 16px;
   cursor: pointer;
   background-color: ${(props) => {
-    console.log('Active state:', props.active);
     return props.active ? '#F9803A' : 'transparent';
   }};
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};

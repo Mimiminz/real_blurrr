@@ -16,7 +16,6 @@ const accessToken = useAuthStore(state => state.accessToken);
   
 const handlePasswordCheck = async (password: string) => {
   if (!accessToken) {
-    console.error('Access token is not available.');
     alert('로그인 상태가 아닙니다. 다시 로그인 해주세요.');
     return;
   }
@@ -31,15 +30,12 @@ const handlePasswordCheck = async (password: string) => {
         alert('비밀번호가 올바르지 않습니다.');
       }
     } else {
-      console.error('Unexpected response format:', isCorrect);
       alert('서버 응답 형식이 올바르지 않습니다.');
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('비밀번호 확인 중 오류가 발생했습니다.', error.message);
       alert('오류가 발생했습니다. 다시 시도해주세요.');
     } else {
-      console.error('비밀번호 확인 중 예상치 못한 오류가 발생했습니다.');
       alert('예상치 못한 오류가 발생했습니다. 다시 시도해주세요.');
     }
   }

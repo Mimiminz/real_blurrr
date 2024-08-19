@@ -11,6 +11,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 def init_db():
+    # SQL 파일을 읽어 실행합니다.
     sql_file_path = Path("app/cars.sql")
     if sql_file_path.exists():
         with engine.connect() as conn:
