@@ -52,11 +52,11 @@ backend-deploy:
 
         - echo "Setting up SSH key..."
         - mkdir -p ~/.ssh
-        - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+        - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
         - chmod 600 ~/.ssh/id_rsa
-        - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-        - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_HOST:$DEPLOY_PATH
-        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+        - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
+        - scp -i ~/.ssh/id_rsa backend/blur/build/libs/*.jar ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
         - echo "Complete"
 
     needs: ['backend-build']
