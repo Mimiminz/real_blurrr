@@ -50,14 +50,14 @@ frontend-deploy:
 
         - echo "Setting up SSH key..."
         - mkdir -p ~/.ssh
-        - echo "$SSH_KEY_PEM" > ~/.ssh/id_rsa
+        - echo "$SSH_KEY_EC2_PEM" > ~/.ssh/id_rsa
         - chmod 400 ~/.ssh/id_rsa
-        - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+        - ssh-keyscan -H $SSH_EC2_HOST >> ~/.ssh/known_hosts
 
-        - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_HOST:$DEPLOY_PATH
-        - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_HOST:$DEPLOY_PATH
+        - scp -i ~/.ssh/id_rsa -r frontend/.next ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
+        - scp -i ~/.ssh/id_rsa -r frontend/public ubuntu@$SSH_EC2_HOST:$DEPLOY_PATH
         - echo "complete file send"
-        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
+        - ssh -i ~/.ssh/id_rsa ubuntu@$SSH_EC2_HOST "cd $DEPLOY_PATH && nohup ./deploy.sh > deploy.log 2>&1 &"
 
     needs: ['frontend-build']
 
