@@ -1,0 +1,331 @@
+{
+  "AllChannels": [
+    {
+      "id": 1,
+      "title": "블랙박스",
+      "followers": 550,
+      "tags": ["자동차", "동영상"],
+      "img": "https://loremflickr.com/300/300/car"
+    },
+    {
+      "id": 2,
+      "title": "내 차 자랑",
+      "followers": 300,
+      "tags": ["사진", "자랑"],
+      "img": "https://loremflickr.com/300/300/car"
+    },
+    {
+      "id": 3,
+      "title": "자동차 리뷰",
+      "followers": 800,
+      "tags": ["리뷰", "자동차"],
+      "img": "https://loremflickr.com/300/300/car"
+    },
+    {
+      "id": 4,
+      "title": "드라이빙 팁",
+      "followers": 450,
+      "tags": ["운전", "안전"],
+      "img": "https://loremflickr.com/300/300/driving"
+    },
+    {
+      "id": 5,
+      "title": "자동차 정비",
+      "followers": 600,
+      "tags": ["정비", "튜토리얼"],
+      "img": "https://loremflickr.com/300/300/mechanic"
+    },
+    {
+      "id": 6,
+      "title": "자동차 시승기",
+      "followers": 700,
+      "tags": ["시승기", "자동차"],
+      "img": "https://loremflickr.com/300/300/testdrive"
+    },
+    {
+      "id": 7,
+      "title": "고속도로 풍경",
+      "followers": 200,
+      "tags": ["풍경", "여행"],
+      "img": "https://loremflickr.com/300/300/highway"
+    },
+    {
+      "id": 8,
+      "title": "차량 사고 영상",
+      "followers": 900,
+      "tags": ["사고", "자동차"],
+      "img": "https://loremflickr.com/300/300/crash"
+    },
+    {
+      "id": 9,
+      "title": "자동차 커스터마이징",
+      "followers": 500,
+      "tags": ["커스터마이징", "튜닝"],
+      "img": "https://loremflickr.com/300/300/custom"
+    },
+    {
+      "id": 10,
+      "title": "오프로드 모험",
+      "followers": 350,
+      "tags": ["오프로드", "모험"],
+      "img": "https://loremflickr.com/300/300/offroad"
+    },
+    {
+      "id": 11,
+      "title": "클래식 자동차",
+      "followers": 400,
+      "tags": ["클래식", "역사"],
+      "img": "https://loremflickr.com/300/300/classic"
+    },
+    {
+      "id": 12,
+      "title": "자동차 시장 뉴스",
+      "followers": 650,
+      "tags": ["뉴스", "시장"],
+      "img": "https://loremflickr.com/300/300/news"
+    },
+    {
+      "id": 13,
+      "title": "전기차",
+      "followers": 700,
+      "tags": ["전기차", "기술"],
+      "img": "https://loremflickr.com/300/300/electriccar"
+    },
+    {
+      "id": 14,
+      "title": "자동차 여행",
+      "followers": 300,
+      "tags": ["여행", "자동차"],
+      "img": "https://loremflickr.com/300/300/roadtrip"
+    },
+    {
+      "id": 15,
+      "title": "모터스포츠",
+      "followers": 800,
+      "tags": ["스포츠", "경주"],
+      "img": "https://loremflickr.com/300/300/motorsport"
+    }
+  ],
+  "createList": [
+    {
+      "id": "Orange",
+      "name": "eg1",
+      "followers": 100,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange2",
+      "name": "eg2",
+      "followers": 150,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange3",
+      "name": "eg3",
+      "followers": 200,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange4",
+      "name": "eg4",
+      "followers": 250,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange5",
+      "name": "eg5",
+      "followers": 300,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange6",
+      "name": "eg6",
+      "followers": 350,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange7",
+      "name": "eg7",
+      "followers": 400,
+      "img": "/images/eg_img.png"
+    },
+    {
+      "id": "Orange8",
+      "name": "eg8",
+      "followers": 450,
+      "img": "/images/eg_img.png"
+    }
+  ],
+  "dashCamList": [
+    {
+      "id": 1,
+      "title": "현대 차량 사고",
+      "viewer": 550,
+      "tags": ["현대", "사고"],
+      "thumbnail": "https://loremflickr.com/300/300/carcrash",
+      "likes": 42,
+      "createdDate": "2024.07.10 15:00"
+    },
+    {
+      "id": 2,
+      "title": "제네시스 차량 사고",
+      "viewer": 300,
+      "tags": ["제네시스", "사고"],
+      "thumbnail": "https://loremflickr.com/300/301/carcrash",
+      "likes": 38,
+      "createdDate": "2024.07.11 10:20"
+    },
+    {
+      "id": 3,
+      "title": "기아 K5 차량 사고",
+      "viewer": 1000,
+      "tags": ["기아", "K5", "사고"],
+      "thumbnail": "https://loremflickr.com/300/302/carcrash",
+      "likes": 50,
+      "createdDate": "2024.07.12 12:30"
+    },
+    {
+      "id": 4,
+      "title": "현대 소나타 사고",
+      "viewer": 530,
+      "tags": ["현대", "소나타", "사고"],
+      "thumbnail": "https://loremflickr.com/300/303/carcrash",
+      "likes": 45,
+      "createdDate": "2024.07.13 14:45"
+    },
+    {
+      "id": 5,
+      "title": "기아 스포티지 사고",
+      "viewer": 1570,
+      "tags": ["기아", "스포티지", "사고"],
+      "thumbnail": "https://loremflickr.com/300/304/carcrash",
+      "likes": 67,
+      "createdDate": "2024.07.14 16:00"
+    },
+    {
+      "id": 6,
+      "title": "제네시스 G80 사고",
+      "viewer": 800,
+      "tags": ["제네시스", "G80", "사고"],
+      "thumbnail": "https://loremflickr.com/300/305/carcrash",
+      "likes": 40,
+      "createdDate": "2024.07.15 09:10"
+    },
+    {
+      "id": 7,
+      "title": "기아 모하비 사고",
+      "viewer": 750,
+      "tags": ["기아", "모하비", "사고"],
+      "thumbnail": "https://loremflickr.com/300/306/carcrash",
+      "likes": 55,
+      "createdDate": "2024.07.16 11:50"
+    },
+    {
+      "id": 8,
+      "title": "현대 그랜저 사고",
+      "viewer": 1220,
+      "tags": ["현대", "그랜저", "사고"],
+      "thumbnail": "https://loremflickr.com/300/307/carcrash",
+      "likes": 70,
+      "createdDate": "2024.07.17 13:25"
+    }
+  ],
+  "carBoast": [
+    {
+      "id": 1,
+      "viewer": 550,
+      "thumbnail": "https://loremflickr.com/300/300/niceCar",
+      "likes": 42
+    },
+    {
+      "id": 2,
+      "viewer": 300,
+      "thumbnail": "https://loremflickr.com/300/301/niceCar",
+      "likes": 38
+    },
+    {
+      "id": 3,
+      "viewer": 750,
+      "thumbnail": "https://loremflickr.com/300/302/niceCar",
+      "likes": 50
+    },
+    {
+      "id": 4,
+      "viewer": 620,
+      "thumbnail": "https://loremflickr.com/300/303/niceCar",
+      "likes": 29
+    },
+    {
+      "id": 5,
+      "viewer": 480,
+      "thumbnail": "https://loremflickr.com/300/304/niceCar",
+      "likes": 45
+    },
+    {
+      "id": 6,
+      "viewer": 910,
+      "thumbnail": "https://loremflickr.com/300/305/niceCar",
+      "likes": 60
+    },
+    {
+      "id": 7,
+      "viewer": 670,
+      "thumbnail": "https://loremflickr.com/300/306/niceCar",
+      "likes": 33
+    },
+    {
+      "id": 8,
+      "viewer": 530,
+      "thumbnail": "https://loremflickr.com/300/307/niceCar",
+      "likes": 40
+    },
+    {
+      "id": 9,
+      "viewer": 820,
+      "thumbnail": "https://loremflickr.com/300/308/niceCar",
+      "likes": 55
+    },
+    {
+      "id": 10,
+      "viewer": 720,
+      "thumbnail": "https://loremflickr.com/300/309/niceCar",
+      "likes": 48
+    },
+    {
+      "id": 11,
+      "viewer": 610,
+      "thumbnail": "https://loremflickr.com/301/300/niceCar",
+      "likes": 37
+    },
+    {
+      "id": 12,
+      "viewer": 930,
+      "thumbnail": "https://loremflickr.com/302/300/niceCar",
+      "likes": 72
+    },
+    {
+      "id": 13,
+      "viewer": 820,
+      "thumbnail": "https://loremflickr.com/303/300/niceCar",
+      "likes": 59
+    },
+    {
+      "id": 14,
+      "viewer": 700,
+      "thumbnail": "https://loremflickr.com/304/300/niceCar",
+      "likes": 51
+    },
+    {
+      "id": 15,
+      "viewer": 810,
+      "thumbnail": "https://loremflickr.com/305/300/niceCar",
+      "likes": 64
+    },
+    {
+      "id": 16,
+      "viewer": 490,
+      "thumbnail": "https://loremflickr.com/306/300/niceCar",
+      "likes": 39
+    }
+  ]
+}

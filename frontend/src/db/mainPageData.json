@@ -1,0 +1,515 @@
+{
+  "HotArticles": [
+    {
+      "channel": "블랙박스 채널",
+      "title": "신박한 담배꽁초 처리 방법",
+      "likes": 462,
+      "comments": 45
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "오토바이 운전자는 많이 다쳤습니다",
+      "likes": 412,
+      "comments": 93
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "사고과실좀 봐주세요",
+      "likes": 326,
+      "comments": 53
+    },
+    {
+      "channel": "차 자랑 채널",
+      "title": "6년 동안 무슨 일이 있었던 거죠",
+      "likes": 150,
+      "comments": 35
+    },
+    {
+      "channel": "블랙박스 채널",
+      "title": "빨리 출발했으면 사고 날뻔",
+      "likes": 100,
+      "comments": 16
+    }
+  ],
+  "Blackbox": [
+    {
+      "title": "교차로에서 사고가 났어요",
+      "totalVotes": 1000,
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 200
+        },
+        {
+          "voteCount": 300
+        },
+        {
+          "voteCount": 500
+        }
+      ]
+    },
+    {
+      "title": "고속도로에서 급정거",
+      "totalVotes": 1500,
+      "optionNumber": 2,
+      "options": [
+        {
+          "voteCount": 900
+        },
+        {
+          "voteCount": 600
+        }
+      ]
+    },
+    {
+      "title": "횡단보도에서의 보행자 사고",
+      "totalVotes": 1200,
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 500
+        },
+        {
+          "voteCount": 400
+        },
+        {
+          "voteCount": 300
+        }
+      ]
+    },
+    {
+      "title": "주차장에서 접촉사고",
+      "totalVotes": 800,
+      "optionNumber": 2,
+      "options": [
+        {
+          "voteCount": 500
+        },
+        {
+          "voteCount": 300
+        }
+      ]
+    },
+    {
+      "title": "터널에서의 사고 발생",
+      "totalVotes": 900,
+      "optionNumber": 3,
+      "options": [
+        {
+          "voteCount": 300
+        },
+        {
+          "voteCount": 400
+        },
+        {
+          "voteCount": 200
+        }
+      ]
+    }
+  ],
+  "carPicture": [
+    {
+      "name": "이서연",
+      "description": "테슬라 모델 X",
+      "image": "https://loremflickr.com/300/300/niceCar",
+      "views": 1120
+    },
+    {
+      "name": "유재석",
+      "description": "현대 투싼 하이브리드",
+      "image": "https://loremflickr.com/300/301/niceCar",
+      "views": 1030
+    },
+    {
+      "name": "전상현",
+      "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
+      "image": "https://loremflickr.com/300/302/niceCar",
+      "views": 1019
+    },
+    {
+      "name": "이효리",
+      "description": "렉서스 RX450h",
+      "image": "https://loremflickr.com/300/303/niceCar",
+      "views": 970
+    },
+    {
+      "name": "박민수",
+      "description": "BMW X5 xDrive45e",
+      "image": "https://loremflickr.com/300/304/niceCar",
+      "views": 950
+    },
+    {
+      "name": "김지훈",
+      "description": "아우디 Q7 55 TFSI e",
+      "image": "https://loremflickr.com/300/305/niceCar",
+      "views": 830
+    },
+    {
+      "name": "정우성",
+      "description": "기아 쏘렌토 하이브리드",
+      "image": "https://loremflickr.com/300/306/niceCar",
+      "views": 890
+    },
+    {
+      "name": "강호동",
+      "description": "볼보 XC90 T8",
+      "image": "https://loremflickr.com/300/307/niceCar",
+      "views": 880
+    },
+    {
+      "name": "한예슬",
+      "description": "포드 익스플로러 플러그인 하이브리드",
+      "image": "https://loremflickr.com/300/308/niceCar",
+      "views": 745
+    },
+    {
+      "name": "최유진",
+      "description": "레인지로버 스포츠 PHEV",
+      "image": "https://loremflickr.com/300/309/niceCar",
+      "views": 675
+    }
+  ],
+  "LeagueList": [
+    {
+      "id": "cdc23864-81d1-4377-8dca-8cadc20d89a3",
+      "name": "현대",
+      "type": "string",
+      "count": 120
+    },
+    {
+      "id": "cdc23864-81d1-4377-8dca-8cadc20d89a1",
+      "name": "GV70",
+      "type": "string",
+      "count": 120
+    },
+    {
+      "id": "de1e65f7-6da0-41a1-8144-0786025d80cf",
+      "name": "제네시스",
+      "type": "string",
+      "count": 98
+    },
+    {
+      "id": "90f26f63-15d7-4013-9fde-aa5d985d41aa",
+      "name": "포르쉐",
+      "type": "string",
+      "count": 150
+    },
+    {
+      "id": "e0351317-5f49-430c-9344-03cdfa916220",
+      "name": "혼다",
+      "type": "string",
+      "count": 130
+    },
+    {
+      "id": "447e9a44-73ad-4bd3-961e-632cc58de45a",
+      "name": "미니",
+      "type": "string",
+      "count": 110
+    },
+    {
+      "id": "0c83fa98-4879-4673-a39d-04ea2cf93918",
+      "name": "토요타",
+      "type": "string",
+      "count": 145
+    },
+    {
+      "id": "2816f4d3-502d-483e-80d8-f21e28aaaddc",
+      "name": "폭스바겐",
+      "type": "string",
+      "count": 160
+    },
+    {
+      "id": "b60eca17-63e5-478d-b5a1-87b3f1f7937a",
+      "name": "BMW",
+      "type": "string",
+      "count": 200
+    },
+    {
+      "id": "47ec29ed-1cba-411f-8423-6b495429d789",
+      "name": "벤츠",
+      "type": "string",
+      "count": 180
+    },
+    {
+      "id": "d3ad3070-4585-404c-a066-f61ab9ab398d",
+      "name": "기아",
+      "type": "string",
+      "count": 125
+    },
+    {
+      "id": "9fb64fdd-5212-4f4a-86ce-d775b9c8371e",
+      "name": "아우디",
+      "type": "string",
+      "count": 170
+    },
+    {
+      "id": "6879ede9-e972-4900-9f69-e2fc825ef2c0",
+      "name": "테슬라",
+      "type": "string",
+      "count": 155
+    },
+    {
+      "id": "1e9454d7-7819-4849-8704-6dde2e7a26cb",
+      "name": "쉐보레",
+      "type": "string",
+      "count": 140
+    },
+    {
+      "id": "a41b5a3b-75fb-4155-91c8-ac5f2b0f3302",
+      "name": "람보르기니",
+      "type": "string",
+      "count": 95
+    },
+    {
+      "id": "b7b346df-c84b-44c7-ba27-361732b61611",
+      "name": "벤틀리",
+      "type": "string",
+      "count": 85
+    },
+    {
+      "id": "b281f070-8985-48ed-a1fa-8c242c94ba77",
+      "name": "르노코리아",
+      "type": "string",
+      "count": 100
+    },
+    {
+      "id": "646c92f0-6109-4087-ae30-573bd272ad36",
+      "name": "롤스로이스",
+      "type": "string",
+      "count": 105
+    },
+    {
+      "id": "2922815a-97cc-4a48-89c1-a021cdce266d",
+      "name": "현대",
+      "type": "string",
+      "count": 120
+    },
+    {
+      "id": "223416aa-e5ab-4cb0-921e-e077e6eec3b9",
+      "name": "제네시스",
+      "type": "string",
+      "count": 98
+    },
+    {
+      "id": "da3962f9-5679-4d6f-b75b-69af66c2eaa6",
+      "name": "포르쉐",
+      "type": "string",
+      "count": 150
+    },
+    {
+      "id": "20d26a21-63e0-4b43-a16a-611d2a3ff6fa",
+      "name": "혼다",
+      "type": "string",
+      "count": 130
+    },
+    {
+      "id": "fce372c8-e197-4e9d-a4b6-3b4df53dc248",
+      "name": "미니",
+      "type": "string",
+      "count": 110
+    },
+    {
+      "id": "5f4f6dbf-24e8-4ae5-97c5-f4212ed24ad1",
+      "name": "토요타",
+      "type": "string",
+      "count": 145
+    },
+    {
+      "id": "61aef0e6-8d71-4609-85cf-3b90e72d5899",
+      "name": "폭스바겐",
+      "type": "string",
+      "count": 160
+    },
+    {
+      "id": "e69b5c37-0b80-46d2-8973-12e5d25c95e4",
+      "name": "BMW",
+      "type": "string",
+      "count": 200
+    },
+    {
+      "id": "cf1a832b-27c6-4f2a-aceb-cd7d189e7ba0",
+      "name": "벤츠",
+      "type": "string",
+      "count": 180
+    },
+    {
+      "id": "8b52e234-19ec-4e32-8143-1b60e60223ee",
+      "name": "기아",
+      "type": "string",
+      "count": 125
+    },
+    {
+      "id": "0f0a73c8-2b8c-42dc-b380-9fa1f5e8c26b",
+      "name": "아우디",
+      "type": "string",
+      "count": 170
+    },
+    {
+      "id": "7f2b7e0f-0477-4c36-8992-88e223ffbb07",
+      "name": "테슬라",
+      "type": "string",
+      "count": 155
+    },
+    {
+      "id": "26b8b0cc-e63b-450b-bb76-45e68bb022c5",
+      "name": "쉐보레",
+      "type": "string",
+      "count": 140
+    },
+    {
+      "id": "63e98c89-e4a5-4ef5-b5f6-6aa1a55f80f1",
+      "name": "람보르기니",
+      "type": "string",
+      "count": 95
+    },
+    {
+      "id": "1edb3021-6cdb-462f-90f3-ec18582ff73e",
+      "name": "벤틀리",
+      "type": "string",
+      "count": 85
+    },
+    {
+      "id": "13503df0-3f64-49cc-b1a6-87f8c6e8ed19",
+      "name": "마세라티",
+      "type": "string",
+      "count": 100
+    },
+    {
+      "id": "66e9c252-0aa6-4041-bade-e9cc8d29ae9b",
+      "name": "롤스로이스",
+      "type": "string",
+      "count": 105
+    },
+    {
+      "id": "17e81458-f773-4b9f-b56c-bb24af08fddb",
+      "name": "벤틀리",
+      "type": "string",
+      "count": 85
+    },
+    {
+      "id": "aff4d655-9a8f-49c6-ab80-6e9270d5691a",
+      "name": "마세라티",
+      "type": "string",
+      "count": 100
+    },
+    {
+      "id": "cdc23864-81d1-4377-8dca-8cadc20d89a3",
+      "name": "현대",
+      "type": "string",
+      "count": 120
+    },
+    {
+      "id": "de1e65f7-6da0-41a1-8144-0786025d80cf",
+      "name": "제네시스",
+      "type": "string",
+      "count": 98
+    },
+    {
+      "id": "90f26f63-15d7-4013-9fde-aa5d985d41aa",
+      "name": "포르쉐",
+      "type": "string",
+      "count": 150
+    },
+    {
+      "id": "e0351317-5f49-430c-9344-03cdfa916220",
+      "name": "혼다",
+      "type": "string",
+      "count": 130
+    },
+    {
+      "id": "aff4d655-9a8f-49c6-ab80-6e9270d5691a",
+      "name": "마세라티",
+      "type": "string",
+      "count": 100
+    }
+  ],
+  "topCar": {
+    "id": "fce372c8-e197-4e9d-a4b6-3b4df53dc248",
+    "name": "전상현",
+    "description": "벤츠 GLS 600 4MATIC MANUFAKTUR 2024",
+    "image": "https://loremflickr.com/300/310/niceCar",
+    "views": 1019
+  },
+  "rankings": [
+    { "name": "현대", "count": 120 },
+    { "name": "기아", "count": 110 },
+    { "name": "BMW", "count": 100 },
+    { "name": "AVANTE", "count": 75 },
+    { "name": "GV70", "count": 70 },
+    { "name": "토요타", "count": 40 },
+    { "name": "K5", "count": 42 },
+    { "name": "모닝", "count": 10 },
+    { "name": "Sportage", "count": 8 },
+    { "name": "SANTAFE", "count": 2 }
+  ],
+  "userInfo": {
+    "name": "전상현",
+    "profileImage": "https://loremflickr.com/320/240/dog",
+    "carModel": "GV70",
+    "carManufacture": "제네시스"
+  },
+  "ChannelFollowList": [
+    {
+      "id": "Orange",
+      "name": "eg1",
+      "followers": 100,
+      "img": "https://loremflickr.com/320/241/dog"
+    },
+    {
+      "id": "Orange2",
+      "name": "eg2",
+      "followers": 150,
+      "img": "https://loremflickr.com/320/242/dog"
+    },
+    {
+      "id": "Orange3",
+      "name": "eg3",
+      "followers": 200,
+      "img": "https://loremflickr.com/320/243/dog"
+    },
+    {
+      "id": "Orange4",
+      "name": "eg4",
+      "followers": 250,
+      "img": "https://loremflickr.com/320/244/dog"
+    },
+    {
+      "id": "Orange5",
+      "name": "eg5",
+      "followers": 300,
+      "img": "https://loremflickr.com/320/245/dog"
+    },
+    {
+      "id": "Orange6",
+      "name": "eg6",
+      "followers": 350,
+      "img": "https://loremflickr.com/320/246/dog"
+    },
+    {
+      "id": "Orange7",
+      "name": "eg7",
+      "followers": 400,
+      "img": "https://loremflickr.com/320/247/dog"
+    },
+    {
+      "id": "Orange8",
+      "name": "eg8",
+      "followers": 450,
+      "img": "https://loremflickr.com/320/248/dog"
+    }
+  ],
+  "leagueMembers": [
+    {
+      "id": "11ef4d76-3ada-286d-80d0-65c2c6a96248",
+      "name": "GV70",
+      "type": "MODEL",
+      "peopleCount": 0
+    },
+    {
+      "id": "11ef4d76-4afd-799e-80d0-2d112b0817dc",
+      "name": "제네시스",
+      "type": "BRAND",
+      "peopleCount": 0
+    }
+  ]
+}
